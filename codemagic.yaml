@@ -1,0 +1,22 @@
+workflows:
+  analyze:
+    name: Analyze
+    instance_type: mac_mini_m1
+    max_build_duration: 5
+    environment:
+      flutter: fvm
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+    triggering:
+      events:
+        - pull_request
+      branch_patterns:
+        - pattern: feature/*
+          include: true
+          source: true
+    scripts:
+      - name: Get dependencies
+        script: flutter packages pub get
+      - name: Analyze
+        script: flutter analyze
