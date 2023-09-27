@@ -8,10 +8,9 @@ environment:
   sdk: '>=3.1.2 <4.0.0'
 
 dependencies:
+  elementary: ^3.0.0
   flutter:
     sdk: flutter
-
-  elementary: ^3.0.0
   flutter_feature_arch:
     git:
       url: https://github.com/ERGataullin/flutter_feature_arch.git
@@ -19,10 +18,9 @@ dependencies:
   provider: ^6.0.5
 
 dev_dependencies:
+  flutter_lints: ^2.0.3
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^2.0.3
 
 flutter:
   uses-material-design: true

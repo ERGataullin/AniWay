@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_feature_arch/flutter_feature_arch.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,10 +14,11 @@ class SignInFeature extends Feature<RouteBase> {
   String get path => '/sign-in';
 
   @override
-  Set<RouteBase> get routes => {
+  Set<RouteBase> get routes => <RouteBase>{
         GoRoute(
           path: path,
-          builder: (context, state) => const SignInWidget(),
+          builder: (BuildContext context, GoRouterState state) =>
+              const SignInWidget(),
         ),
       };
 }

@@ -6,7 +6,7 @@ import '/modules/auth/sign_in/presentation/widget_model.dart';
 class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
   const SignInWidget({
     super.key,
-    WidgetModelFactory<ISignInWidgetModel> wmFactory = signInWidgetModelFactory,
+    WidgetModelFactory wmFactory = signInWidgetModelFactory,
   }) : super(wmFactory);
 
   @override
@@ -16,7 +16,7 @@ class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
         title: Text(wm.title),
       ),
       body: Column(
-        children: [
+        children: <Widget>[
           TextField(
             controller: wm.emailFieldController,
             decoration: InputDecoration(

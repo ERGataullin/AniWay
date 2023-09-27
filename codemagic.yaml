@@ -16,7 +16,5 @@ workflows:
           include: true
           source: true
     scripts:
-      - name: Get dependencies
-        script: flutter packages pub get
       - name: Analyze
-        script: flutter analyze
+        script: flutter analyze --fatal-infos

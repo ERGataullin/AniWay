@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:elementary/elementary.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -6,14 +8,15 @@ import '/modules/auth/module.dart';
 import '/modules/auth/sign_in/presentation/model.dart';
 import '/modules/auth/sign_in/presentation/widget.dart';
 
-ISignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
-    _SignInWidgetModel(SignInModel(
-      context.read<ErrorHandler>(),
-      onSignedIn: context.read<AuthModule>().signIn.onSignedIn,
-    ));
+SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
+    SignInWidgetModel(
+      SignInModel(
+        context.read<ErrorHandler>(),
+        onSignedIn: context.read<AuthModule>().signIn.onSignedIn,
+      ),
+    );
 
-abstract interface class ISignInWidgetModel
-    implements IWidgetModel, WidgetModel<SignInWidget, SignInModel> {
+abstract interface class ISignInWidgetModel implements IWidgetModel {
   String get title;
 
   TextEditingController get emailFieldController;
@@ -25,9 +28,9 @@ abstract interface class ISignInWidgetModel
   void onSignInButtonPressed();
 }
 
-class _SignInWidgetModel extends WidgetModel<SignInWidget, SignInModel>
+class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
     implements ISignInWidgetModel {
-  _SignInWidgetModel(SignInModel model) : super(model);
+  SignInWidgetModel(super._model);
 
   @override
   final String title = 'Sign in';
@@ -48,7 +51,7 @@ class _SignInWidgetModel extends WidgetModel<SignInWidget, SignInModel>
 
   @override
   void onSignInButtonPressed() {
-    model.signIn();
+    unawaited(model.signIn());
   }
 
   @override

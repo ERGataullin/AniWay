@@ -14,7 +14,7 @@ class AuthModule extends Module<RouteBase> {
   final SignInFeature signIn;
 
   @override
-  Set<Feature<RouteBase>> get features => {
+  Set<Feature<RouteBase>> get features => <Feature<RouteBase>>{
         signIn,
       };
 }
