@@ -16,5 +16,5 @@ workflows:
           include: true
           source: true
     scripts:
-      - name: Analyze
+      - name: Analyzing
         script: flutter analyze --fatal-infos
