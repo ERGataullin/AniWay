@@ -32,7 +32,6 @@ linter:
     comment_references: true
     control_flow_in_finally: true
     deprecated_member_use_from_same_package: true
-    diagnostic_describe_all_properties: true
     discarded_futures: true
     empty_statements: true
     hash_and_equals: true

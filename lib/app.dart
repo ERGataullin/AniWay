@@ -1,20 +1,20 @@
-import 'package:app/modules/auth/module.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feature_arch/flutter_feature_arch.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '/app_dependencies.dart';
+import '/modules/auth/module.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Modular(
+    return Modular<RouteBase>(
       modules: context.read<Set<Module<RouteBase>>>(),
       child: Builder(
-        builder: (context) => MaterialApp.router(
+        builder: (BuildContext context) => MaterialApp.router(
           routerConfig: GoRouter(
             initialLocation: context.read<AuthModule>().signIn.path,
             routes:
@@ -26,11 +26,13 @@ class App extends StatelessWidget {
   }
 
   void run({
-    Set<Provider> dependencyOverrides = const {},
+    Set<Provider<dynamic>> dependencyOverrides = const <Provider<dynamic>>{},
   }) {
-    runApp(AppDependenciesProvider(
-      overrides: dependencyOverrides,
-      child: this,
-    ));
+    runApp(
+      AppDependenciesProvider(
+        overrides: dependencyOverrides,
+        child: this,
+      ),
+    );
   }
 }
