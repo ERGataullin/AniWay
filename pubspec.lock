@@ -62,15 +62,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_feature_arch:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: f1193164f612e0f6a31dab12cf80a413cd19252b
-      url: "https://github.com/ERGataullin/flutter_feature_arch.git"
-    source: git
-    version: "0.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:

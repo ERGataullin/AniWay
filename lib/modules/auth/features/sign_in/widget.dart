@@ -1,13 +1,16 @@
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 
-import '/modules/auth/sign_in/presentation/widget_model.dart';
+import '/modules/auth/features/sign_in/widget_model.dart';
 
 class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
   const SignInWidget({
     super.key,
     WidgetModelFactory wmFactory = signInWidgetModelFactory,
+    required this.onSignedIn,
   }) : super(wmFactory);
+
+  final VoidCallback onSignedIn;
 
   @override
   Widget build(ISignInWidgetModel wm) {

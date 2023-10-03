@@ -1,20 +1,15 @@
-import 'package:flutter/services.dart';
-import 'package:flutter_feature_arch/flutter_feature_arch.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/widgets.dart';
 
-import '/modules/auth/sign_in/feature.dart';
+class AuthModule extends StatelessWidget {
+  const AuthModule({
+    super.key,
+    required this.child,
+  });
 
-class AuthModule extends Module<RouteBase> {
-  AuthModule({
-    required VoidCallback onSignedIn,
-  }) : signIn = SignInFeature(
-          onSignedIn: onSignedIn,
-        );
-
-  final SignInFeature signIn;
+  final Widget child;
 
   @override
-  Set<Feature<RouteBase>> get features => <Feature<RouteBase>>{
-        signIn,
-      };
+  Widget build(BuildContext context) {
+    return child;
+  }
 }
