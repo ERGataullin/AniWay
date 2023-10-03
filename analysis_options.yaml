@@ -57,7 +57,6 @@ linter:
     # Style rules
     always_declare_return_types: true
     always_put_control_body_on_new_line: true
-    always_specify_types: true
     annotate_overrides: true
     avoid_bool_literals_in_conditional_expressions: true
     avoid_catching_errors: true
