@@ -1,7 +1,7 @@
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 
-import '/modules/auth/features/sign_in/widget_model.dart';
+import '/modules/auth/presentation/sign_in/widget_model.dart';
 
 class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
   const SignInWidget({

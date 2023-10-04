@@ -4,11 +4,18 @@ import 'package:elementary/elementary.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '/modules/auth/features/sign_in/model.dart';
-import '/modules/auth/features/sign_in/widget.dart';
+import '/app/domain/services/error_handle/service.dart';
+import '/modules/auth/domain/service.dart';
+import '/modules/auth/presentation/sign_in/model.dart';
+import '/modules/auth/presentation/sign_in/widget.dart';
 
 SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
-    SignInWidgetModel(SignInModel(context.read<ErrorHandler>()));
+    SignInWidgetModel(
+      SignInModel(
+        context.read<ErrorHandleService>(),
+        service: context.read<AuthService>(),
+      ),
+    );
 
 abstract interface class ISignInWidgetModel implements IWidgetModel {
   String get title;

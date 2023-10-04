@@ -1,24 +1,24 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '/app/models/route_definition.dart';
-import '/modules/auth/features/sign_in/widget.dart';
+import '/app/domain/models/route_definition.dart';
 import '/modules/auth/module.dart';
+import '/modules/auth/presentation/sign_in/widget.dart';
 
-extension _RouteLocator on RouteDefinition {
+extension _RouteLocator on RouteDefinitionData {
   String locate({
     Map<String, dynamic> pathParameters = const {},
   }) {
-    final StringBuffer buffer = StringBuffer();
-
-    final Iterable<String> pathSegments = uri.pathSegments.map(
-      (pathSegment) => pathSegment.startsWith(':')
-          ? pathParameters[pathSegment.substring(1)]!.toString()
-          : pathSegment,
-    );
-    buffer.writeAll(pathSegments, '/');
-
-    return buffer.toString();
+    return uri.replace(
+      pathSegments: [
+        '',
+        ...uri.pathSegments.map(
+          (pathSegment) => pathSegment.startsWith(':')
+              ? pathParameters[pathSegment.substring(1)]!.toString()
+              : pathSegment,
+        ),
+      ],
+    ).toString();
   }
 }
 
@@ -58,9 +58,9 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 class _AuthRoutes {
   _AuthRoutes({
     required String signIn,
-  }) : signIn = RouteDefinition.parse(signIn);
+  }) : signIn = RouteDefinitionData.parse(signIn);
 
-  final RouteDefinition signIn;
+  final RouteDefinitionData signIn;
 
   List<RouteBase> call({
     required VoidCallback onSignedIn,
