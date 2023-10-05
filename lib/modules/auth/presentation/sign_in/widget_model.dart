@@ -4,15 +4,16 @@ import 'package:elementary/elementary.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '/modules/auth/module.dart';
-import '/modules/auth/sign_in/presentation/model.dart';
-import '/modules/auth/sign_in/presentation/widget.dart';
+import '/app/domain/services/error_handle/service.dart';
+import '/modules/auth/domain/service.dart';
+import '/modules/auth/presentation/sign_in/model.dart';
+import '/modules/auth/presentation/sign_in/widget.dart';
 
 SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
     SignInWidgetModel(
       SignInModel(
-        context.read<ErrorHandler>(),
-        onSignedIn: context.read<AuthModule>().signIn.onSignedIn,
+        context.read<ErrorHandleService>(),
+        service: context.read<AuthService>(),
       ),
     );
 
@@ -51,7 +52,7 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
 
   @override
   void onSignInButtonPressed() {
-    unawaited(model.signIn());
+    unawaited(model.signIn().then((_) => widget.onSignedIn()));
   }
 
   @override

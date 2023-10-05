@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:elementary/elementary.dart';
 
+import '/modules/auth/domain/service.dart';
+
 abstract interface class ISignInModel implements ElementaryModel {
   Future<void> signIn();
 }
@@ -9,14 +11,17 @@ abstract interface class ISignInModel implements ElementaryModel {
 class SignInModel extends ElementaryModel implements ISignInModel {
   SignInModel(
     ErrorHandler errorHandler, {
-    required this.onSignedIn,
-  }) : super(errorHandler: errorHandler);
+    required AuthService service,
+  })  : _service = service,
+        super(errorHandler: errorHandler);
 
-  final void Function() onSignedIn;
+  final AuthService _service;
 
   @override
-  Future<void> signIn() async {
-    await Future<void>.delayed(const Duration(seconds: 1));
-    onSignedIn();
+  Future<void> signIn() {
+    return _service.signIn(
+      email: 'email',
+      password: 'password',
+    );
   }
 }
