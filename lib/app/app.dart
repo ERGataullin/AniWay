@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/app/dependencies_provider.dart';
+import '/app/localizations.dart';
 import '/app/router.dart';
 
 class App extends StatelessWidget {
@@ -10,6 +11,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: AppRouter(),
     );
   }
