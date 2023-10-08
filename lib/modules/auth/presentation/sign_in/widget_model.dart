@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '/app/domain/services/error_handle/service.dart';
+import '/app/localizations.dart';
 import '/modules/auth/domain/service.dart';
 import '/modules/auth/presentation/sign_in/model.dart';
 import '/modules/auth/presentation/sign_in/widget.dart';
@@ -34,16 +35,16 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   SignInWidgetModel(super._model);
 
   @override
-  final String title = 'Sign in';
-
-  @override
   final TextEditingController emailFieldController = TextEditingController();
 
   @override
-  final String emailFieldLabel = 'Email';
+  String get title => context.localizations.authSignInTitle;
 
   @override
-  final String signInButtonLabel = 'Sign in';
+  String get emailFieldLabel => context.localizations.authSignInEmailLabel;
+
+  @override
+  String get signInButtonLabel => context.localizations.authSignInSubmitLabel;
 
   @override
   void initWidgetModel() {
