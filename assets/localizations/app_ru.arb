@@ -1,5 +1,6 @@
 {
     "authSignInTitle": "Авторизация",
     "authSignInEmailLabel": "Электронная почта",
+    "authSignInPasswordLabel": "Пароль",
     "authSignInSubmitLabel": "Войти"
 }

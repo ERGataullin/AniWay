@@ -26,6 +26,12 @@ class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
               label: Text(wm.emailFieldLabel),
             ),
           ),
+          TextField(
+            controller: wm.passwordFieldController,
+            decoration: InputDecoration(
+              label: Text(wm.passwordFieldLabel),
+            ),
+          ),
           const Spacer(),
           FilledButton(
             onPressed: wm.onSignInButtonPressed,

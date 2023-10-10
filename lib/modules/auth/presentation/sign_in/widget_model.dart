@@ -25,6 +25,10 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
 
   String get emailFieldLabel;
 
+  TextEditingController get passwordFieldController;
+
+  String get passwordFieldLabel;
+
   String get signInButtonLabel;
 
   void onSignInButtonPressed();
@@ -38,10 +42,17 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   final TextEditingController emailFieldController = TextEditingController();
 
   @override
+  final TextEditingController passwordFieldController = TextEditingController();
+
+  @override
   String get title => context.localizations.authSignInTitle;
 
   @override
   String get emailFieldLabel => context.localizations.authSignInEmailLabel;
+
+  @override
+  String get passwordFieldLabel =>
+      context.localizations.authSignInPasswordLabel;
 
   @override
   String get signInButtonLabel => context.localizations.authSignInSubmitLabel;
