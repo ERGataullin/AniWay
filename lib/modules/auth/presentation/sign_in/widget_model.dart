@@ -64,7 +64,13 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
 
   @override
   void onSignInButtonPressed() {
-    unawaited(model.signIn().then((_) => widget.onSignedIn()));
+    unawaited(
+      model
+          .signIn(emailFieldController.text, passwordFieldController.text)
+          .then(
+            (_) => widget.onSignedIn(),
+          ),
+    );
   }
 
   @override
