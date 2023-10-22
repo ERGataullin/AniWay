@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:elementary/elementary.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '/app/domain/services/error_handle/service.dart';
-import '/app/localizations.dart';
 import '/modules/auth/domain/service.dart';
 import '/modules/auth/presentation/sign_in/model.dart';
 import '/modules/auth/presentation/sign_in/widget.dart';
@@ -19,57 +21,24 @@ SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
     );
 
 abstract interface class ISignInWidgetModel implements IWidgetModel {
-  String get title;
-
-  TextEditingController get emailFieldController;
-
-  String get emailFieldLabel;
-
-  TextEditingController get passwordFieldController;
-
-  String get passwordFieldLabel;
-
-  String get signInButtonLabel;
-
-  void onSignInButtonPressed();
+  WebViewController get webViewController;
 }
 
 class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
     implements ISignInWidgetModel {
   SignInWidgetModel(super._model);
 
-  @override
-  final TextEditingController emailFieldController = TextEditingController();
+  final Box<String> sessionBox = Hive.box<String>('session');
 
   @override
-  final TextEditingController passwordFieldController = TextEditingController();
+  late final WebViewController webViewController = WebViewController()
+    ..loadRequest(Uri.parse('https://anime365.ru/'))
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..setNavigationDelegate(
+      NavigationDelegate(
+        onPageFinished: (url) async {
 
-  @override
-  String get title => context.localizations.authSignInTitle;
-
-  @override
-  String get emailFieldLabel => context.localizations.authSignInEmailLabel;
-
-  @override
-  String get passwordFieldLabel =>
-      context.localizations.authSignInPasswordLabel;
-
-  @override
-  String get signInButtonLabel => context.localizations.authSignInSubmitLabel;
-
-  @override
-  void initWidgetModel() {
-    super.initWidgetModel();
-  }
-
-  @override
-  void onSignInButtonPressed() {
-    unawaited(model.signIn().then((_) => widget.onSignedIn()));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    emailFieldController.dispose();
-  }
+        },
+      ),
+    );
 }
