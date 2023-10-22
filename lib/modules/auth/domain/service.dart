@@ -28,15 +28,16 @@ class AuthService {
           NetworkRequestData(
             uri: Uri.parse('/users/login'),
             method: NetworkRequestMethodData.post,
-            body: const {
-              'LoginForm[username]': 'example@example.com',
-              'LoginForm[password]': 'password',
+            headers: {'Content-type': 'html'},
+            body: {
+              'LoginForm[username]': email,
+              'LoginForm[password]': password,
             },
           ),
-        )
-        .then((response) => response.body as String)
-        .then((authToken) => _authTokenInterceptor.authToken = authToken)
-        .then((authToken) => unawaited(_repository.saveAuthToken(authToken)));
+        ).then((response) => print(response.body));
+        // .then((response) => response.body as String);
+        // .then((authToken) => _authTokenInterceptor.authToken = authToken)
+        // .then((authToken) => unawaited(_repository.saveAuthToken(authToken)));
   }
 
   Future<void> signUp() {
