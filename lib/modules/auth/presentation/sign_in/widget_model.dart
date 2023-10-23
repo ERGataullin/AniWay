@@ -1,9 +1,8 @@
-import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:elementary/elementary.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -28,16 +27,25 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
     implements ISignInWidgetModel {
   SignInWidgetModel(super._model);
 
-  final Box<String> sessionBox = Hive.box<String>('session');
-
   @override
   late final WebViewController webViewController = WebViewController()
     ..loadRequest(Uri.parse('https://anime365.ru/'))
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..setNavigationDelegate(
       NavigationDelegate(
-        onPageFinished: (url) async {
+        onNavigationRequest: (url) async {
+          // TODO: do filtering
+          final cookies = await webViewController.runJavaScriptReturningResult(
+            'document.cookie',
+          );
+          final Map<String, String> sessionData = {
+            'cookies': cookies.toString(),
+          };
 
+          await Hive.initFlutter();
+          final box = await Hive.openBox('auth');
+          await box.put('session', json.encode(sessionData));
+          print('кака ${box.get('session')}');
         },
       ),
     );

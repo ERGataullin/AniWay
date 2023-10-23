@@ -18,7 +18,7 @@ class AuthService {
   final NetworkService _networkService;
   final AuthRepository _repository;
   final _AuthTokenInterceptor _authTokenInterceptor;
-
+  //
   Future<void> signIn({
     required String email,
     required String password,
@@ -61,7 +61,7 @@ class _AuthTokenInterceptor extends NetworkRequestInterceptor {
         (authToken) => data.copyWith(
           headers: {
             ...data.headers,
-            'Authorization': 'Bearer $authToken',
+            'Cookie': authToken,
           },
         ),
       );

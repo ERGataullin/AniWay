@@ -68,9 +68,7 @@ class _AuthRoutes {
       [
         GoRoute(
           path: signIn.path,
-          builder: (context, state) => SignInWidget(
-            onSignedIn: () {},
-          ),
+          builder: (context, state) => const SignInWidget(),
         ),
       ];
 }
