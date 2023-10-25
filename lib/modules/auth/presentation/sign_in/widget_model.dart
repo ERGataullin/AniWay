@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '/app/domain/services/error_handle/service.dart';
 import '/app/localizations.dart';
-import '/modules/auth/domain/service.dart';
+import '/modules/auth/domain/service/service.dart';
 import '/modules/auth/presentation/sign_in/model.dart';
 import '/modules/auth/presentation/sign_in/widget.dart';
 

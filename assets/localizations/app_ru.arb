@@ -1,5 +1,14 @@
 {
     "authSignInTitle": "Авторизация",
     "authSignInEmailLabel": "Электронная почта",
-    "authSignInSubmitLabel": "Войти"
+    "authSignInSubmitLabel": "Войти",
+    "moviesWatchNowTitle": "Смотреть",
+    "moviesWatchNowUpNextLabel": "Продолжить",
+    "moviesWatchNowMostPopularLabel": "Самое популярное",
+    "moviesComponentsMoviePreviewTypeTv": "ТВ",
+    "moviesComponentsMoviePreviewTypeMovie": "Фильм",
+    "moviesComponentsMoviePreviewTypeOva": "OVA",
+    "moviesComponentsMoviePreviewTypeOna": "ONA",
+    "moviesComponentsMoviePreviewTypeSpecial": "Special",
+    "moviesComponentsMoviePreviewTypeMusic": "Музыкальное"
 }

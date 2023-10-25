@@ -1,42 +1,58 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '/modules/auth/module.dart';
 import '/modules/auth/presentation/sign_in/widget.dart';
+import '/modules/movies/presentation/watch_now/widget.dart';
 
 extension _RouteLocator on Uri {
   String locate({
     Map<String, dynamic> pathParameters = const {},
   }) {
     return replace(
-      pathSegments: [
-        '',
-        ...pathSegments.map(
-          (pathSegment) => pathSegment.startsWith(':')
-              ? pathParameters[pathSegment.substring(1)]!.toString()
-              : pathSegment,
-        ),
-      ],
+      path: pathSegments.isEmpty ? '/' : null,
+      pathSegments: pathSegments.isEmpty
+          ? null
+          : [
+              '',
+              ...pathSegments.map(
+                (pathSegment) => pathSegment.startsWith(':')
+                    ? pathParameters[pathSegment.substring(1)]!.toString()
+                    : pathSegment,
+              ),
+            ],
     ).toString();
   }
 }
 
 class AppRouter implements RouterConfig<RouteMatchList> {
-  final _AuthRoutes _authRoutes = _AuthRoutes(
-    signIn: '/sign-in',
-  );
+  final Uri _signInUri = Uri.parse('/sign-in');
+  final Uri _watchNowUri = Uri.parse('/');
 
   late final GoRouter _goRouter = GoRouter(
-    initialLocation: _authRoutes.signIn.locate(),
+    initialLocation: _watchNowUri.locate(),
     routes: [
-      ShellRoute(
-        routes: _authRoutes(
-          onSignedIn: () {},
-        ),
-        builder: (context, state, child) => AuthModule(child: child),
-      ),
+      ..._authRoutes,
+      ..._moviesRoutes,
     ],
   );
+
+  late final List<RouteBase> _authRoutes = [
+    GoRoute(
+      path: _signInUri.path,
+      builder: (context, state) => SignInWidget(
+        onSignedIn: () => context.pushReplacement(_watchNowUri.locate()),
+      ),
+    ),
+  ];
+
+  late final List<RouteBase> _moviesRoutes = [
+    GoRoute(
+      path: _watchNowUri.path,
+      builder: (context, state) => WatchNowWidget(
+        onMoviePressed: (id) {},
+      ),
+    ),
+  ];
 
   @override
   BackButtonDispatcher? get backButtonDispatcher =>
@@ -52,24 +68,4 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   @override
   RouterDelegate<RouteMatchList> get routerDelegate => _goRouter.routerDelegate;
-}
-
-class _AuthRoutes {
-  _AuthRoutes({
-    required String signIn,
-  }) : signIn = Uri.parse(signIn);
-
-  final Uri signIn;
-
-  List<RouteBase> call({
-    required VoidCallback onSignedIn,
-  }) =>
-      [
-        GoRoute(
-          path: signIn.path,
-          builder: (context, state) => SignInWidget(
-            onSignedIn: () {},
-          ),
-        ),
-      ];
 }
