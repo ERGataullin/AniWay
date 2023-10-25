@@ -4,6 +4,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import '/app/dependencies_provider.dart';
 import '/app/localizations.dart';
 import '/app/router.dart';
+import '/app/theme.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -21,6 +22,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final AppTheme _theme = AppTheme();
+
   @override
   void initState() {
     super.initState();
@@ -33,8 +36,8 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      theme: ThemeData.light(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      theme: _theme.light,
+      darkTheme: _theme.dark,
       routerConfig: AppRouter(),
     );
   }
