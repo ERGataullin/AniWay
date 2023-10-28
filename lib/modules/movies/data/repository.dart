@@ -7,7 +7,20 @@ class MoviesRepository {
 
   final MoviesDataSource _remote;
 
-  Future<List<Map<String, dynamic>>> getMovies() {
-    return _remote.getMovies();
+  Future<List<Map<String, dynamic>>> getMovies({
+    String? order,
+    List<String?> watchStatus = const [],
+  }) {
+    return _remote.getMovies(
+      order: order,
+      watchStatus: watchStatus,
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getUpNext({
+    String? order,
+    List<String?> watchStatus = const [],
+  }) {
+    return _remote.getUpNext();
   }
 }

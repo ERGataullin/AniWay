@@ -42,10 +42,14 @@ class AppDependenciesProvider extends StatelessWidget {
           create: (context) =>
               networkService ??
               HttpNetworkService(
-                baseUrl: 'https://shikimori.one',
+                baseUri: Uri(
+                  scheme: 'https',
+                  host: 'anime365.ru',
+                ),
               ),
         ),
         Provider<AuthService>(
+          lazy: false,
           create: (context) =>
               authService ??
               Anime365AuthService(
@@ -59,8 +63,10 @@ class AppDependenciesProvider extends StatelessWidget {
           create: (context) =>
               moviesService ??
               Anime365MoviesService(
-                repository: const MoviesRepository(
-                  remote: RemoteMoviesDataSource(),
+                repository: MoviesRepository(
+                  remote: RemoteMoviesDataSource(
+                    networkService: context.read<NetworkService>(),
+                  ),
                 ),
               ),
         ),

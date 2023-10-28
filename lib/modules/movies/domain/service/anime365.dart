@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import '/modules/movies/data/repository.dart';
-import '/modules/movies/domain/models/movie_preview.dart';
-import '/modules/movies/domain/models/movie_type.dart';
 import '/modules/movies/domain/service/service.dart';
 
 class Anime365MoviesService implements MoviesService {
@@ -13,8 +11,35 @@ class Anime365MoviesService implements MoviesService {
   final MoviesRepository _repository;
 
   @override
-  Future<List<MoviePreviewData>> getMovies() {
-    return _repository.getMovies().then(
+  Future<List<MoviePreviewData>> getMovies({
+    MovieOrderData? order,
+    List<MovieWatchStatusData> watchStatus = const [],
+  }) {
+    return _repository
+        .getMovies(
+          order: switch (order) {
+            MovieOrderData.byScore => 'ranked',
+            MovieOrderData.byPopularity => 'popularity',
+            MovieOrderData.byName => 'name',
+            MovieOrderData.byReleaseDate => 'aired_on',
+            MovieOrderData.random => 'random',
+            null => null,
+          },
+          watchStatus: watchStatus
+              .map(
+                (watchStatus) => switch (watchStatus) {
+                  MovieWatchStatusData.none => null,
+                  MovieWatchStatusData.planned => 'planned',
+                  MovieWatchStatusData.watching => 'watching',
+                  MovieWatchStatusData.rewatching => 'rewatching',
+                  MovieWatchStatusData.completed => 'completed',
+                  MovieWatchStatusData.onHold => 'on_hold',
+                  MovieWatchStatusData.dropped => 'dropped',
+                },
+              )
+              .toList(growable: false),
+        )
+        .then(
           (moviesJson) => moviesJson
               .map(
                 (movieJson) => MoviePreviewData(
@@ -32,7 +57,41 @@ class Anime365MoviesService implements MoviesService {
                         'Unsupported movie type: ${movieJson['type']}',
                       ),
                   },
-                  score: movieJson['myAnimeListScore'] as double,
+                  score: double.parse(movieJson['myAnimeListScore'] as String),
+                ),
+              )
+              .toList(growable: false),
+        );
+  }
+
+  @override
+  Future<List<UpNextData>> getUpNext() {
+    return _repository.getUpNext().then(
+          (upNextJson) => upNextJson
+              .map(
+                (itemJson) => UpNextData(
+                  movie: UpNextMovieData(
+                    id: itemJson['movie']['id'] as int,
+                    title: itemJson['movie']['titles']['ru'] as String,
+                    posterUri: Uri.parse(
+                      itemJson['movie']['posterUrl'] as String,
+                    ),
+                  ),
+                  episode: MovieEpisodeData(
+                    id: itemJson['episode']['id'] as int,
+                    type: switch (itemJson['episode']['type']) {
+                      'tv' => MovieEpisodeTypeData.tv,
+                      'movie' => MovieEpisodeTypeData.movie,
+                      'ova' => MovieEpisodeTypeData.ova,
+                      'ona' => MovieEpisodeTypeData.ona,
+                      'special' => MovieEpisodeTypeData.special,
+                      _ => throw UnsupportedError(
+                          'Unsupported episode type: '
+                          '${itemJson['episode']['type']}',
+                        )
+                    },
+                    number: 1,
+                  ),
                 ),
               )
               .toList(growable: false),

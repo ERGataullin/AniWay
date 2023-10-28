@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '/app/domain/services/error_handle/service.dart';
 import '/app/localizations.dart';
-import '/modules/movies/domain/models/movie_preview.dart';
 import '/modules/movies/domain/service/service.dart';
 import '/modules/movies/presentation/watch_now/model.dart';
 import '/modules/movies/presentation/watch_now/widget.dart';
@@ -27,11 +26,11 @@ abstract interface class IWatchNowWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get upNextLabel;
 
-  ValueListenable<List<MoviePreviewData>> get upNextMovies;
+  ValueListenable<List<UpNextData>> get upNextItems;
 
   ValueListenable<String> get mostPopularLabel;
 
-  ValueListenable<List<MoviePreviewData>> get mostPopularMovies;
+  ValueListenable<List<MoviePreviewData>> get mostPopularItems;
 
   void onMoviePressed(int id);
 }
@@ -50,14 +49,13 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
   final ValueNotifier<String> upNextLabel = ValueNotifier('');
 
   @override
-  final ValueNotifier<List<MoviePreviewData>> upNextMovies =
-      ValueNotifier(const []);
+  final ValueNotifier<List<UpNextData>> upNextItems = ValueNotifier(const []);
 
   @override
   final ValueNotifier<String> mostPopularLabel = ValueNotifier('');
 
   @override
-  final ValueNotifier<List<MoviePreviewData>> mostPopularMovies =
+  final ValueNotifier<List<MoviePreviewData>> mostPopularItems =
       ValueNotifier(const []);
 
   @override
@@ -84,16 +82,21 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
     super.dispose();
     title.dispose();
     showLoader.dispose();
-    upNextMovies.dispose();
+    upNextLabel.dispose();
+    upNextItems.dispose();
+    mostPopularLabel.dispose();
+    mostPopularItems.dispose();
   }
 
   Future<void> _loadMovies() async {
     showLoader.value = true;
     await Future.wait([
-      model.getUpNextMovies().then((movies) => upNextMovies.value = movies),
       model
-          .getMostPopularMovies()
-          .then((movies) => mostPopularMovies.value = movies),
+          .getUpNextItems()
+          .then((items) => upNextItems.value = List.unmodifiable(items)),
+      model
+          .getMostPopularItems()
+          .then((items) => mostPopularItems.value = List.unmodifiable(items)),
     ]);
     showLoader.value = false;
   }

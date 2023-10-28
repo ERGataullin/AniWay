@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/modules/movies/domain/models/movie_preview.dart';
+import '/modules/movies/domain/models/up_next.dart';
 import '/modules/movies/presentation/components/movie_preview/widget.dart';
 import '/modules/movies/presentation/watch_now/widget_model.dart';
 
@@ -34,12 +35,12 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
         ),
         body: const Column(
           children: [
-            _UpNext(margin: categoriesMargin),
+            _UpNextCategory(margin: categoriesMargin),
             Divider(
               indent: 16,
               endIndent: 16,
             ),
-            _MostPopular(margin: categoriesMargin),
+            _MostPopularCategory(margin: categoriesMargin),
           ],
         ),
       ),
@@ -47,8 +48,8 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
   }
 }
 
-class _UpNext extends StatelessWidget {
-  const _UpNext({
+class _UpNextCategory extends StatelessWidget {
+  const _UpNextCategory({
     super.key,
     this.margin = EdgeInsets.zero,
   });
@@ -57,16 +58,32 @@ class _UpNext extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double itemWidth = 192;
     return _Category(
       margin: margin,
       label: context.wm.upNextLabel,
-      movies: context.wm.upNextMovies,
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.upNextItems,
+        builder: (context, items, ___) => SizedBox(
+          width: itemWidth,
+          height: 192,
+          child: ListView.separated(
+            itemCount: items.length,
+            padding: margin,
+            scrollDirection: Axis.horizontal,
+            separatorBuilder: (context, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) => Text(
+              items[index].movie.title,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
-class _MostPopular extends StatelessWidget {
-  const _MostPopular({
+class _MostPopularCategory extends StatelessWidget {
+  const _MostPopularCategory({
     super.key,
     this.margin = EdgeInsets.zero,
   });
@@ -78,7 +95,13 @@ class _MostPopular extends StatelessWidget {
     return _Category(
       margin: margin,
       label: context.wm.mostPopularLabel,
-      movies: context.wm.mostPopularMovies,
+      child: _Movies(
+        margin: EdgeInsets.only(
+          left: margin.left,
+          right: margin.right,
+        ),
+        movies: context.wm.mostPopularItems,
+      ),
     );
   }
 }
@@ -88,18 +111,17 @@ class _Category extends StatelessWidget {
     super.key,
     this.margin = EdgeInsets.zero,
     required this.label,
-    required this.movies,
+    required this.child,
   });
 
   final EdgeInsets margin;
 
   final ValueListenable<String> label;
 
-  final ValueListenable<List<MoviePreviewData>> movies;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    const double itemWidth = 192;
     final EdgeInsets horizontalMargin = EdgeInsets.only(
       left: margin.left,
       right: margin.right,
@@ -125,23 +147,42 @@ class _Category extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ValueListenableBuilder(
-            valueListenable: movies,
-            builder: (context, movies, ___) => SizedBox(
-              height: itemWidth / MoviePreviewWidget.aspectRatio,
-              child: ListView.separated(
-                itemCount: movies.length,
-                padding: horizontalMargin,
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (context, __) => const SizedBox(width: 8),
-                itemBuilder: (context, index) => MoviePreviewWidget(
-                  movie: movies[index],
-                  onPressed: () => context.wm.onMoviePressed(movies[index].id),
-                ),
-              ),
-            ),
-          ),
+          child,
         ],
+      ),
+    );
+  }
+}
+
+class _Movies extends StatelessWidget {
+  const _Movies({
+    super.key,
+    this.margin = EdgeInsets.zero,
+    required this.movies,
+  });
+
+  final EdgeInsets margin;
+
+  final ValueListenable<List<MoviePreviewData>> movies;
+
+  @override
+  Widget build(BuildContext context) {
+    const double itemWidth = 192;
+
+    return ValueListenableBuilder(
+      valueListenable: movies,
+      builder: (context, movies, ___) => SizedBox(
+        height: itemWidth / MoviePreviewWidget.aspectRatio,
+        child: ListView.separated(
+          itemCount: movies.length,
+          padding: margin,
+          scrollDirection: Axis.horizontal,
+          separatorBuilder: (context, __) => const SizedBox(width: 8),
+          itemBuilder: (context, index) => MoviePreviewWidget(
+            movie: movies[index],
+            onPressed: () => context.wm.onMoviePressed(movies[index].id),
+          ),
+        ),
       ),
     );
   }

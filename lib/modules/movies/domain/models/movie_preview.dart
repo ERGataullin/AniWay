@@ -1,5 +1,7 @@
 import '/modules/movies/domain/models/movie_type.dart';
 
+export '/modules/movies/domain/models/movie_type.dart';
+
 class MoviePreviewData {
   const MoviePreviewData({
     required this.id,
