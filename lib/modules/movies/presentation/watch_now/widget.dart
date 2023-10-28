@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/modules/movies/domain/models/movie_preview.dart';
-import '/modules/movies/domain/models/up_next.dart';
 import '/modules/movies/presentation/components/movie_preview/widget.dart';
+import '/modules/movies/presentation/components/up_next/widget.dart';
 import '/modules/movies/presentation/watch_now/widget_model.dart';
 
 extension _WatchNowContext on BuildContext {
@@ -15,9 +15,12 @@ extension _WatchNowContext on BuildContext {
 class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
   const WatchNowWidget({
     super.key,
+    required this.onUpNextPressed,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = watchNowWidgetModelFactory,
   }) : super(wmFactory);
+
+  final void Function(int episodeId, int movieId) onUpNextPressed;
 
   final void Function(int id) onMoviePressed;
 
@@ -58,22 +61,24 @@ class _UpNextCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double itemWidth = 192;
     return _Category(
       margin: margin,
       label: context.wm.upNextLabel,
       child: ValueListenableBuilder(
         valueListenable: context.wm.upNextItems,
         builder: (context, items, ___) => SizedBox(
-          width: itemWidth,
-          height: 192,
+          height: 256,
           child: ListView.separated(
             itemCount: items.length,
             padding: margin,
             scrollDirection: Axis.horizontal,
             separatorBuilder: (context, __) => const SizedBox(width: 8),
-            itemBuilder: (context, index) => Text(
-              items[index].movie.title,
+            itemBuilder: (context, index) => UpNextWidget(
+              upNext: items[index],
+              onPressed: () => context.wm.onUpNextPressed(
+                movieId: items[index].movie.id,
+                episodeId: items[index].episode.id,
+              ),
             ),
           ),
         ),
@@ -167,12 +172,10 @@ class _Movies extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double itemWidth = 192;
-
     return ValueListenableBuilder(
       valueListenable: movies,
       builder: (context, movies, ___) => SizedBox(
-        height: itemWidth / MoviePreviewWidget.aspectRatio,
+        height: 256,
         child: ListView.separated(
           itemCount: movies.length,
           padding: margin,

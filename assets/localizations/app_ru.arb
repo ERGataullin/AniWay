@@ -1,4 +1,5 @@
 {
+    "@@locale": "ru",
     "authSignInTitle": "Авторизация",
     "authSignInEmailLabel": "Электронная почта",
     "authSignInSubmitLabel": "Войти",
@@ -10,5 +11,19 @@
     "moviesComponentsMoviePreviewTypeOva": "OVA",
     "moviesComponentsMoviePreviewTypeOna": "ONA",
     "moviesComponentsMoviePreviewTypeSpecial": "Special",
-    "moviesComponentsMoviePreviewTypeMusic": "Музыкальное"
+    "moviesComponentsMoviePreviewTypeMusic": "Музыкальное",
+    "moviesComponentsUpNextStatus": "{watchStatus, select, watching{{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode} серия} ona{ONA {episode} серия} special{Спешл {episode} серия} other{{episode} серия}}} rewatching{{type, select, tv{{episode} серия} ova{OVA {episode} серия} ona{ONA {episode} серия} special{Спешл {episode} серия} other{{episode} серия}}} planned{Запланировано} onHold{Отложено на {episode} серии} other{{episode} серия}}",
+    "@moviesComponentsUpNextStatus": {
+        "placeholders": {
+            "watchStatus": {
+                "type": "String"
+            },
+            "type": {
+                "type": "String"
+            },
+            "episode": {
+                "type": "num"
+            }
+        }
+    }
 }

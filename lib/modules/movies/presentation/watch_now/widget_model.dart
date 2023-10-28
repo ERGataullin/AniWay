@@ -32,6 +32,11 @@ abstract interface class IWatchNowWidgetModel implements IWidgetModel {
 
   ValueListenable<List<MoviePreviewData>> get mostPopularItems;
 
+  void onUpNextPressed({
+    required int movieId,
+    required int episodeId,
+  });
+
   void onMoviePressed(int id);
 }
 
@@ -70,6 +75,14 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
     upNextLabel.value = context.localizations.moviesWatchNowUpNextLabel;
     mostPopularLabel.value =
         context.localizations.moviesWatchNowMostPopularLabel;
+  }
+
+  @override
+  void onUpNextPressed({
+    required int movieId,
+    required int episodeId,
+  }) {
+    widget.onUpNextPressed(movieId, episodeId);
   }
 
   @override

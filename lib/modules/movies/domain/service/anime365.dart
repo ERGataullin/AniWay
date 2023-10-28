@@ -90,7 +90,7 @@ class Anime365MoviesService implements MoviesService {
                           '${itemJson['episode']['type']}',
                         )
                     },
-                    number: 1,
+                    number: itemJson['episode']['number'] as num?,
                   ),
                 ),
               )

@@ -49,6 +49,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     GoRoute(
       path: _watchNowUri.path,
       builder: (context, state) => WatchNowWidget(
+        onUpNextPressed: (movieId, episodeId) {},
         onMoviePressed: (id) {},
       ),
     ),
