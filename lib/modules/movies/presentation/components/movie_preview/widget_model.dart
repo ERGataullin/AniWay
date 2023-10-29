@@ -66,20 +66,9 @@ class MoviePreviewWidgetModel
 
   @override
   void didChangeDependencies() {
-    type.value = switch (_movie.type) {
-      MovieTypeData.tv =>
-        context.localizations.moviesComponentsMoviePreviewTypeTv,
-      MovieTypeData.movie =>
-        context.localizations.moviesComponentsMoviePreviewTypeMovie,
-      MovieTypeData.ova =>
-        context.localizations.moviesComponentsMoviePreviewTypeOva,
-      MovieTypeData.ona =>
-        context.localizations.moviesComponentsMoviePreviewTypeOna,
-      MovieTypeData.special =>
-        context.localizations.moviesComponentsMoviePreviewTypeSpecial,
-      MovieTypeData.music =>
-        context.localizations.moviesComponentsMoviePreviewTypeMusic,
-    };
+    type.value = context.localizations.moviesComponentsMoviePreviewType(
+      _movie.type.name,
+    );
   }
 
   @override
