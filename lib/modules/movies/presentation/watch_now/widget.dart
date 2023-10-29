@@ -53,7 +53,6 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
 
 class _UpNextCategory extends StatelessWidget {
   const _UpNextCategory({
-    super.key,
     this.margin = EdgeInsets.zero,
   });
 
@@ -89,7 +88,6 @@ class _UpNextCategory extends StatelessWidget {
 
 class _MostPopularCategory extends StatelessWidget {
   const _MostPopularCategory({
-    super.key,
     this.margin = EdgeInsets.zero,
   });
 
@@ -113,7 +111,6 @@ class _MostPopularCategory extends StatelessWidget {
 
 class _Category extends StatelessWidget {
   const _Category({
-    super.key,
     this.margin = EdgeInsets.zero,
     required this.label,
     required this.child,
@@ -161,7 +158,6 @@ class _Category extends StatelessWidget {
 
 class _Movies extends StatelessWidget {
   const _Movies({
-    super.key,
     this.margin = EdgeInsets.zero,
     required this.movies,
   });

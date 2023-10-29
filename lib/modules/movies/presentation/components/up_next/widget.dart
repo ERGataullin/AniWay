@@ -50,7 +50,7 @@ class UpNextWidget extends ElementaryWidget<IUpNextWidgetModel> {
 }
 
 class _Poster extends StatelessWidget {
-  const _Poster({super.key});
+  const _Poster();
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,6 @@ class _Poster extends StatelessWidget {
 
 class _Footer extends StatelessWidget {
   const _Footer({
-    super.key,
     this.margin = EdgeInsets.zero,
   });
 
@@ -91,7 +90,7 @@ class _Footer extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  const _Title({super.key});
+  const _Title();
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +109,7 @@ class _Title extends StatelessWidget {
 }
 
 class _Status extends StatelessWidget {
-  const _Status({super.key});
+  const _Status();
 
   @override
   Widget build(BuildContext context) {
