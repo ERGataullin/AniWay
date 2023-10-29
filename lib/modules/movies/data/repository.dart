@@ -17,10 +17,7 @@ class MoviesRepository {
     );
   }
 
-  Future<List<Map<String, dynamic>>> getUpNext({
-    String? order,
-    List<String?> watchStatus = const [],
-  }) {
+  Future<List<Map<String, dynamic>>> getUpNext() {
     return _remote.getUpNext();
   }
 }
