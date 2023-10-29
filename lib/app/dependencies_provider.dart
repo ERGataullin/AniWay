@@ -10,9 +10,9 @@ import '/modules/auth/data/sources/local.dart';
 import '/modules/auth/domain/service/anime365.dart';
 import '/modules/auth/domain/service/service.dart';
 import '/modules/movies/data/repository.dart';
+import '/modules/movies/data/sources/remote.dart';
 import '/modules/movies/domain/service/anime365.dart';
 import '/modules/movies/domain/service/service.dart';
-import '../modules/movies/data/sources/remote.dart';
 
 class AppDependenciesProvider extends StatelessWidget {
   const AppDependenciesProvider({
