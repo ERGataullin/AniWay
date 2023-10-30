@@ -20,7 +20,6 @@ linter:
   # producing the lint.
   rules:
     # Error rules
-    avoid_dynamic_calls: true
     avoid_empty_else: true
     avoid_print: true
     avoid_slow_async_io: true

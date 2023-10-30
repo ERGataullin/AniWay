@@ -7,6 +7,8 @@ export '/app/domain/models/network_request.dart';
 export '/app/domain/models/network_response.dart';
 
 abstract interface class NetworkService {
+  Uri get baseUri;
+  
   void addInterceptor(NetworkRequestInterceptor interceptor);
 
   void removeInterceptor(NetworkRequestInterceptor interceptor);

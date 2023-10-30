@@ -7,12 +7,13 @@ import '/app/domain/services/network/service.dart';
 
 class HttpNetworkService implements NetworkService {
   HttpNetworkService({
-    required String baseUrl,
-  })  : _client = Client(),
-        _baseUrl = baseUrl;
+    required this.baseUri,
+  }) : _client = Client();
+
+  @override
+  final Uri baseUri;
 
   final Client _client;
-  final String _baseUrl;
   final List<NetworkRequestInterceptor> _interceptors = [];
 
   @override
@@ -27,23 +28,39 @@ class HttpNetworkService implements NetworkService {
   Future<NetworkResponseData> request(NetworkRequestData data) {
     final Future<NetworkRequestData> finalData = _interceptRequest(data);
 
-    final Uri uri = Uri.parse('$_baseUrl${data.uri}');
-
     final Future<Response> response = finalData.then(
-      (data) => switch (data.method) {
-        NetworkRequestMethodData.get => _client.get(uri),
-        NetworkRequestMethodData.post => _client.post(uri),
-        _ => throw UnimplementedError(),
+      (data) {
+        final Uri uri = baseUri.resolveUri(data.uri);
+        return switch (data.method) {
+          NetworkRequestMethodData.get => _client.get(
+              uri,
+              headers: data.headers.map(
+                (key, value) => MapEntry(
+                  key,
+                  value.toString(),
+                ),
+              ),
+            ),
+          NetworkRequestMethodData.post => _client.post(uri),
+          _ => throw UnimplementedError(),
+        };
       },
     );
 
-    return response
-        .then(
-          (response) => NetworkResponseData(
-            body: json.decode(response.body),
-          ),
-        )
-        .then(_interceptResponse);
+    return response.then(
+      (response) {
+        late final dynamic body;
+        try {
+          body = json.decode(response.body);
+        } catch (error) {
+          body = response.body;
+        }
+
+        return NetworkResponseData(
+          body: body,
+        );
+      },
+    ).then(_interceptResponse);
   }
 
   Future<NetworkRequestData> _interceptRequest(NetworkRequestData data) {
