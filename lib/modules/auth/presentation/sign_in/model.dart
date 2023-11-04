@@ -2,7 +2,7 @@ import 'dart:core';
 
 import 'package:elementary/elementary.dart';
 
-import '/modules/auth/domain/service.dart';
+import '/modules/auth/domain/service/service.dart';
 
 abstract interface class ISignInModel implements ElementaryModel {
   Future<void> signIn(String email, String password);

@@ -2,9 +2,10 @@ import 'dart:async';
 
 import '/app/domain/services/network/service.dart';
 import '/modules/auth/data/repository.dart';
+import '/modules/auth/domain/service/service.dart';
 
-class AuthService {
-  AuthService({
+class Anime365AuthService implements AuthService {
+  Anime365AuthService({
     required NetworkService networkService,
     required AuthRepository repository,
   })  : _networkService = networkService,
@@ -18,7 +19,8 @@ class AuthService {
   final NetworkService _networkService;
   final AuthRepository _repository;
   final _AuthTokenInterceptor _authTokenInterceptor;
-  //
+
+  @override
   Future<void> signIn({
     required String email,
     required String password,
@@ -28,18 +30,19 @@ class AuthService {
           NetworkRequestData(
             uri: Uri.parse('/users/login'),
             method: NetworkRequestMethodData.post,
-            headers: {'Content-type': 'html'},
             body: {
               'LoginForm[username]': email,
               'LoginForm[password]': password,
             },
           ),
-        ).then((response) => print(response.body));
-        // .then((response) => response.body as String);
-        // .then((authToken) => _authTokenInterceptor.authToken = authToken)
-        // .then((authToken) => unawaited(_repository.saveAuthToken(authToken)));
+        )
+        .then((response) => print(response.body));
+    // .then((response) => response.body as String);
+    // .then((authToken) => _authTokenInterceptor.authToken = authToken)
+    // .then((authToken) => unawaited(_repository.saveAuthToken(authToken)));
   }
 
+  @override
   Future<void> signUp() {
     throw UnimplementedError();
   }
@@ -61,7 +64,7 @@ class _AuthTokenInterceptor extends NetworkRequestInterceptor {
         (authToken) => data.copyWith(
           headers: {
             ...data.headers,
-            'Cookie': authToken,
+            'Cookie': 'PHPSESSID=d04e881hiqiua73unv6ptvleg1',
           },
         ),
       );

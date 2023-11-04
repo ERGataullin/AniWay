@@ -7,8 +7,11 @@ import '/modules/auth/presentation/sign_in/widget_model.dart';
 class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
   const SignInWidget({
     super.key,
+    required this.onSignedIn,
     WidgetModelFactory wmFactory = signInWidgetModelFactory,
   }) : super(wmFactory);
+
+  final VoidCallback onSignedIn;
 
   @override
   Widget build(ISignInWidgetModel wm) {
