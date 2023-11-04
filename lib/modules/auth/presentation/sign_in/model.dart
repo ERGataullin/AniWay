@@ -5,7 +5,7 @@ import 'package:elementary/elementary.dart';
 import '/modules/auth/domain/service/service.dart';
 
 abstract interface class ISignInModel implements ElementaryModel {
-  Future<void> signIn(String email, String password);
+  Future<void> signIn(String cookie);
 }
 
 class SignInModel extends ElementaryModel implements ISignInModel {
@@ -18,10 +18,7 @@ class SignInModel extends ElementaryModel implements ISignInModel {
   final AuthService _service;
 
   @override
-  Future<void> signIn(String email, String password) {
-    return _service.signIn(
-      email: email,
-      password: password,
-    );
+  Future<void> signIn(String cookie) {
+    return _service.signIn(cookie);
   }
 }

@@ -5,6 +5,8 @@ import 'package:http/http.dart';
 
 import '/app/domain/services/network/service.dart';
 
+export '/app/domain/services/network/service.dart';
+
 class HttpNetworkService implements NetworkService {
   HttpNetworkService({
     required this.baseUri,
@@ -57,6 +59,7 @@ class HttpNetworkService implements NetworkService {
         }
 
         return NetworkResponseData(
+          headers: response.headers,
           body: body,
         );
       },
