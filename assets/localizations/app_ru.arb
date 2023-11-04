@@ -3,6 +3,14 @@
     "authSignInEmailLabel": "Электронная почта",
     "authSignInSubmitLabel": "Войти",
     "authSignInTitle": "Авторизация",
+    "menuDestinationLabel": "{destination, select, watchNow{Смотреть сейчас} store{Маркет} library{Библиотека} search{Поиск} other{}}",
+    "@menuDestinationLabel": {
+        "placeholders": {
+            "destination": {
+                "type": "String"
+            }
+        }
+    },
     "moviesComponentsMoviePreviewType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} music{Музыкальное} other{}}",
     "moviesComponentsUpNextStatus": "{watchStatus, select, watching{{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode} серия} ona{ONA {episode} серия} special{Спешл {episode} серия} other{{episode} серия}}} rewatching{{type, select, tv{{episode} серия} ova{OVA {episode} серия} ona{ONA {episode} серия} special{Спешл {episode} серия} other{{episode} серия}}} planned{Запланировано} onHold{Отложено на {episode} серии} other{{episode} серия}}",
     "@moviesComponentsUpNextStatus": {
