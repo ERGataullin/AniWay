@@ -24,6 +24,8 @@ dependencies:
   html: ^0.15.4
   http: ^1.1.0
   intl: ^0.18.1
+  menu:
+    path: ../modules/menu
   path_provider: ^2.1.1
   provider: ^6.0.5
   webview_cookie_manager: ^2.0.6

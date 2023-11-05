@@ -1,5 +1,8 @@
+import 'package:auth/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:menu/menu.dart';
 
 import '/app/dependencies_provider.dart';
 import '/app/localizations.dart';
@@ -35,7 +38,13 @@ class _AppState extends State<App> {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        GlobalCupertinoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        AppLocalizations.delegate,
+        AuthLocalizations.delegate,
+        MenuLocalizations.delegate,
+      ],
       theme: _theme.light,
       darkTheme: _theme.dark,
       routerConfig: AppRouter(),

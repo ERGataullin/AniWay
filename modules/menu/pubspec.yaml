@@ -1,5 +1,5 @@
-name: auth
-description: An auth module library of AniWay.
+name: menu
+description: A menu module library of AniWay.
 publish_to: none
 
 environment:
@@ -16,14 +16,12 @@ dependencies:
     sdk: flutter
   intl: ^0.18.1
   provider: ^6.0.5
-  webview_cookie_manager: ^2.0.6
-  webview_flutter: ^4.4.2
 
 dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
-  
+
 flutter:
   generate: true
   uses-material-design: true
