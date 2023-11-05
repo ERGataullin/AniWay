@@ -1,7 +1,6 @@
 {
     "@@locale": "ru",
     "authSignInEmailLabel": "Электронная почта",
-    "authSignInSubmitLabel": "Войти",
     "authSignInTitle": "Авторизация",
     "menuDestinationLabel": "{destination, select, watchNow{Смотреть сейчас} store{Маркет} library{Библиотека} search{Поиск} other{}}",
     "@menuDestinationLabel": {
