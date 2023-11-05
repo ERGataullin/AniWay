@@ -1,7 +1,7 @@
 import 'dart:async';
 
-abstract interface class StorageService {
-  const StorageService();
+abstract interface class Storage {
+  const Storage();
 
   Future<void> initialize();
 

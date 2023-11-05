@@ -1,11 +1,10 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
+import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '/app/domain/services/error_handle/service.dart';
-import '/app/domain/services/network/service.dart';
 import '/modules/auth/domain/service/service.dart';
 import '/modules/auth/presentation/sign_in/model.dart';
 import '/modules/auth/presentation/sign_in/widget.dart';
@@ -13,10 +12,10 @@ import '/modules/auth/presentation/sign_in/widget.dart';
 SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
     SignInWidgetModel(
       SignInModel(
-        context.read<ErrorHandleService>(),
+        context.read<ErrorHandler>(),
         service: context.read<AuthService>(),
       ),
-      webResourcesBaseUri: context.read<NetworkService>().baseUri,
+      webResourcesBaseUri: context.read<Network>().baseUri,
     );
 
 abstract interface class ISignInWidgetModel implements IWidgetModel {

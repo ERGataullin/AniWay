@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -77,7 +78,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   final Uri _watchNowUri = Uri(path: '/');
 
   late final GoRouter _goRouter = GoRouter(
-    initialLocation: _signInUri.locate(),
+    initialLocation: kIsWeb ? _watchNowUri.locate() : _signInUri.locate(),
     routes: [
       _buildSignInRoute(),
       _buildMenuRoute(),

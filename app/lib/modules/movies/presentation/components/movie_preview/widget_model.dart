@@ -1,11 +1,10 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
+import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '/app/domain/services/error_handle/service.dart';
-import '/app/domain/services/network/service.dart';
 import '/app/localizations.dart';
 import '/modules/movies/domain/models/movie_preview.dart';
 import '/modules/movies/presentation/components/movie_preview/model.dart';
@@ -14,9 +13,9 @@ import '/modules/movies/presentation/components/movie_preview/widget.dart';
 MoviePreviewWidgetModel moviePreviewWidgetModelFactory(BuildContext context) =>
     MoviePreviewWidgetModel(
       MoviePreviewModel(
-        context.read<ErrorHandleService>(),
+        context.read<ErrorHandler>(),
       ),
-      webResourcesBaseUri: context.read<NetworkService>().baseUri,
+      webResourcesBaseUri: context.read<Network>().baseUri,
     );
 
 abstract interface class IMoviePreviewWidgetModel implements IWidgetModel {

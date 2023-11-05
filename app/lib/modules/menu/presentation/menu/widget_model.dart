@@ -1,16 +1,16 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
+import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/app/domain/services/error_handle/service.dart';
 import '/app/localizations.dart';
 import '/modules/menu/presentation/menu/model.dart';
 import '/modules/menu/presentation/menu/widget.dart';
 
 MenuWidgetModel menuWidgetModelFactory(BuildContext context) => MenuWidgetModel(
       MenuModel(
-        context.read<ErrorHandleService>(),
+        context.read<ErrorHandler>(),
       ),
     );
 

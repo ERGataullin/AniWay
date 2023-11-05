@@ -1,8 +1,9 @@
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 
-import '/app/domain/services/error_handle/service.dart';
+class DebugPrintErrorHandler implements ErrorHandler {
+  const DebugPrintErrorHandler();
 
-class DebugPrintErrorHandleService implements ErrorHandleService {
   @override
   void handleError(Object error, {StackTrace? stackTrace}) {
     debugPrintStack(

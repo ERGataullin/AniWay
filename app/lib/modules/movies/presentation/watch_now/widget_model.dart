@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
+import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '/app/domain/services/error_handle/service.dart';
 import '/app/localizations.dart';
 import '/modules/movies/domain/service/service.dart';
 import '/modules/movies/presentation/watch_now/model.dart';
@@ -14,7 +14,7 @@ import '/modules/movies/presentation/watch_now/widget.dart';
 WatchNowWidgetModel watchNowWidgetModelFactory(BuildContext context) =>
     WatchNowWidgetModel(
       WatchNowModel(
-        context.read<ErrorHandleService>(),
+        context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
       ),
     );

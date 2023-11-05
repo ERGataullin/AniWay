@@ -1,10 +1,9 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
+import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '/app/domain/services/error_handle/service.dart';
-import '/app/domain/services/network/service.dart';
 import '/app/localizations.dart';
 import '/modules/movies/domain/models/movie_watch_status.dart';
 import '/modules/movies/domain/models/up_next.dart';
@@ -14,9 +13,9 @@ import '/modules/movies/presentation/components/up_next/widget.dart';
 UpNextWidgetModel upNextWidgetModelFactory(BuildContext context) =>
     UpNextWidgetModel(
       UpNextModel(
-        context.read<ErrorHandleService>(),
+        context.read<ErrorHandler>(),
       ),
-      webResourcesBaseUri: context.read<NetworkService>().baseUri,
+      webResourcesBaseUri: context.read<Network>().baseUri,
     );
 
 abstract interface class IUpNextWidgetModel implements IWidgetModel {

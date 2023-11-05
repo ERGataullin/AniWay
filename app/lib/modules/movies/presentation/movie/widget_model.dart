@@ -1,15 +1,15 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
+import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '/app/domain/services/error_handle/service.dart';
 import '/modules/movies/presentation/movie/model.dart';
 import '/modules/movies/presentation/movie/widget.dart';
 
 MovieWidgetModel movieWidgetModelFactory(BuildContext context) =>
     MovieWidgetModel(
       MovieModel(
-        context.read<ErrorHandleService>(),
+        context.read<ErrorHandler>(),
       ),
     );
 

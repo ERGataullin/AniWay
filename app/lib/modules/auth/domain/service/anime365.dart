@@ -1,22 +1,23 @@
 import 'dart:async';
 
-import '/app/domain/services/network/service.dart';
+import 'package:core/core.dart';
+
 import '/modules/auth/data/repository.dart';
 import '/modules/auth/domain/service/service.dart';
 
 class Anime365AuthService implements AuthService {
   Anime365AuthService({
-    required NetworkService networkService,
+    required Network network,
     required AuthRepository repository,
-  })  : _networkService = networkService,
+  })  : _network = network,
         _repository = repository,
         _authTokenInterceptor = _AuthTokenInterceptor(
           authToken: repository.getAuthToken(),
         ) {
-    _networkService.addInterceptor(_authTokenInterceptor);
+    _network.addInterceptor(_authTokenInterceptor);
   }
 
-  final NetworkService _networkService;
+  final Network _network;
   final AuthRepository _repository;
   final _AuthTokenInterceptor _authTokenInterceptor;
 
@@ -48,7 +49,7 @@ class _AuthTokenInterceptor extends NetworkRequestInterceptor {
         (authToken) => data.copyWith(
           headers: {
             ...data.headers,
-            'Cookie': authToken,
+            if (authToken != null) 'Cookie': authToken,
           },
         ),
       );

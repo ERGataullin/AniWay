@@ -1,22 +1,22 @@
+import 'package:core/core.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
-import '/app/domain/services/network/service.dart';
 import '/modules/movies/data/sources/source.dart';
 
 class RemoteMoviesDataSource implements MoviesDataSource {
   const RemoteMoviesDataSource({
-    required NetworkService networkService,
-  }) : _networkService = networkService;
+    required Network network,
+  }) : _network = network;
 
-  final NetworkService _networkService;
+  final Network _network;
 
   @override
   Future<List<Map<String, dynamic>>> getMovies({
     String? order,
     List<String?> watchStatus = const [],
   }) async {
-    final NetworkResponseData response = await _networkService.request(
+    final NetworkResponseData response = await _network.request(
       NetworkRequestData(
         uri: Uri.parse(
           '/api/series?order=$order&fields=id,titles,posterUrl,type,myAnimeListScore',
@@ -31,7 +31,7 @@ class RemoteMoviesDataSource implements MoviesDataSource {
 
   @override
   Future<List<Map<String, dynamic>>> getUpNext() async {
-    final NetworkResponseData response = await _networkService.request(
+    final NetworkResponseData response = await _network.request(
       NetworkRequestData(
         uri: Uri.parse('/?dynpage=1'),
         method: NetworkRequestMethodData.get,

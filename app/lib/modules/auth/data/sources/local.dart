@@ -1,19 +1,20 @@
-import '/app/domain/services/storage/service.dart';
+import 'package:core/core.dart';
+
 import '/modules/auth/data/sources/source.dart';
 
 class LocalAuthDataSource implements AuthDataSource {
   const LocalAuthDataSource({
-    required StorageService storageService,
-  }) : _storageService = storageService;
+    required Storage storage,
+  }) : _storage = storage;
 
   static const String _collection = 'auth';
   static const String _authTokenKey = 'auth_token';
 
-  final StorageService _storageService;
+  final Storage _storage;
 
   @override
   Future<String?> getAuthToken() {
-    return _storageService.get<String?>(
+    return _storage.get<String?>(
       collection: _collection,
       key: _authTokenKey,
     );
@@ -21,7 +22,7 @@ class LocalAuthDataSource implements AuthDataSource {
 
   @override
   Future<void> saveAuthToken(String? authToken) {
-    return _storageService.put<String?>(
+    return _storage.put<String?>(
       collection: _collection,
       key: _authTokenKey,
       value: authToken,

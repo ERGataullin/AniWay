@@ -1,19 +1,23 @@
+import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-import '/app/domain/services/storage/service.dart';
-
-export '/app/domain/services/storage/service.dart';
-
-class HiveStorageService implements StorageService {
-  const HiveStorageService();
+class HiveStorage implements Storage {
+  const HiveStorage();
 
   @override
-  Future<void> initialize() {
-    return path_provider
-        .getApplicationDocumentsDirectory()
-        .then((directory) => directory.path)
-        .then(Hive.init);
+  Future<void> initialize() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    final String? storagePath = kIsWeb
+        ? null
+        : await path_provider
+            .getApplicationDocumentsDirectory()
+            .then((directory) => directory.path);
+
+    Hive.init(storagePath);
   }
 
   @override

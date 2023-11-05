@@ -1,10 +1,7 @@
+import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '/app/domain/services/error_handle/debug_print.dart';
-import '/app/domain/services/error_handle/service.dart';
-import '/app/domain/services/network/http.dart';
-import '/app/domain/services/storage/hive.dart';
 import '/modules/auth/data/repository.dart';
 import '/modules/auth/data/sources/local.dart';
 import '/modules/auth/domain/service/anime365.dart';
@@ -25,9 +22,9 @@ class AppDependenciesProvider extends StatelessWidget {
     required this.child,
   });
 
-  final ErrorHandleService? errorHandleService;
-  final NetworkService? networkService;
-  final StorageService? storageService;
+  final ErrorHandler? errorHandleService;
+  final Network? networkService;
+  final Storage? storageService;
   final AuthService? authService;
   final MoviesService? moviesService;
   final Widget child;
@@ -36,32 +33,32 @@ class AppDependenciesProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<ErrorHandleService>(
+        Provider<ErrorHandler>(
           create: (context) =>
-              errorHandleService ?? DebugPrintErrorHandleService(),
+              errorHandleService ?? const DebugPrintErrorHandler(),
         ),
-        Provider<NetworkService>(
+        Provider<Network>(
           create: (context) =>
               networkService ??
-              HttpNetworkService(
+              HttpNetwork(
                 baseUri: Uri(
                   scheme: 'https',
                   host: 'anime365.ru',
                 ),
               ),
         ),
-        Provider<StorageService>(
-          create: (context) => storageService ?? const HiveStorageService(),
+        Provider<Storage>(
+          create: (context) => storageService ?? const HiveStorage(),
         ),
         Provider<AuthService>(
           lazy: false,
           create: (context) =>
               authService ??
               Anime365AuthService(
-                networkService: context.read<NetworkService>(),
+                network: context.read<Network>(),
                 repository: AuthRepository(
                   local: LocalAuthDataSource(
-                    storageService: context.read<StorageService>(),
+                    storage: context.read<Storage>(),
                   ),
                 ),
               ),
@@ -72,7 +69,7 @@ class AppDependenciesProvider extends StatelessWidget {
               Anime365MoviesService(
                 repository: MoviesRepository(
                   remote: RemoteMoviesDataSource(
-                    networkService: context.read<NetworkService>(),
+                    network: context.read<Network>(),
                   ),
                 ),
               ),
