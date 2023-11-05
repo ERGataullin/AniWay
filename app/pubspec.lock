@@ -218,6 +218,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  movies:
+    dependency: "direct main"
+    description:
+      path: "../modules/movies"
+      relative: true
+    source: path
+    version: "0.0.0"
   nested:
     dependency: transitive
     description:

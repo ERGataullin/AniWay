@@ -1,12 +1,8 @@
 import 'package:auth/auth.dart';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:movies/movies.dart';
 import 'package:provider/provider.dart';
-
-import '/modules/movies/data/repository.dart';
-import '/modules/movies/data/sources/remote.dart';
-import '/modules/movies/domain/service/anime365.dart';
-import '/modules/movies/domain/service/service.dart';
 
 class AppDependenciesProvider extends StatelessWidget {
   const AppDependenciesProvider({

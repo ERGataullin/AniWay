@@ -3,9 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:menu/menu.dart';
-
-import '/modules/movies/presentation/movie/widget.dart';
-import '/modules/movies/presentation/watch_now/widget.dart';
+import 'package:movies/movies.dart';
 
 extension _RouteLocating on Uri {
   Uri locateUri({

@@ -1,0 +1,7 @@
+arb-dir: assets/localizations
+output-dir: lib/src/utils/localizations
+template-arb-file: ru.arb
+output-localization-file: localizations.dart
+output-class: MoviesLocalizations
+synthetic-package: false
+nullable-getter: false

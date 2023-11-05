@@ -26,6 +26,8 @@ dependencies:
   intl: ^0.18.1
   menu:
     path: ../modules/menu
+  movies: 
+    path: ../modules/movies
   path_provider: ^2.1.1
   provider: ^6.0.5
   webview_cookie_manager: ^2.0.6
