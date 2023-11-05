@@ -50,7 +50,7 @@ class AppDependenciesProvider extends StatelessWidget {
               Anime365AuthService(
                 network: context.read<Network>(),
                 repository: AuthRepository(
-                  local: LocalAuthDataSource(
+                  local: StorageAuthDataSource(
                     storage: context.read<Storage>(),
                   ),
                 ),
@@ -61,7 +61,7 @@ class AppDependenciesProvider extends StatelessWidget {
               moviesService ??
               Anime365MoviesService(
                 repository: MoviesRepository(
-                  remote: RemoteMoviesDataSource(
+                  remote: Anime365MoviesDataSource(
                     network: context.read<Network>(),
                   ),
                 ),

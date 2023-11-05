@@ -3,8 +3,8 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import 'package:movies/movies.dart';
 
-class RemoteMoviesDataSource implements MoviesDataSource {
-  const RemoteMoviesDataSource({
+class Anime365MoviesDataSource implements MoviesDataSource {
+  const Anime365MoviesDataSource({
     required Network network,
   }) : _network = network;
 
@@ -17,8 +17,12 @@ class RemoteMoviesDataSource implements MoviesDataSource {
   }) async {
     final NetworkResponseData response = await _network.request(
       NetworkRequestData(
-        uri: Uri.parse(
-          '/api/series?order=$order&fields=id,titles,posterUrl,type,myAnimeListScore',
+        uri: Uri(
+          path: '/api/series',
+          queryParameters: {
+            'order': order,
+            'fields': 'id,titles,posterUrl,type,myAnimeListScore',
+          },
         ),
         method: NetworkRequestMethodData.get,
       ),

@@ -1,8 +1,8 @@
 import 'package:auth/auth.dart';
 import 'package:core/core.dart';
 
-class LocalAuthDataSource implements AuthDataSource {
-  const LocalAuthDataSource({
+class StorageAuthDataSource implements AuthDataSource {
+  const StorageAuthDataSource({
     required Storage storage,
   }) : _storage = storage;
 
