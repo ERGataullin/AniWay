@@ -8,6 +8,7 @@
             "name": "Debug",
             "request": "launch",
             "type": "dart",
+            "program": "app/lib/main.dart",
             "args": [
                 "--web-browser-flag=--disable-web-security"
             ]
@@ -17,6 +18,7 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
+            "program": "app/lib/main.dart",
             "args": [
                 "--web-browser-flag=--disable-web-security"
             ]
@@ -26,6 +28,7 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
+            "program": "app/lib/main.dart",
             "args": [
                 "--web-browser-flag=--disable-web-security"
             ]
