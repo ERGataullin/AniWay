@@ -6,7 +6,7 @@ cd ..
 
 cd modules
 for dir in */; do
-    cd dir
+    cd $dir
     flutter analyze --fatal-infos
     cd ..
 done
