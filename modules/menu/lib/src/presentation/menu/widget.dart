@@ -1,6 +1,7 @@
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:menu/menu.dart';
+import 'package:menu/src/presentation/menu/widget_model.dart';
 import 'package:provider/provider.dart';
 
 typedef OnMenuDestinationSelected = void Function(int index);

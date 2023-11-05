@@ -1,4 +1,4 @@
-import 'package:auth/auth.dart';
+import 'package:auth/src/presentation/sign_in/widget_model.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';

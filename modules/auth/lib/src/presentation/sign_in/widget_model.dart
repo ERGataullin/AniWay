@@ -1,4 +1,5 @@
 import 'package:auth/auth.dart';
+import 'package:auth/src/presentation/sign_in/model.dart';
 import 'package:core/core.dart';
 import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/widgets.dart';
