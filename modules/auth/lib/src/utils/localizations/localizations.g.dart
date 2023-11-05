@@ -5,21 +5,21 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'localizations_ru.dart';
+import 'localizations_ru.g.dart';
 
-/// Callers can lookup localized strings with an instance of MenuLocalizations
-/// returned by `MenuLocalizations.of(context)`.
+/// Callers can lookup localized strings with an instance of AuthLocalizations
+/// returned by `AuthLocalizations.of(context)`.
 ///
-/// Applications need to include `MenuLocalizations.delegate()` in their app's
+/// Applications need to include `AuthLocalizations.delegate()` in their app's
 /// `localizationDelegates` list, and the locales they support in the app's
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'localizations/localizations.dart';
+/// import 'localizations/localizations.g.dart';
 ///
 /// return MaterialApp(
-///   localizationsDelegates: MenuLocalizations.localizationsDelegates,
-///   supportedLocales: MenuLocalizations.supportedLocales,
+///   localizationsDelegates: AuthLocalizations.localizationsDelegates,
+///   supportedLocales: AuthLocalizations.supportedLocales,
 ///   home: MyApplicationHome(),
 /// );
 /// ```
@@ -56,18 +56,18 @@ import 'localizations_ru.dart';
 /// Select and expand the newly-created Localizations item then, for each
 /// locale your application supports, add a new item and select the locale
 /// you wish to add from the pop-up menu in the Value field. This list should
-/// be consistent with the languages listed in the MenuLocalizations.supportedLocales
+/// be consistent with the languages listed in the AuthLocalizations.supportedLocales
 /// property.
-abstract class MenuLocalizations {
-  MenuLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+abstract class AuthLocalizations {
+  AuthLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
-  static MenuLocalizations of(BuildContext context) {
-    return Localizations.of<MenuLocalizations>(context, MenuLocalizations)!;
+  static AuthLocalizations of(BuildContext context) {
+    return Localizations.of<AuthLocalizations>(context, AuthLocalizations)!;
   }
 
-  static const LocalizationsDelegate<MenuLocalizations> delegate = _MenuLocalizationsDelegate();
+  static const LocalizationsDelegate<AuthLocalizations> delegate = _AuthLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -91,38 +91,44 @@ abstract class MenuLocalizations {
     Locale('ru')
   ];
 
-  /// No description provided for @destinationLabel.
+  /// No description provided for @signInEmailLabel.
   ///
   /// In ru, this message translates to:
-  /// **'{destination, select, watchNow{Смотреть сейчас} store{Маркет} library{Библиотека} search{Поиск} other{}}'**
-  String destinationLabel(String destination);
+  /// **'Электронная почта'**
+  String get signInEmailLabel;
+
+  /// No description provided for @signInTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Авторизация'**
+  String get signInTitle;
 }
 
-class _MenuLocalizationsDelegate extends LocalizationsDelegate<MenuLocalizations> {
-  const _MenuLocalizationsDelegate();
+class _AuthLocalizationsDelegate extends LocalizationsDelegate<AuthLocalizations> {
+  const _AuthLocalizationsDelegate();
 
   @override
-  Future<MenuLocalizations> load(Locale locale) {
-    return SynchronousFuture<MenuLocalizations>(lookupMenuLocalizations(locale));
+  Future<AuthLocalizations> load(Locale locale) {
+    return SynchronousFuture<AuthLocalizations>(lookupAuthLocalizations(locale));
   }
 
   @override
   bool isSupported(Locale locale) => <String>['ru'].contains(locale.languageCode);
 
   @override
-  bool shouldReload(_MenuLocalizationsDelegate old) => false;
+  bool shouldReload(_AuthLocalizationsDelegate old) => false;
 }
 
-MenuLocalizations lookupMenuLocalizations(Locale locale) {
+AuthLocalizations lookupAuthLocalizations(Locale locale) {
 
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ru': return MenuLocalizationsRu();
+    case 'ru': return AuthLocalizationsRu();
   }
 
   throw FlutterError(
-    'MenuLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'AuthLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.'

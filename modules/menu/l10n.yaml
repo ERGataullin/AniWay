@@ -1,7 +1,7 @@
 arb-dir: assets/localizations
 output-dir: lib/src/utils/localizations
 template-arb-file: ru.arb
-output-localization-file: localizations.dart
+output-localization-file: localizations.g.dart
 output-class: MenuLocalizations
 synthetic-package: false
 nullable-getter: false

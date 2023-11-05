@@ -1,4 +1,4 @@
-import 'localizations.dart';
+import 'localizations.g.dart';
 
 /// The translations for Russian (`ru`).
 class AuthLocalizationsRu extends AuthLocalizations {

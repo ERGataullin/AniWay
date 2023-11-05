@@ -1,14 +1,12 @@
+import 'package:app/src/dependencies_provider.dart';
+import 'package:app/src/router.dart';
+import 'package:app/src/theme.dart';
 import 'package:auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:menu/menu.dart';
 import 'package:movies/movies.dart';
-
-import '/app/dependencies_provider.dart';
-import '/app/localizations.dart';
-import '/app/router.dart';
-import '/app/theme.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -38,11 +36,16 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      supportedLocales: AppLocalizations.supportedLocales,
+      supportedLocales: [
+        AuthLocalizations.supportedLocales.toSet(),
+        MenuLocalizations.supportedLocales.toSet(),
+        MoviesLocalizations.supportedLocales.toSet(),
+      ]
+          .reduce((value, element) => value.intersection(element))
+          .toList(growable: false),
       localizationsDelegates: const [
         GlobalCupertinoLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
-        AppLocalizations.delegate,
         AuthLocalizations.delegate,
         MenuLocalizations.delegate,
         MoviesLocalizations.delegate,

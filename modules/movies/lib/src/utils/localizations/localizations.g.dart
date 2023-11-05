@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'localizations_ru.dart';
+import 'localizations_ru.g.dart';
 
 /// Callers can lookup localized strings with an instance of MoviesLocalizations
 /// returned by `MoviesLocalizations.of(context)`.
@@ -15,7 +15,7 @@ import 'localizations_ru.dart';
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'localizations/localizations.dart';
+/// import 'localizations/localizations.g.dart';
 ///
 /// return MaterialApp(
 ///   localizationsDelegates: MoviesLocalizations.localizationsDelegates,

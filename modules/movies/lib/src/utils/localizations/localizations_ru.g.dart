@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart' as intl;
 
-import 'localizations.dart';
+import 'localizations.g.dart';
 
 /// The translations for Russian (`ru`).
 class MoviesLocalizationsRu extends MoviesLocalizations {
