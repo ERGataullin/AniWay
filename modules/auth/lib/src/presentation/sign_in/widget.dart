@@ -1,8 +1,7 @@
+import 'package:auth/auth.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
-import '/modules/auth/presentation/sign_in/widget_model.dart';
 
 class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
   const SignInWidget({

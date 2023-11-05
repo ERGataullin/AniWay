@@ -1,11 +1,8 @@
+import 'package:auth/auth.dart';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '/modules/auth/data/repository.dart';
-import '/modules/auth/data/sources/local.dart';
-import '/modules/auth/domain/service/anime365.dart';
-import '/modules/auth/domain/service/service.dart';
 import '/modules/movies/data/repository.dart';
 import '/modules/movies/data/sources/remote.dart';
 import '/modules/movies/domain/service/anime365.dart';

@@ -1,6 +1,5 @@
+import 'package:auth/auth.dart';
 import 'package:core/core.dart';
-
-import '/modules/auth/data/sources/source.dart';
 
 class LocalAuthDataSource implements AuthDataSource {
   const LocalAuthDataSource({

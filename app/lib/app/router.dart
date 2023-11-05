@@ -1,8 +1,8 @@
+import 'package:auth/auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '/modules/auth/presentation/sign_in/widget.dart';
 import '/modules/menu/presentation/menu/widget.dart';
 import '/modules/movies/presentation/movie/widget.dart';
 import '/modules/movies/presentation/watch_now/widget.dart';

@@ -1,4 +1,4 @@
-import '/modules/auth/data/sources/source.dart';
+import 'package:auth/auth.dart';
 
 class AuthRepository {
   const AuthRepository({

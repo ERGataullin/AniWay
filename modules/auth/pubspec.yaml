@@ -1,5 +1,5 @@
-name: core
-description: A core library of AniWay.
+name: auth
+description: A auth module library of AniWay.
 publish_to: none
 
 environment:
@@ -7,16 +7,19 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  core: 
+    path: ../../core
   elementary: ^3.0.0
   flutter:
     sdk: flutter
-  hive: ^2.2.3
-  http: ^1.1.0
-  path_provider: ^2.1.1
+  intl: ^0.18.1
+  provider: ^6.0.5
+  webview_cookie_manager: ^2.0.6
+  webview_flutter: ^4.4.2
 
 dev_dependencies:
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
-
+  
 flutter:

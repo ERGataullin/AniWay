@@ -1,9 +1,7 @@
 import 'dart:async';
 
+import 'package:auth/auth.dart';
 import 'package:core/core.dart';
-
-import '/modules/auth/data/repository.dart';
-import '/modules/auth/domain/service/service.dart';
 
 class Anime365AuthService implements AuthService {
   Anime365AuthService({

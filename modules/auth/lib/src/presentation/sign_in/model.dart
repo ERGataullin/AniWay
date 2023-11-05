@@ -1,8 +1,8 @@
 import 'dart:core';
 
-import 'package:elementary/elementary.dart';
-
-import '/modules/auth/domain/service/service.dart';
+import 'package:auth/auth.dart';
+import 'package:core/core.dart';
+import 'package:elementary/elementary.dart' hide ErrorHandler;
 
 abstract interface class ISignInModel implements ElementaryModel {
   Future<void> signIn(String cookie);
