@@ -29,7 +29,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   final Uri _watchNowUri = Uri.parse('/');
 
   late final GoRouter _goRouter = GoRouter(
-    initialLocation: _watchNowUri.locate(),
+    initialLocation: _signInUri.locate(),
     routes: [
       ..._authRoutes,
       ..._moviesRoutes,

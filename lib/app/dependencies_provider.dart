@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '/app/domain/services/error_handle/debug_print.dart';
 import '/app/domain/services/error_handle/service.dart';
 import '/app/domain/services/network/http.dart';
-import '/app/domain/services/network/service.dart';
+import '/app/domain/services/storage/hive.dart';
 import '/modules/auth/data/repository.dart';
 import '/modules/auth/data/sources/local.dart';
 import '/modules/auth/domain/service/anime365.dart';
@@ -19,6 +19,7 @@ class AppDependenciesProvider extends StatelessWidget {
     super.key,
     this.errorHandleService,
     this.networkService,
+    this.storageService,
     this.authService,
     this.moviesService,
     required this.child,
@@ -26,6 +27,7 @@ class AppDependenciesProvider extends StatelessWidget {
 
   final ErrorHandleService? errorHandleService;
   final NetworkService? networkService;
+  final StorageService? storageService;
   final AuthService? authService;
   final MoviesService? moviesService;
   final Widget child;
@@ -48,14 +50,19 @@ class AppDependenciesProvider extends StatelessWidget {
                 ),
               ),
         ),
+        Provider<StorageService>(
+          create: (context) => storageService ?? const HiveStorageService(),
+        ),
         Provider<AuthService>(
           lazy: false,
           create: (context) =>
               authService ??
               Anime365AuthService(
                 networkService: context.read<NetworkService>(),
-                repository: const AuthRepository(
-                  local: LocalAuthDataSource(),
+                repository: AuthRepository(
+                  local: LocalAuthDataSource(
+                    storageService: context.read<StorageService>(),
+                  ),
                 ),
               ),
         ),

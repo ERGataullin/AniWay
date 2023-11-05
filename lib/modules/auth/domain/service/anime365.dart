@@ -21,24 +21,9 @@ class Anime365AuthService implements AuthService {
   final _AuthTokenInterceptor _authTokenInterceptor;
 
   @override
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) {
-    return _networkService
-        .request(
-          NetworkRequestData(
-            uri: Uri.parse('/users/login'),
-            method: NetworkRequestMethodData.post,
-            body: {
-              'LoginForm[username]': email,
-              'LoginForm[password]': password,
-            },
-          ),
-        )
-        .then((response) => response.body as String)
-        .then((authToken) => _authTokenInterceptor.authToken = authToken)
-        .then((authToken) => unawaited(_repository.saveAuthToken(authToken)));
+  Future<void> signIn(String cookie) {
+    _authTokenInterceptor._authToken = Future.value(cookie);
+    return _repository.saveAuthToken(cookie);
   }
 
   @override
@@ -63,7 +48,7 @@ class _AuthTokenInterceptor extends NetworkRequestInterceptor {
         (authToken) => data.copyWith(
           headers: {
             ...data.headers,
-            'Cookie': 'PHPSESSID=d04e881hiqiua73unv6ptvleg1',
+            'Cookie': authToken,
           },
         ),
       );
