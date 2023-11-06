@@ -16,5 +16,7 @@ workflows:
           include: true
           source: true
     scripts:
-      - name: Analyzing
-        script: flutter analyze --fatal-infos
+      - name: Pub get
+        script: sh scripts/pub_get.sh
+      - name: Analyze
+        script: sh scripts/analyze.sh
