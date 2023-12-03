@@ -8,6 +8,7 @@
             "name": "Debug",
             "request": "launch",
             "type": "dart",
+            "flutterMode": "debug",
             "program": "app/lib/main.dart",
             "args": [
                 "--web-browser-flag=--disable-web-security"

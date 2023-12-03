@@ -2,6 +2,7 @@ import 'package:auth/auth.dart';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
+import 'package:player/player.dart';
 import 'package:provider/provider.dart';
 
 class AppDependenciesProvider extends StatelessWidget {
@@ -12,6 +13,8 @@ class AppDependenciesProvider extends StatelessWidget {
     this.storageService,
     this.authService,
     this.moviesService,
+    this.playerService,
+    this.fullscreen,
     required this.child,
   });
 
@@ -20,6 +23,8 @@ class AppDependenciesProvider extends StatelessWidget {
   final Storage? storageService;
   final AuthService? authService;
   final MoviesService? moviesService;
+  final PlayerService? playerService;
+  final Fullscreen? fullscreen;
   final Widget child;
 
   @override
@@ -66,6 +71,21 @@ class AppDependenciesProvider extends StatelessWidget {
                   ),
                 ),
               ),
+        ),
+        Provider<PlayerService>(
+          create: (context) =>
+              playerService ??
+              Anime365PlayerService(
+                network: context.read<Network>(),
+                repository: PlayerRepository(
+                  remote: Anime365PlayerDataSource(
+                    network: context.read<Network>(),
+                  ),
+                ),
+              ),
+        ),
+        Provider<Fullscreen>(
+          create: (context) => fullscreen ?? Fullscreen(),
         ),
       ],
       child: child,
