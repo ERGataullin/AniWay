@@ -1,0 +1,29 @@
+name: player
+description: A player module library of AniWay.
+publish_to: none
+
+environment:
+  sdk: '>=3.1.5 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  core: 
+    path: ../../core
+  elementary: ^3.0.0
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  html: ^0.15.4
+  intl: ^0.18.1
+  provider: ^6.0.5
+  video_player: ^2.8.1
+
+dev_dependencies:
+  flutter_lints: ^3.0.1
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  generate: true
+  uses-material-design: true

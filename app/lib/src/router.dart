@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:menu/menu.dart';
 import 'package:movies/movies.dart';
+import 'package:player/player.dart';
 
 extension _RouteLocating on Uri {
   Uri locateUri({
@@ -31,55 +32,25 @@ extension _RouteLocating on Uri {
   }
 }
 
-extension _RouteMerging on Uri {
-  bool get _isPortDefault =>
-      scheme == 'http' && port == 80 ||
-      scheme == 'https' && port == 443 ||
-      port == 0;
-
-  Uri merge(Uri uri) {
-    return Uri(
-      scheme: scheme.isEmpty ? uri.scheme : scheme,
-      userInfo: userInfo.isEmpty ? uri.userInfo : userInfo,
-      host: host.isEmpty ? uri.host : host,
-      port: switch ((_isPortDefault, uri._isPortDefault)) {
-        (false, false) => uri.port,
-        (false, true) => port,
-        (true, false) => uri.port,
-        (true, true) => null,
-      },
-      pathSegments: [
-        ...pathSegments,
-        ...uri.pathSegments,
-      ],
-      queryParameters: queryParameters.isEmpty && uri.queryParameters.isEmpty
-          ? null
-          : {
-              ...queryParameters,
-              ...uri.queryParameters,
-            },
-      fragment: switch ((fragment.isEmpty, uri.fragment.isEmpty)) {
-        (false, false) => uri.fragment,
-        (false, true) => fragment,
-        (true, false) => uri.fragment,
-        (true, true) => null,
-      },
-    );
-  }
-}
-
 class AppRouter implements RouterConfig<RouteMatchList> {
-  final Uri _signInUri = Uri(path: '/sign-in');
+  final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
 
-  final Uri _movieUri = Uri(path: 'movies/:id');
+  final Uri _rootUri = Uri(path: '/');
 
-  final Uri _watchNowUri = Uri(path: '/');
+  final Uri _signInUri = Uri(path: 'sign-in');
+
+  final Uri _movieUri = Uri(path: ':movieId');
+
+  final Uri _watchNowUri = Uri();
+
+  final Uri _moviePlayerUri = Uri(path: 'episodes/:episodeId');
 
   late final GoRouter _goRouter = GoRouter(
+    navigatorKey: _rootNavigatorKey,
     initialLocation: kIsWeb ? _watchNowUri.locate() : _signInUri.locate(),
     routes: [
-      _buildSignInRoute(),
-      _buildMenuRoute(),
+      _buildSignInRoute(baseUri: _rootUri),
+      _buildMenuRoute(baseUri: _rootUri),
     ],
   );
 
@@ -98,55 +69,115 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   @override
   RouterDelegate<RouteMatchList> get routerDelegate => _goRouter.routerDelegate;
 
-  RouteBase _buildSignInRoute() => GoRoute(
-        path: _signInUri.path,
-        builder: (context, state) => SignInWidget(
-          onSignedIn: () => context.go(_watchNowUri.locate()),
-        ),
-      );
+  GoRoute _buildSignInRoute({
+    Uri? baseUri,
+  }) {
+    final Uri uri = baseUri?.resolveUri(_signInUri) ?? _signInUri;
 
-  RouteBase _buildMenuRoute() => StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) => MenuWidget(
-          key: UniqueKey(),
-          selectedIndex: navigationShell.currentIndex,
-          destinations: const [
-            MenuDestinationData.watchNow,
-            MenuDestinationData.store,
-            MenuDestinationData.library,
-            MenuDestinationData.search,
+    return GoRoute(
+      path: uri.path,
+      builder: (context, state) => SignInWidget(
+        onSignedIn: () => context.go(_watchNowUri.locate()),
+      ),
+    );
+  }
+
+  ShellRouteBase _buildMenuRoute({
+    Uri? baseUri,
+  }) {
+    return StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) => MenuWidget(
+        key: UniqueKey(),
+        selectedIndex: navigationShell.currentIndex,
+        destinations: const [
+          MenuDestinationData.watchNow,
+          MenuDestinationData.store,
+          MenuDestinationData.library,
+          MenuDestinationData.search,
+        ],
+        onDestinationSelected: (index) => navigationShell.goBranch(
+          index,
+          initialLocation: index == navigationShell.currentIndex,
+        ),
+        child: navigationShell,
+      ),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            _buildWatchNowRoute(baseUri: baseUri),
           ],
-          onDestinationSelected: (index) => navigationShell.goBranch(
-            index,
-            initialLocation: index == navigationShell.currentIndex,
-          ),
-          child: navigationShell,
         ),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              _buildWatchNowRoute(),
-            ],
-          ),
-        ],
-      );
+      ],
+    );
+  }
 
-  RouteBase _buildMovieRoute() => GoRoute(
-        path: _movieUri.path,
-        builder: (context, state) => const MovieWidget(),
-      );
+  GoRoute _buildWatchNowRoute({
+    Uri? baseUri,
+  }) {
+    final Uri uri = baseUri?.resolveUri(_watchNowUri) ?? _watchNowUri;
 
-  RouteBase _buildWatchNowRoute() => GoRoute(
-        path: _watchNowUri.path,
-        routes: [
-          _buildMovieRoute(),
-        ],
-        builder: (context, state) => WatchNowWidget(
-          onUpNextPressed: (movieId, episodeId) {},
-          onMoviePressed: (id) => context.go(
-            state.uri.merge(_movieUri).locate(
-              pathParameters: {'id': id},
-            ),
+    final GoRoute movieRoute = _buildMovieRoute(
+      baseUri: Uri(path: 'movies/'),
+    );
+
+    final GoRoute moviePlayerRoute = _buildMoviePlayerRoute(
+      baseUri: Uri(path: 'movies/').resolveUri(
+        _movieUri.replace(path: '${_movieUri.path}/'),
+      ),
+    );
+
+    return GoRoute(
+      path: uri.path,
+      routes: [
+        movieRoute,
+        moviePlayerRoute,
+      ],
+      builder: (context, state) => WatchNowWidget(
+        onUpNextPressed: (movieId, episodeId) => context.go(
+          state.uri.resolve(moviePlayerRoute.path).locate(
+            pathParameters: {
+              'movieId': movieId,
+              'episodeId': episodeId,
+            },
           ),
         ),
-      );
+        onMoviePressed: (id) => context.go(
+          state.uri.resolveUri(Uri(path: movieRoute.path)).locate(
+            pathParameters: {
+              'movieId': id,
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  GoRoute _buildMovieRoute({
+    Uri? baseUri,
+  }) {
+    final Uri uri = baseUri?.resolveUri(_movieUri) ?? _movieUri;
+
+    return GoRoute(
+      path: uri.path,
+      builder: (context, state) => const MovieWidget(),
+      routes: [
+        _buildMoviePlayerRoute(),
+      ],
+    );
+  }
+
+  GoRoute _buildMoviePlayerRoute({
+    Uri? baseUri,
+  }) {
+    final Uri uri = baseUri?.resolveUri(_moviePlayerUri) ?? _moviePlayerUri;
+
+    return GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: uri.path,
+      builder: (context, state) => MoviePlayerWidget(
+        movieId: state.pathParameters['movieId']!,
+        episodeId: state.pathParameters['episodeId']!,
+      ),
+    );
+  }
 }

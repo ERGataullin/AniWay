@@ -26,6 +26,8 @@ dependencies:
   movies: 
     path: ../modules/movies
   path_provider: ^2.1.1
+  player:
+    path: ../modules/player
   provider: ^6.0.5
 
 dev_dependencies:
