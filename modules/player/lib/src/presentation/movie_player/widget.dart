@@ -30,6 +30,7 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWidgetModel> {
               VideoPlayerWidget.fromTranslations(
             title: title,
             translations: translations,
+            onFinished: wm.onEpisodeFinished,
           ),
         ),
       ),

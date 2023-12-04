@@ -21,6 +21,8 @@ abstract interface class IMoviePlayerWidgetModel implements IWidgetModel {
 
   ValueListenable<Map<VideoTranslationTypeData, List<VideoTranslationData>>>
       get translations;
+
+  void onEpisodeFinished(Object translationId);
 }
 
 class MoviePlayerWidgetModel
@@ -67,11 +69,10 @@ class MoviePlayerWidgetModel
             .where((translation) => translation.type == type)
             .toList(growable: false),
     };
-    unawaited(
-      Future.delayed(
-        const Duration(seconds: 3),
-        () => model.postTranslationWatched(translations.first.id),
-      ),
-    );
+  }
+
+  @override
+  Future<void> onEpisodeFinished(Object translationId) {
+    return model.postTranslationWatched(translationId);
   }
 }

@@ -147,18 +147,13 @@ class VideoPlayerWidgetModel
   Future<void> didUpdateWidget(VideoPlayerWidget oldWidget) async {
     title.value = widget.title;
 
-    final bool uriChanged = widget.uri != oldWidget.uri;
-    final bool translationsChanged =
-        widget.translations != oldWidget.translations;
-    if (translationsChanged) {
+    if (widget.translations != oldWidget.translations) {
       _translationType = widget.translations.isEmpty
           ? null
           : widget.translations.entries.first.key;
       _translation = _translationType == null
           ? null
           : widget.translations[_translationType]?.first;
-    }
-    if (uriChanged || widget.uri == null && translationsChanged) {
       controller.value.removeListener(_onControllerValueChanged);
       await controller.value.dispose();
       await _initializeController();
@@ -242,18 +237,13 @@ class VideoPlayerWidgetModel
   }
 
   Future<void> _initializeController() async {
-    if (widget.uri == null && _translation == null) {
+    if (_translation == null) {
       return;
     }
 
-    late final Uri uri;
-    if (widget.uri == null) {
-      final VideoData video =
-          await model.getTranslationVideo(_translation!.embedUri);
-      uri = video.sources.entries.first.value.uri;
-    } else {
-      uri = widget.uri!;
-    }
+    final VideoData video =
+        await model.getTranslationVideo(_translation!.embedUri);
+    final Uri uri = video.sources.entries.first.value.uri;
 
     controller.value = VideoPlayerController.networkUrl(uri)
       ..addListener(_onControllerValueChanged);
@@ -318,6 +308,10 @@ class VideoPlayerWidgetModel
       _controlsHidingTimer?.cancel();
       _controlsHidingTimer = null;
       _showControls();
+    }
+
+    if (controller.value.position == controller.value.duration) {
+      widget.onFinished?.call(_translation!.id);
     }
   }
 

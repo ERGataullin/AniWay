@@ -10,25 +10,17 @@ extension _VideoPlayerContext on BuildContext {
 }
 
 class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWidgetModel> {
-  const VideoPlayerWidget.fromUri({
-    super.key,
-    required this.title,
-    required Uri this.uri,
-    WidgetModelFactory wmFactory = videoPlayerWidgetModelFactory,
-  })  : translations = const {},
-        super(wmFactory);
-
   const VideoPlayerWidget.fromTranslations({
     super.key,
     required this.title,
     required this.translations,
+    this.onFinished,
     WidgetModelFactory wmFactory = videoPlayerWidgetModelFactory,
-  })  : uri = null,
-        super(wmFactory);
+  }) : super(wmFactory);
 
   final String title;
-  final Uri? uri;
   final Map<VideoTranslationTypeData, List<VideoTranslationData>> translations;
+  final void Function(Object translationId)? onFinished;
 
   @override
   Widget build(IVideoPlayerWidgetModel wm) {
