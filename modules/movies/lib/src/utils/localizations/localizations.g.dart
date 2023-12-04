@@ -120,6 +120,12 @@ abstract class MoviesLocalizations {
   /// In ru, this message translates to:
   /// **'К просмотру'**
   String get watchNowUpNextLabel;
+
+  /// No description provided for @hintText.
+  ///
+  /// In ru, this message translates to:
+  /// **'Поиск'**
+  String get hintText;
 }
 
 class _MoviesLocalizationsDelegate extends LocalizationsDelegate<MoviesLocalizations> {
