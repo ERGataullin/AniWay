@@ -310,7 +310,7 @@ class VideoPlayerWidgetModel
       _showControls();
     }
 
-    if (controller.value.position == controller.value.duration) {
+    if (controller.value.isCompleted) {
       widget.onFinished?.call(_translation!.id);
     }
   }
