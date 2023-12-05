@@ -10,6 +10,7 @@ abstract interface class MoviesService {
 
   Future<List<MoviePreviewData>> getMovies({
     MovieOrderData? order,
+    String? query,
     List<MovieWatchStatusData> watchStatus = const [],
   });
 

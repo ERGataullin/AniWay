@@ -9,10 +9,12 @@ class MoviesRepository {
 
   Future<List<Map<String, dynamic>>> getMovies({
     String? order,
+    String? query,
     List<String?> watchStatus = const [],
   }) {
     return _remote.getMovies(
       order: order,
+      query: query,
       watchStatus: watchStatus,
     );
   }

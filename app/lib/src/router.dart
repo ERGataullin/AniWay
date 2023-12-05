@@ -45,6 +45,8 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   final Uri _moviePlayerUri = Uri(path: 'episodes/:episodeId');
 
+  final Uri _searchUri = Uri(path: 'search');
+
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: kIsWeb ? _watchNowUri.locate() : _signInUri.locate(),
@@ -91,9 +93,9 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         selectedIndex: navigationShell.currentIndex,
         destinations: const [
           MenuDestinationData.watchNow,
+          MenuDestinationData.search,
           MenuDestinationData.store,
           MenuDestinationData.library,
-          MenuDestinationData.search,
         ],
         onDestinationSelected: (index) => navigationShell.goBranch(
           index,
@@ -105,6 +107,11 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         StatefulShellBranch(
           routes: [
             _buildWatchNowRoute(baseUri: baseUri),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            _buildSearchRoute(baseUri: baseUri),
           ],
         ),
       ],
@@ -177,6 +184,32 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       builder: (context, state) => MoviePlayerWidget(
         movieId: state.pathParameters['movieId']!,
         episodeId: state.pathParameters['episodeId']!,
+      ),
+    );
+  }
+
+  GoRoute _buildSearchRoute({
+    Uri? baseUri,
+  }) {
+    final Uri uri = baseUri?.resolveUri(_searchUri) ?? _searchUri;
+
+    final GoRoute movieRoute = _buildMovieRoute(
+      baseUri: Uri(path: 'movies/'),
+    );
+
+    return GoRoute(
+      path: uri.path,
+      routes: [
+        movieRoute,
+      ],
+      builder: (context, state) => SearchWidget(
+        onMoviePressed: (id) => context.go(
+          state.uri.resolveUri(Uri(path: movieRoute.path)).locate(
+            pathParameters: {
+              'movieId': id,
+            },
+          ),
+        ),
       ),
     );
   }

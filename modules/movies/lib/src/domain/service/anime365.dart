@@ -19,10 +19,12 @@ class Anime365MoviesService implements MoviesService {
   @override
   Future<List<MoviePreviewData>> getMovies({
     MovieOrderData? order,
+    String? query,
     List<MovieWatchStatusData> watchStatus = const [],
   }) {
     return _repository
         .getMovies(
+          query: query,
           order: switch (order) {
             MovieOrderData.byScore => 'ranked',
             MovieOrderData.byPopularity => 'popularity',
