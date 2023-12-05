@@ -38,7 +38,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   @override
   final SearchController queryController = SearchController();
 
-  Duration _queryDebounceInterval = const Duration(milliseconds: 300);
+  static const Duration _queryDebounceInterval = Duration(milliseconds: 300);
 
   Timer? _queryDebounceTimer;
 
@@ -73,7 +73,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   Future<void> _loadMovies() async {
     movies.value = const [];
     movies.value = await model.getMovies(
-      queryController.text,
+      query: queryController.text,
     );
   }
 }
