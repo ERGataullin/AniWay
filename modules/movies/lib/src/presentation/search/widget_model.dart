@@ -29,6 +29,8 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
     implements ISearchWidgetModel {
   SearchWidgetModel(super._model);
 
+  static const Duration _queryDebounceInterval = Duration(milliseconds: 300);
+
   @override
   final ValueNotifier<String> hintText = ValueNotifier('');
 
@@ -37,8 +39,6 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
 
   @override
   final SearchController queryController = SearchController();
-
-  static const Duration _queryDebounceInterval = Duration(milliseconds: 300);
 
   Timer? _queryDebounceTimer;
 
@@ -63,6 +63,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
     super.dispose();
     hintText.dispose();
     queryController.dispose();
+    _queryDebounceTimer?.cancel();
   }
 
   void _onQueryChanged() {
