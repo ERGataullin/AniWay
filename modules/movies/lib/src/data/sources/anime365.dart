@@ -13,16 +13,16 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   @override
   Future<List<Map<String, dynamic>>> getMovies({
     String? order,
-    List<String?> watchStatus = const [],
     String? query,
+    List<String?> watchStatus = const [],
   }) async {
     final NetworkResponseData response = await _network.request(
       NetworkRequestData(
         uri: Uri(
           path: '/api/series',
           queryParameters: {
-            if(order != null) 'order': order,
             'fields': 'id,titles,posterUrl,type,myAnimeListScore',
+            if(order != null) 'order': order,
             if(query != null) 'query': query,
           },
         ),

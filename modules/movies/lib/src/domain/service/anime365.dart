@@ -19,8 +19,8 @@ class Anime365MoviesService implements MoviesService {
   @override
   Future<List<MoviePreviewData>> getMovies({
     MovieOrderData? order,
-    List<MovieWatchStatusData> watchStatus = const [],
     String? query,
+    List<MovieWatchStatusData> watchStatus = const [],
   }) {
     return _repository
         .getMovies(

@@ -18,9 +18,11 @@ SearchWidgetModel searchWidgetModelFactory(BuildContext context) =>
 abstract interface class ISearchWidgetModel implements IWidgetModel {
   ValueListenable<String> get hintText;
 
-  SearchController get searchController;
+  ValueListenable<List<MoviePreviewData>> get movies;
 
-  ValueListenable<List<MoviePreviewData>> get moviesByQuery;
+  SearchController get queryController;
+
+  void onMoviePressed(int id);
 }
 
 class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
@@ -31,41 +33,47 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   final ValueNotifier<String> hintText = ValueNotifier('');
 
   @override
-  final SearchController searchController = SearchController();
+  final ValueNotifier<List<MoviePreviewData>> movies = ValueNotifier(const []);
 
   @override
-  final ValueNotifier<List<MoviePreviewData>> moviesByQuery =
-      ValueNotifier(const []);
+  final SearchController queryController = SearchController();
+
+  Duration _queryDebounceInterval = const Duration(milliseconds: 300);
+
+  Timer? _queryDebounceTimer;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    searchController.addListener(_delayInput);
+    queryController.addListener(_onQueryChanged);
   }
 
   @override
   void didChangeDependencies() {
-    hintText.value = context.localizations.hintText;
+    hintText.value = context.localizations.searchSearchBarHint;
+  }
+
+  @override
+  void onMoviePressed(int id) {
+    widget.onMoviePressed(id);
   }
 
   @override
   void dispose() {
     super.dispose();
     hintText.dispose();
-    searchController.dispose();
+    queryController.dispose();
   }
 
-  Timer? _searchTimer;
-
-  void _delayInput() {
-    _searchTimer?.cancel();
-    _searchTimer = Timer(Duration(milliseconds: 300), _loadMoviesByQuery);
+  void _onQueryChanged() {
+    _queryDebounceTimer?.cancel();
+    _queryDebounceTimer = Timer(_queryDebounceInterval, _loadMovies);
   }
 
-  Future<void> _loadMoviesByQuery() async {
-    moviesByQuery.value = const [];
-    await model
-        .getMoviesByQuery(searchController.text)
-        .then((items) => moviesByQuery.value = List.unmodifiable(items));
+  Future<void> _loadMovies() async {
+    movies.value = const [];
+    movies.value = await model.getMovies(
+      queryController.text,
+    );
   }
 }

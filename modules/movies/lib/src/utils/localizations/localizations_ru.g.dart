@@ -69,5 +69,5 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
   String get watchNowUpNextLabel => 'К просмотру';
 
   @override
-  String get hintText => 'Поиск';
+  String get searchSearchBarHint => 'Поиск';
 }

@@ -45,7 +45,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   final Uri _moviePlayerUri = Uri(path: 'episodes/:episodeId');
 
-  final Uri _searchUri = Uri(path: '/search');
+  final Uri _searchUri = Uri(path: 'search');
 
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
@@ -193,12 +193,24 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }) {
     final Uri uri = baseUri?.resolveUri(_searchUri) ?? _searchUri;
 
+    final GoRoute movieRoute = _buildMovieRoute(
+      baseUri: Uri(path: 'movies/'),
+    );
+
     return GoRoute(
       path: uri.path,
-      builder: (context, state) => const SearchWidget(),
       routes: [
-        _buildMoviePlayerRoute(),
+        movieRoute,
       ],
+      builder: (context, state) => SearchWidget(
+        onMoviePressed: (id) => context.go(
+          state.uri.resolveUri(Uri(path: movieRoute.path)).locate(
+            pathParameters: {
+              'movieId': id,
+            },
+          ),
+        ),
+      ),
     );
   }
 }

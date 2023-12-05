@@ -11,8 +11,11 @@ extension _SearchContext on BuildContext {
 class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
   const SearchWidget({
     super.key,
+    required this.onMoviePressed,
     WidgetModelFactory wmFactory = searchWidgetModelFactory,
   }) : super(wmFactory);
+
+  final void Function(int id) onMoviePressed;
 
   @override
   Widget build(ISearchWidgetModel wm) {
@@ -39,20 +42,18 @@ class _SearchBar extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: SearchAnchor(
         suggestionsBuilder: (context, controller) => [
-          SizedBox.shrink(),
+          const SizedBox.shrink(),
         ],
         builder: (context, controller) => ValueListenableBuilder(
           valueListenable: context.wm.hintText,
-          builder: (context, hintText, ___) {
-            return SearchBar(
-              controller: context.wm.searchController,
-              padding: const MaterialStatePropertyAll<EdgeInsets>(
-                EdgeInsets.symmetric(horizontal: 16.0),
-              ),
-              leading: const Icon(Icons.search),
-              hintText: hintText,
-            );
-          },
+          builder: (context, hintText, ___) => SearchBar(
+            controller: context.wm.queryController,
+            padding: const MaterialStatePropertyAll<EdgeInsets>(
+              EdgeInsets.symmetric(horizontal: 16.0),
+            ),
+            leading: const Icon(Icons.search),
+            hintText: hintText,
+          ),
         ),
       ),
     );
@@ -66,22 +67,20 @@ class _Result extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ValueListenableBuilder(
-        valueListenable: context.wm.moviesByQuery,
+        valueListenable: context.wm.movies,
         builder: (context, items, ___) => GridView.builder(
-          padding: const EdgeInsets.all(20),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+          padding: const EdgeInsets.all(16),
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
             childAspectRatio: MoviePreviewWidget.aspectRatio,
+            maxCrossAxisExtent: 200,
           ),
           itemCount: items.length,
-          itemBuilder: (context, index) {
-            return MoviePreviewWidget(
-              movie: items[index],
-              onPressed: () {},
-            );
-          },
+          itemBuilder: (context, index) => MoviePreviewWidget(
+            movie: items[index],
+            onPressed: () => context.wm.onMoviePressed(items[index].id),
+          ),
         ),
       ),
     );
