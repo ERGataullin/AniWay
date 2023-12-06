@@ -23,9 +23,11 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
       value: wm,
       child: Scaffold(
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _SearchBar(),
             _Result(),
+            _Loader(),
           ],
         ),
       ),
@@ -67,19 +69,45 @@ class _Result extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ValueListenableBuilder(
-        valueListenable: context.wm.movies,
-        builder: (context, items, ___) => GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: MoviePreviewWidget.aspectRatio,
-            maxCrossAxisExtent: 200,
+        valueListenable: context.wm.showResult,
+        builder: (context, showResult, ___) => Visibility(
+          visible: showResult,
+          child: ValueListenableBuilder(
+            valueListenable: context.wm.movies,
+            builder: (context, items, ___) => GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: MoviePreviewWidget.aspectRatio,
+                maxCrossAxisExtent: 200,
+              ),
+              itemCount: items.length,
+              itemBuilder: (context, index) => MoviePreviewWidget(
+                movie: items[index],
+                onPressed: () => context.wm.onMoviePressed(items[index].id),
+              ),
+            ),
           ),
-          itemCount: items.length,
-          itemBuilder: (context, index) => MoviePreviewWidget(
-            movie: items[index],
-            onPressed: () => context.wm.onMoviePressed(items[index].id),
+        ),
+      ),
+    );
+  }
+}
+
+class _Loader extends StatelessWidget {
+  const _Loader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: ValueListenableBuilder(
+          valueListenable: context.wm.showLoader,
+          builder: (context, showLoader, ___) => Visibility(
+            visible: showLoader,
+            child: CircularProgressIndicator(),
           ),
         ),
       ),
