@@ -20,6 +20,10 @@ abstract interface class ISearchWidgetModel implements IWidgetModel {
 
   ValueListenable<List<MoviePreviewData>> get movies;
 
+  ValueListenable<bool> get showLoader;
+
+  ValueListenable<bool> get showResult;
+
   SearchController get queryController;
 
   void onMoviePressed(int id);
@@ -36,6 +40,12 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
 
   @override
   final ValueNotifier<List<MoviePreviewData>> movies = ValueNotifier(const []);
+
+  @override
+  final ValueNotifier<bool> showLoader = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> showResult = ValueNotifier(false);
 
   @override
   final SearchController queryController = SearchController();
@@ -72,9 +82,13 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   }
 
   Future<void> _loadMovies() async {
+    showLoader.value = true;
+    showResult.value = false;
     movies.value = const [];
     movies.value = await model.getMovies(
       query: queryController.text,
     );
+    showLoader.value = false;
+    showResult.value = true;
   }
 }
