@@ -24,5 +24,6 @@
     },
     "watchNowMostPopularLabel": "Самое популярное на AniWay",
     "watchNowTitle": "Смотреть сейчас",
-    "watchNowUpNextLabel": "К просмотру"
+    "watchNowUpNextLabel": "К просмотру",
+    "searchSearchBarHint": "Поиск"
 }
