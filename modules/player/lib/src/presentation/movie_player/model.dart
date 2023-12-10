@@ -9,6 +9,8 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 
   Future<List<VideoTranslationData>> getTranslations(Object episodeId);
 
+  Future<VideoData> getTranslationVideo(Uri embedUri);
+
   Future<void> postTranslationWatched(Object id);
 }
 
@@ -29,6 +31,11 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   @override
   Future<List<VideoTranslationData>> getTranslations(Object episodeId) {
     return _service.getTranslations(episodeId);
+  }
+
+  @override
+  Future<VideoData> getTranslationVideo(Uri embedUri) {
+    return _service.getTranslationVideo(embedUri);
   }
 
   @override

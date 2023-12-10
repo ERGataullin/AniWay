@@ -91,6 +91,23 @@ abstract class PlayerLocalizations {
     Locale('ru')
   ];
 
+  /// No description provided for @moviePlayerPreferencesTranslationTypeLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Тип перевода'**
+  String get moviePlayerPreferencesTranslationTypeLabel;
+
+  /// No description provided for @moviePlayerPreferencesTranslationType.
+  ///
+  /// In ru, this message translates to:
+  /// **'{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}'**
+  String moviePlayerPreferencesTranslationType(String type);
+
+  /// No description provided for @moviePlayerPreferencesTranslationLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Перевод'**
+  String get moviePlayerPreferencesTranslationLabel;
 }
 
 class _PlayerLocalizationsDelegate extends LocalizationsDelegate<PlayerLocalizations> {

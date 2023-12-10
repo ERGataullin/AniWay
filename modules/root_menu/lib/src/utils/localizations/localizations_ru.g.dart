@@ -3,8 +3,8 @@ import 'package:intl/intl.dart' as intl;
 import 'localizations.g.dart';
 
 /// The translations for Russian (`ru`).
-class MenuLocalizationsRu extends MenuLocalizations {
-  MenuLocalizationsRu([String locale = 'ru']) : super(locale);
+class RootMenuLocalizationsRu extends RootMenuLocalizations {
+  RootMenuLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
   String destinationLabel(String destination) {

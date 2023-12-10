@@ -63,7 +63,11 @@ class Anime365PlayerDataSource implements PlayerDataSource {
         response.body['data'] as Map<String, dynamic>;
     return (json['translations'] as List<dynamic>)
         .cast<Map<String, dynamic>>()
-        .where((translationJson) => translationJson['type'] != 'voiceOther')
+        .where(
+          (translationJson) =>
+              translationJson['isActive'] == 1 &&
+              translationJson['type'] != 'voiceOther',
+        )
         .map(
       (translationJson) {
         Uri embedUri = Uri.parse(translationJson['embedUrl'] as String);
@@ -72,9 +76,14 @@ class Anime365PlayerDataSource implements PlayerDataSource {
             host: _network.baseUri.host,
           );
         }
+        String title = translationJson['authorsSummary'] as String;
+        if (title.contains('(')) {
+          title = title.substring(0, title.indexOf('(') - 1);
+        }
+
         return VideoTranslationDto(
           id: translationJson['id'] as Object,
-          title: translationJson['authorsSummary'] as String,
+          title: title,
           type: translationJson['typeKind'] as String,
           language: translationJson['typeLang'] as String,
           embedUrl: embedUri.toString(),
