@@ -1,6 +1,7 @@
+import 'package:core/core.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
-import 'package:player/player.dart';
+import 'package:player/src/presentation/components/video_controls/widget.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/presentation/movie_player/widget_model.dart';
 import 'package:provider/provider.dart';
@@ -21,16 +22,18 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWidgetModel> {
   Widget build(IMoviePlayerWidgetModel wm) {
     return Provider<IMoviePlayerWidgetModel>.value(
       value: wm,
-      child: ValueListenableBuilder<String>(
-        valueListenable: wm.title,
-        builder: (context, title, ___) => ValueListenableBuilder<
-            Map<VideoTranslationTypeData, List<VideoTranslationData>>>(
-          valueListenable: wm.translations,
-          builder: (context, translations, ___) =>
-              VideoPlayerWidget.fromTranslations(
-            title: title,
-            translations: translations,
-            onFinished: wm.onEpisodeFinished,
+      child: VideoPlayerWidget(
+        controller: wm.controller,
+        controlsBuilder: (context) => ValueListenableBuilder<String>(
+          valueListenable: wm.title,
+          builder: (context, title, ___) =>
+              ValueListenableBuilder<List<MenuItemData>>(
+            valueListenable: wm.preferences,
+            builder: (context, preferences, ___) => VideoControlsWidget(
+              controller: wm.controller,
+              title: title,
+              preferences: preferences,
+            ),
           ),
         ),
       ),

@@ -2,9 +2,9 @@ import 'package:auth/auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:menu/menu.dart';
 import 'package:movies/movies.dart';
 import 'package:player/player.dart';
+import 'package:root_menu/root_menu.dart';
 
 extension _RouteLocating on Uri {
   Uri locateUri({
@@ -88,7 +88,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     Uri? baseUri,
   }) {
     return StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => MenuWidget(
+      builder: (context, state, navigationShell) => RootMenuWidget(
         key: UniqueKey(),
         selectedIndex: navigationShell.currentIndex,
         destinations: const [

@@ -7,9 +7,6 @@ class PlatformFullscreen implements Fullscreen {
   const PlatformFullscreen();
 
   @override
-  bool get isDynamicFullscreenSupported => false;
-
-  @override
   Future<void> request() {
     return document.documentElement!.requestFullscreen();
   }

@@ -7,10 +7,10 @@ import 'package:intl/intl.dart' as intl;
 
 import 'localizations_ru.g.dart';
 
-/// Callers can lookup localized strings with an instance of MenuLocalizations
-/// returned by `MenuLocalizations.of(context)`.
+/// Callers can lookup localized strings with an instance of RootMenuLocalizations
+/// returned by `RootMenuLocalizations.of(context)`.
 ///
-/// Applications need to include `MenuLocalizations.delegate()` in their app's
+/// Applications need to include `RootMenuLocalizations.delegate()` in their app's
 /// `localizationDelegates` list, and the locales they support in the app's
 /// `supportedLocales` list. For example:
 ///
@@ -18,8 +18,8 @@ import 'localizations_ru.g.dart';
 /// import 'localizations/localizations.g.dart';
 ///
 /// return MaterialApp(
-///   localizationsDelegates: MenuLocalizations.localizationsDelegates,
-///   supportedLocales: MenuLocalizations.supportedLocales,
+///   localizationsDelegates: RootMenuLocalizations.localizationsDelegates,
+///   supportedLocales: RootMenuLocalizations.supportedLocales,
 ///   home: MyApplicationHome(),
 /// );
 /// ```
@@ -56,18 +56,18 @@ import 'localizations_ru.g.dart';
 /// Select and expand the newly-created Localizations item then, for each
 /// locale your application supports, add a new item and select the locale
 /// you wish to add from the pop-up menu in the Value field. This list should
-/// be consistent with the languages listed in the MenuLocalizations.supportedLocales
+/// be consistent with the languages listed in the RootMenuLocalizations.supportedLocales
 /// property.
-abstract class MenuLocalizations {
-  MenuLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+abstract class RootMenuLocalizations {
+  RootMenuLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
-  static MenuLocalizations of(BuildContext context) {
-    return Localizations.of<MenuLocalizations>(context, MenuLocalizations)!;
+  static RootMenuLocalizations of(BuildContext context) {
+    return Localizations.of<RootMenuLocalizations>(context, RootMenuLocalizations)!;
   }
 
-  static const LocalizationsDelegate<MenuLocalizations> delegate = _MenuLocalizationsDelegate();
+  static const LocalizationsDelegate<RootMenuLocalizations> delegate = _RootMenuLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -98,31 +98,31 @@ abstract class MenuLocalizations {
   String destinationLabel(String destination);
 }
 
-class _MenuLocalizationsDelegate extends LocalizationsDelegate<MenuLocalizations> {
-  const _MenuLocalizationsDelegate();
+class _RootMenuLocalizationsDelegate extends LocalizationsDelegate<RootMenuLocalizations> {
+  const _RootMenuLocalizationsDelegate();
 
   @override
-  Future<MenuLocalizations> load(Locale locale) {
-    return SynchronousFuture<MenuLocalizations>(lookupMenuLocalizations(locale));
+  Future<RootMenuLocalizations> load(Locale locale) {
+    return SynchronousFuture<RootMenuLocalizations>(lookupRootMenuLocalizations(locale));
   }
 
   @override
   bool isSupported(Locale locale) => <String>['ru'].contains(locale.languageCode);
 
   @override
-  bool shouldReload(_MenuLocalizationsDelegate old) => false;
+  bool shouldReload(_RootMenuLocalizationsDelegate old) => false;
 }
 
-MenuLocalizations lookupMenuLocalizations(Locale locale) {
+RootMenuLocalizations lookupRootMenuLocalizations(Locale locale) {
 
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ru': return MenuLocalizationsRu();
+    case 'ru': return RootMenuLocalizationsRu();
   }
 
   throw FlutterError(
-    'MenuLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'RootMenuLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
     'that was used.'

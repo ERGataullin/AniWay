@@ -21,7 +21,7 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
   Widget build(ISearchWidgetModel wm) {
     return Provider<ISearchWidgetModel>.value(
       value: wm,
-      child: Scaffold(
+      child: const Scaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -51,7 +51,7 @@ class _SearchBar extends StatelessWidget {
           builder: (context, hintText, ___) => SearchBar(
             controller: context.wm.queryController,
             padding: const MaterialStatePropertyAll<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 16.0),
+              EdgeInsets.symmetric(horizontal: 16),
             ),
             leading: const Icon(Icons.search),
             hintText: hintText,
@@ -76,7 +76,7 @@ class _Result extends StatelessWidget {
             valueListenable: context.wm.movies,
             builder: (context, items, ___) => GridView.builder(
               padding: const EdgeInsets.all(16),
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
                 childAspectRatio: MoviePreviewWidget.aspectRatio,
@@ -107,7 +107,7 @@ class _Loader extends StatelessWidget {
           valueListenable: context.wm.showLoader,
           builder: (context, showLoader, ___) => Visibility(
             visible: showLoader,
-            child: CircularProgressIndicator(),
+            child: const CircularProgressIndicator(),
           ),
         ),
       ),

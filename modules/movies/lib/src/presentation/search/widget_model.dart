@@ -84,10 +84,11 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   Future<void> _loadMovies() async {
     showLoader.value = true;
     showResult.value = false;
-    movies.value = const [];
-    movies.value = await model.getMovies(
-      query: queryController.text,
-    );
+    movies
+      ..value = const []
+      ..value = await model.getMovies(
+        query: queryController.text,
+      );
     showLoader.value = false;
     showResult.value = true;
   }
