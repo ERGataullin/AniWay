@@ -16,6 +16,7 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
     required this.controller,
     required this.title,
     this.preferences = const [],
+    required this.child,
     WidgetModelFactory wmFactory = videoControlsWidgetModelFactory,
   }) : super(wmFactory);
 
@@ -25,21 +26,49 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
 
   final List<MenuItemData> preferences;
 
+  final Widget child;
+
   @override
   Widget build(IVideoControlsWidgetModel wm) {
     return Provider<IVideoControlsWidgetModel>.value(
       value: wm,
-      child: const _Theme(
-        child: Scaffold(
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              _Top(),
-              _PlayPauseButton(),
-              _Bottom(),
-            ],
+      child: _Theme(
+        child: _UserActivityListener(
+          child: Scaffold(
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                child,
+                const _Controls(),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _UserActivityListener extends StatelessWidget {
+  const _UserActivityListener({
+    this.child,
+  });
+
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<MouseCursor>(
+      valueListenable: context.wm.cursor,
+      child: GestureDetector(
+        onTapUp: context.wm.onTapUp,
+        child: child,
+      ),
+      builder: (context, cursor, child) => MouseRegion(
+        cursor: cursor,
+        onHover: context.wm.onPointerHover,
+        onExit: context.wm.onPointerExit,
+        child: child,
       ),
     );
   }
@@ -70,6 +99,34 @@ class _Theme extends StatelessWidget {
         ),
       ),
       child: child,
+    );
+  }
+}
+
+class _Controls extends StatelessWidget {
+  const _Controls({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: context.wm.visible,
+      builder: (context, visible, ___) => AnimatedSwitcher(
+        switchInCurve: Easing.emphasizedDecelerate,
+        // TODO(ERGataullin): replace with Easing.emphasized
+        switchOutCurve: Easing.emphasizedAccelerate,
+        duration: Durations.long2,
+        reverseDuration: Durations.short4,
+        child: visible
+            ? const Stack(
+                fit: StackFit.expand,
+                children: [
+                  _Top(),
+                  _PlayPauseButton(),
+                  _Bottom(),
+                ],
+              )
+            : null,
+      ),
     );
   }
 }
