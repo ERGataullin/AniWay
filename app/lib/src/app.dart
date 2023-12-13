@@ -26,6 +26,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final AppTheme _theme = AppTheme();
+  final AppRouter _router = AppRouter();
 
   @override
   void initState() {
@@ -55,7 +56,7 @@ class _AppState extends State<App> {
       ],
       theme: _theme.light,
       darkTheme: _theme.dark,
-      routerConfig: AppRouter(),
+      routerConfig: _router,
     );
   }
 }
