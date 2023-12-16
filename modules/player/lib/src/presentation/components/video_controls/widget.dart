@@ -106,7 +106,6 @@ class _Theme extends StatelessWidget {
 
 class _Child extends StatelessWidget {
   const _Child({
-    super.key,
     required this.child,
   });
 
@@ -129,7 +128,7 @@ class _Child extends StatelessWidget {
 }
 
 class _Controls extends StatelessWidget {
-  const _Controls({super.key});
+  const _Controls();
 
   @override
   Widget build(BuildContext context) {
