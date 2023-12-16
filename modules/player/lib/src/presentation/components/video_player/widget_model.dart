@@ -54,6 +54,8 @@ class VideoPlayerWidgetModel
   @override
   void dispose() {
     super.dispose();
+    showPlayer.dispose();
+    playerAspectRatio.dispose();
     controller.removeListener(_onControllerValueChanged);
   }
 

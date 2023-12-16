@@ -46,6 +46,10 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<MouseCursor> get cursor;
 
+  ValueListenable<double> get maxScale;
+
+  ValueListenable<List<double>> get scaleAnchors;
+
   ValueListenable<String> get title;
 
   ValueListenable<String> get position;
@@ -76,6 +80,12 @@ class VideoControlsWidgetModel
   VideoControlsWidgetModel(super._model);
 
   @override
+  ValueNotifier<double> maxScale = ValueNotifier(1);
+
+  @override
+  ValueNotifier<List<double>> scaleAnchors = ValueNotifier(const [1]);
+
+  @override
   final ValueNotifier<String> title = ValueNotifier('');
 
   @override
@@ -94,6 +104,8 @@ class VideoControlsWidgetModel
   @override
   late VideoController controller;
 
+  double _screenAspectRatio = 1;
+
   @override
   void initWidgetModel() {
     super.initWidgetModel();
@@ -102,6 +114,12 @@ class VideoControlsWidgetModel
     _onControllerValueChanged();
 
     show();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _screenAspectRatio = MediaQuery.of(context).size.aspectRatio;
   }
 
   @override
@@ -145,6 +163,8 @@ class VideoControlsWidgetModel
   @override
   void dispose() {
     super.dispose();
+    maxScale.dispose();
+    scaleAnchors.dispose();
     title.dispose();
     position.dispose();
     duration.dispose();
@@ -154,6 +174,9 @@ class VideoControlsWidgetModel
 
   void _onControllerValueChanged() {
     final VideoPlayerValue value = controller.value;
+
+    maxScale.value = _screenAspectRatio / value.aspectRatio;
+    scaleAnchors.value = [1, maxScale.value];
 
     position.value = value.position.format();
     duration.value = value.duration.format();
