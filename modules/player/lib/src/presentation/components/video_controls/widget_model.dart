@@ -173,6 +173,7 @@ class VideoControlsWidgetModel
     maxScale.dispose();
     scaleAnchors.dispose();
     title.dispose();
+    playPauseLoaderState.dispose();
     position.dispose();
     duration.dispose();
     playPauseAnimation.dispose();
