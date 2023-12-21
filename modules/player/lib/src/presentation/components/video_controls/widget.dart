@@ -1,7 +1,9 @@
 import 'package:core/core.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
+import 'package:player/src/domain/models/seek_gesture_detector_side.dart';
 import 'package:player/src/presentation/components/scalable/widget.dart';
+import 'package:player/src/presentation/components/seek_gesture_detector/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:provider/provider.dart';
@@ -63,13 +65,46 @@ class _UserActivityListener extends StatelessWidget {
       valueListenable: context.wm.cursor,
       child: GestureDetector(
         onTapUp: context.wm.onTapUp,
-        child: child,
+        child: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            if (child != null) child!,
+            const Row(
+              children: [
+                _SeekGestureDetector(side: SeekGestureDetectorSide.left),
+                _SeekGestureDetector(side: SeekGestureDetectorSide.right),
+              ],
+            ),
+          ],
+        ),
       ),
       builder: (context, cursor, child) => MouseRegion(
         cursor: cursor,
         onHover: context.wm.onPointerHover,
         onExit: context.wm.onPointerExit,
         child: child,
+      ),
+    );
+  }
+}
+
+class _SeekGestureDetector extends StatelessWidget {
+  const _SeekGestureDetector({
+    required this.side,
+  });
+
+  final SeekGestureDetectorSide side;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Material(
+        type: MaterialType.transparency,
+        child: SeekGestureDetectorWidget(
+          side: side,
+          callback: () => context.wm.onSeekGesture(side),
+        ),
       ),
     );
   }

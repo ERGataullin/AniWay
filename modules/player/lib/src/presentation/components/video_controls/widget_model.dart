@@ -5,6 +5,7 @@ import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:player/src/domain/models/seek_gesture_detector_side.dart';
 import 'package:player/src/presentation/components/video_controls/model.dart';
 import 'package:player/src/presentation/components/video_controls/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
@@ -69,6 +70,8 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
   void onPointerHover(PointerHoverEvent event);
 
   void onPointerExit(PointerExitEvent event);
+
+  void onSeekGesture(SeekGestureDetectorSide side);
 }
 
 class VideoControlsWidgetModel
@@ -78,6 +81,8 @@ class VideoControlsWidgetModel
         _HideOnUserInactivityWidgetModelMixin
     implements IVideoControlsWidgetModel {
   VideoControlsWidgetModel(super._model);
+
+  static const Duration _rewindFastForwardValue = Duration(seconds: 10);
 
   @override
   ValueNotifier<double> maxScale = ValueNotifier(1);
@@ -158,6 +163,17 @@ class VideoControlsWidgetModel
     controller.value.isPlaying
         ? await controller.pause()
         : await controller.play();
+  }
+
+  @override
+  Future<void> onSeekGesture(SeekGestureDetectorSide side) async {
+    await controller.seekTo(
+      controller.value.position +
+          switch (side) {
+            SeekGestureDetectorSide.left => -_rewindFastForwardValue,
+            SeekGestureDetectorSide.right => _rewindFastForwardValue,
+          },
+    );
   }
 
   @override
