@@ -8,3 +8,5 @@ export '/src/utils/network/util.dart';
 
 export '/src/utils/storage/hive.dart';
 export '/src/utils/storage/util.dart';
+
+export 'package:html/parser.dart';

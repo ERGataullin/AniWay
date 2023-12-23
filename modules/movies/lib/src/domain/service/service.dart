@@ -11,6 +11,8 @@ abstract interface class MoviesService {
   Future<List<MoviePreviewData>> getMovies({
     MovieOrderData? order,
     String? query,
+    String? limit,
+    String? offset,
     List<MovieWatchStatusData> watchStatus = const [],
   });
 
