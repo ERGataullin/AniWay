@@ -1,9 +1,9 @@
 import 'package:core/core.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/domain/models/seek_gesture_detector_side.dart';
+import 'package:player/src/domain/models/seek_gesture_side.dart';
 import 'package:player/src/presentation/components/scalable/widget.dart';
-import 'package:player/src/presentation/components/seek_gesture_detector/widget.dart';
+import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:provider/provider.dart';
@@ -134,8 +134,8 @@ class _Gestures extends StatelessWidget {
           ),
           const Row(
             children: [
-              _SeekGestureDetector(side: SeekGestureDetectorSide.left),
-              _SeekGestureDetector(side: SeekGestureDetectorSide.right),
+              _SeekGesture(side: SeekGestureSide.left),
+              _SeekGesture(side: SeekGestureSide.right),
             ],
           ),
         ],
@@ -144,21 +144,21 @@ class _Gestures extends StatelessWidget {
   }
 }
 
-class _SeekGestureDetector extends StatelessWidget {
-  const _SeekGestureDetector({
+class _SeekGesture extends StatelessWidget {
+  const _SeekGesture({
     required this.side,
   });
 
-  final SeekGestureDetectorSide side;
+  final SeekGestureSide side;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Material(
         type: MaterialType.transparency,
-        child: SeekGestureDetectorWidget(
+        child: SeekGestureWidget(
           side: side,
-          callback: () => context.wm.onSeekGesture(side),
+          videoController: context.wm.controller,
         ),
       ),
     );
@@ -181,8 +181,8 @@ class _Child extends StatelessWidget {
         Center(
           child: child,
         ),
-        FadeTransition(
-          opacity: context.wm.fadeAnimation,
+        AnimatedVisibility.emphasized(
+          visible: context.wm.visible,
           child: const DecoratedBox(
             decoration: BoxDecoration(
               color: Colors.black54,
@@ -199,23 +199,16 @@ class _Controls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: context.wm.fadeAnimation,
-      child: ValueListenableBuilder(
-        valueListenable: context.wm.controlsIgnorePointer,
-        builder: (context, ignorePointer, child) => IgnorePointer(
-          ignoring: ignorePointer,
-          child: child,
-        ),
-        child: const Stack(
-          clipBehavior: Clip.none,
-          fit: StackFit.expand,
-          children: [
-            _Top(),
-            _PlayPauseButton(),
-            _Bottom(),
-          ],
-        ),
+    return AnimatedVisibility.emphasized(
+      visible: context.wm.visible,
+      child: const Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          _Top(),
+          _PlayPauseButton(),
+          _Bottom(),
+        ],
       ),
     );
   }

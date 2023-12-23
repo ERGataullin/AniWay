@@ -1,1 +1,0 @@
-enum SeekGestureDetectorSide { left, right }

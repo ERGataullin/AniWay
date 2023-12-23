@@ -5,7 +5,6 @@ import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/domain/models/seek_gesture_detector_side.dart';
 import 'package:player/src/presentation/components/video_controls/model.dart';
 import 'package:player/src/presentation/components/video_controls/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
@@ -43,9 +42,9 @@ extension _DurationFormat on Duration {
 }
 
 abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
-  ValueListenable<MouseCursor> get cursor;
+  ValueListenable<bool> get visible;
 
-  ValueListenable<bool> get controlsIgnorePointer;
+  ValueListenable<MouseCursor> get cursor;
 
   ValueListenable<double> get maxScale;
 
@@ -57,9 +56,7 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get duration;
 
-  VideoPlayerController get controller;
-
-  Animation<double> get fadeAnimation;
+  VideoController get controller;
 
   Animation<double> get playPauseAnimation;
 
@@ -72,8 +69,6 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
   void onPointerHover(PointerHoverEvent event);
 
   void onPointerExit(PointerExitEvent event);
-
-  void onSeekGesture(SeekGestureDetectorSide side);
 }
 
 class VideoControlsWidgetModel
@@ -81,8 +76,6 @@ class VideoControlsWidgetModel
     with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
     implements IVideoControlsWidgetModel {
   VideoControlsWidgetModel(super._model);
-
-  static const Duration _rewindFastForwardValue = Duration(seconds: 10);
 
   @override
   ValueNotifier<double> maxScale = ValueNotifier(1);
@@ -117,9 +110,6 @@ class VideoControlsWidgetModel
   );
 
   double _screenAspectRatio = 1;
-
-  @override
-  ValueListenable<bool> get controlsIgnorePointer => ignorePointer;
 
   @override
   void initWidgetModel() {
@@ -176,17 +166,6 @@ class VideoControlsWidgetModel
   }
 
   @override
-  Future<void> onSeekGesture(SeekGestureDetectorSide side) async {
-    await controller.seekTo(
-      controller.value.position +
-          switch (side) {
-            SeekGestureDetectorSide.left => -_rewindFastForwardValue,
-            SeekGestureDetectorSide.right => _rewindFastForwardValue,
-          },
-    );
-  }
-
-  @override
   void dispose() {
     super.dispose();
     maxScale.dispose();
@@ -223,24 +202,10 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
     on WidgetModel<W, M>, TickerProviderWidgetModelMixin<W, M> {
   static const Duration _hideOnUserInactivityGap = Duration(seconds: 3);
 
+  final ValueNotifier<bool> visible = ValueNotifier(false);
+
   final ValueNotifier<MouseCursor> cursor = ValueNotifier(
     SystemMouseCursors.none,
-  );
-
-  late final ValueNotifier<bool> ignorePointer = ValueNotifier(_hidden);
-
-  late final CurvedAnimation fadeAnimation = CurvedAnimation(
-    parent: _fadeAnimationController,
-    curve: Easing.emphasizedDecelerate,
-    // TODO(ERGataullin): replace with Easing.emphasized
-    reverseCurve: Curves.easeInOutCubicEmphasized,
-  );
-
-  late final AnimationController _fadeAnimationController = AnimationController(
-    vsync: this,
-    value: _hidden ? 0 : 1,
-    duration: Durations.long2,
-    reverseDuration: Durations.short4,
   );
 
   bool _hidden = true;
@@ -250,10 +215,8 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
   @override
   void dispose() {
     super.dispose();
+    visible.dispose();
     cursor.dispose();
-    ignorePointer.dispose();
-    fadeAnimation.dispose();
-    _fadeAnimationController.dispose();
     _cancelHideOnUserInactivityTimer();
   }
 
@@ -261,9 +224,8 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
     bool hideOnUserInactivity = true,
   }) {
     _hidden = false;
-    ignorePointer.value = false;
+    visible.value = true;
     cursor.value = SystemMouseCursors.basic;
-    _fadeAnimationController.forward();
 
     hideOnUserInactivity
         ? this.hideOnUserInactivity()
@@ -272,9 +234,8 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
 
   void hide() {
     _hidden = true;
-    ignorePointer.value = true;
+    visible.value = false;
     cursor.value = SystemMouseCursors.none;
-    _fadeAnimationController.reverse();
 
     _cancelHideOnUserInactivityTimer();
   }

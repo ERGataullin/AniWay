@@ -1,3 +1,4 @@
+export '/src/presentation/components/animated_visibility.dart';
 export '/src/presentation/components/menu.dart';
 
 export '/src/utils/error_handler/debug_print.dart';

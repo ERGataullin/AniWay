@@ -2,24 +2,24 @@ import 'dart:math';
 
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/domain/models/seek_gesture_detector_side.dart';
-import 'package:player/src/presentation/components/seek_gesture_detector/widget_model.dart';
+import 'package:player/src/domain/models/seek_gesture_side.dart';
+import 'package:player/src/presentation/components/seek_gesture/widget_model.dart';
+import 'package:player/src/utils/video_controller.dart';
 
-class SeekGestureDetectorWidget
-    extends ElementaryWidget<ISeekGestureDetectorWidgetModel> {
-  const SeekGestureDetectorWidget({
+class SeekGestureWidget extends ElementaryWidget<ISeekGestureWidgetModel> {
+  const SeekGestureWidget({
     super.key,
     required this.side,
-    required this.callback,
-    WidgetModelFactory wmFactory = seekGestureDetectorWidgetModelFactory,
+    required this.videoController,
+    WidgetModelFactory wmFactory = seekGestureWidgetModelFactory,
   }) : super(wmFactory);
 
-  final SeekGestureDetectorSide side;
+  final SeekGestureSide side;
 
-  final VoidCallback callback;
+  final VideoController videoController;
 
   @override
-  Widget build(ISeekGestureDetectorWidgetModel wm) {
+  Widget build(ISeekGestureWidgetModel wm) {
     return RawGestureDetector(
       behavior: HitTestBehavior.translucent,
       gestures: wm.gestures,
@@ -27,10 +27,10 @@ class SeekGestureDetectorWidget
   }
 }
 
-class SeekGestureDetectorShapeBorder extends ContinuousRectangleBorder {
-  const SeekGestureDetectorShapeBorder(this._side);
+class SeekGestureShapeBorder extends ContinuousRectangleBorder {
+  const SeekGestureShapeBorder(this._side);
 
-  final SeekGestureDetectorSide _side;
+  final SeekGestureSide _side;
 
   @override
   Path getOuterPath(
@@ -39,31 +39,31 @@ class SeekGestureDetectorShapeBorder extends ContinuousRectangleBorder {
   }) {
     final Point<double> leftTop = Point(
       switch (_side) {
-        SeekGestureDetectorSide.left => 0,
-        SeekGestureDetectorSide.right => 64,
+        SeekGestureSide.left => 0,
+        SeekGestureSide.right => 64,
       },
       rect.height,
     );
     final Point<double> leftControl = Point(0, rect.height / 2);
     final Point<double> leftBottom = Point(
       switch (_side) {
-        SeekGestureDetectorSide.left => 0,
-        SeekGestureDetectorSide.right => 64,
+        SeekGestureSide.left => 0,
+        SeekGestureSide.right => 64,
       },
       0,
     );
     final Point<double> rightTop = Point(
       switch (_side) {
-        SeekGestureDetectorSide.left => rect.width - 64,
-        SeekGestureDetectorSide.right => rect.width,
+        SeekGestureSide.left => rect.width - 64,
+        SeekGestureSide.right => rect.width,
       },
       rect.height,
     );
     final Point<double> rightControl = Point(rect.width, rect.height / 2);
     final Point<double> rightBottom = Point(
       switch (_side) {
-        SeekGestureDetectorSide.left => rect.width - 64,
-        SeekGestureDetectorSide.right => rect.width,
+        SeekGestureSide.left => rect.width - 64,
+        SeekGestureSide.right => rect.width,
       },
       0,
     );

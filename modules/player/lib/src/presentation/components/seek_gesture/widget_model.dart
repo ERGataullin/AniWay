@@ -2,31 +2,33 @@ import 'package:core/core.dart';
 import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/presentation/components/seek_gesture_detector/model.dart';
-import 'package:player/src/presentation/components/seek_gesture_detector/widget.dart';
+import 'package:player/src/domain/models/seek_gesture_side.dart';
+import 'package:player/src/presentation/components/seek_gesture/model.dart';
+import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/utils/seek_gesture_recognizer.dart';
 import 'package:provider/provider.dart';
 
-SeekGestureDetectorWidgetModel seekGestureDetectorWidgetModelFactory(
+SeekGestureWidgetModel seekGestureWidgetModelFactory(
   BuildContext context,
 ) =>
-    SeekGestureDetectorWidgetModel(
-      SeekGestureDetectorModel(
+    SeekGestureWidgetModel(
+      SeekGestureModel(
         context.read<ErrorHandler>(),
       ),
     );
 
-abstract interface class ISeekGestureDetectorWidgetModel
-    implements IWidgetModel {
+abstract interface class ISeekGestureWidgetModel implements IWidgetModel {
   Map<Type, GestureRecognizerFactory> get gestures;
 }
 
-class SeekGestureDetectorWidgetModel
-    extends WidgetModel<SeekGestureDetectorWidget, ISeekGestureDetectorModel>
-    implements ISeekGestureDetectorWidgetModel {
-  SeekGestureDetectorWidgetModel(super._model);
+class SeekGestureWidgetModel
+    extends WidgetModel<SeekGestureWidget, ISeekGestureModel>
+    implements ISeekGestureWidgetModel {
+  SeekGestureWidgetModel(super._model);
 
-  late final ShapeBorder _inkShapeBorder = SeekGestureDetectorShapeBorder(
+  static const Duration _seekValue = Duration(seconds: 10);
+
+  late final ShapeBorder _inkShapeBorder = SeekGestureShapeBorder(
     widget.side,
   );
 
@@ -59,7 +61,7 @@ class SeekGestureDetectorWidgetModel
     _gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
   }
 
-  void _onSeekTapUp(TapUpDetails details) {
+  Future<void> _onSeekTapUp(TapUpDetails details) async {
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
 
@@ -75,6 +77,12 @@ class SeekGestureDetectorWidgetModel
         )
         .confirm();
 
-    widget.callback.call();
+    await widget.videoController.seekTo(
+      widget.videoController.value.position +
+          switch (widget.side) {
+            SeekGestureSide.left => -_seekValue,
+            SeekGestureSide.right => _seekValue,
+          },
+    );
   }
 }
