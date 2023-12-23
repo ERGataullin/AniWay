@@ -63,16 +63,17 @@ class SeekGestureDetectorWidgetModel
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
 
-    // TODO(ERGataullin): Пофиксить для веба
-    _theme.splashFactory.create(
-      controller: _inkController,
-      referenceBox: referenceBox,
-      position: position,
-      color: _theme.splashColor,
-      textDirection: _textDirection,
-      containedInkWell: true,
-      customBorder: _inkShapeBorder,
-    );
+    _theme.splashFactory
+        .create(
+          controller: _inkController,
+          referenceBox: referenceBox,
+          position: position,
+          color: _theme.splashColor,
+          textDirection: _textDirection,
+          containedInkWell: true,
+          customBorder: _inkShapeBorder,
+        )
+        .confirm();
 
     widget.callback.call();
   }
