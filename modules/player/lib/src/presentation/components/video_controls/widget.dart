@@ -42,9 +42,9 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
               clipBehavior: Clip.none,
               fit: StackFit.expand,
               children: [
-                _Child(child: child),
-                const _ControlsBackground(),
-                const _Gestures(),
+                _Gestures(
+                  child: _Child(child: child),
+                ),
                 const _Controls(),
               ],
             ),
@@ -105,6 +105,66 @@ class _MouseRegion extends StatelessWidget {
   }
 }
 
+class _Gestures extends StatelessWidget {
+  const _Gestures({
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTapUp: context.wm.onTapUp,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ValueListenableBuilder(
+            valueListenable: context.wm.maxScale,
+            child: child,
+            builder: (context, maxScale, child) => ValueListenableBuilder(
+              valueListenable: context.wm.scaleAnchors,
+              builder: (context, scaleAnchors, ___) => ScalableWidget(
+                maxScale: maxScale,
+                anchors: scaleAnchors,
+                child: child!,
+              ),
+            ),
+          ),
+          const Row(
+            children: [
+              _SeekGestureDetector(side: SeekGestureDetectorSide.left),
+              _SeekGestureDetector(side: SeekGestureDetectorSide.right),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SeekGestureDetector extends StatelessWidget {
+  const _SeekGestureDetector({
+    required this.side,
+  });
+
+  final SeekGestureDetectorSide side;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Material(
+        type: MaterialType.transparency,
+        child: SeekGestureDetectorWidget(
+          side: side,
+          callback: () => context.wm.onSeekGesture(side),
+        ),
+      ),
+    );
+  }
+}
+
 class _Child extends StatelessWidget {
   const _Child({
     required this.child,
@@ -114,49 +174,22 @@ class _Child extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.maxScale,
-      builder: (context, maxScale, ___) => ValueListenableBuilder(
-        valueListenable: context.wm.scaleAnchors,
-        builder: (context, scaleAnchors, ___) => ScalableWidget(
-          maxScale: maxScale,
-          anchors: scaleAnchors,
-          child: Center(child: child),
+    return Stack(
+      clipBehavior: Clip.none,
+      fit: StackFit.expand,
+      children: [
+        Center(
+          child: child,
         ),
-      ),
-    );
-  }
-}
-
-class _ControlsBackground extends StatelessWidget {
-  const _ControlsBackground();
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: context.wm.fadeAnimation,
-      child: const DecoratedBox(
-        decoration: BoxDecoration(
-          color: Colors.black54,
+        FadeTransition(
+          opacity: context.wm.fadeAnimation,
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.black54,
+            ),
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class _Gestures extends StatelessWidget {
-  const _Gestures();
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapUp: context.wm.onTapUp,
-      child: const Row(
-        children: [
-          _SeekGestureDetector(side: SeekGestureDetectorSide.left),
-          _SeekGestureDetector(side: SeekGestureDetectorSide.right),
-        ],
-      ),
+      ],
     );
   }
 }
@@ -182,27 +215,6 @@ class _Controls extends StatelessWidget {
             _PlayPauseButton(),
             _Bottom(),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SeekGestureDetector extends StatelessWidget {
-  const _SeekGestureDetector({
-    required this.side,
-  });
-
-  final SeekGestureDetectorSide side;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Material(
-        type: MaterialType.transparency,
-        child: SeekGestureDetectorWidget(
-          side: side,
-          callback: () => context.wm.onSeekGesture(side),
         ),
       ),
     );
