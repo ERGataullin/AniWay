@@ -103,6 +103,7 @@ class VideoControlsWidgetModel
   late final CurvedAnimation playPauseAnimation = CurvedAnimation(
     parent: _playPauseAnimationController,
     curve: Easing.standard,
+    reverseCurve: Easing.standard.flipped,
   );
 
   @override
@@ -195,6 +196,7 @@ class VideoControlsWidgetModel
     duration.dispose();
     playPauseAnimation.dispose();
     controller.removeListener(_onControllerValueChanged);
+    _playPauseAnimationController.dispose();
   }
 
   void _onControllerValueChanged() {

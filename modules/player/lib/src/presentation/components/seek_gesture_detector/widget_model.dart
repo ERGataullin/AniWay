@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:elementary/elementary.dart' hide ErrorHandler;
-import 'package:flutter/gestures.dart' hide SerialTapGestureRecognizer;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/seek_gesture_detector/model.dart';
 import 'package:player/src/presentation/components/seek_gesture_detector/widget.dart';

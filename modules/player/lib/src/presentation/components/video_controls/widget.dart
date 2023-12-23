@@ -161,27 +161,6 @@ class _Gestures extends StatelessWidget {
   }
 }
 
-class _SeekGestureDetector extends StatelessWidget {
-  const _SeekGestureDetector({
-    required this.side,
-  });
-
-  final SeekGestureDetectorSide side;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Material(
-        type: MaterialType.transparency,
-        child: SeekGestureDetectorWidget(
-          side: side,
-          callback: () => context.wm.onSeekGesture(side),
-        ),
-      ),
-    );
-  }
-}
-
 class _Controls extends StatelessWidget {
   const _Controls();
 
@@ -203,6 +182,27 @@ class _Controls extends StatelessWidget {
             _PlayPauseButton(),
             _Bottom(),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SeekGestureDetector extends StatelessWidget {
+  const _SeekGestureDetector({
+    required this.side,
+  });
+
+  final SeekGestureDetectorSide side;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Material(
+        type: MaterialType.transparency,
+        child: SeekGestureDetectorWidget(
+          side: side,
+          callback: () => context.wm.onSeekGesture(side),
         ),
       ),
     );
