@@ -1,5 +1,5 @@
-name: menu
-description: A menu module library of AniWay.
+name: root_menu
+description: A root menu module library of AniWay.
 publish_to: none
 
 environment:

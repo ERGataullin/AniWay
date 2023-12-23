@@ -1,3 +1,6 @@
 {
-    "@@locale": "ru"
+    "@@locale": "ru",
+    "moviePlayerPreferencesTranslationTypeLabel": "Тип перевода",
+    "moviePlayerPreferencesTranslationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}",
+    "moviePlayerPreferencesTranslationLabel": "Перевод"
 }

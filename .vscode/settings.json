@@ -8,5 +8,6 @@
     "files.watcherExclude": {
         "**/.fvm": true
     },
-    "dart.debugExternalPackageLibraries": true
+    "dart.debugExternalPackageLibraries": true,
+    "dart.debugSdkLibraries": true
 }

@@ -5,9 +5,6 @@ class PlatformFullscreen implements Fullscreen {
   const PlatformFullscreen();
 
   @override
-  bool get isDynamicFullscreenSupported => true;
-
-  @override
   Future<void> request() {
     return SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }

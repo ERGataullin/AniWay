@@ -86,12 +86,20 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           ),
         );
         final String episodeTitle = a.children[0].text;
-        final RegExp tvEpisodeTitlePattern = RegExp(r'^\d+ серия$');
+        final RegExp episodeNumberPattern = RegExp(r'\d+(\.\d)?');
+        final RegExp tvEpisodeTitlePattern = RegExp(
+          '^${episodeNumberPattern.pattern} серия\$',
+        );
         final RegExp movieEpisodeTitlePattern = RegExp(r'^Фильм$');
-        final RegExp ovaEpisodeTitlePattern = RegExp(r'^OVA \d+ серия$');
-        final RegExp onaEpisodeTitlePattern = RegExp(r'^ONA \d+ серия$');
-        final RegExp specialEpisodeTitlePattern =
-            RegExp(r'^SPECIAL \d+ серия$');
+        final RegExp ovaEpisodeTitlePattern = RegExp(
+          '^OVA ${episodeNumberPattern.pattern} серия\$',
+        );
+        final RegExp onaEpisodeTitlePattern = RegExp(
+          '^ONA ${episodeNumberPattern.pattern} серия\$',
+        );
+        final RegExp specialEpisodeTitlePattern = RegExp(
+          '^SPECIAL ${episodeNumberPattern.pattern} серия\$',
+        );
         late final String episodeType;
         if (tvEpisodeTitlePattern.hasMatch(episodeTitle)) {
           episodeType = 'tv';
@@ -104,13 +112,12 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         } else if (specialEpisodeTitlePattern.hasMatch(episodeTitle)) {
           episodeType = 'special';
         }
-        final RegExp episodeNumberPattern = RegExp(r'\d+');
         final Iterable<RegExpMatch> episodeNumberMatches =
             episodeNumberPattern.allMatches(episodeTitle);
         assert(episodeNumberMatches.length <= 1);
-        final int? episodeNumber = episodeNumberMatches.isEmpty
+        final num? episodeNumber = episodeNumberMatches.isEmpty
             ? null
-            : int.parse(
+            : num.parse(
                 episodeTitle.substring(
                   episodeNumberMatches.single.start,
                   episodeNumberMatches.single.end,

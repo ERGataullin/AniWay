@@ -6,8 +6,6 @@ abstract class Fullscreen {
     return const PlatformFullscreen();
   }
 
-  bool get isDynamicFullscreenSupported;
-
   Future<void> request();
 
   Future<void> exit();

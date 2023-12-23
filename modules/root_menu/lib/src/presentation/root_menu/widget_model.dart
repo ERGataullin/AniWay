@@ -2,17 +2,18 @@ import 'package:core/core.dart';
 import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:menu/menu.dart';
-import 'package:menu/src/presentation/menu/model.dart';
 import 'package:provider/provider.dart';
+import 'package:root_menu/root_menu.dart';
+import 'package:root_menu/src/presentation/root_menu/model.dart';
 
-MenuWidgetModel menuWidgetModelFactory(BuildContext context) => MenuWidgetModel(
-      MenuModel(
+RootMenuWidgetModel rootMenuWidgetModelFactory(BuildContext context) =>
+    RootMenuWidgetModel(
+      RootMenuModel(
         context.read<ErrorHandler>(),
       ),
     );
 
-abstract interface class IMenuWidgetModel implements IWidgetModel {
+abstract interface class IRootMenuWidgetModel implements IWidgetModel {
   ValueListenable<int> get selectedIndex;
 
   ValueListenable<int> get destinationsCount;
@@ -24,9 +25,9 @@ abstract interface class IMenuWidgetModel implements IWidgetModel {
   void onDestinationSelected(int index);
 }
 
-class MenuWidgetModel extends WidgetModel<MenuWidget, IMenuModel>
-    implements IMenuWidgetModel {
-  MenuWidgetModel(super._model);
+class RootMenuWidgetModel extends WidgetModel<RootMenuWidget, IRootMenuModel>
+    implements IRootMenuWidgetModel {
+  RootMenuWidgetModel(super._model);
 
   @override
   final ValueNotifier<int> selectedIndex = ValueNotifier(0);
@@ -44,7 +45,7 @@ class MenuWidgetModel extends WidgetModel<MenuWidget, IMenuModel>
 
   List<MenuDestinationData> get _destinations => widget.destinations;
 
-  OnMenuDestinationSelected get _onDestinationSelected =>
+  OnRootMenuDestinationSelected get _onDestinationSelected =>
       widget.onDestinationSelected;
 
   @override

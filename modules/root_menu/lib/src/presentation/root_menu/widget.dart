@@ -1,32 +1,32 @@
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
-import 'package:menu/menu.dart';
-import 'package:menu/src/presentation/menu/widget_model.dart';
 import 'package:provider/provider.dart';
+import 'package:root_menu/root_menu.dart';
+import 'package:root_menu/src/presentation/root_menu/widget_model.dart';
 
-typedef OnMenuDestinationSelected = void Function(int index);
+typedef OnRootMenuDestinationSelected = void Function(int index);
 
 extension _MenuContext on BuildContext {
-  IMenuWidgetModel get wm => read<IMenuWidgetModel>();
+  IRootMenuWidgetModel get wm => read<IRootMenuWidgetModel>();
 }
 
-class MenuWidget extends ElementaryWidget<IMenuWidgetModel> {
-  const MenuWidget({
+class RootMenuWidget extends ElementaryWidget<IRootMenuWidgetModel> {
+  const RootMenuWidget({
     super.key,
     this.selectedIndex = 0,
     required this.destinations,
     required this.onDestinationSelected,
-    WidgetModelFactory wmFactory = menuWidgetModelFactory,
+    WidgetModelFactory wmFactory = rootMenuWidgetModelFactory,
     required this.child,
   }) : super(wmFactory);
 
   final int selectedIndex;
   final List<MenuDestinationData> destinations;
-  final OnMenuDestinationSelected onDestinationSelected;
+  final OnRootMenuDestinationSelected onDestinationSelected;
   final Widget child;
 
   @override
-  Widget build(IMenuWidgetModel wm) {
+  Widget build(IRootMenuWidgetModel wm) {
     return Provider.value(
       value: wm,
       child: Scaffold(

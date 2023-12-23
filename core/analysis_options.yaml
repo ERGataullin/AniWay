@@ -32,7 +32,7 @@ linter:
     comment_references: true
     control_flow_in_finally: true
     deprecated_member_use_from_same_package: true
-    discarded_futures: true
+    discarded_futures: false
     empty_statements: true
     hash_and_equals: true
     implicit_reopen: true
@@ -166,7 +166,7 @@ linter:
     tighten_type_of_initializing_formals: true
     type_annotate_public_apis: true
     type_init_formals: true
-    unawaited_futures: true
+    unawaited_futures: false
     unnecessary_await_in_return: true
     unnecessary_brace_in_string_interps: true
     unnecessary_breaks: true

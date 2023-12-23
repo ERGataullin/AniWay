@@ -5,9 +5,9 @@ import 'package:auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:menu/menu.dart';
 import 'package:movies/movies.dart';
 import 'package:player/player.dart';
+import 'package:root_menu/root_menu.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -26,6 +26,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final AppTheme _theme = AppTheme();
+  final AppRouter _router = AppRouter();
 
   @override
   void initState() {
@@ -39,7 +40,7 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       supportedLocales: [
         AuthLocalizations.supportedLocales.toSet(),
-        MenuLocalizations.supportedLocales.toSet(),
+        RootMenuLocalizations.supportedLocales.toSet(),
         MoviesLocalizations.supportedLocales.toSet(),
         PlayerLocalizations.supportedLocales.toSet(),
       ]
@@ -49,13 +50,13 @@ class _AppState extends State<App> {
         GlobalCupertinoLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         AuthLocalizations.delegate,
-        MenuLocalizations.delegate,
+        RootMenuLocalizations.delegate,
         MoviesLocalizations.delegate,
         PlayerLocalizations.delegate,
       ],
       theme: _theme.light,
       darkTheme: _theme.dark,
-      routerConfig: AppRouter(),
+      routerConfig: _router,
     );
   }
 }
