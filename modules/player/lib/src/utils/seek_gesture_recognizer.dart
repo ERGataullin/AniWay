@@ -121,7 +121,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   /// This triggers immediately after the down event of the second tap.
   ///
   /// If this recognizer doesn't win the arena, [onDoubleTapCancel] is called
-  /// next. Otherwise, [onDoubleTapUp] is called next.
+  /// next. Otherwise, [onSeekTapUp] is called next.
   ///
   /// See also:
   ///
@@ -142,7 +142,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   // ignore: comment_references
   ///  * [allowedButtonsFilter], which decides which button will be allowed.
   ///  * [GestureDetector.onDoubleTap], which exposes this callback.
-  GestureDoubleTapUpCallback? onDoubleTapUp;
+  GestureDoubleTapUpCallback? onSeekTapUp;
 
   /// A pointer that previously triggered [onDoubleTapDown] will not end up
   /// causing a double tap.
@@ -150,7 +150,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   /// This triggers once the gesture loses the arena if [onDoubleTapDown] has
   /// previously been triggered.
   ///
-  /// If this recognizer wins the arena, [onDoubleTapUp] is called instead.
+  /// If this recognizer wins the arena, [onSeekTapUp] is called instead.
   ///
   /// See also:
   ///
@@ -167,7 +167,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   bool isPointerAllowed(PointerDownEvent event) {
     if (_firstTap == null) {
       if (onDoubleTapDown == null &&
-          onDoubleTapUp == null &&
+          onSeekTapUp == null &&
           onDoubleTapCancel == null) {
         return false;
       }
@@ -334,7 +334,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   }
 
   void _checkUp(PointerUpEvent event, _TapTracker tracker) {
-    if (onDoubleTapUp != null) {
+    if (onSeekTapUp != null) {
       final TapUpDetails details = TapUpDetails(
         globalPosition: event.position,
         localPosition: event.localPosition,
@@ -342,7 +342,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
       );
       invokeCallback<void>(
         'onDoubleTapUp',
-        () => onDoubleTapUp!(details),
+        () => onSeekTapUp!(details),
       );
     }
   }

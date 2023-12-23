@@ -45,7 +45,7 @@ class SeekGestureDetectorWidgetModel
       SeekGestureRecognizer.new,
       (SeekGestureRecognizer instance) {
         instance
-          ..onDoubleTapUp = _onSeekTapUp
+          ..onSeekTapUp = _onSeekTapUp
           ..gestureSettings = _gestureSettings;
       },
     ),
@@ -63,6 +63,7 @@ class SeekGestureDetectorWidgetModel
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
 
+    // TODO(ERGataullin): Пофиксить для веба
     _theme.splashFactory.create(
       controller: _inkController,
       referenceBox: referenceBox,

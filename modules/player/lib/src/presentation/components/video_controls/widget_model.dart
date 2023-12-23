@@ -43,9 +43,9 @@ extension _DurationFormat on Duration {
 }
 
 abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
-  ValueListenable<bool> get visible;
-
   ValueListenable<MouseCursor> get cursor;
+
+  ValueListenable<bool> get controlsIgnorePointer;
 
   ValueListenable<double> get maxScale;
 
@@ -58,6 +58,8 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
   ValueListenable<String> get duration;
 
   VideoPlayerController get controller;
+
+  Animation<double> get fadeAnimation;
 
   Animation<double> get playPauseAnimation;
 
@@ -76,9 +78,7 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
 class VideoControlsWidgetModel
     extends WidgetModel<VideoControlsWidget, IVideoControlsModel>
-    with
-        SingleTickerProviderWidgetModelMixin,
-        _HideOnUserInactivityWidgetModelMixin
+    with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
     implements IVideoControlsWidgetModel {
   VideoControlsWidgetModel(super._model);
 
@@ -100,16 +100,25 @@ class VideoControlsWidgetModel
   final ValueNotifier<String> duration = ValueNotifier('');
 
   @override
-  late final AnimationController playPauseAnimation = AnimationController(
-    vsync: this,
-    duration: Durations.short4,
-    value: controller.value.isPlaying ? 1 : 0,
+  late final CurvedAnimation playPauseAnimation = CurvedAnimation(
+    parent: _playPauseAnimationController,
+    curve: Easing.standard,
   );
 
   @override
   late VideoController controller;
 
+  late final AnimationController _playPauseAnimationController =
+      AnimationController(
+    vsync: this,
+    duration: Durations.short4,
+    value: controller.value.isPlaying ? 1 : 0,
+  );
+
   double _screenAspectRatio = 1;
+
+  @override
+  ValueListenable<bool> get controlsIgnorePointer => ignorePointer;
 
   @override
   void initWidgetModel() {
@@ -198,8 +207,8 @@ class VideoControlsWidgetModel
     duration.value = value.duration.format();
 
     value.isPlaying
-        ? playPauseAnimation.forward()
-        : playPauseAnimation.reverse();
+        ? _playPauseAnimationController.forward()
+        : _playPauseAnimationController.reverse();
 
     value.isPlaying
         ? hideOnUserInactivity(restartUserInactivityTimer: false)
@@ -208,30 +217,51 @@ class VideoControlsWidgetModel
 }
 
 mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
-    M extends ElementaryModel> on WidgetModel<W, M> {
+        M extends ElementaryModel>
+    on WidgetModel<W, M>, TickerProviderWidgetModelMixin<W, M> {
   static const Duration _hideOnUserInactivityGap = Duration(seconds: 3);
-
-  final ValueNotifier<bool> visible = ValueNotifier(false);
 
   final ValueNotifier<MouseCursor> cursor = ValueNotifier(
     SystemMouseCursors.none,
   );
+
+  late final ValueNotifier<bool> ignorePointer = ValueNotifier(_hidden);
+
+  late final CurvedAnimation fadeAnimation = CurvedAnimation(
+    parent: _fadeAnimationController,
+    curve: Easing.emphasizedDecelerate,
+    // TODO(ERGataullin): replace with Easing.emphasized
+    reverseCurve: Curves.easeInOutCubicEmphasized,
+  );
+
+  late final AnimationController _fadeAnimationController = AnimationController(
+    vsync: this,
+    value: _hidden ? 0 : 1,
+    duration: Durations.long2,
+    reverseDuration: Durations.short4,
+  );
+
+  bool _hidden = true;
 
   Timer? _hideOnUserInactivityTimer;
 
   @override
   void dispose() {
     super.dispose();
-    visible.dispose();
     cursor.dispose();
+    ignorePointer.dispose();
+    fadeAnimation.dispose();
+    _fadeAnimationController.dispose();
     _cancelHideOnUserInactivityTimer();
   }
 
   void show({
     bool hideOnUserInactivity = true,
   }) {
-    visible.value = true;
+    _hidden = false;
+    ignorePointer.value = false;
     cursor.value = SystemMouseCursors.basic;
+    _fadeAnimationController.forward();
 
     hideOnUserInactivity
         ? this.hideOnUserInactivity()
@@ -239,8 +269,10 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
   }
 
   void hide() {
-    visible.value = false;
+    _hidden = true;
+    ignorePointer.value = true;
     cursor.value = SystemMouseCursors.none;
+    _fadeAnimationController.reverse();
 
     _cancelHideOnUserInactivityTimer();
   }
@@ -248,7 +280,7 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
   void hideOnUserInactivity({
     bool restartUserInactivityTimer = true,
   }) {
-    if (!visible.value) {
+    if (_hidden) {
       return;
     }
     if (_hideOnUserInactivityTimer != null && !restartUserInactivityTimer) {
@@ -264,7 +296,7 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
       return;
     }
 
-    visible.value ? hide() : show();
+    _hidden ? show() : hide();
   }
 
   void onPointerHover(PointerHoverEvent event) {

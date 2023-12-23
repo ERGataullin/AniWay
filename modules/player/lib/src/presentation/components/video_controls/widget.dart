@@ -36,74 +36,19 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
     return Provider<IVideoControlsWidgetModel>.value(
       value: wm,
       child: _Theme(
-        child: _UserActivityListener(
+        child: _MouseRegion(
           child: Scaffold(
             body: Stack(
               clipBehavior: Clip.none,
+              fit: StackFit.expand,
               children: [
                 _Child(child: child),
+                const _ControlsBackground(),
+                const _Gestures(),
                 const _Controls(),
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _UserActivityListener extends StatelessWidget {
-  const _UserActivityListener({
-    this.child,
-  });
-
-  final Widget? child;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<MouseCursor>(
-      valueListenable: context.wm.cursor,
-      child: GestureDetector(
-        onTapUp: context.wm.onTapUp,
-        child: Stack(
-          clipBehavior: Clip.none,
-          fit: StackFit.expand,
-          children: [
-            if (child != null) child!,
-            const Row(
-              children: [
-                _SeekGestureDetector(side: SeekGestureDetectorSide.left),
-                _SeekGestureDetector(side: SeekGestureDetectorSide.right),
-              ],
-            ),
-          ],
-        ),
-      ),
-      builder: (context, cursor, child) => MouseRegion(
-        cursor: cursor,
-        onHover: context.wm.onPointerHover,
-        onExit: context.wm.onPointerExit,
-        child: child,
-      ),
-    );
-  }
-}
-
-class _SeekGestureDetector extends StatelessWidget {
-  const _SeekGestureDetector({
-    required this.side,
-  });
-
-  final SeekGestureDetectorSide side;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Material(
-        type: MaterialType.transparency,
-        child: SeekGestureDetectorWidget(
-          side: side,
-          callback: () => context.wm.onSeekGesture(side),
         ),
       ),
     );
@@ -119,12 +64,12 @@ class _Theme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color background = Colors.black45;
+    const Color background = Colors.black;
     final ThemeData theme = Theme.of(context);
 
     return Theme(
       data: theme.copyWith(
-        scaffoldBackgroundColor: background,
+        scaffoldBackgroundColor: Colors.black,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
@@ -135,6 +80,27 @@ class _Theme extends StatelessWidget {
         ),
       ),
       child: child,
+    );
+  }
+}
+
+class _MouseRegion extends StatelessWidget {
+  const _MouseRegion({
+    this.child,
+  });
+
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<MouseCursor>(
+      valueListenable: context.wm.cursor,
+      builder: (context, cursor, ___) => MouseRegion(
+        cursor: cursor,
+        onHover: context.wm.onPointerHover,
+        onExit: context.wm.onPointerExit,
+        child: child,
+      ),
     );
   }
 }
@@ -162,29 +128,82 @@ class _Child extends StatelessWidget {
   }
 }
 
+class _ControlsBackground extends StatelessWidget {
+  const _ControlsBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: context.wm.fadeAnimation,
+      child: const DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.black54,
+        ),
+      ),
+    );
+  }
+}
+
+class _Gestures extends StatelessWidget {
+  const _Gestures();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapUp: context.wm.onTapUp,
+      child: const Row(
+        children: [
+          _SeekGestureDetector(side: SeekGestureDetectorSide.left),
+          _SeekGestureDetector(side: SeekGestureDetectorSide.right),
+        ],
+      ),
+    );
+  }
+}
+
+class _SeekGestureDetector extends StatelessWidget {
+  const _SeekGestureDetector({
+    required this.side,
+  });
+
+  final SeekGestureDetectorSide side;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Material(
+        type: MaterialType.transparency,
+        child: SeekGestureDetectorWidget(
+          side: side,
+          callback: () => context.wm.onSeekGesture(side),
+        ),
+      ),
+    );
+  }
+}
+
 class _Controls extends StatelessWidget {
   const _Controls();
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: context.wm.visible,
-      child: const Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          _Top(),
-          _PlayPauseButton(),
-          _Bottom(),
-        ],
-      ),
-      builder: (context, visible, controls) => AnimatedSwitcher(
-        switchInCurve: Easing.emphasizedDecelerate,
-        // TODO(ERGataullin): replace with Easing.emphasized
-        switchOutCurve: Easing.emphasizedAccelerate,
-        duration: Durations.long2,
-        reverseDuration: Durations.short4,
-        child: visible ? controls : null,
+    return FadeTransition(
+      opacity: context.wm.fadeAnimation,
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.controlsIgnorePointer,
+        builder: (context, ignorePointer, child) => IgnorePointer(
+          ignoring: ignorePointer,
+          child: child,
+        ),
+        child: const Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            _Top(),
+            _PlayPauseButton(),
+            _Bottom(),
+          ],
+        ),
       ),
     );
   }

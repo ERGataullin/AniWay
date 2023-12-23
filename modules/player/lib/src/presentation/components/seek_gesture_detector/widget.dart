@@ -20,11 +20,6 @@ class SeekGestureDetectorWidget
 
   @override
   Widget build(ISeekGestureDetectorWidgetModel wm) {
-    // return Placeholder();
-    // return GestureDetector(
-    //   // customBorder: _SeekGestureDetectorShapeBorder(side),
-    //   onDoubleTap: () {},
-    // );
     return RawGestureDetector(
       behavior: HitTestBehavior.translucent,
       gestures: wm.gestures,
