@@ -35,10 +35,13 @@ class SeekGestureWidget extends ElementaryWidget<ISeekGestureWidgetModel> {
         child: Builder(
           builder: (context) {
             wm.onMaterialBuilt(context);
-            return RawGestureDetector(
-              behavior: HitTestBehavior.translucent,
-              gestures: wm.gestures,
-              child: const _Indicator(),
+            return ValueListenableBuilder(
+              valueListenable: wm.gestures,
+              builder: (context, gestures, ___) => RawGestureDetector(
+                behavior: HitTestBehavior.translucent,
+                gestures: gestures,
+                child: const _Indicator(),
+              ),
             );
           },
         ),

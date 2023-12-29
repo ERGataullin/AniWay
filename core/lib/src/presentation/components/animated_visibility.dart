@@ -87,9 +87,9 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
     widget.visible.removeListener(_animate);
-    _controller.dispose();
   }
 
   void _animate() {

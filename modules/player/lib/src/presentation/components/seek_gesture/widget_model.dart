@@ -22,6 +22,8 @@ SeekGestureWidgetModel seekGestureWidgetModelFactory(
 abstract interface class ISeekGestureWidgetModel implements IWidgetModel {
   ValueListenable<ShapeBorder> get shape;
 
+  ValueListenable<Map<Type, GestureRecognizerFactory>> get gestures;
+
   ValueListenable<int> get indicatorRotationQuarterTurns;
 
   ValueListenable<bool> get showIndicatorValue;
@@ -29,8 +31,6 @@ abstract interface class ISeekGestureWidgetModel implements IWidgetModel {
   ValueListenable<String> get indicatorValue;
 
   List<Animation<double>> get indicatorIconsAnimations;
-
-  Map<Type, GestureRecognizerFactory> get gestures;
 
   void onMaterialBuilt(BuildContext context);
 }
@@ -49,6 +49,10 @@ class SeekGestureWidgetModel
   final ValueNotifier<ShapeBorder> shape = ValueNotifier(
     const RoundedRectangleBorder(),
   );
+
+  @override
+  final ValueNotifier<Map<Type, GestureRecognizerFactory>> gestures =
+      ValueNotifier(const {});
 
   @override
   final ValueNotifier<int> indicatorRotationQuarterTurns = ValueNotifier(0);
@@ -94,25 +98,15 @@ class SeekGestureWidgetModel
 
   late DeviceGestureSettings? _gestureSettings;
 
-  Duration _currentValue = Duration.zero;
+  late PlayerLocalizations _localizations;
 
-  @override
-  late final Map<Type, GestureRecognizerFactory> gestures = {
-    SeekGestureRecognizer:
-        GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
-      SeekGestureRecognizer.new,
-      (SeekGestureRecognizer instance) {
-        instance
-          ..onSeekTapUp = _onSeekTapUp
-          ..onSeekTapCancel = _onSeekTapCancel
-          ..gestureSettings = _gestureSettings;
-      },
-    ),
-  };
+  Duration _currentValue = Duration.zero;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
+    widget.videoController.addListener(_onVideoControllerValueChanged);
+    _updateGestures();
     shape.value = SeekGestureShapeBorder(widget.side);
     indicatorRotationQuarterTurns.value = switch (widget.side) {
       Side.left => 2,
@@ -125,6 +119,7 @@ class SeekGestureWidgetModel
     _theme = Theme.of(context);
     _textDirection = Directionality.of(context);
     _gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
+    _localizations = PlayerLocalizations.of(context);
   }
 
   @override
@@ -135,6 +130,11 @@ class SeekGestureWidgetModel
   @override
   void didUpdateWidget(SeekGestureWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.videoController != oldWidget.videoController) {
+      oldWidget.videoController.removeListener(_onVideoControllerValueChanged);
+      widget.videoController.addListener(_onVideoControllerValueChanged);
+    }
+    _updateGestures();
     shape.value = SeekGestureShapeBorder(widget.side);
     indicatorRotationQuarterTurns.value = switch (widget.side) {
       Side.left => 2,
@@ -145,6 +145,8 @@ class SeekGestureWidgetModel
   @override
   void dispose() {
     super.dispose();
+    widget.videoController.removeListener(_onVideoControllerValueChanged);
+    gestures.dispose();
     shape.dispose();
     showIndicatorValue.dispose();
     indicatorRotationQuarterTurns.dispose();
@@ -183,7 +185,7 @@ class SeekGestureWidgetModel
 
     _currentValue += _seekStep;
     showIndicatorValue.value = true;
-    indicatorValue.value = context.localizations.componentsSeekGestureSeekValue(
+    indicatorValue.value = _localizations.componentsSeekGestureSeekValue(
       _currentValue.inSeconds,
     );
     for (final AnimationController iconController
@@ -193,17 +195,43 @@ class SeekGestureWidgetModel
   }
 
   Future<void> _onSeekTapCancel() async {
-    await Future<void>.delayed(
-      (_indicatorIconsControllers[0].duration ?? Duration.zero) -
-          kDoubleTapTimeout,
-    );
+    if (_currentValue == Duration.zero) {
+      return;
+    }
 
     _currentValue = Duration.zero;
-    showIndicatorValue.value = false;
-    indicatorValue.value = '';
+    for (final AnimationController iconController
+        in _indicatorIconsControllers) {
+      await iconController.forward();
+    }
     for (final AnimationController iconController
         in _indicatorIconsControllers) {
       await iconController.reverse();
     }
+    showIndicatorValue.value = false;
+    indicatorValue.value = '';
+  }
+
+  void _updateGestures() {
+    gestures.value = widget.videoController.value.position == Duration.zero ||
+            widget.videoController.value.position ==
+                widget.videoController.value.duration
+        ? const {}
+        : {
+            SeekGestureRecognizer:
+                GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
+              SeekGestureRecognizer.new,
+              (SeekGestureRecognizer instance) {
+                instance
+                  ..onSeekTapUp = _onSeekTapUp
+                  ..onSeekTapCancel = _onSeekTapCancel
+                  ..gestureSettings = _gestureSettings;
+              },
+            ),
+          };
+  }
+
+  void _onVideoControllerValueChanged() {
+    _updateGestures();
   }
 }
