@@ -105,7 +105,7 @@ class VideoControlsWidgetModel
   late final AnimationController _playPauseAnimationController =
       AnimationController(
     vsync: this,
-    duration: Durations.short4,
+    duration: Durations.medium2,
     value: controller.value.isPlaying ? 1 : 0,
   );
 
@@ -198,8 +198,7 @@ class VideoControlsWidgetModel
 }
 
 mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
-        M extends ElementaryModel>
-    on WidgetModel<W, M>, TickerProviderWidgetModelMixin<W, M> {
+    M extends ElementaryModel> on WidgetModel<W, M> {
   static const Duration _hideOnUserInactivityGap = Duration(seconds: 3);
 
   final ValueNotifier<bool> visible = ValueNotifier(false);

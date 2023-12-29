@@ -1,8 +1,10 @@
 import 'package:core/core.dart';
 import 'package:elementary/elementary.dart' hide ErrorHandler;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/domain/models/seek_gesture_side.dart';
+import 'package:player/player.dart';
+import 'package:player/src/domain/models/side.dart';
 import 'package:player/src/presentation/components/seek_gesture/model.dart';
 import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/utils/seek_gesture_recognizer.dart';
@@ -18,18 +20,70 @@ SeekGestureWidgetModel seekGestureWidgetModelFactory(
     );
 
 abstract interface class ISeekGestureWidgetModel implements IWidgetModel {
+  ValueListenable<ShapeBorder> get shape;
+
+  ValueListenable<int> get indicatorRotationQuarterTurns;
+
+  ValueListenable<bool> get showIndicatorValue;
+
+  ValueListenable<String> get indicatorValue;
+
+  List<Animation<double>> get indicatorIconsAnimations;
+
   Map<Type, GestureRecognizerFactory> get gestures;
+
+  void onMaterialBuilt(BuildContext context);
 }
 
 class SeekGestureWidgetModel
     extends WidgetModel<SeekGestureWidget, ISeekGestureModel>
+    with TickerProviderWidgetModelMixin
     implements ISeekGestureWidgetModel {
   SeekGestureWidgetModel(super._model);
 
-  static const Duration _seekValue = Duration(seconds: 10);
+  static const Duration _seekStep = Duration(seconds: 10);
 
-  late final ShapeBorder _inkShapeBorder = SeekGestureShapeBorder(
-    widget.side,
+  static const int _indicatorIconsCount = 3;
+
+  @override
+  final ValueNotifier<ShapeBorder> shape = ValueNotifier(
+    const RoundedRectangleBorder(),
+  );
+
+  @override
+  final ValueNotifier<int> indicatorRotationQuarterTurns = ValueNotifier(0);
+
+  @override
+  final ValueNotifier<bool> showIndicatorValue = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<String> indicatorValue = ValueNotifier('');
+
+  @override
+  late final List<CurvedAnimation> indicatorIconsAnimations =
+      _indicatorIconsControllers
+          .map(
+            (controller) => CurvedAnimation(
+              parent: controller.view,
+              curve: Easing.standardDecelerate,
+              reverseCurve: Easing.standardAccelerate.flipped,
+            ),
+          )
+          .toList(growable: false);
+
+  late final List<AnimationController> _indicatorIconsControllers =
+      List.generate(
+    _indicatorIconsCount,
+    (_) => AnimationController(
+      vsync: this,
+      value: showIndicatorValue.value ? 1 : 0,
+      duration: Duration(
+        milliseconds: Durations.medium1.inMilliseconds ~/ _indicatorIconsCount,
+      ),
+      reverseDuration: Duration(
+        milliseconds: Durations.short4.inMilliseconds ~/ _indicatorIconsCount,
+      ),
+    ),
   );
 
   late MaterialInkController _inkController;
@@ -40,6 +94,8 @@ class SeekGestureWidgetModel
 
   late DeviceGestureSettings? _gestureSettings;
 
+  Duration _currentValue = Duration.zero;
+
   @override
   late final Map<Type, GestureRecognizerFactory> gestures = {
     SeekGestureRecognizer:
@@ -48,20 +104,68 @@ class SeekGestureWidgetModel
       (SeekGestureRecognizer instance) {
         instance
           ..onSeekTapUp = _onSeekTapUp
+          ..onSeekTapCancel = _onSeekTapCancel
           ..gestureSettings = _gestureSettings;
       },
     ),
   };
 
   @override
+  void initWidgetModel() {
+    super.initWidgetModel();
+    shape.value = SeekGestureShapeBorder(widget.side);
+    indicatorRotationQuarterTurns.value = switch (widget.side) {
+      Side.left => 2,
+      Side.right => 0,
+    };
+  }
+
+  @override
   void didChangeDependencies() {
-    _inkController = Material.of(context);
     _theme = Theme.of(context);
     _textDirection = Directionality.of(context);
     _gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
   }
 
+  @override
+  void onMaterialBuilt(BuildContext context) {
+    _inkController = Material.of(context);
+  }
+
+  @override
+  void didUpdateWidget(SeekGestureWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    shape.value = SeekGestureShapeBorder(widget.side);
+    indicatorRotationQuarterTurns.value = switch (widget.side) {
+      Side.left => 2,
+      Side.right => 0,
+    };
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    shape.dispose();
+    showIndicatorValue.dispose();
+    indicatorRotationQuarterTurns.dispose();
+    indicatorValue.dispose();
+    for (final CurvedAnimation animation in indicatorIconsAnimations) {
+      animation.dispose();
+    }
+    for (final AnimationController controller in _indicatorIconsControllers) {
+      controller.dispose();
+    }
+  }
+
   Future<void> _onSeekTapUp(TapUpDetails details) async {
+    widget.videoController.seekTo(
+      widget.videoController.value.position +
+          switch (widget.side) {
+            Side.left => -_seekStep,
+            Side.right => _seekStep,
+          },
+    );
+
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
 
@@ -73,16 +177,33 @@ class SeekGestureWidgetModel
           color: _theme.splashColor,
           textDirection: _textDirection,
           containedInkWell: true,
-          customBorder: _inkShapeBorder,
+          customBorder: shape.value,
         )
         .confirm();
 
-    await widget.videoController.seekTo(
-      widget.videoController.value.position +
-          switch (widget.side) {
-            SeekGestureSide.left => -_seekValue,
-            SeekGestureSide.right => _seekValue,
-          },
+    _currentValue += _seekStep;
+    showIndicatorValue.value = true;
+    indicatorValue.value = context.localizations.componentsSeekGestureSeekValue(
+      _currentValue.inSeconds,
     );
+    for (final AnimationController iconController
+        in _indicatorIconsControllers) {
+      await iconController.forward();
+    }
+  }
+
+  Future<void> _onSeekTapCancel() async {
+    await Future<void>.delayed(
+      (_indicatorIconsControllers[0].duration ?? Duration.zero) -
+          kDoubleTapTimeout,
+    );
+
+    _currentValue = Duration.zero;
+    showIndicatorValue.value = false;
+    indicatorValue.value = '';
+    for (final AnimationController iconController
+        in _indicatorIconsControllers) {
+      await iconController.reverse();
+    }
   }
 }

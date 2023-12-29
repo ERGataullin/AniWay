@@ -54,7 +54,12 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
   void initState() {
     super.initState();
     widget.visible.addListener(_animate);
-    _controller.addListener(() => setState(() => {}));
+    _controller.addStatusListener((status) {
+      if (status != AnimationStatus.completed) {
+        return;
+      }
+      setState(() {});
+    });
   }
 
   @override
@@ -98,7 +103,7 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
           )
         : _controller.animateBack(
             target,
-            curve: widget.fadeOutCurve,
+            curve: widget.fadeOutCurve.flipped,
             duration: widget.fadeOutDuration,
           );
   }

@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/domain/models/seek_gesture_side.dart';
+import 'package:player/src/domain/models/side.dart';
 import 'package:player/src/presentation/components/scalable/widget.dart';
 import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
@@ -134,8 +134,8 @@ class _Gestures extends StatelessWidget {
           ),
           const Row(
             children: [
-              _SeekGesture(side: SeekGestureSide.left),
-              _SeekGesture(side: SeekGestureSide.right),
+              _SeekGesture(side: Side.left),
+              _SeekGesture(side: Side.right),
             ],
           ),
         ],
@@ -149,17 +149,14 @@ class _SeekGesture extends StatelessWidget {
     required this.side,
   });
 
-  final SeekGestureSide side;
+  final Side side;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Material(
-        type: MaterialType.transparency,
-        child: SeekGestureWidget(
-          side: side,
-          videoController: context.wm.controller,
-        ),
+      child: SeekGestureWidget(
+        side: side,
+        videoController: context.wm.controller,
       ),
     );
   }

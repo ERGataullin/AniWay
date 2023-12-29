@@ -120,7 +120,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   ///
   /// This triggers immediately after the down event of the second tap.
   ///
-  /// If this recognizer doesn't win the arena, [onDoubleTapCancel] is called
+  /// If this recognizer doesn't win the arena, [onSeekTapCancel] is called
   /// next. Otherwise, [onSeekTapUp] is called next.
   ///
   /// See also:
@@ -129,7 +129,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   ///  * [allowedButtonsFilter], which decides which button will be allowed.
   ///  * [TapDownDetails], which is passed as an argument to this callback.
   ///  * [GestureDetector.onDoubleTapDown], which exposes this callback.
-  GestureTapDownCallback? onDoubleTapDown;
+  GestureTapDownCallback? onSeekTapDown;
 
   /// Called when the user has tapped the screen with a primary button at the
   /// same location twice in quick succession.
@@ -144,10 +144,10 @@ class SeekGestureRecognizer extends GestureRecognizer {
   ///  * [GestureDetector.onDoubleTap], which exposes this callback.
   GestureDoubleTapUpCallback? onSeekTapUp;
 
-  /// A pointer that previously triggered [onDoubleTapDown] will not end up
+  /// A pointer that previously triggered [onSeekTapDown] will not end up
   /// causing a double tap.
   ///
-  /// This triggers once the gesture loses the arena if [onDoubleTapDown] has
+  /// This triggers once the gesture loses the arena if [onSeekTapDown] has
   /// previously been triggered.
   ///
   /// If this recognizer wins the arena, [onSeekTapUp] is called instead.
@@ -157,7 +157,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   // ignore: comment_references
   ///  * [allowedButtonsFilter], which decides which button will be allowed.
   ///  * [GestureDetector.onDoubleTapCancel], which exposes this callback.
-  GestureTapCancelCallback? onDoubleTapCancel;
+  GestureTapCancelCallback? onSeekTapCancel;
 
   Timer? _doubleTapTimer;
   _TapTracker? _firstTap;
@@ -166,9 +166,9 @@ class SeekGestureRecognizer extends GestureRecognizer {
   @override
   bool isPointerAllowed(PointerDownEvent event) {
     if (_firstTap == null) {
-      if (onDoubleTapDown == null &&
+      if (onSeekTapDown == null &&
           onSeekTapUp == null &&
-          onDoubleTapCancel == null) {
+          onSeekTapCancel == null) {
         return false;
       }
     }
@@ -193,7 +193,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
         // often detect touches intermittently), or when buttons mismatch.
         _reset();
         return _trackTap(event);
-      } else if (onDoubleTapDown != null) {
+      } else if (onSeekTapDown != null) {
         final TapDownDetails details = TapDownDetails(
           globalPosition: event.position,
           localPosition: event.localPosition,
@@ -201,7 +201,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
         );
         invokeCallback<void>(
           'onDoubleTapDown',
-          () => onDoubleTapDown!(details),
+          () => onSeekTapDown!(details),
         );
       }
     }
@@ -210,6 +210,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
 
   void _trackTap(PointerDownEvent event) {
     _stopDoubleTapTimer();
+    _startDoubleTapTimer();
     final _TapTracker tracker = _TapTracker(
       event: event,
       entry: GestureBinding.instance.gestureArena.add(event.pointer, this),
@@ -278,9 +279,8 @@ class SeekGestureRecognizer extends GestureRecognizer {
   void _reset() {
     _stopDoubleTapTimer();
     if (_firstTap != null) {
-      if (_trackers.isNotEmpty) {
-        _checkCancel();
-      }
+      _checkCancel();
+
       // Note, order is important below in order for the resolve -> reject logic
       // to work properly.
       final _TapTracker tracker = _firstTap!;
@@ -341,18 +341,18 @@ class SeekGestureRecognizer extends GestureRecognizer {
         kind: getKindForPointer(tracker.pointer),
       );
       invokeCallback<void>(
-        'onDoubleTapUp',
+        'onSeekTapUp',
         () => onSeekTapUp!(details),
       );
     }
   }
 
   void _checkCancel() {
-    if (onDoubleTapCancel != null) {
-      invokeCallback<void>('onDoubleTapCancel', onDoubleTapCancel!);
+    if (onSeekTapCancel != null) {
+      invokeCallback<void>('onSeelTapCancel', onSeekTapCancel!);
     }
   }
 
   @override
-  String get debugDescription => 'double tap';
+  String get debugDescription => 'seek tap';
 }
