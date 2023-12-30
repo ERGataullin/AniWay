@@ -1,10 +1,8 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/scalable/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 extension _VideoControlsContext on BuildContext {

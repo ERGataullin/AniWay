@@ -12,26 +12,20 @@ dependencies:
     path: ../modules/auth
   core: 
     path: ../core
-  elementary: ^3.0.0
   flutter:
-    sdk: flutter
-  flutter_localizations:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  go_router: ^12.1.0
-  hive: ^2.2.3
+  go_router: ^13.0.0
   movies: 
     path: ../modules/movies
   path_provider: ^2.1.1
   player:
     path: ../modules/player
-  provider: ^6.0.5
   root_menu:
     path: ../modules/root_menu
 
 dev_dependencies:
-  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
 
