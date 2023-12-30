@@ -91,6 +91,12 @@ abstract class PlayerLocalizations {
     Locale('ru')
   ];
 
+  /// No description provided for @componentsSeekGestureSeekValue.
+  ///
+  /// In ru, this message translates to:
+  /// **'{seconds} секунд'**
+  String componentsSeekGestureSeekValue(int seconds);
+
   /// No description provided for @moviePlayerPreferencesTranslationTypeLabel.
   ///
   /// In ru, this message translates to:
