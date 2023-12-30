@@ -52,6 +52,8 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get title;
 
+  ValueListenable<CrossFadeState> get playPauseLoaderState;
+
   ValueListenable<String> get position;
 
   ValueListenable<String> get duration;
@@ -87,6 +89,11 @@ class VideoControlsWidgetModel
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
+
+  @override
+  final ValueNotifier<CrossFadeState> playPauseLoaderState = ValueNotifier(
+    CrossFadeState.showFirst,
+  );
 
   @override
   final ValueNotifier<String> position = ValueNotifier('');
@@ -166,6 +173,7 @@ class VideoControlsWidgetModel
     maxScale.dispose();
     scaleAnchors.dispose();
     title.dispose();
+    playPauseLoaderState.dispose();
     position.dispose();
     duration.dispose();
     playPauseAnimation.dispose();
@@ -178,12 +186,15 @@ class VideoControlsWidgetModel
     maxScale.value = _screenAspectRatio / value.aspectRatio;
     scaleAnchors.value = [1, maxScale.value];
 
-    position.value = value.position.format();
-    duration.value = value.duration.format();
-
+    playPauseLoaderState.value = !value.isInitialized || value.isBuffering
+        ? CrossFadeState.showFirst
+        : CrossFadeState.showSecond;
     value.isPlaying
         ? playPauseAnimation.forward()
         : playPauseAnimation.reverse();
+
+    position.value = value.position.format();
+    duration.value = value.duration.format();
 
     value.isPlaying
         ? hideOnUserInactivity(restartUserInactivityTimer: false)

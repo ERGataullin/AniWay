@@ -139,7 +139,7 @@ class _Controls extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           _Top(),
-          _PlayPauseButton(),
+          _PlayPauseLoader(),
           _Bottom(),
         ],
       ),
@@ -197,19 +197,61 @@ class _PreferencesButton extends StatelessWidget {
   }
 }
 
-class _PlayPauseButton extends StatelessWidget {
-  const _PlayPauseButton();
+class _PlayPauseLoader extends StatelessWidget {
+  const _PlayPauseLoader();
+
+  static Widget _animatedCrossFadeLayoutBuilder(
+    Widget topChild,
+    Key topChildKey,
+    Widget bottomChild,
+    Key bottomChildKey,
+  ) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        Center(
+          key: bottomChildKey,
+          child: bottomChild,
+        ),
+        Center(
+          key: topChildKey,
+          child: topChild,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    const double size = 48;
     return Align(
       alignment: Alignment.center,
-      child: IconButton(
-        onPressed: context.wm.onPlayPausePressed,
-        icon: AnimatedIcon(
-          size: 48,
-          icon: AnimatedIcons.play_pause,
-          progress: context.wm.playPauseAnimation,
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.playPauseLoaderState,
+        builder: (context, state, ___) => AnimatedCrossFade(
+          alignment: Alignment.center,
+          // TODO(ERGataullin): replace with Easing.emphasized
+          firstCurve: Easing.emphasizedDecelerate,
+          secondCurve: Easing.emphasizedDecelerate,
+          duration: Durations.short4,
+          crossFadeState: state,
+          layoutBuilder: _animatedCrossFadeLayoutBuilder,
+          firstChild: const SizedBox(
+            width: size,
+            height: size,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          secondChild: IconButton(
+            onPressed: context.wm.onPlayPausePressed,
+            icon: AnimatedIcon(
+              size: size,
+              icon: AnimatedIcons.play_pause,
+              progress: context.wm.playPauseAnimation,
+            ),
+          ),
         ),
       ),
     );
