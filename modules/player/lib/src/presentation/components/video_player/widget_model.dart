@@ -1,11 +1,9 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/video_player/model.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 VideoPlayerWidgetModel videoPlayerWidgetModelFactory(BuildContext context) =>

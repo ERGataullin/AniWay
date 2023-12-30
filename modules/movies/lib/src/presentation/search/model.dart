@@ -1,4 +1,4 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/service/service.dart';
 

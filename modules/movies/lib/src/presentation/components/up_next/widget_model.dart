@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
@@ -7,7 +6,6 @@ import 'package:movies/src/domain/models/movie_watch_status.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/components/up_next/model.dart';
 import 'package:movies/src/presentation/components/up_next/widget.dart';
-import 'package:provider/provider.dart';
 
 UpNextWidgetModel upNextWidgetModelFactory(BuildContext context) =>
     UpNextWidgetModel(

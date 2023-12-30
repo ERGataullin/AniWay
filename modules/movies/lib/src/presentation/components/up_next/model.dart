@@ -1,4 +1,4 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
 
 abstract interface class IUpNextModel implements ElementaryModel {}
 

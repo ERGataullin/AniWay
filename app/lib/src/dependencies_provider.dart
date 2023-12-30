@@ -3,7 +3,6 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
 import 'package:player/player.dart';
-import 'package:provider/provider.dart';
 
 class AppDependenciesProvider extends StatelessWidget {
   const AppDependenciesProvider({

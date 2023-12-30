@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/watch_now/model.dart';
-import 'package:provider/provider.dart';
 
 WatchNowWidgetModel watchNowWidgetModelFactory(BuildContext context) =>
     WatchNowWidgetModel(

@@ -1,8 +1,6 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:root_menu/root_menu.dart';
 import 'package:root_menu/src/presentation/root_menu/model.dart';
 

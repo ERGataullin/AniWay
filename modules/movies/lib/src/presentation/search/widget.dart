@@ -1,8 +1,7 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/presentation/components/movie_preview/widget.dart';
 import 'package:movies/src/presentation/search/widget_model.dart';
-import 'package:provider/provider.dart';
 
 extension _SearchContext on BuildContext {
   ISearchWidgetModel get wm => read<ISearchWidgetModel>();
