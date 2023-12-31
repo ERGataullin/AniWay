@@ -1,4 +1,3 @@
-export '/src/presentation/components/animated_visibility.dart';
 export 'package:elementary/elementary.dart' hide ErrorHandler;
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:html/dom.dart' hide Text;
@@ -6,6 +5,7 @@ export 'package:html/parser.dart';
 export 'package:intl/intl.dart';
 export 'package:provider/provider.dart';
 
+export '/src/presentation/components/animated_visibility.dart';
 export '/src/presentation/components/menu.dart';
 
 export '/src/utils/error_handler/debug_print.dart';
