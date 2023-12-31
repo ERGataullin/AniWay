@@ -71,9 +71,9 @@ class MoviePlayerWidgetModel
     super.dispose();
     title.dispose();
     preferences.dispose();
-    controller.dispose();
 
     await Future.wait([
+      controller.dispose(),
       _fullscreen.exit(),
       _unlockOrientation(),
     ]);
