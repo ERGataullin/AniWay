@@ -1,6 +1,4 @@
 import 'package:core/core.dart';
-import 'package:html/dom.dart';
-import 'package:html/parser.dart';
 import 'package:movies/movies.dart';
 
 class Anime365MoviesDataSource implements MoviesDataSource {

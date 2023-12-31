@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/search/model.dart';
-import 'package:provider/provider.dart';
 
 SearchWidgetModel searchWidgetModelFactory(BuildContext context) =>
     SearchWidgetModel(

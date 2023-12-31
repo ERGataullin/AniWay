@@ -1,14 +1,12 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:player/player.dart';
 import 'package:player/src/presentation/movie_player/model.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 MoviePlayerWidgetModel moviePlayerWidgetModelFactory(BuildContext context) =>

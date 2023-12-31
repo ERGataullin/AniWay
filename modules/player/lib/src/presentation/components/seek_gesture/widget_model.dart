@@ -1,5 +1,4 @@
-import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
+import 'package:core/core.dart' hide TextDirection;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:player/src/domain/models/side.dart';
 import 'package:player/src/presentation/components/seek_gesture/model.dart';
 import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/utils/seek_gesture_recognizer.dart';
-import 'package:provider/provider.dart';
 
 SeekGestureWidgetModel seekGestureWidgetModelFactory(
   BuildContext context,

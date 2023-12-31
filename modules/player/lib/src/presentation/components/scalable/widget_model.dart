@@ -1,12 +1,10 @@
 import 'dart:math';
 
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/scalable/model.dart';
 import 'package:player/src/presentation/components/scalable/widget.dart';
-import 'package:provider/provider.dart';
 
 ScalableWidgetModel scalableWidgetModelFactory(BuildContext context) =>
     ScalableWidgetModel(
