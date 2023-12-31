@@ -1,10 +1,10 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
+import 'package:player/src/domain/models/side.dart';
 import 'package:player/src/presentation/components/scalable/widget.dart';
+import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 extension _VideoControlsContext on BuildContext {
@@ -34,42 +34,20 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
     return Provider<IVideoControlsWidgetModel>.value(
       value: wm,
       child: _Theme(
-        child: _UserActivityListener(
+        child: _MouseRegion(
           child: Scaffold(
             body: Stack(
               clipBehavior: Clip.none,
+              fit: StackFit.expand,
               children: [
-                _Child(child: child),
+                _Gestures(
+                  child: _Child(child: child),
+                ),
                 const _Controls(),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _UserActivityListener extends StatelessWidget {
-  const _UserActivityListener({
-    this.child,
-  });
-
-  final Widget? child;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<MouseCursor>(
-      valueListenable: context.wm.cursor,
-      child: GestureDetector(
-        onTapUp: context.wm.onTapUp,
-        child: child,
-      ),
-      builder: (context, cursor, child) => MouseRegion(
-        cursor: cursor,
-        onHover: context.wm.onPointerHover,
-        onExit: context.wm.onPointerExit,
-        child: child,
       ),
     );
   }
@@ -84,12 +62,12 @@ class _Theme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color background = Colors.black45;
+    const Color background = Colors.black;
     final ThemeData theme = Theme.of(context);
 
     return Theme(
       data: theme.copyWith(
-        scaffoldBackgroundColor: background,
+        scaffoldBackgroundColor: Colors.black,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
@@ -104,6 +82,84 @@ class _Theme extends StatelessWidget {
   }
 }
 
+class _MouseRegion extends StatelessWidget {
+  const _MouseRegion({
+    this.child,
+  });
+
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<MouseCursor>(
+      valueListenable: context.wm.cursor,
+      builder: (context, cursor, ___) => MouseRegion(
+        cursor: cursor,
+        onHover: context.wm.onPointerHover,
+        onExit: context.wm.onPointerExit,
+        child: child,
+      ),
+    );
+  }
+}
+
+class _Gestures extends StatelessWidget {
+  const _Gestures({
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTapUp: context.wm.onTapUp,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ValueListenableBuilder(
+            valueListenable: context.wm.maxScale,
+            child: child,
+            builder: (context, maxScale, child) => ValueListenableBuilder(
+              valueListenable: context.wm.scaleAnchors,
+              builder: (context, scaleAnchors, ___) => ScalableWidget(
+                maxScale: maxScale,
+                anchors: scaleAnchors,
+                child: child!,
+              ),
+            ),
+          ),
+          const Row(
+            children: [
+              _SeekGesture(side: Side.left),
+              _SeekGesture(side: Side.right),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SeekGesture extends StatelessWidget {
+  const _SeekGesture({
+    required this.side,
+  });
+
+  final Side side;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: SeekGestureWidget(
+        side: side,
+        videoController: context.wm.controller,
+      ),
+    );
+  }
+}
+
 class _Child extends StatelessWidget {
   const _Child({
     required this.child,
@@ -113,16 +169,22 @@ class _Child extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.maxScale,
-      builder: (context, maxScale, ___) => ValueListenableBuilder(
-        valueListenable: context.wm.scaleAnchors,
-        builder: (context, scaleAnchors, ___) => ScalableWidget(
-          maxScale: maxScale,
-          anchors: scaleAnchors,
-          child: Center(child: child),
+    return Stack(
+      clipBehavior: Clip.none,
+      fit: StackFit.expand,
+      children: [
+        Center(
+          child: child,
         ),
-      ),
+        AnimatedVisibility.emphasized(
+          visible: context.wm.visible,
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.black54,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -132,24 +194,16 @@ class _Controls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: context.wm.visible,
+    return AnimatedVisibility.emphasized(
+      visible: context.wm.visible,
       child: const Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
           _Top(),
-          _PlayPauseButton(),
+          _PlayPauseLoader(),
           _Bottom(),
         ],
-      ),
-      builder: (context, visible, controls) => AnimatedSwitcher(
-        switchInCurve: Easing.emphasizedDecelerate,
-        // TODO(ERGataullin): replace with Easing.emphasized
-        switchOutCurve: Easing.emphasizedAccelerate,
-        duration: Durations.long2,
-        reverseDuration: Durations.short4,
-        child: visible ? controls : null,
       ),
     );
   }
@@ -197,19 +251,61 @@ class _PreferencesButton extends StatelessWidget {
   }
 }
 
-class _PlayPauseButton extends StatelessWidget {
-  const _PlayPauseButton();
+class _PlayPauseLoader extends StatelessWidget {
+  const _PlayPauseLoader();
+
+  static Widget _animatedCrossFadeLayoutBuilder(
+    Widget topChild,
+    Key topChildKey,
+    Widget bottomChild,
+    Key bottomChildKey,
+  ) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        Center(
+          key: bottomChildKey,
+          child: bottomChild,
+        ),
+        Center(
+          key: topChildKey,
+          child: topChild,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    const double size = 48;
     return Align(
       alignment: Alignment.center,
-      child: IconButton(
-        onPressed: context.wm.onPlayPausePressed,
-        icon: AnimatedIcon(
-          size: 48,
-          icon: AnimatedIcons.play_pause,
-          progress: context.wm.playPauseAnimation,
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.playPauseLoaderState,
+        builder: (context, state, ___) => AnimatedCrossFade(
+          alignment: Alignment.center,
+          // TODO(ERGataullin): replace with Easing.emphasized
+          firstCurve: Easing.emphasizedDecelerate,
+          secondCurve: Easing.emphasizedDecelerate,
+          duration: Durations.short4,
+          crossFadeState: state,
+          layoutBuilder: _animatedCrossFadeLayoutBuilder,
+          firstChild: const SizedBox(
+            width: size,
+            height: size,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          secondChild: IconButton(
+            onPressed: context.wm.onPlayPausePressed,
+            icon: AnimatedIcon(
+              size: size,
+              icon: AnimatedIcons.play_pause,
+              progress: context.wm.playPauseAnimation,
+            ),
+          ),
         ),
       ),
     );

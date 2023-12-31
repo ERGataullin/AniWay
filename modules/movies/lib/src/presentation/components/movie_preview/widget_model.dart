@@ -1,13 +1,10 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/components/movie_preview/model.dart';
 import 'package:movies/src/presentation/components/movie_preview/widget.dart';
-import 'package:provider/provider.dart';
 
 MoviePreviewWidgetModel moviePreviewWidgetModelFactory(BuildContext context) =>
     MoviePreviewWidgetModel(

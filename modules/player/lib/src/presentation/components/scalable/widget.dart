@@ -1,4 +1,4 @@
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/scalable/widget_model.dart';
 
