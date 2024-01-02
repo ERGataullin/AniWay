@@ -12,8 +12,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   Future<List<Map<String, dynamic>>> getMovies({
     String? order,
     String? query,
-    String? limit,
-    String? offset,
+    int? limit,
+    int? offset,
     List<String?> watchStatus = const [],
   }) async {
     final NetworkResponseData response = await _network.request(
@@ -26,7 +26,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             if (query != null) 'query': query,
             if (limit != null) 'limit': limit,
             if (offset != null) 'offset': offset,
-          },
+          }.map((key, value) => MapEntry(key, value.toString())),
         ),
         method: NetworkRequestMethodData.get,
       ),

@@ -21,9 +21,9 @@ abstract interface class ISearchWidgetModel implements IWidgetModel {
 
   ValueListenable<bool> get showLoader;
 
-  ValueListenable<bool> get showResult;
-
   SearchController get queryController;
+
+  ScrollController get scrollController;
 
   void onMoviePressed(int id);
 }
@@ -44,10 +44,21 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   final ValueNotifier<bool> showLoader = ValueNotifier(false);
 
   @override
-  final ValueNotifier<bool> showResult = ValueNotifier(false);
+  final SearchController queryController = SearchController();
 
   @override
-  final SearchController queryController = SearchController();
+  late final ScrollController scrollController = ScrollController()
+    ..addListener(() {
+      if (scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent &&
+          _hasNextPage) {
+        _loadMovies();
+      }
+    });
+
+  int _page = 1;
+
+  bool _hasNextPage = true;
 
   Timer? _queryDebounceTimer;
 
@@ -70,25 +81,42 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   @override
   void dispose() {
     super.dispose();
-    hintText.dispose();
-    queryController.dispose();
     _queryDebounceTimer?.cancel();
+    hintText.dispose();
+    movies.dispose();
+    showLoader.dispose();
+    queryController.dispose();
+    scrollController.dispose();
   }
 
   void _onQueryChanged() {
     _queryDebounceTimer?.cancel();
-    _queryDebounceTimer = Timer(_queryDebounceInterval, _loadMovies);
+    _queryDebounceTimer = Timer(
+      _queryDebounceInterval,
+      () => _loadMovies(reload: true),
+    );
   }
 
-  Future<void> _loadMovies() async {
+  Future<void> _loadMovies({
+    bool reload = false,
+  }) async {
+    if (!_hasNextPage && !reload) {
+      return;
+    }
+
     showLoader.value = true;
-    showResult.value = false;
-    movies
-      ..value = const []
-      ..value = await model.getMovies(
-        query: queryController.text,
-      );
+    if (reload) {
+      _page = 1;
+      movies.value = const [];
+    }
+
+    final List<MoviePreviewData> newMovies = await model.getMovies(
+      query: queryController.text,
+      offset: (_page - 1) * model.defaultMoviesLimit,
+    );
+    _page++;
+    _hasNextPage = newMovies.length >= model.defaultMoviesLimit;
+    movies.value = [...movies.value, ...newMovies];
     showLoader.value = false;
-    showResult.value = true;
   }
 }

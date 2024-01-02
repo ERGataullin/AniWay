@@ -20,11 +20,14 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
   Widget build(ISearchWidgetModel wm) {
     return Provider<ISearchWidgetModel>.value(
       value: wm,
-      child: const Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _SearchBar(),
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: wm.scrollController,
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SearchBarDelegate(),
+            ),
             _Result(),
             _Loader(),
           ],
@@ -34,11 +37,15 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
   }
 }
 
-class _SearchBar extends StatelessWidget {
-  const _SearchBar();
+class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  const _SearchBarDelegate();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SearchAnchor(
@@ -59,6 +66,17 @@ class _SearchBar extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  double get maxExtent => 80.0;
+
+  @override
+  double get minExtent => 80.0;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
 }
 
 class _Result extends StatelessWidget {
@@ -66,27 +84,21 @@ class _Result extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ValueListenableBuilder(
-        valueListenable: context.wm.showResult,
-        builder: (context, showResult, ___) => Visibility(
-          visible: showResult,
-          child: ValueListenableBuilder(
-            valueListenable: context.wm.movies,
-            builder: (context, items, ___) => GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: MoviePreviewWidget.aspectRatio,
-                maxCrossAxisExtent: 200,
-              ),
-              itemCount: items.length,
-              itemBuilder: (context, index) => MoviePreviewWidget(
-                movie: items[index],
-                onPressed: () => context.wm.onMoviePressed(items[index].id),
-              ),
-            ),
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      sliver: ValueListenableBuilder(
+        valueListenable: context.wm.movies,
+        builder: (context, items, ___) => SliverGrid.builder(
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: MoviePreviewWidget.aspectRatio,
+            maxCrossAxisExtent: 200,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, index) => MoviePreviewWidget(
+            movie: items[index],
+            onPressed: () => context.wm.onMoviePressed(items[index].id),
           ),
         ),
       ),
@@ -99,14 +111,17 @@ class _Loader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SliverPadding(
       padding: const EdgeInsets.all(16),
-      child: Center(
-        child: ValueListenableBuilder(
-          valueListenable: context.wm.showLoader,
-          builder: (context, showLoader, ___) => Visibility(
-            visible: showLoader,
-            child: const CircularProgressIndicator(),
+      sliver: SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: ValueListenableBuilder(
+            valueListenable: context.wm.showLoader,
+            builder: (context, showLoader, ___) => Visibility(
+              visible: showLoader,
+              child: const CircularProgressIndicator(),
+            ),
           ),
         ),
       ),

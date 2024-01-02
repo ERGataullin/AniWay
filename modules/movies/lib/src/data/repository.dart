@@ -10,8 +10,8 @@ class MoviesRepository {
   Future<List<Map<String, dynamic>>> getMovies({
     String? order,
     String? query,
-    String? limit,
-    String? offset,
+    int? limit,
+    int? offset,
     List<String?> watchStatus = const [],
   }) {
     return _remote.getMovies(
