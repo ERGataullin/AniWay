@@ -26,10 +26,13 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
           slivers: const [
             SliverPersistentHeader(
               pinned: true,
-              delegate: _SearchBarDelegate(),
+              delegate: _SearchBarDelegate(margin: EdgeInsets.all(16)),
             ),
-            _Result(),
-            _Loader(),
+            _Result(margin: EdgeInsets.symmetric(horizontal: 16)),
+            _Loader(margin: EdgeInsets.fromLTRB(16, 8, 16, 8)),
+            SliverToBoxAdapter(
+              child: SizedBox(height: 16),
+            ),
           ],
         ),
       ),
@@ -38,7 +41,11 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
 }
 
 class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
-  const _SearchBarDelegate();
+  const _SearchBarDelegate({
+    this.margin = EdgeInsets.zero,
+  });
+
+  final EdgeInsets margin;
 
   @override
   Widget build(
@@ -47,7 +54,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: margin,
       child: SearchAnchor(
         suggestionsBuilder: (context, controller) => [
           const SizedBox.shrink(),
@@ -80,12 +87,16 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class _Result extends StatelessWidget {
-  const _Result();
+  const _Result({
+    this.margin = EdgeInsets.zero,
+  });
+
+  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: margin,
       sliver: ValueListenableBuilder(
         valueListenable: context.wm.movies,
         builder: (context, items, ___) => SliverGrid.builder(
@@ -107,19 +118,23 @@ class _Result extends StatelessWidget {
 }
 
 class _Loader extends StatelessWidget {
-  const _Loader();
+  const _Loader({
+    this.margin = EdgeInsets.zero,
+  });
+
+  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.all(16),
-      sliver: SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(
-          child: ValueListenableBuilder(
-            valueListenable: context.wm.showLoader,
-            builder: (context, showLoader, ___) => Visibility(
-              visible: showLoader,
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: Center(
+        child: ValueListenableBuilder(
+          valueListenable: context.wm.showLoader,
+          builder: (context, showLoader, ___) => Visibility(
+            visible: showLoader,
+            child: Padding(
+              padding: margin,
               child: const CircularProgressIndicator(),
             ),
           ),
