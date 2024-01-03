@@ -8,9 +8,13 @@ import 'package:movies/src/domain/models/up_next.dart';
 abstract interface class MoviesService {
   const MoviesService();
 
+  int get defaultMoviesLimit;
+
   Future<List<MoviePreviewData>> getMovies({
     MovieOrderData? order,
     String? query,
+    int? limit,
+    int? offset,
     List<MovieWatchStatusData> watchStatus = const [],
   });
 

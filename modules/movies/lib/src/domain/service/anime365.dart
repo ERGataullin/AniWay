@@ -14,17 +14,26 @@ class Anime365MoviesService implements MoviesService {
     required MoviesRepository repository,
   }) : _repository = repository;
 
+  static const  int _defaultMoviesLimit = 50;
+
+  @override
+  int get defaultMoviesLimit => _defaultMoviesLimit;
+
   final MoviesRepository _repository;
 
   @override
   Future<List<MoviePreviewData>> getMovies({
     MovieOrderData? order,
     String? query,
+    int? limit = _defaultMoviesLimit,
+    int? offset,
     List<MovieWatchStatusData> watchStatus = const [],
   }) {
     return _repository
         .getMovies(
           query: query,
+          limit: limit,
+          offset: offset,
           order: switch (order) {
             MovieOrderData.byScore => 'ranked',
             MovieOrderData.byPopularity => 'popularity',
