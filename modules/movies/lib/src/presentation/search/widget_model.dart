@@ -47,14 +47,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   final SearchController queryController = SearchController();
 
   @override
-  late final ScrollController scrollController = ScrollController()
-    ..addListener(() {
-      if (scrollController.position.pixels ==
-              scrollController.position.maxScrollExtent &&
-          _hasNextPage) {
-        _loadMovies();
-      }
-    });
+  final ScrollController scrollController = ScrollController();
 
   int _page = 1;
 
@@ -66,6 +59,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   void initWidgetModel() {
     super.initWidgetModel();
     queryController.addListener(_onQueryChanged);
+    scrollController.addListener(_onScroll);
   }
 
   @override
@@ -95,6 +89,15 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
       _queryDebounceInterval,
       () => _loadMovies(reload: true),
     );
+  }
+
+  void _onScroll() {
+    final bool scrolledToEnd = scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent;
+    if (!scrolledToEnd || !_hasNextPage || showLoader.value) {
+      return;
+    }
+    _loadMovies();
   }
 
   Future<void> _loadMovies({
