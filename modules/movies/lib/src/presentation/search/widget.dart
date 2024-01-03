@@ -23,7 +23,7 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
       child: Scaffold(
         body: CustomScrollView(
           controller: wm.scrollController,
-          slivers: [
+          slivers: const [
             SliverPersistentHeader(
               pinned: true,
               delegate: _SearchBarDelegate(),
@@ -68,10 +68,10 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 80.0;
+  double get maxExtent => 80;
 
   @override
-  double get minExtent => 80.0;
+  double get minExtent => 80;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
