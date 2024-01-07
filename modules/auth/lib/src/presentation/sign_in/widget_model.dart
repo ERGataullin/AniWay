@@ -1,10 +1,8 @@
 import 'package:auth/auth.dart';
 import 'package:auth/src/presentation/sign_in/model.dart';
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
@@ -12,8 +10,8 @@ SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
       SignInModel(
         context.read<ErrorHandler>(),
         service: context.read<AuthService>(),
+        webResourcesBaseUri: context.read<Network>().baseUri,
       ),
-      webResourcesBaseUri: context.read<Network>().baseUri,
     );
 
 abstract interface class ISignInWidgetModel implements IWidgetModel {
@@ -22,45 +20,26 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
 
 class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
     implements ISignInWidgetModel {
-  SignInWidgetModel(
-    super._model, {
-    required Uri webResourcesBaseUri,
-  }) : _webResourcesBaseUri = webResourcesBaseUri;
-
-  final Uri _webResourcesBaseUri;
-
-  final WebviewCookieManager _cookieManager = WebviewCookieManager();
-
-  bool _signedIn = false;
+  SignInWidgetModel(super._model);
 
   @override
-  late final WebViewController webViewController = WebViewController()
-    ..loadRequest(_webResourcesBaseUri)
-    ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    ..setNavigationDelegate(
-      NavigationDelegate(
-        onUrlChange: (urlChange) {
-          if (_signedIn) {
-            return;
-          }
-          if (urlChange.url != '$_webResourcesBaseUri/' &&
-              urlChange.url !=
-                  _webResourcesBaseUri.resolve('/users/profile').toString()) {
-            return;
-          }
+  WebViewController get webViewController => model.webViewController;
 
-          _signedIn = true;
-          _cookieManager
-              .getCookies(_webResourcesBaseUri.toString())
-              .then(
-                (cookies) => model.signIn(
-                  cookies
-                      .map((cookie) => '${cookie.name}=${cookie.value}')
-                      .join(';'),
-                ),
-              )
-              .then((_) => widget.onSignedIn());
-        },
-      ),
-    );
+  @override
+  void initWidgetModel() {
+    super.initWidgetModel();
+    model.signedIn.addListener(_onSignedInChanged);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    model.signedIn.removeListener(_onSignedInChanged);
+  }
+
+  void _onSignedInChanged() {
+    if (model.signedIn.value) {
+      widget.onSignedIn();
+    }
+  }
 }

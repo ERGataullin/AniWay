@@ -75,6 +75,7 @@ class _SelectionWidgetState extends State<MenuWidget> {
     return Scrollbar(
       thumbVisibility: true,
       child: CustomScrollView(
+        primary: true,
         shrinkWrap: true,
         slivers: [
           if (_title != null)

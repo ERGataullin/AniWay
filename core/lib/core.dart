@@ -1,3 +1,5 @@
+export 'package:elementary/elementary.dart' hide ErrorHandler;
+
 export '/src/presentation/components/animated_visibility.dart';
 export '/src/presentation/components/menu.dart';
 

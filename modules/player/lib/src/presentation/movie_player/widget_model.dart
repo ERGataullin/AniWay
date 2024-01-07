@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +8,6 @@ import 'package:player/player.dart';
 import 'package:player/src/presentation/movie_player/model.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 MoviePlayerWidgetModel moviePlayerWidgetModelFactory(BuildContext context) =>
     MoviePlayerWidgetModel(
@@ -37,45 +35,36 @@ class MoviePlayerWidgetModel
   }) : _fullscreen = fullscreen;
 
   @override
-  final ValueNotifier<String> title = ValueNotifier('');
-
-  @override
   final ValueNotifier<List<MenuItemData>> preferences = ValueNotifier(const []);
 
   @override
-  final VideoController controller = VideoController();
+  ValueListenable<String> get title => model.title;
+
+  @override
+  VideoController get controller => model.videoController;
 
   final Fullscreen _fullscreen;
-
-  late final MovieData _movie;
-
-  late final Map<VideoTranslationTypeData, List<VideoTranslationData>>
-      _translations;
-
-  late VideoTranslationTypeData _translationType;
-
-  late VideoTranslationData _translation;
-
-  late VideoData _video;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
+    model
+      ..translations.addListener(_updatePreferences)
+      ..translation.addListener(_updatePreferences)
+      ..movieId = widget.movieId
+      ..episodeId = widget.episodeId;
     _fullscreen.request();
-    controller.addListener(_onControllerValueChanged);
     _lockOrientation();
-    _loadMovie();
-    _loadTranslations();
   }
 
   @override
   Future<void> dispose() async {
     super.dispose();
-    title.dispose();
+    model
+      ..translations.removeListener(_updatePreferences)
+      ..translation.removeListener(_updatePreferences);
     preferences.dispose();
-
     await Future.wait([
-      controller.dispose(),
       _fullscreen.exit(),
       _unlockOrientation(),
     ]);
@@ -92,83 +81,44 @@ class MoviePlayerWidgetModel
     return SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
-  Future<void> _loadMovie() async {
-    _movie = await model.getMovie(widget.movieId);
-    title.value = _movie.title;
-  }
-
-  Future<void> _loadTranslations() async {
-    final List<VideoTranslationData> translationsList =
-        await model.getTranslations(widget.episodeId);
-    _translationType = VideoTranslationTypeData.raw;
-    _translations = {
-      for (final VideoTranslationTypeData type
-          in VideoTranslationTypeData.values)
-        type: translationsList
-            .where((translation) => translation.type == type)
-            .toList(growable: false),
-    };
-    _translation = _translations[_translationType]!.first;
-    _updatePreferences();
-    await _loadVideo();
-  }
-
-  Future<void> _loadVideo() async {
-    _video = await model.getTranslationVideo(_translation.embedUri);
-    controller.initialize(_video.sources.values.first.uri);
-  }
-
   void _updatePreferences() {
     preferences.value = [
       MenuItemData.group(
         icon: Icons.type_specimen,
         label: context.localizations.moviePlayerPreferencesTranslationTypeLabel,
-        children: _translations.keys
+        children: model.translations.value.keys
             .map(
               (type) => MenuItemData.group(
-                selected: type == _translationType,
+                selected: type == model.translation.value?.type,
                 label: context.localizations
                     .moviePlayerPreferencesTranslationType(type.toString()),
-                onSelected: () {
-                  _translationType = type;
-                  _updatePreferences();
-                },
                 children: _getTranslationMenuItems(type: type),
               ),
             )
             .toList(growable: false),
       ),
-      MenuItemData.group(
-        icon: Icons.voice_chat,
-        label: context.localizations.moviePlayerPreferencesTranslationLabel,
-        children: _getTranslationMenuItems(),
-      ),
+      if (model.translation.value != null)
+        MenuItemData.group(
+          icon: Icons.voice_chat,
+          label: context.localizations.moviePlayerPreferencesTranslationLabel,
+          children: _getTranslationMenuItems(
+            type: model.translation.value!.type,
+          ),
+        ),
     ];
   }
 
   List<MenuItemData> _getTranslationMenuItems({
-    VideoTranslationTypeData? type,
+    required VideoTranslationTypeData type,
   }) {
-    return _translations[type ?? _translationType]!
+    return model.translations.value[type]!
         .map(
           (translation) => MenuItemData.single(
-            selected: translation == _translation,
+            selected: translation == model.translation.value,
             label: translation.title,
-            onSelected: () {
-              _translation = translation;
-              _loadVideo();
-              _updatePreferences();
-            },
+            onSelected: () => model.changeTranslation(translation),
           ),
         )
         .toList(growable: false);
-  }
-
-  Future<void> _onControllerValueChanged() async {
-    final VideoPlayerValue value = controller.value;
-
-    if (value.isCompleted) {
-      await model.postTranslationWatched(_translation.id);
-    }
   }
 }

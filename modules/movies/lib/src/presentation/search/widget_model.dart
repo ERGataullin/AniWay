@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/movies.dart';
@@ -16,13 +14,13 @@ SearchWidgetModel searchWidgetModelFactory(BuildContext context) =>
     );
 
 abstract interface class ISearchWidgetModel implements IWidgetModel {
-  ValueListenable<String> get hintText;
-
-  ValueListenable<List<MoviePreviewData>> get movies;
-
   ValueListenable<bool> get showLoader;
 
   ValueListenable<bool> get showResult;
+
+  ValueListenable<String> get queryHint;
+
+  ValueListenable<List<MoviePreviewData>> get movies;
 
   SearchController get queryController;
 
@@ -33,34 +31,30 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
     implements ISearchWidgetModel {
   SearchWidgetModel(super._model);
 
-  static const Duration _queryDebounceInterval = Duration(milliseconds: 300);
-
-  @override
-  final ValueNotifier<String> hintText = ValueNotifier('');
-
-  @override
-  final ValueNotifier<List<MoviePreviewData>> movies = ValueNotifier(const []);
-
-  @override
-  final ValueNotifier<bool> showLoader = ValueNotifier(false);
-
   @override
   final ValueNotifier<bool> showResult = ValueNotifier(false);
 
   @override
-  final SearchController queryController = SearchController();
+  final ValueNotifier<String> queryHint = ValueNotifier('');
 
-  Timer? _queryDebounceTimer;
+  @override
+  ValueListenable<bool> get showLoader => model.loading;
+
+  @override
+  ValueListenable<List<MoviePreviewData>> get movies => model.movies;
+
+  @override
+  SearchController get queryController => model.queryController;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    queryController.addListener(_onQueryChanged);
+    model.loading.addListener(_updateShowResult);
   }
 
   @override
   void didChangeDependencies() {
-    hintText.value = context.localizations.searchSearchBarHint;
+    _updateQueryHint();
   }
 
   @override
@@ -71,25 +65,16 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   @override
   void dispose() {
     super.dispose();
-    hintText.dispose();
-    queryController.dispose();
-    _queryDebounceTimer?.cancel();
+    model.loading.removeListener(_updateShowResult);
+    showResult.dispose();
+    queryHint.dispose();
   }
 
-  void _onQueryChanged() {
-    _queryDebounceTimer?.cancel();
-    _queryDebounceTimer = Timer(_queryDebounceInterval, _loadMovies);
+  void _updateShowResult() {
+    showResult.value = !model.loading.value;
   }
 
-  Future<void> _loadMovies() async {
-    showLoader.value = true;
-    showResult.value = false;
-    movies
-      ..value = const []
-      ..value = await model.getMovies(
-        query: queryController.text,
-      );
-    showLoader.value = false;
-    showResult.value = true;
+  void _updateQueryHint() {
+    queryHint.value = context.localizations.searchSearchBarHint;
   }
 }

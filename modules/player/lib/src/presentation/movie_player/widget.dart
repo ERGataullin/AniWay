@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/video_controls/widget.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';

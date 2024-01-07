@@ -151,12 +151,16 @@ class _IndicatorValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedVisibility.standard(
-      visible: context.wm.showIndicatorValue,
-      child: ValueListenableBuilder(
-        valueListenable: context.wm.indicatorValue,
-        builder: (context, value, ___) => Text(
+    return ValueListenableBuilder(
+      valueListenable: context.wm.indicatorValue,
+      builder: (context, value, ___) => AnimatedSwitcher(
+        switchInCurve: Easing.standardDecelerate,
+        switchOutCurve: Easing.standardAccelerate,
+        duration: Durations.medium1,
+        reverseDuration: Durations.short4,
+        child: Text(
           value,
+          key: ValueKey(value),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontFeatures: const [
               FontFeature.tabularFigures(),

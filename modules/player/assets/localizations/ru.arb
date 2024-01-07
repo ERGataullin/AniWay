@@ -1,14 +1,14 @@
 {
     "@@locale": "ru",
-    "componentsSeekGestureSeekValue": "{seconds} секунд",
-    "@componentsSeekGestureSeekValue": {
+    "moviePlayerPreferencesTranslationTypeLabel": "Тип перевода",
+    "moviePlayerPreferencesTranslationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}",
+    "moviePlayerPreferencesTranslationLabel": "Перевод",
+    "seekGestureSeekValue": "{seconds} секунд",
+    "@seekGestureSeekValue": {
         "placeholders": {
             "seconds": {
                 "type": "int"
             }
         }
-    },
-    "moviePlayerPreferencesTranslationTypeLabel": "Тип перевода",
-    "moviePlayerPreferencesTranslationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}",
-    "moviePlayerPreferencesTranslationLabel": "Перевод"
+    }
 }

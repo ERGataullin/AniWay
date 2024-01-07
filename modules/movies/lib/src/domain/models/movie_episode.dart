@@ -3,7 +3,8 @@ enum MovieEpisodeTypeData {
   movie,
   ova,
   ona,
-  special;
+  special,
+  unknown;
 }
 
 class MovieEpisodeData {

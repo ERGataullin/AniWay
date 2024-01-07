@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/domain/models/side.dart';
 import 'package:player/src/presentation/components/scalable/widget.dart';
@@ -287,25 +286,25 @@ class _PlayPauseLoader extends StatelessWidget {
         builder: (context, state, ___) => AnimatedCrossFade(
           alignment: Alignment.center,
           // TODO(ERGataullin): replace with Easing.emphasized
-          firstCurve: Easing.emphasizedDecelerate,
-          secondCurve: Easing.emphasizedDecelerate,
-          duration: Durations.short4,
+          firstCurve: Easing.standard,
+          secondCurve: Easing.standard,
+          duration: Durations.medium2,
           crossFadeState: state,
           layoutBuilder: _animatedCrossFadeLayoutBuilder,
-          firstChild: const SizedBox(
-            width: size,
-            height: size,
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          secondChild: IconButton(
+          firstChild: IconButton(
             onPressed: context.wm.onPlayPausePressed,
             icon: AnimatedIcon(
               size: size,
               icon: AnimatedIcons.play_pause,
               progress: context.wm.playPauseAnimation,
+            ),
+          ),
+          secondChild: const SizedBox(
+            width: size,
+            height: size,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
             ),
           ),
         ),

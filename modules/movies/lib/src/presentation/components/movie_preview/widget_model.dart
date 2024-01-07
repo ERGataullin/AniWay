@@ -1,10 +1,8 @@
 import 'package:core/core.dart';
-import 'package:elementary/elementary.dart' hide ErrorHandler;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:movies/movies.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/components/movie_preview/model.dart';
 import 'package:movies/src/presentation/components/movie_preview/widget.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +11,8 @@ MoviePreviewWidgetModel moviePreviewWidgetModelFactory(BuildContext context) =>
     MoviePreviewWidgetModel(
       MoviePreviewModel(
         context.read<ErrorHandler>(),
+        posterBaseUri: context.read<Network>().baseUri,
       ),
-      webResourcesBaseUri: context.read<Network>().baseUri,
     );
 
 abstract interface class IMoviePreviewWidgetModel implements IWidgetModel {
@@ -30,16 +28,10 @@ abstract interface class IMoviePreviewWidgetModel implements IWidgetModel {
 class MoviePreviewWidgetModel
     extends WidgetModel<MoviePreviewWidget, IMoviePreviewModel>
     implements IMoviePreviewWidgetModel {
-  MoviePreviewWidgetModel(
-    super._model, {
-    required Uri webResourcesBaseUri,
-  }) : _webResourcesBaseUri = webResourcesBaseUri;
+  MoviePreviewWidgetModel(super._model);
 
   @override
   final ValueNotifier<String> posterUrl = ValueNotifier('');
-
-  @override
-  final ValueNotifier<String> title = ValueNotifier('');
 
   @override
   final ValueNotifier<String> type = ValueNotifier('');
@@ -47,34 +39,52 @@ class MoviePreviewWidgetModel
   @override
   final ValueNotifier<String> score = ValueNotifier('');
 
+  @override
+  ValueListenable<String> get title => model.title;
+
   final NumberFormat _scoreFormat = NumberFormat('#0.0');
-
-  final Uri _webResourcesBaseUri;
-
-  MoviePreviewData get _movie => widget.movie;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    posterUrl.value =
-        _webResourcesBaseUri.resolveUri(_movie.posterUri).toString();
-    title.value = _movie.title;
-    score.value = _scoreFormat.format(_movie.score);
+    model
+      ..posterUri.addListener(_updatePosterUrl)
+      ..type.addListener(_updateType)
+      ..score.addListener(_updateScore)
+      ..movie = widget.movie;
   }
 
   @override
   void didChangeDependencies() {
-    type.value = context.localizations.componentsMoviePreviewType(
-      _movie.type.name,
-    );
+    _updateType();
+  }
+
+  @override
+  void didUpdateWidget(MoviePreviewWidget oldWidget) {
+    model.movie = widget.movie;
   }
 
   @override
   void dispose() {
     super.dispose();
+    model
+      ..posterUri.removeListener(_updatePosterUrl)
+      ..type.removeListener(_updateType)
+      ..score.removeListener(_updateScore);
     posterUrl.dispose();
-    title.dispose();
     type.dispose();
     score.dispose();
+  }
+
+  void _updatePosterUrl() {
+    posterUrl.value = model.posterUri.value.toString();
+  }
+
+  void _updateType() {
+    type.value = context.localizations.moviePreviewType(model.type.value.name);
+  }
+
+  void _updateScore() {
+    score.value = _scoreFormat.format(model.score.value);
   }
 }
