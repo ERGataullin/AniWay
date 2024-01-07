@@ -2,7 +2,6 @@ import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/src/presentation/movie/model.dart';
 import 'package:movies/src/presentation/movie/widget.dart';
-import 'package:provider/provider.dart';
 
 MovieWidgetModel movieWidgetModelFactory(BuildContext context) =>
     MovieWidgetModel(

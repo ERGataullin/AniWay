@@ -12,6 +12,8 @@ abstract interface class ISearchModel implements ElementaryModel {
   ValueListenable<List<MoviePreviewData>> get movies;
 
   SearchController get queryController;
+
+  ScrollController get scrollController;
 }
 
 class SearchModel extends ElementaryModel implements ISearchModel {
@@ -30,15 +32,23 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   @override
   final SearchController queryController = SearchController();
 
+  @override
+  final ScrollController scrollController = ScrollController();
+
   final MoviesService _service;
 
   final List<MoviePreviewData> _movies = [];
+
+  bool _hasNextPage = true;
+
+  int _page = 1;
 
   Timer? _queryDebounceTimer;
 
   @override
   void init() {
     queryController.addListener(_onQueryChanged);
+    scrollController.addListener(_onScrollChanged);
   }
 
   @override
@@ -47,26 +57,51 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     loading.dispose();
     movies.dispose();
     queryController.dispose();
+    scrollController.dispose();
   }
 
   void _onQueryChanged() {
     _queryDebounceTimer?.cancel();
-    _queryDebounceTimer = Timer(_queryDebounceInterval, _reloadMovies);
+    _queryDebounceTimer = Timer(
+      _queryDebounceInterval,
+      () => _loadMovies(reload: true),
+    );
   }
 
-  Future<void> _reloadMovies() async {
-    _queryDebounceTimer?.cancel();
-    _queryDebounceTimer = null;
+  void _onScrollChanged() {
+    final bool scrolledToEnd = scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent;
+
+    if (!scrolledToEnd) {
+      return;
+    }
+
+    _loadMovies();
+  }
+
+  Future<void> _loadMovies({
+    bool reload = false,
+  }) async {
+    if (loading.value || !_hasNextPage && !reload) {
+      return;
+    }
+
     loading.value = true;
-    _movies.clear();
-    movies.value = List.unmodifiable(_movies);
+    if (reload) {
+      _page = 1;
+      _movies.clear();
+      movies.value = const [];
+    }
 
     final List<MoviePreviewData> newMovies = await _service.getMovies(
       query: queryController.text,
+      offset: (_page - 1) * _service.defaultMoviesLimit,
     );
 
+    _page++;
+    _hasNextPage = newMovies.length >= _service.defaultMoviesLimit;
     _movies.addAll(newMovies);
-    loading.value = false;
     movies.value = List.unmodifiable(_movies);
+    loading.value = false;
   }
 }

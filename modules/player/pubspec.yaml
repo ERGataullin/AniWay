@@ -9,14 +9,8 @@ environment:
 dependencies:
   core: 
     path: ../../core
-  elementary: ^3.0.0
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  html: ^0.15.4
-  intl: ^0.18.1
-  provider: ^6.0.5
   video_player: ^2.8.1
 
 dev_dependencies:

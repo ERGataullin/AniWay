@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:html/dom.dart';
-import 'package:html/parser.dart';
 import 'package:player/player.dart';
 
 class Anime365PlayerDataSource implements PlayerDataSource {

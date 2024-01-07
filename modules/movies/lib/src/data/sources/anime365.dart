@@ -1,6 +1,4 @@
 import 'package:core/core.dart';
-import 'package:html/dom.dart';
-import 'package:html/parser.dart';
 import 'package:movies/movies.dart';
 
 class Anime365MoviesDataSource implements MoviesDataSource {
@@ -14,6 +12,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   Future<List<Map<String, dynamic>>> getMovies({
     String? order,
     String? query,
+    int? limit,
+    int? offset,
     List<String?> watchStatus = const [],
   }) async {
     final NetworkResponseData response = await _network.request(
@@ -22,9 +22,11 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           path: '/api/series',
           queryParameters: {
             'fields': 'id,titles,posterUrl,type,myAnimeListScore',
-            if(order != null) 'order': order,
-            if(query != null) 'query': query,
-          },
+            if (order != null) 'order': order,
+            if (query != null) 'query': query,
+            if (limit != null) 'limit': limit,
+            if (offset != null) 'offset': offset,
+          }.map((key, value) => MapEntry(key, value.toString())),
         ),
         method: NetworkRequestMethodData.get,
       ),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/video_player/model.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 
 VideoPlayerWidgetModel videoPlayerWidgetModelFactory(BuildContext context) =>
     VideoPlayerWidgetModel(

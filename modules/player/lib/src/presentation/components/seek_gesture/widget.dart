@@ -1,13 +1,11 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:core/core.dart';
-import 'package:elementary/elementary.dart';
+import 'package:core/core.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:player/src/domain/models/side.dart';
 import 'package:player/src/presentation/components/seek_gesture/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 
 extension _SeekGestureContext on BuildContext {
   ISeekGestureWidgetModel get wm => read<ISeekGestureWidgetModel>();

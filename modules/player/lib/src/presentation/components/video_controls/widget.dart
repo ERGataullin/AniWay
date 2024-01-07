@@ -5,7 +5,6 @@ import 'package:player/src/presentation/components/scalable/widget.dart';
 import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 extension _VideoControlsContext on BuildContext {

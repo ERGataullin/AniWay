@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/presentation/components/up_next/model.dart';
 import 'package:movies/src/presentation/components/up_next/widget.dart';
-import 'package:provider/provider.dart';
 
 UpNextWidgetModel upNextWidgetModelFactory(BuildContext context) =>
     UpNextWidgetModel(

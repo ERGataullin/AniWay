@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/video_controls/model.dart';
 import 'package:player/src/presentation/components/video_controls/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:provider/provider.dart';
 
 VideoControlsWidgetModel videoControlsWidgetModelFactory(
   BuildContext context,

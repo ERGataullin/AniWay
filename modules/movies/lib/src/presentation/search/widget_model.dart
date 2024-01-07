@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/search/model.dart';
-import 'package:provider/provider.dart';
 
 SearchWidgetModel searchWidgetModelFactory(BuildContext context) =>
     SearchWidgetModel(
@@ -16,13 +15,13 @@ SearchWidgetModel searchWidgetModelFactory(BuildContext context) =>
 abstract interface class ISearchWidgetModel implements IWidgetModel {
   ValueListenable<bool> get showLoader;
 
-  ValueListenable<bool> get showResult;
-
   ValueListenable<String> get queryHint;
 
   ValueListenable<List<MoviePreviewData>> get movies;
 
   SearchController get queryController;
+
+  ScrollController get scrollController;
 
   void onMoviePressed(int id);
 }
@@ -30,9 +29,6 @@ abstract interface class ISearchWidgetModel implements IWidgetModel {
 class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
     implements ISearchWidgetModel {
   SearchWidgetModel(super._model);
-
-  @override
-  final ValueNotifier<bool> showResult = ValueNotifier(false);
 
   @override
   final ValueNotifier<String> queryHint = ValueNotifier('');
@@ -47,10 +43,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   SearchController get queryController => model.queryController;
 
   @override
-  void initWidgetModel() {
-    super.initWidgetModel();
-    model.loading.addListener(_updateShowResult);
-  }
+  ScrollController get scrollController => model.scrollController;
 
   @override
   void didChangeDependencies() {
@@ -65,13 +58,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   @override
   void dispose() {
     super.dispose();
-    model.loading.removeListener(_updateShowResult);
-    showResult.dispose();
     queryHint.dispose();
-  }
-
-  void _updateShowResult() {
-    showResult.value = !model.loading.value;
   }
 
   void _updateQueryHint() {

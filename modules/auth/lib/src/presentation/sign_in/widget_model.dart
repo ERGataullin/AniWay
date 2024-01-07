@@ -2,7 +2,7 @@ import 'package:auth/auth.dart';
 import 'package:auth/src/presentation/sign_in/model.dart';
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+
 import 'package:webview_flutter/webview_flutter.dart';
 
 SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>

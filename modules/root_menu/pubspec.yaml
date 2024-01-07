@@ -9,13 +9,8 @@ environment:
 dependencies:
   core: 
     path: ../../core
-  elementary: ^3.0.0
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  intl: ^0.18.1
-  provider: ^6.0.5
 
 dev_dependencies:
   flutter_lints: ^3.0.1
