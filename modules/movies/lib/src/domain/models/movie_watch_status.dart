@@ -5,5 +5,6 @@ enum MovieWatchStatusData {
   rewatching,
   completed,
   onHold,
-  dropped;
+  dropped,
+  unknown;
 }

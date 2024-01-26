@@ -7,7 +7,7 @@ import 'package:video_player/video_player.dart';
 class VideoController extends ValueNotifier<VideoPlayerValue>
     implements VideoPlayerController {
   VideoController() : super(const VideoPlayerValue(duration: Duration.zero)) {
-    unawaited(initialize());
+    initialize();
   }
 
   VideoPlayerController? _controller;

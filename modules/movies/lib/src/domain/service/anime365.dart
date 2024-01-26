@@ -45,7 +45,9 @@ class Anime365MoviesService implements MoviesService {
           watchStatus: watchStatus
               .map(
                 (watchStatus) => switch (watchStatus) {
-                  MovieWatchStatusData.none => null,
+                  MovieWatchStatusData.none ||
+                  MovieWatchStatusData.unknown =>
+                    null,
                   MovieWatchStatusData.planned => 'planned',
                   MovieWatchStatusData.watching => 'watching',
                   MovieWatchStatusData.rewatching => 'rewatching',

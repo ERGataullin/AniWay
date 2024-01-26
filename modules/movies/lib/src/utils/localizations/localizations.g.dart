@@ -91,17 +91,17 @@ abstract class MoviesLocalizations {
     Locale('ru')
   ];
 
-  /// No description provided for @componentsMoviePreviewType.
+  /// No description provided for @moviePreviewType.
   ///
   /// In ru, this message translates to:
   /// **'{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} music{Музыкальное} other{}}'**
-  String componentsMoviePreviewType(String type);
+  String moviePreviewType(String type);
 
-  /// No description provided for @componentsUpNextStatus.
+  /// No description provided for @searchSearchBarHint.
   ///
   /// In ru, this message translates to:
-  /// **'{watchStatus, select, watching{{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode} серия} ona{ONA {episode} серия} special{Спешл {episode} серия} other{{episode} серия}}} rewatching{{type, select, tv{{episode} серия} ova{OVA {episode} серия} ona{ONA {episode} серия} special{Спешл {episode} серия} other{{episode} серия}}} planned{Запланировано} onHold{Отложено на {episode} серии} other{{episode} серия}}'**
-  String componentsUpNextStatus(String watchStatus, String type, num episode);
+  /// **'Поиск'**
+  String get searchSearchBarHint;
 
   /// No description provided for @watchNowMostPopularLabel.
   ///
@@ -121,11 +121,11 @@ abstract class MoviesLocalizations {
   /// **'К просмотру'**
   String get watchNowUpNextLabel;
 
-  /// No description provided for @searchSearchBarHint.
+  /// No description provided for @upNextStatus.
   ///
   /// In ru, this message translates to:
-  /// **'Поиск'**
-  String get searchSearchBarHint;
+  /// **'{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} other{{episode} серия}}'**
+  String upNextStatus(String type, num episode);
 }
 
 class _MoviesLocalizationsDelegate extends LocalizationsDelegate<MoviesLocalizations> {

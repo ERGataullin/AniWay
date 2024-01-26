@@ -7,7 +7,7 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
   MoviesLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String componentsMoviePreviewType(String type) {
+  String moviePreviewType(String type) {
     String _temp0 = intl.Intl.selectLogic(
       type,
       {
@@ -24,40 +24,7 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
   }
 
   @override
-  String componentsUpNextStatus(String watchStatus, String type, num episode) {
-    String _temp0 = intl.Intl.selectLogic(
-      type,
-      {
-        'tv': '$episode серия',
-        'movie': 'Фильм',
-        'ova': 'OVA $episode серия',
-        'ona': 'ONA $episode серия',
-        'special': 'Спешл $episode серия',
-        'other': '$episode серия',
-      },
-    );
-    String _temp1 = intl.Intl.selectLogic(
-      type,
-      {
-        'tv': '$episode серия',
-        'ova': 'OVA $episode серия',
-        'ona': 'ONA $episode серия',
-        'special': 'Спешл $episode серия',
-        'other': '$episode серия',
-      },
-    );
-    String _temp2 = intl.Intl.selectLogic(
-      watchStatus,
-      {
-        'watching': '$_temp0',
-        'rewatching': '$_temp1',
-        'planned': 'Запланировано',
-        'onHold': 'Отложено на $episode серии',
-        'other': '$episode серия',
-      },
-    );
-    return '$_temp2';
-  }
+  String get searchSearchBarHint => 'Поиск';
 
   @override
   String get watchNowMostPopularLabel => 'Самое популярное на AniWay';
@@ -69,5 +36,18 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
   String get watchNowUpNextLabel => 'К просмотру';
 
   @override
-  String get searchSearchBarHint => 'Поиск';
+  String upNextStatus(String type, num episode) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'tv': '$episode серия',
+        'movie': 'Фильм',
+        'ova': 'OVA $episode',
+        'ona': 'ONA $episode',
+        'special': 'Спешл $episode',
+        'other': '$episode серия',
+      },
+    );
+    return '$_temp0';
+  }
 }

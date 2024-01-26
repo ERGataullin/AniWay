@@ -18,13 +18,11 @@ SeekGestureWidgetModel seekGestureWidgetModelFactory(
     );
 
 abstract interface class ISeekGestureWidgetModel implements IWidgetModel {
-  ValueListenable<ShapeBorder> get shape;
-
   ValueListenable<Map<Type, GestureRecognizerFactory>> get gestures;
 
-  ValueListenable<int> get indicatorRotationQuarterTurns;
+  ValueListenable<ShapeBorder> get shape;
 
-  ValueListenable<bool> get showIndicatorValue;
+  ValueListenable<int> get indicatorRotationQuarterTurns;
 
   ValueListenable<String> get indicatorValue;
 
@@ -39,9 +37,11 @@ class SeekGestureWidgetModel
     implements ISeekGestureWidgetModel {
   SeekGestureWidgetModel(super._model);
 
-  static const Duration _seekStep = Duration(seconds: 10);
-
   static const int _indicatorIconsCount = 3;
+
+  @override
+  final ValueNotifier<Map<Type, GestureRecognizerFactory>> gestures =
+      ValueNotifier(const {});
 
   @override
   final ValueNotifier<ShapeBorder> shape = ValueNotifier(
@@ -49,14 +49,7 @@ class SeekGestureWidgetModel
   );
 
   @override
-  final ValueNotifier<Map<Type, GestureRecognizerFactory>> gestures =
-      ValueNotifier(const {});
-
-  @override
   final ValueNotifier<int> indicatorRotationQuarterTurns = ValueNotifier(0);
-
-  @override
-  final ValueNotifier<bool> showIndicatorValue = ValueNotifier(false);
 
   @override
   final ValueNotifier<String> indicatorValue = ValueNotifier('');
@@ -78,7 +71,6 @@ class SeekGestureWidgetModel
     _indicatorIconsCount,
     (_) => AnimationController(
       vsync: this,
-      value: showIndicatorValue.value ? 1 : 0,
       duration: Duration(
         milliseconds: Durations.medium1.inMilliseconds ~/ _indicatorIconsCount,
       ),
@@ -98,18 +90,22 @@ class SeekGestureWidgetModel
 
   late PlayerLocalizations _localizations;
 
-  Duration _currentValue = Duration.zero;
+  bool _indicatorVisible = false;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    widget.videoController.addListener(_onVideoControllerValueChanged);
-    _updateGestures();
+    model
+      ..canSeek.addListener(_updateGestures)
+      ..value.addListener(_onValueChaged)
+      ..side = widget.side
+      ..videoController = widget.videoController;
     shape.value = SeekGestureShapeBorder(widget.side);
     indicatorRotationQuarterTurns.value = switch (widget.side) {
       Side.left => 2,
       Side.right => 0,
     };
+    _updateGestures();
   }
 
   @override
@@ -127,12 +123,9 @@ class SeekGestureWidgetModel
 
   @override
   void didUpdateWidget(SeekGestureWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.videoController != oldWidget.videoController) {
-      oldWidget.videoController.removeListener(_onVideoControllerValueChanged);
-      widget.videoController.addListener(_onVideoControllerValueChanged);
-    }
-    _updateGestures();
+    model
+      ..videoController = widget.videoController
+      ..side = widget.side;
     shape.value = SeekGestureShapeBorder(widget.side);
     indicatorRotationQuarterTurns.value = switch (widget.side) {
       Side.left => 2,
@@ -143,10 +136,11 @@ class SeekGestureWidgetModel
   @override
   void dispose() {
     super.dispose();
-    widget.videoController.removeListener(_onVideoControllerValueChanged);
+    model
+      ..canSeek.removeListener(_updateGestures)
+      ..value.removeListener(_onValueChaged);
     gestures.dispose();
     shape.dispose();
-    showIndicatorValue.dispose();
     indicatorRotationQuarterTurns.dispose();
     indicatorValue.dispose();
     for (final CurvedAnimation animation in indicatorIconsAnimations) {
@@ -158,13 +152,7 @@ class SeekGestureWidgetModel
   }
 
   Future<void> _onSeekTapUp(TapUpDetails details) async {
-    widget.videoController.seekTo(
-      widget.videoController.value.position +
-          switch (widget.side) {
-            Side.left => -_seekStep,
-            Side.right => _seekStep,
-          },
-    );
+    model.seek();
 
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
@@ -180,42 +168,36 @@ class SeekGestureWidgetModel
           customBorder: shape.value,
         )
         .confirm();
-
-    _currentValue += _seekStep;
-    showIndicatorValue.value = true;
-    indicatorValue.value = _localizations.componentsSeekGestureSeekValue(
-      _currentValue.inSeconds,
-    );
-    for (final AnimationController iconController
-        in _indicatorIconsControllers) {
-      await iconController.forward();
-    }
   }
 
   Future<void> _onSeekTapCancel() async {
-    if (_currentValue == Duration.zero) {
-      return;
-    }
+    model.submit();
+  }
 
-    _currentValue = Duration.zero;
-    for (final AnimationController iconController
-        in _indicatorIconsControllers) {
-      await iconController.forward();
+  Future<void> _onValueChaged() async {
+    _indicatorVisible = model.value.value != Duration.zero;
+    if (!_indicatorVisible) {
+      for (final AnimationController iconController
+          in _indicatorIconsControllers) {
+        await iconController.forward();
+      }
+      for (final AnimationController iconController
+          in _indicatorIconsControllers) {
+        await iconController.reverse();
+      }
     }
-    for (final AnimationController iconController
-        in _indicatorIconsControllers) {
-      await iconController.reverse();
+    _updateIndicatorValue();
+    if (_indicatorVisible) {
+      for (final AnimationController iconController
+          in _indicatorIconsControllers) {
+        await iconController.forward();
+      }
     }
-    showIndicatorValue.value = false;
-    indicatorValue.value = '';
   }
 
   void _updateGestures() {
-    gestures.value = widget.videoController.value.position == Duration.zero ||
-            widget.videoController.value.position ==
-                widget.videoController.value.duration
-        ? const {}
-        : {
+    gestures.value = model.canSeek.value
+        ? {
             SeekGestureRecognizer:
                 GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
               SeekGestureRecognizer.new,
@@ -226,10 +208,13 @@ class SeekGestureWidgetModel
                   ..gestureSettings = _gestureSettings;
               },
             ),
-          };
+          }
+        : const {};
   }
 
-  void _onVideoControllerValueChanged() {
-    _updateGestures();
+  void _updateIndicatorValue() {
+    indicatorValue.value = model.value.value == Duration.zero
+        ? ''
+        : _localizations.seekGestureSeekValue(model.value.value.inSeconds);
   }
 }

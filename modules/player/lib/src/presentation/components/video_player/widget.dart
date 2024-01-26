@@ -34,17 +34,12 @@ class _Player extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.showPlayer,
-      builder: (context, showPlayer, ___) => showPlayer
-          ? ValueListenableBuilder<double>(
-              valueListenable: context.wm.playerAspectRatio,
-              builder: (context, aspectRation, ___) => AspectRatio(
-                aspectRatio: aspectRation,
-                child: VideoPlayer(context.wm.controller),
-              ),
-            )
-          : const SizedBox.expand(),
+    return ValueListenableBuilder<double>(
+      valueListenable: context.wm.playerAspectRatio,
+      builder: (context, aspectRation, ___) => AspectRatio(
+        aspectRatio: aspectRation,
+        child: VideoPlayer(context.wm.controller),
+      ),
     );
   }
 }
