@@ -17,6 +17,7 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
         'ona': 'ONA',
         'special': 'Спешл',
         'music': 'Музыкальное',
+        'pv': 'Промо',
         'other': '',
       },
     );
@@ -45,6 +46,8 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
         'ova': 'OVA $episode',
         'ona': 'ONA $episode',
         'special': 'Спешл $episode',
+        'music': 'Музыка $episode',
+        'pv': 'Промо $episode',
         'other': '$episode серия',
       },
     );
