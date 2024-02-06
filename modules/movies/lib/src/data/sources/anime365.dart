@@ -99,9 +99,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         final RegExp specialEpisodeTitlePattern = RegExp(
           '^SPECIAL ${episodeNumberPattern.pattern} серия\$',
         );
-        final RegExp pvEpisodeTitlePattern = RegExp(
-          r'^Проморолик$',
-        );
+        final RegExp pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
         late final String episodeType;
         if (tvEpisodeTitlePattern.hasMatch(episodeTitle)) {
           episodeType = 'tv';
