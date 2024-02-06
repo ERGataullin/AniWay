@@ -1,6 +1,6 @@
 {
     "@@locale": "ru",
-    "moviePreviewType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} music{Музыкальное} other{}}",
+    "moviePreviewType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} music{Музыкальное} pv{Промо} other{}}",
     "@moviePreviewType": {
         "placeholders": {
             "type": {
@@ -12,7 +12,7 @@
     "watchNowMostPopularLabel": "Самое популярное на AniWay",
     "watchNowTitle": "Смотреть сейчас",
     "watchNowUpNextLabel": "К просмотру",
-    "upNextStatus": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} other{{episode} серия}}",
+    "upNextStatus": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} music{Музыка {episode}} pv{Промо {episode}} other{{episode} серия}}",
     "@upNextStatus": {
         "placeholders": {
             "type": {

@@ -94,7 +94,7 @@ abstract class MoviesLocalizations {
   /// No description provided for @moviePreviewType.
   ///
   /// In ru, this message translates to:
-  /// **'{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} music{Музыкальное} other{}}'**
+  /// **'{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} music{Музыкальное} pv{Промо} other{}}'**
   String moviePreviewType(String type);
 
   /// No description provided for @searchSearchBarHint.
@@ -124,7 +124,7 @@ abstract class MoviesLocalizations {
   /// No description provided for @upNextStatus.
   ///
   /// In ru, this message translates to:
-  /// **'{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} other{{episode} серия}}'**
+  /// **'{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} music{Музыка {episode}} pv{Промо {episode}} other{{episode} серия}}'**
   String upNextStatus(String type, num episode);
 }
 
