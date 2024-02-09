@@ -65,7 +65,7 @@ class SignInModel extends ElementaryModel implements ISignInModel {
 
     final Uri uri = Uri.parse(urlChange.url!);
 
-    if (_signedInUris.contains(uri)) {
+    if (!_signedInUris.contains(uri)) {
       return;
     }
 

@@ -38,9 +38,15 @@ class AppDependenciesProvider extends StatelessWidget {
           create: (context) =>
               networkService ??
               HttpNetwork(
-                baseUri: Uri(
-                  scheme: 'https',
-                  host: 'anime365.ru',
+                baseUri: ProxiedUri(
+                  proxy: Uri(
+                    scheme: 'http',
+                    host: 'localhost',
+                    port: 8080,
+                  ),
+                  original: Uri(
+                    host: 'anime365.ru',
+                  )
                 ),
               ),
         ),

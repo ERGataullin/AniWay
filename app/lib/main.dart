@@ -13,7 +13,6 @@ void main() async {
       : await path_provider
           .getApplicationDocumentsDirectory()
           .then((directory) => directory.path);
-
   Hive.init(storagePath);
 
   const App().run();

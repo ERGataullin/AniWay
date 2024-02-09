@@ -10,9 +10,9 @@
             "type": "dart",
             "flutterMode": "debug",
             "program": "app/lib/main.dart",
-            "args": [
-                "--web-browser-flag=--disable-web-security"
-            ]
+            // "args": [
+            //     "--web-browser-flag=--disable-web-security"
+            // ]
         },
         {
             "name": "Profile",
@@ -20,9 +20,9 @@
             "type": "dart",
             "flutterMode": "profile",
             "program": "app/lib/main.dart",
-            "args": [
-                "--web-browser-flag=--disable-web-security"
-            ]
+            // "args": [
+            //     "--web-browser-flag=--disable-web-security"
+            // ]
         },
         {
             "name": "Release",
@@ -30,9 +30,9 @@
             "type": "dart",
             "flutterMode": "release",
             "program": "app/lib/main.dart",
-            "args": [
-                "--web-browser-flag=--disable-web-security"
-            ]
+            // "args": [
+            //     "--web-browser-flag=--disable-web-security"
+            // ]
         }
     ]
 }
