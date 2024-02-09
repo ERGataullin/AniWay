@@ -4,10 +4,6 @@ import 'package:player/src/presentation/components/video_player/widget_model.dar
 import 'package:player/src/utils/video_controller.dart';
 import 'package:video_player/video_player.dart';
 
-extension _VideoPlayerContext on BuildContext {
-  IVideoPlayerWidgetModel get wm => read<IVideoPlayerWidgetModel>();
-}
-
 class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWidgetModel> {
   const VideoPlayerWidget({
     super.key,
@@ -19,32 +15,14 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWidgetModel> {
 
   @override
   Widget build(IVideoPlayerWidgetModel wm) {
-    return Provider<IVideoPlayerWidgetModel>.value(
-      value: wm,
-      child: const DecoratedBox(
-        decoration: BoxDecoration(color: Colors.black),
-        child: _Player(),
+    return Center(
+      child: ValueListenableBuilder<double>(
+        valueListenable: wm.playerAspectRatio,
+        builder: (context, aspectRation, ___) => AspectRatio(
+          aspectRatio: aspectRation,
+          child: VideoPlayer(wm.controller),
+        ),
       ),
-    );
-  }
-}
-
-class _Player extends StatelessWidget {
-  const _Player();
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.showPlayer,
-      builder: (context, showPlayer, ___) => showPlayer
-          ? ValueListenableBuilder<double>(
-              valueListenable: context.wm.playerAspectRatio,
-              builder: (context, aspectRation, ___) => AspectRatio(
-                aspectRatio: aspectRation,
-                child: VideoPlayer(context.wm.controller),
-              ),
-            )
-          : const SizedBox.expand(),
     );
   }
 }

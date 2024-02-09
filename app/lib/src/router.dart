@@ -1,6 +1,6 @@
 import 'package:auth/auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies/movies.dart';
 import 'package:player/player.dart';
@@ -9,7 +9,7 @@ import 'package:root_menu/root_menu.dart';
 extension _RouteLocating on Uri {
   Uri locateUri({
     Map<String, dynamic> pathParameters = const {},
-  }) {
+  }) { 
     return replace(
       path: pathSegments.isEmpty ? '/' : null,
       pathSegments: pathSegments.isEmpty
@@ -33,6 +33,12 @@ extension _RouteLocating on Uri {
 }
 
 class AppRouter implements RouterConfig<RouteMatchList> {
+  AppRouter({
+    required ThemeData videoPlayerTheme,
+  }) : _videoPlayerTheme = videoPlayerTheme;
+
+  final ThemeData _videoPlayerTheme;
+
   final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
 
   final Uri _rootUri = Uri(path: '/');
@@ -42,8 +48,6 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   final Uri _movieUri = Uri(path: ':movieId');
 
   final Uri _watchNowUri = Uri();
-
-  final Uri _moviePlayerUri = Uri(path: 'episodes/:episodeId');
 
   final Uri _searchUri = Uri(path: 'search');
 
@@ -127,25 +131,17 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       baseUri: Uri(path: 'movies/'),
     );
 
-    final GoRoute moviePlayerRoute = _buildMoviePlayerRoute(
-      baseUri: Uri(path: 'movies/').resolveUri(
-        _movieUri.replace(path: '${_movieUri.path}/'),
-      ),
-    );
-
     return GoRoute(
       path: uri.path,
       routes: [
         movieRoute,
-        moviePlayerRoute,
       ],
       builder: (context, state) => WatchNowWidget(
-        onUpNextPressed: (movieId, episodeId) => context.go(
-          state.uri.resolve(moviePlayerRoute.path).locate(
-            pathParameters: {
-              'movieId': movieId,
-              'episodeId': episodeId,
-            },
+        playerBuilder: (movieId, episodeId) => Theme(
+          data: _videoPlayerTheme,
+          child: MoviePlayerWidget(
+            movieId: movieId,
+            episodeId: episodeId,
           ),
         ),
         onMoviePressed: (id) => context.go(
@@ -167,24 +163,6 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       path: uri.path,
       builder: (context, state) => const MovieWidget(),
-      routes: [
-        _buildMoviePlayerRoute(),
-      ],
-    );
-  }
-
-  GoRoute _buildMoviePlayerRoute({
-    Uri? baseUri,
-  }) {
-    final Uri uri = baseUri?.resolveUri(_moviePlayerUri) ?? _moviePlayerUri;
-
-    return GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
-      path: uri.path,
-      builder: (context, state) => MoviePlayerWidget(
-        movieId: state.pathParameters['movieId']!,
-        episodeId: state.pathParameters['episodeId']!,
-      ),
     );
   }
 

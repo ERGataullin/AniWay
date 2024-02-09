@@ -56,19 +56,27 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get duration;
 
+  ValueListenable<double> get positionValue;
+
   VideoController get controller;
 
   Animation<double> get playPauseAnimation;
-
-  void onPlayPausePressed();
-
-  void onPreferencesPressed();
 
   void onTapUp(TapUpDetails details);
 
   void onPointerHover(PointerHoverEvent event);
 
   void onPointerExit(PointerExitEvent event);
+
+  void onPreferencesPressed();
+
+  void onPlayPausePressed();
+
+  void onPositionChangeStart(double position);
+
+  void onPositionChangeEnd(double position);
+
+  void onPositionChanged(double position);
 }
 
 class VideoControlsWidgetModel
@@ -96,6 +104,9 @@ class VideoControlsWidgetModel
 
   @override
   final ValueNotifier<String> duration = ValueNotifier('');
+
+  @override
+  final ValueNotifier<double> positionValue = ValueNotifier(0);
 
   @override
   late final CurvedAnimation playPauseAnimation = CurvedAnimation(
@@ -143,7 +154,13 @@ class VideoControlsWidgetModel
   }
 
   @override
-  Future<void> onPlayPausePressed() async {
+  Future<void> onTapUp(TapUpDetails details) async {
+    super.onTapUp(details);
+
+    if (details.kind == PointerDeviceKind.touch) {
+      return;
+    }
+
     controller.value.isPlaying
         ? await controller.pause()
         : await controller.play();
@@ -158,16 +175,25 @@ class VideoControlsWidgetModel
   }
 
   @override
-  Future<void> onTapUp(TapUpDetails details) async {
-    super.onTapUp(details);
-
-    if (details.kind == PointerDeviceKind.touch) {
-      return;
-    }
-
+  Future<void> onPlayPausePressed() async {
     controller.value.isPlaying
         ? await controller.pause()
         : await controller.play();
+  }
+
+  @override
+  void onPositionChangeStart(double position) {
+    show(hideOnUserInactivity: false);
+  }
+
+  @override
+  void onPositionChangeEnd(double position) {
+    show();
+  }
+
+  @override
+  Future<void> onPositionChanged(double position) async {
+    await controller.seekTo(controller.value.duration * position);
   }
 
   @override
@@ -179,6 +205,7 @@ class VideoControlsWidgetModel
     playPauseLoaderState.dispose();
     position.dispose();
     duration.dispose();
+    positionValue.dispose();
     playPauseAnimation.dispose();
     controller.removeListener(_onControllerValueChanged);
     _playPauseAnimationController.dispose();
@@ -199,6 +226,9 @@ class VideoControlsWidgetModel
 
     position.value = value.position.format();
     duration.value = value.duration.format();
+    positionValue.value = value.isInitialized
+        ? value.position.inSeconds / value.duration.inSeconds
+        : 0;
 
     value.isPlaying
         ? hideOnUserInactivity(restartUserInactivityTimer: false)
@@ -272,6 +302,9 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
 
   void onPointerHover(PointerHoverEvent event) {
     if (event.kind == PointerDeviceKind.touch) {
+      return;
+    }
+    if (!_hidden && _hideOnUserInactivityTimer == null) {
       return;
     }
 

@@ -26,7 +26,10 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final AppTheme _theme = AppTheme();
-  final AppRouter _router = AppRouter();
+  
+  late final AppRouter _router = AppRouter(
+    videoPlayerTheme: _theme.videoPlayer,
+  );
 
   @override
   void initState() {

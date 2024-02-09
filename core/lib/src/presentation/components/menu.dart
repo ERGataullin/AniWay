@@ -7,18 +7,21 @@ Future<void> showModalMenuBottomSheet({
   required BuildContext context,
   required List<MenuItemData> items,
 }) {
-  return showModalBottomSheet<void>(
-    context: context,
-    showDragHandle: true,
-    builder: (context) => MenuWidget(
-      items: items
-          .map(
-            (item) => _popOnSelectedProxyMapper(
-              context: context,
-              item: item,
-            ),
-          )
-          .toList(growable: false),
+  return Navigator.of(context).push(
+    ModalBottomSheetRoute<void>(
+      isScrollControlled: true,
+      modalBarrierColor: Theme.of(context).bottomSheetTheme.modalBarrierColor,
+      showDragHandle: true,
+      builder: (context) => MenuWidget(
+        items: items
+            .map(
+              (item) => _popOnSelectedProxyMapper(
+                context: context,
+                item: item,
+              ),
+            )
+            .toList(growable: false),
+      ),
     ),
   );
 }

@@ -14,8 +14,6 @@ VideoPlayerWidgetModel videoPlayerWidgetModelFactory(BuildContext context) =>
     );
 
 abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
-  ValueListenable<bool> get showPlayer;
-
   ValueListenable<double> get playerAspectRatio;
 
   VideoController get controller;
@@ -25,9 +23,6 @@ class VideoPlayerWidgetModel
     extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     implements IVideoPlayerWidgetModel {
   VideoPlayerWidgetModel(super._model);
-
-  @override
-  final ValueNotifier<bool> showPlayer = ValueNotifier(false);
 
   @override
   final ValueNotifier<double> playerAspectRatio = ValueNotifier(1);
@@ -52,7 +47,6 @@ class VideoPlayerWidgetModel
   @override
   void dispose() {
     super.dispose();
-    showPlayer.dispose();
     playerAspectRatio.dispose();
     controller.removeListener(_onControllerValueChanged);
   }
@@ -60,7 +54,6 @@ class VideoPlayerWidgetModel
   void _onControllerValueChanged() {
     final VideoPlayerValue value = controller.value;
 
-    showPlayer.value = value.isInitialized;
     playerAspectRatio.value = value.aspectRatio;
   }
 }

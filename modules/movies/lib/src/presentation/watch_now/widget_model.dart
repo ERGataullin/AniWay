@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/up_next.dart';
@@ -78,7 +78,13 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
     required int movieId,
     required int episodeId,
   }) {
-    widget.onUpNextPressed(movieId, episodeId);
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        barrierDismissible: true,
+        builder: (context) => widget.playerBuilder(movieId, episodeId),
+      ),
+    );
   }
 
   @override
