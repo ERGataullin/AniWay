@@ -7,11 +7,6 @@ class PlayerLocalizationsRu extends PlayerLocalizations {
   PlayerLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String componentsSeekGestureSeekValue(int seconds) {
-    return '$seconds секунд';
-  }
-
-  @override
   String get moviePlayerPreferencesTranslationTypeLabel => 'Тип перевода';
 
   @override
@@ -30,4 +25,9 @@ class PlayerLocalizationsRu extends PlayerLocalizations {
 
   @override
   String get moviePlayerPreferencesTranslationLabel => 'Перевод';
+
+  @override
+  String seekGestureSeekValue(int seconds) {
+    return '$seconds секунд';
+  }
 }

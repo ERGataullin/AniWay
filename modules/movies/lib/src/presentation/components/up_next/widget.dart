@@ -80,7 +80,7 @@ class _Footer extends StatelessWidget {
         children: [
           _Title(),
           SizedBox(height: 2),
-          _Status(),
+          _Episode(),
         ],
       ),
     );
@@ -106,17 +106,17 @@ class _Title extends StatelessWidget {
   }
 }
 
-class _Status extends StatelessWidget {
-  const _Status();
+class _Episode extends StatelessWidget {
+  const _Episode();
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
       child: ValueListenableBuilder<String>(
-        valueListenable: context.wm.status,
-        builder: (context, status, ___) => Text(
-          status,
+        valueListenable: context.wm.episode,
+        builder: (context, episode, ___) => Text(
+          episode,
           maxLines: 1,
           softWrap: false,
           overflow: TextOverflow.fade,

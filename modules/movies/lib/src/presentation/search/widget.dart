@@ -60,7 +60,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
           const SizedBox.shrink(),
         ],
         builder: (context, controller) => ValueListenableBuilder(
-          valueListenable: context.wm.hintText,
+          valueListenable: context.wm.queryHint,
           builder: (context, hintText, ___) => SearchBar(
             controller: context.wm.queryController,
             padding: const MaterialStatePropertyAll<EdgeInsets>(

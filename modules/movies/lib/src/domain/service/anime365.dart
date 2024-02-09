@@ -14,7 +14,7 @@ class Anime365MoviesService implements MoviesService {
     required MoviesRepository repository,
   }) : _repository = repository;
 
-  static const  int _defaultMoviesLimit = 50;
+  static const int _defaultMoviesLimit = 50;
 
   @override
   int get defaultMoviesLimit => _defaultMoviesLimit;
@@ -45,7 +45,9 @@ class Anime365MoviesService implements MoviesService {
           watchStatus: watchStatus
               .map(
                 (watchStatus) => switch (watchStatus) {
-                  MovieWatchStatusData.none => null,
+                  MovieWatchStatusData.none ||
+                  MovieWatchStatusData.unknown =>
+                    null,
                   MovieWatchStatusData.planned => 'planned',
                   MovieWatchStatusData.watching => 'watching',
                   MovieWatchStatusData.rewatching => 'rewatching',
@@ -68,11 +70,10 @@ class Anime365MoviesService implements MoviesService {
                     'movie' => MovieTypeData.movie,
                     'ova' => MovieTypeData.ova,
                     'ona' => MovieTypeData.ona,
-                    'special' => MovieTypeData.special,
+                    'special' || 'tv_special' => MovieTypeData.special,
                     'music' => MovieTypeData.music,
-                    _ => throw UnsupportedError(
-                        'Unsupported movie type: ${movieJson['type']}',
-                      ),
+                    'pv' => MovieTypeData.pv,
+                    _ => MovieTypeData.unknown,
                   },
                   score: double.parse(movieJson['myAnimeListScore'] as String),
                 ),
@@ -101,11 +102,9 @@ class Anime365MoviesService implements MoviesService {
                       'movie' => MovieEpisodeTypeData.movie,
                       'ova' => MovieEpisodeTypeData.ova,
                       'ona' => MovieEpisodeTypeData.ona,
-                      'special' => MovieEpisodeTypeData.special,
-                      _ => throw UnsupportedError(
-                          'Unsupported episode type: '
-                          '${itemJson['episode']['type']}',
-                        )
+                      'special' || 'tv_special' => MovieEpisodeTypeData.special,
+                      'pv' => MovieEpisodeTypeData.pv,
+                      _ => MovieEpisodeTypeData.unknown,
                     },
                     number: itemJson['episode']['number'] as num?,
                   ),

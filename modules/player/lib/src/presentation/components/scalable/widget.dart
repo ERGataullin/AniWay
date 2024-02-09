@@ -23,7 +23,6 @@ class ScalableWidget extends ElementaryWidget<IScalableWidgetModel> {
   @override
   Widget build(IScalableWidgetModel wm) {
     return GestureDetector(
-      onScaleStart: wm.onScaleStart,
       onScaleUpdate: wm.onScaleUpdate,
       onScaleEnd: wm.onScaleEnd,
       child: ValueListenableBuilder<double>(

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -45,32 +43,26 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
   final ValueNotifier<String> title = ValueNotifier('');
 
   @override
-  final ValueNotifier<bool> showLoader = ValueNotifier(false);
-
-  @override
   final ValueNotifier<String> upNextLabel = ValueNotifier('');
-
-  @override
-  final ValueNotifier<List<UpNextData>> upNextItems = ValueNotifier(const []);
 
   @override
   final ValueNotifier<String> mostPopularLabel = ValueNotifier('');
 
   @override
-  final ValueNotifier<List<MoviePreviewData>> mostPopularItems =
-      ValueNotifier(const []);
+  ValueListenable<bool> get showLoader => model.loading;
 
   @override
-  void initWidgetModel() {
-    super.initWidgetModel();
-    unawaited(_loadMovies());
-  }
+  ValueListenable<List<UpNextData>> get upNextItems => model.upNext;
+
+  @override
+  ValueListenable<List<MoviePreviewData>> get mostPopularItems =>
+      model.mostPopular;
 
   @override
   void didChangeDependencies() {
-    title.value = context.localizations.watchNowTitle;
-    upNextLabel.value = context.localizations.watchNowUpNextLabel;
-    mostPopularLabel.value = context.localizations.watchNowMostPopularLabel;
+    _updateTitle();
+    _updateUpNextLabel();
+    _updateMostPopularLabel();
   }
 
   @override
@@ -96,23 +88,19 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
   void dispose() {
     super.dispose();
     title.dispose();
-    showLoader.dispose();
     upNextLabel.dispose();
-    upNextItems.dispose();
     mostPopularLabel.dispose();
-    mostPopularItems.dispose();
   }
 
-  Future<void> _loadMovies() async {
-    showLoader.value = true;
-    await Future.wait([
-      model
-          .getUpNextItems()
-          .then((items) => upNextItems.value = List.unmodifiable(items)),
-      model
-          .getMostPopularItems()
-          .then((items) => mostPopularItems.value = List.unmodifiable(items)),
-    ]);
-    showLoader.value = false;
+  void _updateTitle() {
+    title.value = context.localizations.watchNowTitle;
+  }
+
+  void _updateUpNextLabel() {
+    upNextLabel.value = context.localizations.watchNowUpNextLabel;
+  }
+
+  void _updateMostPopularLabel() {
+    mostPopularLabel.value = context.localizations.watchNowMostPopularLabel;
   }
 }

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/video_controls/model.dart';
 import 'package:player/src/presentation/components/video_controls/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:video_player/video_player.dart';
 
 VideoControlsWidgetModel videoControlsWidgetModelFactory(
   BuildContext context,
@@ -68,9 +67,9 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   void onPointerExit(PointerExitEvent event);
 
-  void onPreferencesPressed();
-
   void onPlayPausePressed();
+
+  void onPreferencesPressed();
 
   void onPositionChangeStart(double position);
 
@@ -84,12 +83,6 @@ class VideoControlsWidgetModel
     with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
     implements IVideoControlsWidgetModel {
   VideoControlsWidgetModel(super._model);
-
-  @override
-  ValueNotifier<double> maxScale = ValueNotifier(1);
-
-  @override
-  ValueNotifier<List<double>> scaleAnchors = ValueNotifier(const [1]);
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
@@ -116,7 +109,13 @@ class VideoControlsWidgetModel
   );
 
   @override
-  late VideoController controller;
+  ValueListenable<double> get maxScale => model.maxScale;
+
+  @override
+  ValueListenable<List<double>> get scaleAnchors => model.scaleAnchors;
+
+  @override
+  VideoController get controller => model.videoController;
 
   late final AnimationController _playPauseAnimationController =
       AnimationController(
@@ -125,45 +124,50 @@ class VideoControlsWidgetModel
     value: controller.value.isPlaying ? 1 : 0,
   );
 
-  double _screenAspectRatio = 1;
-
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    controller = widget.controller..addListener(_onControllerValueChanged);
-    title.value = widget.title;
-    _onControllerValueChanged();
-
+    model
+      ..playing.addListener(_onPlayingChanged)
+      ..loading.addListener(_updatePlayPauseLoaderState)
+      ..position.addListener(_updatePosition)
+      ..duration.addListener(_updateDuration)
+      ..position.addListener(_updatePositionValue)
+      ..duration.addListener(_updatePositionValue)
+      ..videoController = widget.controller;
+    _updateTitle();
     show();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _screenAspectRatio = MediaQuery.of(context).size.aspectRatio;
+    model.aspectRatio = MediaQuery.of(context).size.aspectRatio;
   }
 
   @override
   void didUpdateWidget(VideoControlsWidget oldWidget) {
-    title.value = widget.title;
+    _updateTitle();
 
     if (widget.controller != oldWidget.controller) {
-      controller.removeListener(_onControllerValueChanged);
-      controller = widget.controller..addListener(_onControllerValueChanged);
+      model.videoController = widget.controller;
     }
   }
 
   @override
-  Future<void> onTapUp(TapUpDetails details) async {
+  void onTapUp(TapUpDetails details) {
     super.onTapUp(details);
 
     if (details.kind == PointerDeviceKind.touch) {
       return;
     }
 
-    controller.value.isPlaying
-        ? await controller.pause()
-        : await controller.play();
+    model.togglePlayPause();
+  }
+
+  @override
+  void onPlayPausePressed() {
+    model.togglePlayPause();
   }
 
   @override
@@ -172,13 +176,6 @@ class VideoControlsWidgetModel
       context: context,
       items: widget.preferences,
     );
-  }
-
-  @override
-  Future<void> onPlayPausePressed() async {
-    controller.value.isPlaying
-        ? await controller.pause()
-        : await controller.play();
   }
 
   @override
@@ -199,40 +196,54 @@ class VideoControlsWidgetModel
   @override
   void dispose() {
     super.dispose();
-    maxScale.dispose();
-    scaleAnchors.dispose();
+    model
+      ..playing.removeListener(_onPlayingChanged)
+      ..loading.removeListener(_updatePlayPauseLoaderState)
+      ..position.removeListener(_updatePosition)
+      ..duration.removeListener(_updateDuration)
+      ..position.removeListener(_updatePositionValue)
+      ..duration.removeListener(_updatePositionValue);
+    _playPauseAnimationController.dispose();
     title.dispose();
     playPauseLoaderState.dispose();
     position.dispose();
     duration.dispose();
     positionValue.dispose();
     playPauseAnimation.dispose();
-    controller.removeListener(_onControllerValueChanged);
-    _playPauseAnimationController.dispose();
   }
 
-  void _onControllerValueChanged() {
-    final VideoPlayerValue value = controller.value;
+  void _onPlayingChanged() {
+    if (model.playing.value) {
+      _playPauseAnimationController.forward();
+      hideOnUserInactivity(restartUserInactivityTimer: false);
+    } else {
+      _playPauseAnimationController.reverse();
+      show(hideOnUserInactivity: false);
+    }
+  }
 
-    maxScale.value = _screenAspectRatio / value.aspectRatio;
-    scaleAnchors.value = [1, maxScale.value];
+  void _updateTitle() {
+    title.value = widget.title;
+  }
 
-    playPauseLoaderState.value = !value.isInitialized || value.isBuffering
-        ? CrossFadeState.showFirst
-        : CrossFadeState.showSecond;
-    value.isPlaying
-        ? _playPauseAnimationController.forward()
-        : _playPauseAnimationController.reverse();
+  void _updatePlayPauseLoaderState() {
+    playPauseLoaderState.value = model.loading.value
+        ? CrossFadeState.showSecond
+        : CrossFadeState.showFirst;
+  }
 
-    position.value = value.position.format();
-    duration.value = value.duration.format();
-    positionValue.value = value.isInitialized
-        ? value.position.inSeconds / value.duration.inSeconds
-        : 0;
+  void _updatePosition() {
+    position.value = model.position.value.format();
+  }
 
-    value.isPlaying
-        ? hideOnUserInactivity(restartUserInactivityTimer: false)
-        : show(hideOnUserInactivity: false);
+  void _updateDuration() {
+    duration.value = model.duration.value.format();
+  }
+
+  void _updatePositionValue() {
+    positionValue.value = model.duration.value == Duration.zero
+        ? 0
+        : model.position.value.inSeconds / model.duration.value.inSeconds;
   }
 }
 
