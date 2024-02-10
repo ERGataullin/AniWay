@@ -55,19 +55,27 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get duration;
 
+  ValueListenable<double> get positionValue;
+
   VideoController get controller;
 
   Animation<double> get playPauseAnimation;
-
-  void onPlayPausePressed();
-
-  void onPreferencesPressed();
 
   void onTapUp(TapUpDetails details);
 
   void onPointerHover(PointerHoverEvent event);
 
   void onPointerExit(PointerExitEvent event);
+
+  void onPlayPausePressed();
+
+  void onPreferencesPressed();
+
+  void onPositionChangeStart(double position);
+
+  void onPositionChangeEnd(double position);
+
+  void onPositionChanged(double position);
 }
 
 class VideoControlsWidgetModel
@@ -89,6 +97,9 @@ class VideoControlsWidgetModel
 
   @override
   final ValueNotifier<String> duration = ValueNotifier('');
+
+  @override
+  final ValueNotifier<double> positionValue = ValueNotifier(0);
 
   @override
   late final CurvedAnimation playPauseAnimation = CurvedAnimation(
@@ -121,6 +132,8 @@ class VideoControlsWidgetModel
       ..loading.addListener(_updatePlayPauseLoaderState)
       ..position.addListener(_updatePosition)
       ..duration.addListener(_updateDuration)
+      ..position.addListener(_updatePositionValue)
+      ..duration.addListener(_updatePositionValue)
       ..videoController = widget.controller;
     _updateTitle();
     show();
@@ -142,6 +155,17 @@ class VideoControlsWidgetModel
   }
 
   @override
+  void onTapUp(TapUpDetails details) {
+    super.onTapUp(details);
+
+    if (details.kind == PointerDeviceKind.touch) {
+      return;
+    }
+
+    model.togglePlayPause();
+  }
+
+  @override
   void onPlayPausePressed() {
     model.togglePlayPause();
   }
@@ -155,14 +179,18 @@ class VideoControlsWidgetModel
   }
 
   @override
-  void onTapUp(TapUpDetails details) {
-    super.onTapUp(details);
+  void onPositionChangeStart(double position) {
+    show(hideOnUserInactivity: false);
+  }
 
-    if (details.kind == PointerDeviceKind.touch) {
-      return;
-    }
+  @override
+  void onPositionChangeEnd(double position) {
+    show();
+  }
 
-    model.togglePlayPause();
+  @override
+  Future<void> onPositionChanged(double position) async {
+    await controller.seekTo(controller.value.duration * position);
   }
 
   @override
@@ -172,12 +200,15 @@ class VideoControlsWidgetModel
       ..playing.removeListener(_onPlayingChanged)
       ..loading.removeListener(_updatePlayPauseLoaderState)
       ..position.removeListener(_updatePosition)
-      ..duration.removeListener(_updateDuration);
+      ..duration.removeListener(_updateDuration)
+      ..position.removeListener(_updatePositionValue)
+      ..duration.removeListener(_updatePositionValue);
     _playPauseAnimationController.dispose();
     title.dispose();
     playPauseLoaderState.dispose();
     position.dispose();
     duration.dispose();
+    positionValue.dispose();
     playPauseAnimation.dispose();
   }
 
@@ -207,6 +238,12 @@ class VideoControlsWidgetModel
 
   void _updateDuration() {
     duration.value = model.duration.value.format();
+  }
+
+  void _updatePositionValue() {
+    positionValue.value = model.duration.value == Duration.zero
+        ? 0
+        : model.position.value.inSeconds / model.duration.value.inSeconds;
   }
 }
 
@@ -276,6 +313,9 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
 
   void onPointerHover(PointerHoverEvent event) {
     if (event.kind == PointerDeviceKind.touch) {
+      return;
+    }
+    if (!_hidden && _hideOnUserInactivityTimer == null) {
       return;
     }
 
