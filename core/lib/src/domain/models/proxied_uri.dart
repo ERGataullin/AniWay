@@ -121,9 +121,14 @@ class ProxiedUri implements Uri {
   Uri resolveUri(Uri reference) {
     final Uri originalResolved = original.resolveUri(reference);
     final Uri proxiedReference = Uri(
+      userInfo: originalResolved.userInfo,
       path: '${original.host}${originalResolved.path}',
-      queryParameters: {'a': 1},
+      query: [
+        originalResolved.query,
+        proxy.query,
+      ].where((query) => query.isNotEmpty).join('&'),
     );
+    
     return proxy.resolveUri(proxiedReference);
   }
 

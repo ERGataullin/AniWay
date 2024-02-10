@@ -46,7 +46,7 @@ class AppDependenciesProvider extends StatelessWidget {
                   ),
                   original: Uri(
                     host: 'anime365.ru',
-                  )
+                  ),
                 ),
               ),
         ),
