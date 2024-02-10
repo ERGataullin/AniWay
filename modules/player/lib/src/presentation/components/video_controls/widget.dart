@@ -231,12 +231,13 @@ class _PlayPauseLoader extends StatelessWidget {
   ) {
     return Stack(
       clipBehavior: Clip.none,
+      alignment: Alignment.center,
       children: <Widget>[
-        Center(
+        SizedBox(
           key: bottomChildKey,
           child: bottomChild,
         ),
-        Center(
+        SizedBox(
           key: topChildKey,
           child: topChild,
         ),
@@ -247,32 +248,32 @@ class _PlayPauseLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double size = 48;
-    return Align(
-      alignment: Alignment.center,
+    return Center(
       child: ValueListenableBuilder(
-        valueListenable: context.wm.playPauseLoaderState,
-        builder: (context, state, ___) => AnimatedCrossFade(
-          alignment: Alignment.center,
-          // TODO(ERGataullin): replace with Easing.emphasized
-          firstCurve: Easing.standard,
-          secondCurve: Easing.standard,
-          duration: Durations.medium2,
-          crossFadeState: state,
-          layoutBuilder: _animatedCrossFadeLayoutBuilder,
-          firstChild: IconButton.filledTonal(
-            onPressed: context.wm.onPlayPausePressed,
-            icon: AnimatedIcon(
-              size: size,
-              icon: AnimatedIcons.play_pause,
-              progress: context.wm.playPauseAnimation,
+        valueListenable: context.wm.playPauseLoaderCallback,
+        builder: (context, callback, ___) => IconButton.filledTonal(
+          iconSize: size,
+          onPressed: callback,
+          style: ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll(
+              Theme.of(context).colorScheme.secondaryContainer,
             ),
           ),
-          secondChild: const SizedBox(
-            width: size,
-            height: size,
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
+          icon: ValueListenableBuilder(
+            valueListenable: context.wm.playPauseLoaderState,
+            builder: (context, state, ___) => AnimatedCrossFade(
+              alignment: Alignment.center,
+              // TODO(ERGataullin): replace with Easing.emphasized
+              firstCurve: Easing.standard,
+              secondCurve: Easing.standard,
+              duration: Durations.medium2,
+              crossFadeState: state,
+              layoutBuilder: _animatedCrossFadeLayoutBuilder,
+              firstChild: AnimatedIcon(
+                icon: AnimatedIcons.play_pause,
+                progress: context.wm.playPauseAnimation,
+              ),
+              secondChild: const CircularProgressIndicator(),
             ),
           ),
         ),
