@@ -51,6 +51,8 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<CrossFadeState> get playPauseLoaderState;
 
+  ValueListenable<VoidCallback?> get playPauseLoaderCallback;
+
   ValueListenable<String> get position;
 
   ValueListenable<String> get duration;
@@ -66,8 +68,6 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
   void onPointerHover(PointerHoverEvent event);
 
   void onPointerExit(PointerExitEvent event);
-
-  void onPlayPausePressed();
 
   void onPreferencesPressed();
 
@@ -91,6 +91,10 @@ class VideoControlsWidgetModel
   final ValueNotifier<CrossFadeState> playPauseLoaderState = ValueNotifier(
     CrossFadeState.showFirst,
   );
+
+  @override
+  final ValueNotifier<VoidCallback?> playPauseLoaderCallback =
+      ValueNotifier(null);
 
   @override
   final ValueNotifier<String> position = ValueNotifier('');
@@ -130,9 +134,10 @@ class VideoControlsWidgetModel
     model
       ..playing.addListener(_onPlayingChanged)
       ..loading.addListener(_updatePlayPauseLoaderState)
+      ..loading.addListener(_updatePlayPauseLoaderCallback)
       ..position.addListener(_updatePosition)
-      ..duration.addListener(_updateDuration)
       ..position.addListener(_updatePositionValue)
+      ..duration.addListener(_updateDuration)
       ..duration.addListener(_updatePositionValue)
       ..videoController = widget.controller;
     _updateTitle();
@@ -166,11 +171,6 @@ class VideoControlsWidgetModel
   }
 
   @override
-  void onPlayPausePressed() {
-    model.togglePlayPause();
-  }
-
-  @override
   Future<void> onPreferencesPressed() async {
     await showModalMenuBottomSheet(
       context: context,
@@ -199,13 +199,15 @@ class VideoControlsWidgetModel
     model
       ..playing.removeListener(_onPlayingChanged)
       ..loading.removeListener(_updatePlayPauseLoaderState)
+      ..loading.removeListener(_updatePlayPauseLoaderCallback)
       ..position.removeListener(_updatePosition)
-      ..duration.removeListener(_updateDuration)
       ..position.removeListener(_updatePositionValue)
+      ..duration.removeListener(_updateDuration)
       ..duration.removeListener(_updatePositionValue);
     _playPauseAnimationController.dispose();
     title.dispose();
     playPauseLoaderState.dispose();
+    playPauseLoaderCallback.dispose();
     position.dispose();
     duration.dispose();
     positionValue.dispose();
@@ -230,6 +232,11 @@ class VideoControlsWidgetModel
     playPauseLoaderState.value = model.loading.value
         ? CrossFadeState.showSecond
         : CrossFadeState.showFirst;
+  }
+
+  void _updatePlayPauseLoaderCallback() {
+    playPauseLoaderCallback.value =
+        model.loading.value ? null : model.togglePlayPause;
   }
 
   void _updatePosition() {
