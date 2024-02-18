@@ -20,9 +20,9 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
   Widget build(ISearchWidgetModel wm) {
     return Provider<ISearchWidgetModel>.value(
       value: wm,
-      child: SafeArea(
-        child: Scaffold(
-          body: CustomScrollView(
+      child: Scaffold(
+        body: SafeArea(
+          child: CustomScrollView(
             controller: wm.scrollController,
             slivers: const [
               SliverPersistentHeader(
