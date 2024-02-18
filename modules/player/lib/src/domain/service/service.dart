@@ -15,5 +15,8 @@ abstract interface class PlayerService {
 
   Future<VideoData> getTranslationVideo(Uri embedUri);
 
-  Future<void> postTranslationWatched(Object id);
+  Future<void> postTranslationWatched(
+    Object id, {
+    String? csrf,
+  });
 }

@@ -8,6 +8,9 @@ extension _AppOverrides on ThemeData {
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ),
       );
 }
 

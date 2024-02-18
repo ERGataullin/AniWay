@@ -7,24 +7,25 @@ class StorageAuthDataSource implements AuthDataSource {
   }) : _storage = storage;
 
   static const String _collection = 'auth';
-  static const String _authTokenKey = 'auth_token';
+
+  static const String _cookiesKey = 'cookies';
 
   final Storage _storage;
 
   @override
-  Future<String?> getAuthToken() {
+  Future<String?> getCookies() {
     return _storage.get<String?>(
       collection: _collection,
-      key: _authTokenKey,
+      key: _cookiesKey,
     );
   }
 
   @override
-  Future<void> saveAuthToken(String? authToken) {
+  Future<void> saveCookies(String? value) {
     return _storage.put<String?>(
       collection: _collection,
-      key: _authTokenKey,
-      value: authToken,
+      key: _cookiesKey,
+      value: value,
     );
   }
 }
