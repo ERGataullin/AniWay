@@ -43,10 +43,13 @@ class SearchModel extends ElementaryModel implements ISearchModel {
 
   int _page = 1;
 
+  String _query = '';
+
   Timer? _queryDebounceTimer;
 
   @override
   void init() {
+    _loadMovies();
     queryController.addListener(_onQueryChanged);
     scrollController.addListener(_onScrollChanged);
   }
@@ -61,6 +64,11 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   }
 
   void _onQueryChanged() {
+    if (_query == queryController.text) {
+      return;
+    }
+    
+    _query = queryController.text;
     _queryDebounceTimer?.cancel();
     _queryDebounceTimer = Timer(
       _queryDebounceInterval,
