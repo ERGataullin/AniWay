@@ -1,7 +1,7 @@
 abstract interface class AuthDataSource {
   const AuthDataSource();
 
-  Future<String?> getAuthToken();
+  Future<String?> getCookies();
 
-  Future<void> saveAuthToken(String? authToken);
+  Future<void> saveCookies(String? value);
 }

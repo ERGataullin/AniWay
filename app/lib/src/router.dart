@@ -9,7 +9,7 @@ import 'package:root_menu/root_menu.dart';
 extension _RouteLocating on Uri {
   Uri locateUri({
     Map<String, dynamic> pathParameters = const {},
-  }) { 
+  }) {
     return replace(
       path: pathSegments.isEmpty ? '/' : null,
       pathSegments: pathSegments.isEmpty
@@ -35,9 +35,13 @@ extension _RouteLocating on Uri {
 class AppRouter implements RouterConfig<RouteMatchList> {
   AppRouter({
     required ThemeData videoPlayerTheme,
-  }) : _videoPlayerTheme = videoPlayerTheme;
+    required ValueListenable<bool> signedIn,
+  })  : _videoPlayerTheme = videoPlayerTheme,
+        _signedIn = signedIn;
 
   final ThemeData _videoPlayerTheme;
+
+  final ValueListenable<bool> _signedIn;
 
   final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
 
@@ -53,7 +57,16 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: kIsWeb ? _watchNowUri.locate() : _signInUri.locate(),
+    initialLocation: _watchNowUri.locate(),
+    refreshListenable: _signedIn,
+    redirect: (context, state) {
+      final Uri signInUri = _rootUri.resolveUri(_signInUri);
+      if (!_signedIn.value && state.uri != signInUri) {
+        return signInUri.locate();
+      }
+
+      return null;
+    },
     routes: [
       _buildSignInRoute(baseUri: _rootUri),
       _buildMenuRoute(baseUri: _rootUri),

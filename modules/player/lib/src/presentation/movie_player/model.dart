@@ -109,7 +109,10 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   Future<void> _onVideoControllerValueChanged() async {
     if (videoController.value.isCompleted) {
-      await _service.postTranslationWatched(translation.value!.id);
+      await _service.postTranslationWatched(
+        translation.value!.id,
+        csrf: _video.csrf,
+      );
     }
   }
 }
