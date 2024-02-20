@@ -45,6 +45,7 @@ class AppDependenciesProvider extends StatelessWidget {
                     port: 8080,
                   ),
                   original: Uri(
+                    scheme: 'https',
                     host: 'anime365.ru',
                   ),
                 ),

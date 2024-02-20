@@ -68,12 +68,6 @@ class Anime365PlayerDataSource implements PlayerDataSource {
         )
         .map(
       (translationJson) {
-        Uri embedUri = Uri.parse(translationJson['embedUrl'] as String);
-        if (embedUri.host.contains('smotret-anime')) {
-          embedUri = embedUri.replace(
-            host: _network.baseUri.host,
-          );
-        }
         String title = translationJson['authorsSummary'] as String;
         if (title.contains('(')) {
           title = title.substring(0, title.indexOf('(') - 1);
@@ -84,7 +78,7 @@ class Anime365PlayerDataSource implements PlayerDataSource {
           title: title,
           type: translationJson['typeKind'] as String,
           language: translationJson['typeLang'] as String,
-          embedUrl: embedUri.toString(),
+          embedUrl: translationJson['embedUrl'] as String,
         );
       },
     ).toList(growable: false);

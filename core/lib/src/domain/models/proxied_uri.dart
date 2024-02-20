@@ -7,7 +7,12 @@ class ProxiedUri implements Uri {
           userInfo: original.userInfo,
           host: proxy.host,
           port: proxy.port,
-          path: '${original.host}:${original.port}${original.path}',
+          path: [
+            if (original.hasScheme) '${original.scheme}://',
+            original.host,
+            if (original.hasPort) ':${original.port}',
+            original.path,
+          ].join(),
           queryParameters: {
             ...proxy.queryParameters,
             ...original.queryParameters,
@@ -122,13 +127,18 @@ class ProxiedUri implements Uri {
     final Uri originalResolved = original.resolveUri(reference);
     final Uri proxiedReference = Uri(
       userInfo: originalResolved.userInfo,
-      path: '${original.host}${originalResolved.path}',
+      path: [
+        if (originalResolved.hasScheme) '${originalResolved.scheme}://',
+        originalResolved.host,
+        if (originalResolved.hasPort) ':${originalResolved.port}',
+        originalResolved.path,
+      ].join(),
       query: [
         originalResolved.query,
         proxy.query,
       ].where((query) => query.isNotEmpty).join('&'),
     );
-    
+
     return proxy.resolveUri(proxiedReference);
   }
 
