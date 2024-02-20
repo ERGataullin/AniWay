@@ -1,5 +1,6 @@
 import 'package:auth/auth.dart';
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
 import 'package:player/player.dart';
@@ -38,17 +39,22 @@ class AppDependenciesProvider extends StatelessWidget {
           create: (context) =>
               networkService ??
               HttpNetwork(
-                baseUri: ProxiedUri(
-                  proxy: Uri(
-                    scheme: 'http',
-                    host: 'localhost',
-                    port: 8080,
-                  ),
-                  original: Uri(
-                    scheme: 'https',
-                    host: 'anime365.ru',
-                  ),
-                ),
+                baseUri: kIsWeb
+                    ? ProxiedUri(
+                        proxy: Uri(
+                          scheme: 'http',
+                          host: 'localhost',
+                          port: 8080,
+                        ),
+                        original: Uri(
+                          scheme: 'https',
+                          host: 'anime365.ru',
+                        ),
+                      )
+                    : Uri(
+                        scheme: 'https',
+                        host: 'anime365.ru',
+                      ),
               ),
         ),
         Provider<Storage>(

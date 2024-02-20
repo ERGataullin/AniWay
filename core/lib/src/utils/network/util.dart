@@ -1,5 +1,7 @@
 import 'dart:async';
 
+typedef Headers = Map<String, String>;
+
 enum NetworkRequestMethodData {
   get,
   head,
@@ -44,14 +46,14 @@ class NetworkRequestData {
 
   final NetworkRequestMethodData method;
 
-  final Map<String, String> headers;
+  final Headers headers;
 
   final dynamic body;
 
   NetworkRequestData copyWith({
     Uri? uri,
     NetworkRequestMethodData? method,
-    Map<String, String>? headers,
+    Headers? headers,
     dynamic body,
   }) =>
       NetworkRequestData(
@@ -68,7 +70,7 @@ class NetworkResponseData {
     required this.body,
   });
 
-  final Map<String, List<String>> headers;
+  final Headers headers;
 
   final dynamic body;
 }
