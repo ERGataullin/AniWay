@@ -13,14 +13,14 @@ extension _WatchNowContext on BuildContext {
 class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
   const WatchNowWidget({
     super.key,
-    required this.onUpNextPressed,
     required this.onMoviePressed,
+    required this.playerBuilder,
     WidgetModelFactory wmFactory = watchNowWidgetModelFactory,
   }) : super(wmFactory);
 
-  final void Function(int episodeId, int movieId) onUpNextPressed;
-
   final void Function(int id) onMoviePressed;
+
+  final Widget Function(int episodeId, int movieId) playerBuilder;
 
   @override
   Widget build(IWatchNowWidgetModel wm) {

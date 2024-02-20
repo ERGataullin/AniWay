@@ -11,8 +11,6 @@ dependencies:
     path: ../../core
   flutter:
     sdk: flutter
-  webview_cookie_manager: ^2.0.6
-  webview_flutter: ^4.4.2
 
 dev_dependencies:
   flutter_lints: ^3.0.1
@@ -22,3 +20,6 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  
+  assets:
+    - assets/images/logo.webp

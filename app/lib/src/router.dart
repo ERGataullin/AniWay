@@ -1,6 +1,6 @@
 import 'package:auth/auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies/movies.dart';
 import 'package:player/player.dart';
@@ -33,6 +33,16 @@ extension _RouteLocating on Uri {
 }
 
 class AppRouter implements RouterConfig<RouteMatchList> {
+  AppRouter({
+    required ThemeData videoPlayerTheme,
+    required ValueListenable<bool> signedIn,
+  })  : _videoPlayerTheme = videoPlayerTheme,
+        _signedIn = signedIn;
+
+  final ThemeData _videoPlayerTheme;
+
+  final ValueListenable<bool> _signedIn;
+
   final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
 
   final Uri _rootUri = Uri(path: '/');
@@ -43,13 +53,20 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   final Uri _watchNowUri = Uri();
 
-  final Uri _moviePlayerUri = Uri(path: 'episodes/:episodeId');
-
   final Uri _searchUri = Uri(path: 'search');
 
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: kIsWeb ? _watchNowUri.locate() : _signInUri.locate(),
+    initialLocation: _watchNowUri.locate(),
+    refreshListenable: _signedIn,
+    redirect: (context, state) {
+      final Uri signInUri = _rootUri.resolveUri(_signInUri);
+      if (!_signedIn.value && state.uri != signInUri) {
+        return signInUri.locate();
+      }
+
+      return null;
+    },
     routes: [
       _buildSignInRoute(baseUri: _rootUri),
       _buildMenuRoute(baseUri: _rootUri),
@@ -127,25 +144,17 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       baseUri: Uri(path: 'movies/'),
     );
 
-    final GoRoute moviePlayerRoute = _buildMoviePlayerRoute(
-      baseUri: Uri(path: 'movies/').resolveUri(
-        _movieUri.replace(path: '${_movieUri.path}/'),
-      ),
-    );
-
     return GoRoute(
       path: uri.path,
       routes: [
         movieRoute,
-        moviePlayerRoute,
       ],
       builder: (context, state) => WatchNowWidget(
-        onUpNextPressed: (movieId, episodeId) => context.go(
-          state.uri.resolve(moviePlayerRoute.path).locate(
-            pathParameters: {
-              'movieId': movieId,
-              'episodeId': episodeId,
-            },
+        playerBuilder: (movieId, episodeId) => Theme(
+          data: _videoPlayerTheme,
+          child: MoviePlayerWidget(
+            movieId: movieId,
+            episodeId: episodeId,
           ),
         ),
         onMoviePressed: (id) => context.go(
@@ -167,24 +176,6 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       path: uri.path,
       builder: (context, state) => const MovieWidget(),
-      routes: [
-        _buildMoviePlayerRoute(),
-      ],
-    );
-  }
-
-  GoRoute _buildMoviePlayerRoute({
-    Uri? baseUri,
-  }) {
-    final Uri uri = baseUri?.resolveUri(_moviePlayerUri) ?? _moviePlayerUri;
-
-    return GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
-      path: uri.path,
-      builder: (context, state) => MoviePlayerWidget(
-        movieId: state.pathParameters['movieId']!,
-        episodeId: state.pathParameters['episodeId']!,
-      ),
     );
   }
 

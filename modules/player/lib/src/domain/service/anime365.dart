@@ -33,16 +33,15 @@ class Anime365PlayerService implements PlayerService {
   }
 
   @override
-  Future<void> postTranslationWatched(Object id) {
+  Future<void> postTranslationWatched(
+    Object id, {
+    String? csrf,
+  }) {
     return _network.request(
       NetworkRequestData(
-        uri: Uri(
-          path: '/translations/watched/$id',
-        ),
+        uri: Uri(path: '/translations/watched/$id'),
         method: NetworkRequestMethodData.post,
-        body: {
-          'csrf': _network.csrf,
-        },
+        body: {'csrf': csrf},
       ),
     );
   }

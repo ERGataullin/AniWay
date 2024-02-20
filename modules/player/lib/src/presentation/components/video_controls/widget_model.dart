@@ -51,23 +51,31 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<CrossFadeState> get playPauseLoaderState;
 
+  ValueListenable<VoidCallback?> get playPauseLoaderCallback;
+
   ValueListenable<String> get position;
 
   ValueListenable<String> get duration;
 
+  ValueListenable<double> get positionValue;
+
   VideoController get controller;
 
   Animation<double> get playPauseAnimation;
-
-  void onPlayPausePressed();
-
-  void onPreferencesPressed();
 
   void onTapUp(TapUpDetails details);
 
   void onPointerHover(PointerHoverEvent event);
 
   void onPointerExit(PointerExitEvent event);
+
+  void onPreferencesPressed();
+
+  void onPositionChangeStart(double position);
+
+  void onPositionChangeEnd(double position);
+
+  void onPositionChanged(double position);
 }
 
 class VideoControlsWidgetModel
@@ -85,10 +93,17 @@ class VideoControlsWidgetModel
   );
 
   @override
+  final ValueNotifier<VoidCallback?> playPauseLoaderCallback =
+      ValueNotifier(null);
+
+  @override
   final ValueNotifier<String> position = ValueNotifier('');
 
   @override
   final ValueNotifier<String> duration = ValueNotifier('');
+
+  @override
+  final ValueNotifier<double> positionValue = ValueNotifier(0);
 
   @override
   late final CurvedAnimation playPauseAnimation = CurvedAnimation(
@@ -119,8 +134,11 @@ class VideoControlsWidgetModel
     model
       ..playing.addListener(_onPlayingChanged)
       ..loading.addListener(_updatePlayPauseLoaderState)
+      ..loading.addListener(_updatePlayPauseLoaderCallback)
       ..position.addListener(_updatePosition)
+      ..position.addListener(_updatePositionValue)
       ..duration.addListener(_updateDuration)
+      ..duration.addListener(_updatePositionValue)
       ..videoController = widget.controller;
     _updateTitle();
     show();
@@ -142,7 +160,13 @@ class VideoControlsWidgetModel
   }
 
   @override
-  void onPlayPausePressed() {
+  void onTapUp(TapUpDetails details) {
+    super.onTapUp(details);
+
+    if (details.kind == PointerDeviceKind.touch) {
+      return;
+    }
+
     model.togglePlayPause();
   }
 
@@ -155,14 +179,18 @@ class VideoControlsWidgetModel
   }
 
   @override
-  void onTapUp(TapUpDetails details) {
-    super.onTapUp(details);
+  void onPositionChangeStart(double position) {
+    show(hideOnUserInactivity: false);
+  }
 
-    if (details.kind == PointerDeviceKind.touch) {
-      return;
-    }
+  @override
+  void onPositionChangeEnd(double position) {
+    show();
+  }
 
-    model.togglePlayPause();
+  @override
+  Future<void> onPositionChanged(double position) async {
+    await controller.seekTo(controller.value.duration * position);
   }
 
   @override
@@ -171,13 +199,18 @@ class VideoControlsWidgetModel
     model
       ..playing.removeListener(_onPlayingChanged)
       ..loading.removeListener(_updatePlayPauseLoaderState)
+      ..loading.removeListener(_updatePlayPauseLoaderCallback)
       ..position.removeListener(_updatePosition)
-      ..duration.removeListener(_updateDuration);
+      ..position.removeListener(_updatePositionValue)
+      ..duration.removeListener(_updateDuration)
+      ..duration.removeListener(_updatePositionValue);
     _playPauseAnimationController.dispose();
     title.dispose();
     playPauseLoaderState.dispose();
+    playPauseLoaderCallback.dispose();
     position.dispose();
     duration.dispose();
+    positionValue.dispose();
     playPauseAnimation.dispose();
   }
 
@@ -201,12 +234,23 @@ class VideoControlsWidgetModel
         : CrossFadeState.showFirst;
   }
 
+  void _updatePlayPauseLoaderCallback() {
+    playPauseLoaderCallback.value =
+        model.loading.value ? null : model.togglePlayPause;
+  }
+
   void _updatePosition() {
     position.value = model.position.value.format();
   }
 
   void _updateDuration() {
     duration.value = model.duration.value.format();
+  }
+
+  void _updatePositionValue() {
+    positionValue.value = model.duration.value == Duration.zero
+        ? 0
+        : model.position.value.inSeconds / model.duration.value.inSeconds;
   }
 }
 
@@ -276,6 +320,9 @@ mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
 
   void onPointerHover(PointerHoverEvent event) {
     if (event.kind == PointerDeviceKind.touch) {
+      return;
+    }
+    if (!_hidden && _hideOnUserInactivityTimer == null) {
       return;
     }
 

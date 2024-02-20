@@ -7,11 +7,11 @@ class AuthRepository {
 
   final AuthDataSource _local;
 
-  Future<String?> getAuthToken() {
-    return _local.getAuthToken();
+  Future<String?> getCookies() {
+    return _local.getCookies();
   }
 
-  Future<void> saveAuthToken(String authToken) {
-    return _local.saveAuthToken(authToken);
+  Future<void> saveCookies(String? value) {
+    return _local.saveCookies(value);
   }
 }

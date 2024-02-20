@@ -21,19 +21,21 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
     return Provider<ISearchWidgetModel>.value(
       value: wm,
       child: Scaffold(
-        body: CustomScrollView(
-          controller: wm.scrollController,
-          slivers: const [
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SearchBarDelegate(margin: EdgeInsets.all(16)),
-            ),
-            _Result(margin: EdgeInsets.symmetric(horizontal: 16)),
-            _Loader(margin: EdgeInsets.fromLTRB(16, 8, 16, 8)),
-            SliverToBoxAdapter(
-              child: SizedBox(height: 16),
-            ),
-          ],
+        body: SafeArea(
+          child: CustomScrollView(
+            controller: wm.scrollController,
+            slivers: const [
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _SearchBarDelegate(margin: EdgeInsets.all(16)),
+              ),
+              _Result(margin: EdgeInsets.symmetric(horizontal: 16)),
+              _Loader(margin: EdgeInsets.fromLTRB(16, 8, 16, 8)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
+            ],
+          ),
         ),
       ),
     );

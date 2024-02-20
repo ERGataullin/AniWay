@@ -5,7 +5,6 @@ import 'package:player/src/presentation/components/scalable/widget.dart';
 import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
-import 'package:video_player/video_player.dart';
 
 extension _VideoControlsContext on BuildContext {
   IVideoControlsWidgetModel get wm => read<IVideoControlsWidgetModel>();
@@ -33,51 +32,20 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
   Widget build(IVideoControlsWidgetModel wm) {
     return Provider<IVideoControlsWidgetModel>.value(
       value: wm,
-      child: _Theme(
-        child: _MouseRegion(
-          child: Scaffold(
-            body: Stack(
-              clipBehavior: Clip.none,
-              fit: StackFit.expand,
-              children: [
-                _Gestures(
-                  child: _Child(child: child),
-                ),
-                const _Controls(),
-              ],
-            ),
+      child: _MouseRegion(
+        child: Scaffold(
+          body: Stack(
+            clipBehavior: Clip.none,
+            fit: StackFit.expand,
+            children: [
+              _Gestures(
+                child: _Child(child: child),
+              ),
+              const _Controls(),
+            ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _Theme extends StatelessWidget {
-  const _Theme({
-    required this.child,
-  });
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    const Color background = Colors.black;
-    final ThemeData theme = Theme.of(context);
-
-    return Theme(
-      data: theme.copyWith(
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          foregroundColor: Colors.white,
-        ),
-        colorScheme: theme.colorScheme.copyWith(
-          background: background,
-          onBackground: Colors.white,
-        ),
-      ),
-      child: child,
     );
   }
 }
@@ -117,6 +85,7 @@ class _Gestures extends StatelessWidget {
       onTapUp: context.wm.onTapUp,
       child: Stack(
         clipBehavior: Clip.none,
+        fit: StackFit.expand,
         children: [
           ValueListenableBuilder(
             valueListenable: context.wm.maxScale,
@@ -262,12 +231,13 @@ class _PlayPauseLoader extends StatelessWidget {
   ) {
     return Stack(
       clipBehavior: Clip.none,
+      alignment: Alignment.center,
       children: <Widget>[
-        Center(
+        SizedBox(
           key: bottomChildKey,
           child: bottomChild,
         ),
-        Center(
+        SizedBox(
           key: topChildKey,
           child: topChild,
         ),
@@ -278,32 +248,32 @@ class _PlayPauseLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double size = 48;
-    return Align(
-      alignment: Alignment.center,
+    return Center(
       child: ValueListenableBuilder(
-        valueListenable: context.wm.playPauseLoaderState,
-        builder: (context, state, ___) => AnimatedCrossFade(
-          alignment: Alignment.center,
-          // TODO(ERGataullin): replace with Easing.emphasized
-          firstCurve: Easing.standard,
-          secondCurve: Easing.standard,
-          duration: Durations.medium2,
-          crossFadeState: state,
-          layoutBuilder: _animatedCrossFadeLayoutBuilder,
-          firstChild: IconButton(
-            onPressed: context.wm.onPlayPausePressed,
-            icon: AnimatedIcon(
-              size: size,
-              icon: AnimatedIcons.play_pause,
-              progress: context.wm.playPauseAnimation,
+        valueListenable: context.wm.playPauseLoaderCallback,
+        builder: (context, callback, ___) => IconButton.filledTonal(
+          iconSize: size,
+          onPressed: callback,
+          style: ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll(
+              Theme.of(context).colorScheme.secondaryContainer,
             ),
           ),
-          secondChild: const SizedBox(
-            width: size,
-            height: size,
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
+          icon: ValueListenableBuilder(
+            valueListenable: context.wm.playPauseLoaderState,
+            builder: (context, state, ___) => AnimatedCrossFade(
+              alignment: Alignment.center,
+              // TODO(ERGataullin): replace with Easing.emphasized
+              firstCurve: Easing.standard,
+              secondCurve: Easing.standard,
+              duration: Durations.medium2,
+              crossFadeState: state,
+              layoutBuilder: _animatedCrossFadeLayoutBuilder,
+              firstChild: AnimatedIcon(
+                icon: AnimatedIcons.play_pause,
+                progress: context.wm.playPauseAnimation,
+              ),
+              secondChild: const CircularProgressIndicator(),
             ),
           ),
         ),
@@ -326,6 +296,7 @@ class _Bottom extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _Timer(),
+            SizedBox(height: 4),
             _SeekBar(),
           ],
         ),
@@ -346,15 +317,20 @@ class _Timer extends StatelessWidget {
         builder: (context, position, ___) => RichText(
           text: TextSpan(
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(.87),
+              color: Theme.of(context).colorScheme.secondary,
+              shadows: <Shadow>[
+                Shadow(
+                  blurRadius: 16,
+                  color: Theme.of(context).colorScheme.shadow,
                 ),
+              ],
+            ),
             children: [
               TextSpan(
                 text: position,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(1),
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
               ),
               const TextSpan(text: ' / '),
@@ -372,12 +348,13 @@ class _SeekBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: VideoProgressIndicator(
-        context.wm.controller,
-        allowScrubbing: true,
-        padding: const EdgeInsets.symmetric(vertical: 8),
+    return ValueListenableBuilder(
+      valueListenable: context.wm.positionValue,
+      builder: (context, value, ___) => Slider.adaptive(
+        value: value,
+        onChangeStart: context.wm.onPositionChangeStart,
+        onChangeEnd: context.wm.onPositionChangeEnd,
+        onChanged: context.wm.onPositionChanged,
       ),
     );
   }

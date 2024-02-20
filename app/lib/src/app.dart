@@ -26,37 +26,58 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final AppTheme _theme = AppTheme();
-  final AppRouter _router = AppRouter();
+
+  late final AppRouter _router = AppRouter(
+    videoPlayerTheme: _theme.videoPlayer,
+    signedIn: context.read<AuthService>().signedIn,
+  );
+
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
     usePathUrlStrategy();
+    _initializeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      supportedLocales: [
-        AuthLocalizations.supportedLocales.toSet(),
-        RootMenuLocalizations.supportedLocales.toSet(),
-        MoviesLocalizations.supportedLocales.toSet(),
-        PlayerLocalizations.supportedLocales.toSet(),
-      ]
-          .reduce((value, element) => value.intersection(element))
-          .toList(growable: false),
-      localizationsDelegates: const [
-        GlobalCupertinoLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        AuthLocalizations.delegate,
-        RootMenuLocalizations.delegate,
-        MoviesLocalizations.delegate,
-        PlayerLocalizations.delegate,
-      ],
-      theme: _theme.light,
-      darkTheme: _theme.dark,
-      routerConfig: _router,
-    );
+    return _initialized
+        ? MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            supportedLocales: [
+              AuthLocalizations.supportedLocales.toSet(),
+              RootMenuLocalizations.supportedLocales.toSet(),
+              MoviesLocalizations.supportedLocales.toSet(),
+              PlayerLocalizations.supportedLocales.toSet(),
+            ]
+                .reduce((value, element) => value.intersection(element))
+                .toList(growable: false),
+            localizationsDelegates: const [
+              GlobalCupertinoLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              AuthLocalizations.delegate,
+              RootMenuLocalizations.delegate,
+              MoviesLocalizations.delegate,
+              PlayerLocalizations.delegate,
+            ],
+            theme: _theme.light,
+            darkTheme: _theme.dark,
+            routerConfig: _router,
+          )
+        : const SizedBox.shrink();
+  }
+
+  Future<void> _initializeDependencies() async {
+    await context.read<Storage>().initialize();
+    if (!mounted) {
+      return;
+    }
+    await context.read<AuthService>().initialize();
+
+    setState(() {
+      _initialized = true;
+    });
   }
 }

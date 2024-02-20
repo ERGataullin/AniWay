@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:player/player.dart';
 
 class Anime365PlayerDataSource implements PlayerDataSource {
@@ -90,13 +89,9 @@ class Anime365PlayerDataSource implements PlayerDataSource {
       NetworkRequestData(
         uri: Uri.parse(embedUrl),
         method: NetworkRequestMethodData.get,
-        headers: {
-          if (!kIsWeb)
-            'User-Agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0',
-        },
       ),
     );
+
     final Document document = parse(response.body as String);
 
     const String csrfPrefix = 'var YII_CSRF_TOKEN = "';
@@ -104,7 +99,6 @@ class Anime365PlayerDataSource implements PlayerDataSource {
       document.outerHtml.indexOf(csrfPrefix) + csrfPrefix.length,
     );
     csrf = csrf.substring(0, csrf.indexOf('"'));
-    _network.csrf = csrf;
 
     final Element player = document.querySelector('video')!;
     final List<VideoSourceDto> sources =
@@ -119,6 +113,7 @@ class Anime365PlayerDataSource implements PlayerDataSource {
             .toList(growable: false);
 
     return VideoDto(
+      csrf: csrf,
       sources: {
         for (final VideoSourceDto source in sources) source.quality: source,
       },

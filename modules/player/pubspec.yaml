@@ -11,7 +11,7 @@ dependencies:
     path: ../../core
   flutter:
     sdk: flutter
-  video_player: ^2.8.1
+  video_player: ^2.8.2
 
 dev_dependencies:
   flutter_lints: ^3.0.1

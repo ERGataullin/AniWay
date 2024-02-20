@@ -97,6 +97,24 @@ abstract class AuthLocalizations {
   /// **'Электронная почта'**
   String get signInEmailLabel;
 
+  /// No description provided for @signInEmailInvalidError.
+  ///
+  /// In ru, this message translates to:
+  /// **'Неверный адрес электронной почты'**
+  String get signInEmailInvalidError;
+
+  /// No description provided for @signInPasswordLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Пароль'**
+  String get signInPasswordLabel;
+
+  /// No description provided for @singInSubmitLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Войти'**
+  String get singInSubmitLabel;
+
   /// No description provided for @signInTitle.
   ///
   /// In ru, this message translates to:

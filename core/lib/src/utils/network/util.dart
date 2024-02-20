@@ -17,10 +17,6 @@ abstract interface class Network {
 
   Uri get baseUri;
 
-  String get csrf;
-
-  set csrf(String csrf);
-
   void addInterceptor(NetworkRequestInterceptor interceptor);
 
   void removeInterceptor(NetworkRequestInterceptor interceptor);
@@ -72,7 +68,7 @@ class NetworkResponseData {
     required this.body,
   });
 
-  final Map<String, String> headers;
+  final Map<String, List<String>> headers;
 
   final dynamic body;
 }
