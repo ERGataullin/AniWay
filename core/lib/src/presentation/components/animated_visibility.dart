@@ -55,9 +55,14 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
     super.initState();
     widget.visible.addListener(_animate);
     _controller.addStatusListener((status) {
-      if (status != AnimationStatus.completed) {
+      const List<AnimationStatus> boundaryStatuses = [
+        AnimationStatus.completed,
+        AnimationStatus.dismissed,
+      ];
+      if (!boundaryStatuses.contains(status)) {
         return;
       }
+
       setState(() {});
     });
   }
