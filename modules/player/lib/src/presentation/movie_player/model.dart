@@ -61,13 +61,13 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   void init() {
+    translation.addListener(_loadVideo);
     videoController.addListener(_onVideoControllerValueChanged);
   }
 
   @override
-  Future<void> changeTranslation(VideoTranslationData value) async {
+  void changeTranslation(VideoTranslationData value) {
     translation.value = value;
-    await _loadVideo();
   }
 
   @override
