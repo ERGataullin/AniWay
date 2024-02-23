@@ -59,7 +59,7 @@ class HttpNetwork implements Network {
     }
 
     return NetworkResponseData(
-      headers: httpResponse.headersSplitValues,
+      headers: httpResponse.headers,
       body: body,
     );
   }
@@ -70,5 +70,4 @@ class HttpNetwork implements Network {
       (data, interceptor) => data.then(interceptor.onResponse),
     );
   }
-
 }

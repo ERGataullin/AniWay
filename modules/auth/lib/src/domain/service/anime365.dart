@@ -106,18 +106,34 @@ class _AuthInterceptor extends NetworkRequestInterceptor {
   })  : _cookies = cookies,
         _onCookiesChanged = onCookiesChanged;
 
+  static const String _effectiveCookieHeaderName =
+      kIsWeb ? 'kaki' : HttpHeaders.cookieHeader;
+
+  static const String _effectiveSetCookieHeaderName =
+      kIsWeb ? 'set-kaki' : HttpHeaders.setCookieHeader;
+
   final _OnCookiesChanged? _onCookiesChanged;
+
+  final Pattern _setCookieSplitter = RegExp(
+    r'[ \t]*,[ \t]*(?=['
+    r"!#$%&'*+\-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`"
+    'abcdefghijklmnopqrstuvwxyz|~'
+    ']+=)',
+  );
 
   _Cookies _cookies;
 
   @override
   FutureOr<NetworkRequestData> onRequest(NetworkRequestData data) async {
+    final String? currentCookiesString =
+        data.headers[_effectiveCookieHeaderName];
+
     return data.copyWith(
       headers: {
         ...data.headers,
-        'cookie': {
-          if (data.headers['cookie'] != null)
-            ..._cookiesFromCookieValue(data.headers['cookie']!),
+        _effectiveCookieHeaderName: {
+          if (currentCookiesString != null)
+            ..._cookiesFromCookieValue(currentCookiesString),
           ..._cookies,
         }.values.map((cookie) => '${cookie.name}=${cookie.value}').join('; '),
       },
@@ -126,8 +142,9 @@ class _AuthInterceptor extends NetworkRequestInterceptor {
 
   @override
   FutureOr<NetworkResponseData> onResponse(NetworkResponseData data) {
-    final List<Cookie> setCookies = data.headers['set-cookie']
-            ?.map(Cookie.fromSetCookieValue)
+    final List<Cookie> setCookies = data.headers[_effectiveSetCookieHeaderName]
+            ?.split(_setCookieSplitter)
+            .map(Cookie.fromSetCookieValue)
             .toList(growable: false) ??
         const [];
 
