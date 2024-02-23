@@ -43,7 +43,7 @@ class AppDependenciesProvider extends StatelessWidget {
                     ? ProxiedUri(
                         proxy: Uri(
                           scheme: 'http',
-                          host: 'localhost',
+                          host: '94.228.117.49',
                           port: 8080,
                         ),
                         original: Uri(
