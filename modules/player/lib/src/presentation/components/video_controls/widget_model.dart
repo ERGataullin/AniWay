@@ -133,8 +133,7 @@ class VideoControlsWidgetModel
     super.initWidgetModel();
     model
       ..playing.addListener(_onPlayingChanged)
-      ..loading.addListener(_updatePlayPauseLoaderState)
-      ..loading.addListener(_updatePlayPauseLoaderCallback)
+      ..loading.addListener(_onLoadingChanged)
       ..position.addListener(_updatePosition)
       ..position.addListener(_updatePositionValue)
       ..duration.addListener(_updateDuration)
@@ -198,8 +197,7 @@ class VideoControlsWidgetModel
     super.dispose();
     model
       ..playing.removeListener(_onPlayingChanged)
-      ..loading.removeListener(_updatePlayPauseLoaderState)
-      ..loading.removeListener(_updatePlayPauseLoaderCallback)
+      ..loading.removeListener(_onLoadingChanged)
       ..position.removeListener(_updatePosition)
       ..position.removeListener(_updatePositionValue)
       ..duration.removeListener(_updateDuration)
@@ -220,6 +218,15 @@ class VideoControlsWidgetModel
       hideOnUserInactivity(restartUserInactivityTimer: false);
     } else {
       _playPauseAnimationController.reverse();
+      show(hideOnUserInactivity: false);
+    }
+  }
+
+  void _onLoadingChanged() {
+    _updatePlayPauseLoaderState();
+    _updatePlayPauseLoaderCallback();
+
+    if (model.loading.value) {
       show(hideOnUserInactivity: false);
     }
   }
