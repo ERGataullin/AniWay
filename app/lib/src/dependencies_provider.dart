@@ -42,7 +42,7 @@ class AppDependenciesProvider extends StatelessWidget {
                 baseUri: kIsWeb
                     ? ProxiedUri(
                         proxy: Uri(
-                          scheme: 'http',
+                          scheme: 'https',
                           host: '94.228.117.49',
                           port: 8080,
                         ),
