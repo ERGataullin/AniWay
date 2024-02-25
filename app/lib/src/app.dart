@@ -62,6 +62,7 @@ class _AppState extends State<App> {
               MoviesLocalizations.delegate,
               PlayerLocalizations.delegate,
             ],
+            title: 'AniWay',
             theme: _theme.light,
             darkTheme: _theme.dark,
             routerConfig: _router,
