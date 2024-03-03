@@ -195,7 +195,9 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       ],
       builder: (context, state) => SearchWidget(
         onMoviePressed: (id) => context.go(
-          state.uri.resolveUri(Uri(path: movieRoute.path)).locate(
+          state.uri
+              .resolveUri(Uri(path: '${uri.path}/${movieRoute.path}'))
+              .locate(
             pathParameters: {
               'movieId': id,
             },
