@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +32,16 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
     implements ISearchWidgetModel {
   SearchWidgetModel(super._model);
 
+  static const Duration _queryDebounceInterval = Duration(milliseconds: 300);
+
   @override
   final ValueNotifier<String> queryHint = ValueNotifier('');
+
+  @override
+  final SearchController queryController = SearchController();
+
+  @override
+  final ScrollController scrollController = ScrollController();
 
   @override
   ValueListenable<bool> get showLoader => model.loading;
@@ -39,11 +49,17 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
   @override
   ValueListenable<List<MoviePreviewData>> get movies => model.movies;
 
-  @override
-  SearchController get queryController => model.queryController;
+  String _query = '';
+
+  Timer? _queryDebounceTimer;
 
   @override
-  ScrollController get scrollController => model.scrollController;
+  void initWidgetModel() {
+    super.initWidgetModel();
+    model.loadMovies(query: _query);
+    queryController.addListener(_onQueryChanged);
+    scrollController.addListener(_onScrollChanged);
+  }
 
   @override
   void didChangeDependencies() {
@@ -55,10 +71,37 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
     widget.onMoviePressed(id);
   }
 
+  void _onQueryChanged() {
+    if (_query == queryController.text) {
+      return;
+    }
+
+    _query = queryController.text;
+    _queryDebounceTimer?.cancel();
+    _queryDebounceTimer = Timer(
+      _queryDebounceInterval,
+          () => model.loadMovies(query: _query, reload: true),
+    );
+  }
+
+  void _onScrollChanged() {
+    final bool scrolledToEnd = scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent;
+
+    if (!scrolledToEnd) {
+      return;
+    }
+
+    model.loadMovies(query: _query);
+  }
+
   @override
   void dispose() {
     super.dispose();
     queryHint.dispose();
+    queryController.dispose();
+    scrollController.dispose();
+    _queryDebounceTimer?.cancel();
   }
 
   void _updateQueryHint() {
