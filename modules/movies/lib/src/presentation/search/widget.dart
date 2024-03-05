@@ -23,6 +23,7 @@ class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
       child: Scaffold(
         body: SafeArea(
           child: CustomScrollView(
+            key: wm.globalKey,
             controller: wm.scrollController,
             slivers: const [
               SliverPersistentHeader(
