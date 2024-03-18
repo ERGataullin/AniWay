@@ -248,36 +248,60 @@ class _PlayPauseLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double size = 48;
-    return Center(
-      child: ValueListenableBuilder(
-        valueListenable: context.wm.playPauseLoaderCallback,
-        builder: (context, callback, ___) => IconButton.filledTonal(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton.filledTonal(
+            iconSize: size,
+            onPressed: (){},
+            style: ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(
+                Theme.of(context).colorScheme.secondaryContainer,
+              ),
+            ),
+            icon: Icon(Icons.skip_previous),
+        ),
+        ValueListenableBuilder(
+          valueListenable: context.wm.playPauseLoaderCallback,
+          builder: (context, callback, ___) => IconButton.filledTonal(
+            iconSize: size,
+            onPressed: callback,
+            style: ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(
+                Theme.of(context).colorScheme.secondaryContainer,
+              ),
+            ),
+            icon: ValueListenableBuilder(
+              valueListenable: context.wm.playPauseLoaderState,
+              builder: (context, state, ___) => AnimatedCrossFade(
+                alignment: Alignment.center,
+                // TODO(ERGataullin): replace with Easing.emphasized
+                firstCurve: Easing.standard,
+                secondCurve: Easing.standard,
+                duration: Durations.medium2,
+                crossFadeState: state,
+                layoutBuilder: _animatedCrossFadeLayoutBuilder,
+                firstChild: AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  progress: context.wm.playPauseAnimation,
+                ),
+                secondChild: const CircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ),
+        IconButton.filledTonal(
           iconSize: size,
-          onPressed: callback,
+          onPressed: (){},
           style: ButtonStyle(
             backgroundColor: MaterialStatePropertyAll(
               Theme.of(context).colorScheme.secondaryContainer,
             ),
           ),
-          icon: ValueListenableBuilder(
-            valueListenable: context.wm.playPauseLoaderState,
-            builder: (context, state, ___) => AnimatedCrossFade(
-              alignment: Alignment.center,
-              // TODO(ERGataullin): replace with Easing.emphasized
-              firstCurve: Easing.standard,
-              secondCurve: Easing.standard,
-              duration: Durations.medium2,
-              crossFadeState: state,
-              layoutBuilder: _animatedCrossFadeLayoutBuilder,
-              firstChild: AnimatedIcon(
-                icon: AnimatedIcons.play_pause,
-                progress: context.wm.playPauseAnimation,
-              ),
-              secondChild: const CircularProgressIndicator(),
-            ),
-          ),
+          icon: Icon(Icons.skip_next),
         ),
-      ),
+      ],
     );
   }
 }
