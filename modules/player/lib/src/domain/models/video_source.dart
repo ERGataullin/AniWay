@@ -8,7 +8,7 @@ class VideoSourceData {
 
   factory VideoSourceData.fromDto(VideoSourceDto dto) => VideoSourceData(
         quality: dto.quality,
-        uri: Uri.parse(dto.url),
+        uri: Uri.parse(Uri.decodeComponent(dto.url)),
       );
 
   final String quality;
