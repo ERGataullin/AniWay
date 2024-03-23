@@ -52,7 +52,7 @@ class MoviePlayerWidgetModel
       ..translation.addListener(_updatePreferences)
       ..movieId = widget.movieId
       ..episodeId = widget.episodeId;
-    _fullscreen.request();
+    // _fullscreen.request();
     _lockOrientation();
   }
 
