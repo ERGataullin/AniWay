@@ -65,7 +65,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
           valueListenable: context.wm.queryHint,
           builder: (context, hintText, ___) => SearchBar(
             controller: context.wm.queryController,
-            padding: const MaterialStatePropertyAll<EdgeInsets>(
+            padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: 16),
             ),
             leading: const Icon(Icons.search),

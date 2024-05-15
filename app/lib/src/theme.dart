@@ -37,11 +37,9 @@ class AppTheme {
       error: const Color(0xFFF2B8B5),
       onError: const Color(0xFF601410),
       errorContainer: const Color(0xFF8C1D18),
-      background: Colors.black,
-      onBackground: Colors.white,
       surface: Colors.black,
-      surfaceVariant: Colors.white24,
       onSurface: Colors.white,
+      surfaceContainerHighest: Colors.white24,
     ),
   ).copyWith(
     sliderTheme: SliderThemeData(
