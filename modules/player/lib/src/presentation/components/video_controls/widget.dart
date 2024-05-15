@@ -255,7 +255,7 @@ class _PlayPauseLoader extends StatelessWidget {
           iconSize: size,
           onPressed: callback,
           style: ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll(
+            backgroundColor: WidgetStatePropertyAll(
               Theme.of(context).colorScheme.secondaryContainer,
             ),
           ),
@@ -330,7 +330,7 @@ class _Timer extends StatelessWidget {
                 text: position,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const TextSpan(text: ' / '),
