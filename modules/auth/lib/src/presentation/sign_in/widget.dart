@@ -26,27 +26,29 @@ class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
         body: Form(
           key: wm.formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: const Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: _Logo(),
-                ),
-                SizedBox(height: 16),
-                _EmailField(),
-                SizedBox(height: 16),
-                _PasswordField(),
-                SizedBox(height: 16),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: _SubmitButton(),
+          child: AutofillGroup(
+            child: const Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _Logo(),
                   ),
-                ),
-              ],
+                  SizedBox(height: 16),
+                  _EmailField(),
+                  SizedBox(height: 16),
+                  _PasswordField(),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: _SubmitButton(),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -92,6 +94,10 @@ class _EmailField extends StatelessWidget {
         autofocus: true,
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.emailAddress,
+        autofillHints: const [
+          AutofillHints.username,
+          AutofillHints.email,
+        ],
         validator: context.wm.onValidateEmail,
         decoration: InputDecoration(
           label: Text(label),
@@ -116,6 +122,7 @@ class _PasswordField extends StatelessWidget {
           obscureText: obscure,
           textInputAction: TextInputAction.done,
           keyboardType: TextInputType.visiblePassword,
+          autofillHints: const [AutofillHints.password],
           decoration: InputDecoration(
             label: Text(label),
             suffixIcon: IconButton(
