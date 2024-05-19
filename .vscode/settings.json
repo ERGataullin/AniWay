@@ -7,5 +7,6 @@
     "**/.fvm": true
   },
   "dart.debugExternalPackageLibraries": true,
-  "dart.debugSdkLibraries": true
+  "dart.debugSdkLibraries": true,
+  "files.insertFinalNewline": true
 }

@@ -57,7 +57,7 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<VoidCallback?> get playPauseLoaderCallback;
 
-  ValueListenable<IconData> get fullScreenButtonIcon;
+  ValueListenable<IconData> get fullscreenButtonIcon;
 
   ValueListenable<String> get position;
 
@@ -87,7 +87,7 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   void onNextPressed();
 
-  void onFullScreenPressed();
+  void onFullscreenPressed();
 }
 
 class VideoControlsWidgetModel
@@ -112,7 +112,7 @@ class VideoControlsWidgetModel
       ValueNotifier(null);
 
   @override
-  final ValueNotifier<IconData> fullScreenButtonIcon =
+  final ValueNotifier<IconData> fullscreenButtonIcon =
       ValueNotifier(Icons.fullscreen);
 
   @override
@@ -224,8 +224,8 @@ class VideoControlsWidgetModel
   }
 
   @override
-  void onFullScreenPressed() {
-    fullScreenButtonIcon.value =
+  void onFullscreenPressed() {
+    fullscreenButtonIcon.value =
         _fullscreen.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen;
     _fullscreen.isFullscreen ? _fullscreen.exit() : _fullscreen.request();
   }
@@ -244,7 +244,7 @@ class VideoControlsWidgetModel
     title.dispose();
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();
-    fullScreenButtonIcon.dispose();
+    fullscreenButtonIcon.dispose();
     position.dispose();
     duration.dispose();
     positionValue.dispose();

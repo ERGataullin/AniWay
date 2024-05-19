@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:math';
 
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
@@ -80,19 +79,17 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   void loadPreviousEpisode() {
-    List<EpisodeData> episodes = _movie.episodes;
     int previousIndex =
-        episodes.indexWhere((episode) => episode.id == _episodeId) - 1;
-    _episodeId = episodes[previousIndex].id;
+        _movie.episodes.indexWhere((episode) => episode.id == _episodeId) - 1;
+    _episodeId = _movie.episodes[previousIndex].id;
     _loadTranslations();
   }
 
   @override
   void loadNextEpisode() {
-    List<EpisodeData> episodes = _movie.episodes;
     int nextIndex =
-        episodes.indexWhere((episode) => episode.id == _episodeId) + 1;
-    _episodeId = episodes[nextIndex].id;
+        _movie.episodes.indexWhere((episode) => episode.id == _episodeId) + 1;
+    _episodeId = _movie.episodes[nextIndex].id;
     _loadTranslations();
   }
 

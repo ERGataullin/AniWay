@@ -180,9 +180,7 @@ class _Controls extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _PreviousButton(),
-              SizedBox(
-                width: 64,
-              ),
+              SizedBox(width: 64),
               _PlayPauseLoader(),
               SizedBox(width: 64),
               _NextButton(),
@@ -312,7 +310,10 @@ class _Bottom extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [_Timer(), _FullscreenButton()],
+              children: [
+                _Timer(),
+                _FullscreenButton(),
+              ],
             ),
             SizedBox(height: 4),
             _SeekBar(),
@@ -366,17 +367,10 @@ class _FullscreenButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double size = 24;
     return ValueListenableBuilder(
-      valueListenable: context.wm.fullScreenButtonIcon,
-      builder: (context, iconData, ___) => IconButton.filledTonal(
-        iconSize: size,
-        onPressed: context.wm.onFullScreenPressed,
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            Theme.of(context).colorScheme.secondaryContainer,
-          ),
-        ),
+      valueListenable: context.wm.fullscreenButtonIcon,
+      builder: (context, iconData, ___) => IconButton(
+        onPressed: context.wm.onFullscreenPressed,
         icon: Icon(iconData),
       ),
     );
@@ -405,9 +399,7 @@ class _PreviousButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double size = 24;
     return IconButton.filledTonal(
-      iconSize: size,
       onPressed: context.wm.onPreviousButtonPressed,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(
@@ -424,9 +416,7 @@ class _NextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double size = 24;
     return IconButton.filledTonal(
-      iconSize: size,
       onPressed: context.wm.onNextPressed,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(
