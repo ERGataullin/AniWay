@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:math';
 
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,10 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
   set episodeId(Object value);
 
   void changeTranslation(VideoTranslationData value);
+
+  void loadPreviousEpisode();
+
+  void loadNextEpisode();
 }
 
 class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
@@ -50,12 +55,15 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   set episodeId(Object value) {
-    _loadTranslations(episodeId: value);
+    _episodeId = value;
+    _loadTranslations();
   }
 
   final PlayerService _service;
 
   late MovieData _movie;
+
+  late Object _episodeId;
 
   late VideoData _video;
 
@@ -68,6 +76,24 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   @override
   void changeTranslation(VideoTranslationData value) {
     translation.value = value;
+  }
+
+  @override
+  void loadPreviousEpisode() {
+    List<EpisodeData> episodes = _movie.episodes;
+    int previousIndex =
+        episodes.indexWhere((episode) => episode.id == _episodeId) - 1;
+    _episodeId = episodes[previousIndex].id;
+    _loadTranslations();
+  }
+
+  @override
+  void loadNextEpisode() {
+    List<EpisodeData> episodes = _movie.episodes;
+    int nextIndex =
+        episodes.indexWhere((episode) => episode.id == _episodeId) + 1;
+    _episodeId = episodes[nextIndex].id;
+    _loadTranslations();
   }
 
   @override
@@ -86,11 +112,9 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
     title.value = _movie.title;
   }
 
-  Future<void> _loadTranslations({
-    required Object episodeId,
-  }) async {
+  Future<void> _loadTranslations() async {
     final List<VideoTranslationData> translationsList =
-        await _service.getTranslations(episodeId);
+        await _service.getTranslations(_episodeId);
     final TranslationsData translations = {
       for (final VideoTranslationTypeData type
           in VideoTranslationTypeData.values)

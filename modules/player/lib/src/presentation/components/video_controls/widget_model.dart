@@ -4,8 +4,11 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:player/player.dart';
 import 'package:player/src/presentation/components/video_controls/model.dart';
 import 'package:player/src/presentation/components/video_controls/widget.dart';
+import 'package:player/src/utils/fullscreen/util.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 VideoControlsWidgetModel videoControlsWidgetModelFactory(
@@ -15,6 +18,7 @@ VideoControlsWidgetModel videoControlsWidgetModelFactory(
       VideoControlsModel(
         context.read<ErrorHandler>(),
       ),
+      fullscreen: context.read<Fullscreen>(),
     );
 
 extension _DurationFormat on Duration {
@@ -53,6 +57,8 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<VoidCallback?> get playPauseLoaderCallback;
 
+  ValueListenable<IconData> get fullScreenButtonIcon;
+
   ValueListenable<String> get position;
 
   ValueListenable<String> get duration;
@@ -76,13 +82,22 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
   void onPositionChangeEnd(double position);
 
   void onPositionChanged(double position);
+
+  void onPreviousButtonPressed();
+
+  void onNextPressed();
+
+  void onFullScreenPressed();
 }
 
 class VideoControlsWidgetModel
     extends WidgetModel<VideoControlsWidget, IVideoControlsModel>
     with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
     implements IVideoControlsWidgetModel {
-  VideoControlsWidgetModel(super._model);
+  VideoControlsWidgetModel(
+    super._model, {
+    required Fullscreen fullscreen,
+  }) : _fullscreen = fullscreen;
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
@@ -95,6 +110,10 @@ class VideoControlsWidgetModel
   @override
   final ValueNotifier<VoidCallback?> playPauseLoaderCallback =
       ValueNotifier(null);
+
+  @override
+  final ValueNotifier<IconData> fullScreenButtonIcon =
+      ValueNotifier(Icons.fullscreen);
 
   @override
   final ValueNotifier<String> position = ValueNotifier('');
@@ -111,6 +130,8 @@ class VideoControlsWidgetModel
     curve: Easing.standard,
     reverseCurve: Easing.standard.flipped,
   );
+
+  final Fullscreen _fullscreen;
 
   @override
   ValueListenable<double> get maxScale => model.maxScale;
@@ -193,6 +214,23 @@ class VideoControlsWidgetModel
   }
 
   @override
+  void onPreviousButtonPressed() {
+    widget.onPreviousPressed();
+  }
+
+  @override
+  void onNextPressed() {
+    widget.onNextPressed();
+  }
+
+  @override
+  void onFullScreenPressed() {
+    fullScreenButtonIcon.value =
+        _fullscreen.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen;
+    _fullscreen.isFullscreen ? _fullscreen.exit() : _fullscreen.request();
+  }
+
+  @override
   void dispose() {
     super.dispose();
     model
@@ -206,6 +244,7 @@ class VideoControlsWidgetModel
     title.dispose();
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();
+    fullScreenButtonIcon.dispose();
     position.dispose();
     duration.dispose();
     positionValue.dispose();

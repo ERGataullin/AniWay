@@ -3,8 +3,10 @@ import 'package:player/src/utils/fullscreen/io.dart'
 
 abstract class Fullscreen {
   factory Fullscreen() {
-    return const PlatformFullscreen();
+    return PlatformFullscreen();
   }
+
+  bool get isFullscreen;
 
   Future<void> request();
 
