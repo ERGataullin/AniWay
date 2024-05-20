@@ -29,6 +29,8 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWidgetModel> {
             controller: wm.controller,
             title: title,
             preferences: preferences,
+            onPreviousPressed: wm.onPreviousPressed,
+            onNextPressed: wm.onNextPressed,
             child: VideoPlayerWidget(controller: wm.controller),
           ),
         ),
