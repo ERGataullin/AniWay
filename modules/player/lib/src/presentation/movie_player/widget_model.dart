@@ -14,7 +14,6 @@ MoviePlayerWidgetModel moviePlayerWidgetModelFactory(BuildContext context) =>
         context.read<ErrorHandler>(),
         service: context.read<PlayerService>(),
       ),
-      fullscreen: context.read<Fullscreen>(),
     );
 
 abstract interface class IMoviePlayerWidgetModel implements IWidgetModel {
@@ -23,15 +22,16 @@ abstract interface class IMoviePlayerWidgetModel implements IWidgetModel {
   ValueListenable<List<MenuItemData>> get preferences;
 
   VideoController get controller;
+
+  void onPreviousPressed();
+
+  void onNextPressed();
 }
 
 class MoviePlayerWidgetModel
     extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
     implements IMoviePlayerWidgetModel {
-  MoviePlayerWidgetModel(
-    super._model, {
-    required Fullscreen fullscreen,
-  }) : _fullscreen = fullscreen;
+  MoviePlayerWidgetModel(super._model);
 
   @override
   final ValueNotifier<List<MenuItemData>> preferences = ValueNotifier(const []);
@@ -42,8 +42,6 @@ class MoviePlayerWidgetModel
   @override
   VideoController get controller => model.videoController;
 
-  final Fullscreen _fullscreen;
-
   @override
   void initWidgetModel() {
     super.initWidgetModel();
@@ -52,14 +50,17 @@ class MoviePlayerWidgetModel
       ..translation.addListener(_updatePreferences)
       ..movieId = widget.movieId
       ..episodeId = widget.episodeId;
-    model.videoController.addListener(() {
-      if (model.videoController.textureId !=
-              VideoController.kUninitializedTextureId &&
-          model.videoController.value.isPlaying) {
-        _fullscreen.request('video');
-      }
-    });
     _lockOrientation();
+  }
+
+  @override
+  void onPreviousPressed() {
+    model.loadPreviousEpisode();
+  }
+
+  @override
+  void onNextPressed() {
+    model.loadNextEpisode();
   }
 
   @override
@@ -70,7 +71,6 @@ class MoviePlayerWidgetModel
       ..translation.removeListener(_updatePreferences);
     preferences.dispose();
     await Future.wait([
-      _fullscreen.exit(),
       _unlockOrientation(),
     ]);
   }

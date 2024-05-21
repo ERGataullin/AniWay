@@ -2,10 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:player/player.dart';
 import 'package:web/web.dart';
 
-extension _ElementFullscreen on Element {
-  external void requestFullscreen();
+extension _DocumentFullscreen on Document {
+  external Element? get fullscreenElement;
 
   external void exitFullscreen();
+}
+
+extension _ElementFullscreen on Element {
+  external bool get webkitDisplayingFullscreen;
+
+  external void requestFullscreen();
 
   external void webkitEnterFullscreen();
 
@@ -14,6 +20,19 @@ extension _ElementFullscreen on Element {
 
 class PlatformFullscreen implements Fullscreen {
   const PlatformFullscreen();
+
+  @override
+  bool isFullscreen([String? elementQuerySelector]) {
+    assert(
+      defaultTargetPlatform == TargetPlatform.iOS ||
+          elementQuerySelector == null,
+    );
+    return elementQuerySelector == null
+        ? document.fullscreenElement != null
+        : document
+            .querySelector(elementQuerySelector)!
+            .webkitDisplayingFullscreen;
+  }
 
   @override
   Future<void> request([String? elementQuerySelector]) {
@@ -28,12 +47,13 @@ class PlatformFullscreen implements Fullscreen {
 
   @override
   Future<void> exit([String? elementQuerySelector]) {
-    final Element element = elementQuerySelector == null
-        ? document.documentElement!
-        : document.querySelector(elementQuerySelector)!;
-    defaultTargetPlatform == TargetPlatform.iOS
-        ? element.webkitExitFullscreen()
-        : element.exitFullscreen();
+    assert(
+      defaultTargetPlatform == TargetPlatform.iOS ||
+          elementQuerySelector == null,
+    );
+    elementQuerySelector == null
+        ? document.exitFullscreen()
+        : document.querySelector(elementQuerySelector)!.webkitExitFullscreen();
     return SynchronousFuture(null);
   }
 }
