@@ -4,7 +4,6 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:player/player.dart';
 import 'package:player/src/presentation/components/video_controls/model.dart';
 import 'package:player/src/presentation/components/video_controls/widget.dart';
@@ -149,6 +148,11 @@ class VideoControlsWidgetModel
     value: controller.value.isPlaying ? 1 : 0,
   );
 
+  String? get _fullscreenElementQuerySelector =>
+      defaultTargetPlatform == TargetPlatform.iOS
+          ? 'video#videoElement-${controller.textureId}'
+          : null;
+
   @override
   void initWidgetModel() {
     super.initWidgetModel();
@@ -225,9 +229,13 @@ class VideoControlsWidgetModel
 
   @override
   void onFullscreenPressed() {
+    final bool isFullscreen =
+        _fullscreen.isFullscreen(_fullscreenElementQuerySelector);
     fullscreenButtonIcon.value =
-        _fullscreen.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen;
-    _fullscreen.isFullscreen ? _fullscreen.exit() : _fullscreen.request();
+        isFullscreen ? Icons.fullscreen : Icons.fullscreen_exit;
+    isFullscreen
+        ? _fullscreen.exit(_fullscreenElementQuerySelector)
+        : _fullscreen.request(_fullscreenElementQuerySelector);
   }
 
   @override
@@ -241,6 +249,7 @@ class VideoControlsWidgetModel
       ..duration.removeListener(_updateDuration)
       ..duration.removeListener(_updatePositionValue);
     _playPauseAnimationController.dispose();
+    _fullscreen.exit(_fullscreenElementQuerySelector);
     title.dispose();
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();

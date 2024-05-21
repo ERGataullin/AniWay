@@ -4,6 +4,7 @@ enum MovieTypeData {
   ova,
   ona,
   special,
+  tvSpecial,
   music,
   pv,
   unknown;

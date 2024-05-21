@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoController extends ValueNotifier<VideoPlayerValue>
     implements VideoPlayerController {
-  VideoController() : super(const VideoPlayerValue(duration: Duration.zero)) {
-    initialize();
-  }
+  VideoController() : super(const VideoPlayerValue(duration: Duration.zero));
+
+  static const int kUninitializedTextureId =
+      // ignore: invalid_use_of_visible_for_testing_member
+      VideoPlayerController.kUninitializedTextureId;
 
   VideoPlayerController? _controller;
 
@@ -31,8 +32,9 @@ class VideoController extends ValueNotifier<VideoPlayerValue>
   String? get package => _controller!.package;
 
   @override
-  // ignore: invalid_use_of_visible_for_testing_member
-  int get textureId => _controller!.textureId;
+  int get textureId =>
+      // ignore: invalid_use_of_visible_for_testing_member
+      _controller?.textureId ?? VideoPlayerController.kUninitializedTextureId;
 
   @override
   Future<Duration?> get position => _controller!.position;
@@ -41,18 +43,17 @@ class VideoController extends ValueNotifier<VideoPlayerValue>
   Future<ClosedCaptionFile>? get closedCaptionFile =>
       _controller!.closedCaptionFile;
 
-  @override
-  Future<void> initialize([Uri? uri]) async {
+  Future<void> initializeUri(Uri uri) async {
     final VideoPlayerController? oldController = _controller;
-    _controller = VideoPlayerController.networkUrl(uri ?? Uri())
+    _controller = VideoPlayerController.networkUrl(uri)
       ..addListener(_onControllerValueChanged);
     oldController?.dispose();
-    await Future.wait([
-      if (uri != null) ...[
-        _controller!.initialize(),
-        _controller!.play(),
-      ],
-    ]);
+    await _controller!.initialize();
+  }
+
+  @override
+  Future<void> initialize() {
+    return _controller!.initialize();
   }
 
   @override

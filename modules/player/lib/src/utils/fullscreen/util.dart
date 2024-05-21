@@ -6,9 +6,9 @@ abstract class Fullscreen {
     return PlatformFullscreen();
   }
 
-  bool get isFullscreen;
+  bool isFullscreen([String? elementQuerySelector]);
 
-  Future<void> request();
+  Future<void> request([String? elementQuerySelector]);
 
-  Future<void> exit();
+  Future<void> exit([String? elementQuerySelector]);
 }

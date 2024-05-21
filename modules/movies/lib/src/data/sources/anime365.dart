@@ -99,6 +99,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         final RegExp specialEpisodeTitlePattern = RegExp(
           '^SPECIAL ${episodeNumberPattern.pattern} серия\$',
         );
+        final RegExp tvSpecialEpisodeTitlePattern = RegExp(
+          '^TV SP ${episodeNumberPattern.pattern} серия\$',
+        );
         final RegExp musicEpisodeTitlePattern = RegExp(r'^Музыкальное видео$');
         final RegExp pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
         late final String episodeType;
@@ -112,6 +115,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           episodeType = 'ona';
         } else if (specialEpisodeTitlePattern.hasMatch(episodeTitle)) {
           episodeType = 'special';
+        } else if (tvSpecialEpisodeTitlePattern.hasMatch(episodeTitle)) {
+          episodeType = 'tv_special';
         } else if (musicEpisodeTitlePattern.hasMatch(episodeTitle)) {
           episodeType = 'music';
         } else if (pvEpisodeTitlePattern.hasMatch(episodeTitle)) {
