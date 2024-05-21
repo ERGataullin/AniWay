@@ -6,7 +6,7 @@ abstract class Fullscreen {
     return const PlatformFullscreen();
   }
 
-  Future<void> request();
+  Future<void> request([String? elementQuerySelector]);
 
-  Future<void> exit();
+  Future<void> exit([String? elementQuerySelector]);
 }

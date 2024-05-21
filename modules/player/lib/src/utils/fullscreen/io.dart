@@ -5,12 +5,12 @@ class PlatformFullscreen implements Fullscreen {
   const PlatformFullscreen();
 
   @override
-  Future<void> request() {
+  Future<void> request([String? elementQuerySelector]) {
     return SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override
-  Future<void> exit() {
+  Future<void> exit([String? elementQuerySelector]) {
     return SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 }

@@ -104,7 +104,8 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   Future<void> _loadVideo() async {
     _video = await _service.getTranslationVideo(translation.value!.embedUri);
-    videoController.initialize(_video.sources.values.first.uri);
+    videoController.initializeUri(_video.sources.values.first.uri);
+    await videoController.play();
   }
 
   Future<void> _onVideoControllerValueChanged() async {

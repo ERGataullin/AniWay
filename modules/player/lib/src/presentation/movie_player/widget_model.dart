@@ -52,7 +52,13 @@ class MoviePlayerWidgetModel
       ..translation.addListener(_updatePreferences)
       ..movieId = widget.movieId
       ..episodeId = widget.episodeId;
-    // _fullscreen.request();
+    model.videoController.addListener(() {
+      if (model.videoController.textureId !=
+              VideoController.kUninitializedTextureId &&
+          model.videoController.value.isPlaying) {
+        _fullscreen.request('video');
+      }
+    });
     _lockOrientation();
   }
 
