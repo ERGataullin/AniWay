@@ -79,7 +79,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   void loadPreviousEpisode() {
-    int previousIndex =
+    final int previousIndex =
         _movie.episodes.indexWhere((episode) => episode.id == _episodeId) - 1;
     _episodeId = _movie.episodes[previousIndex].id;
     _loadTranslations();
@@ -87,7 +87,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   void loadNextEpisode() {
-    int nextIndex =
+    final int nextIndex =
         _movie.episodes.indexWhere((episode) => episode.id == _episodeId) + 1;
     _episodeId = _movie.episodes[nextIndex].id;
     _loadTranslations();
