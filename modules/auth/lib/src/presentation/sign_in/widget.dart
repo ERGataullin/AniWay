@@ -26,8 +26,8 @@ class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
         body: Form(
           key: wm.formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: AutofillGroup(
-            child: const Padding(
+          child: const AutofillGroup(
+            child: Padding(
               padding: EdgeInsets.all(16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

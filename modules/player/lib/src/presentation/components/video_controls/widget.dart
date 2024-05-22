@@ -403,7 +403,7 @@ class _PreviousButton extends StatelessWidget {
           Theme.of(context).colorScheme.secondaryContainer,
         ),
       ),
-      icon: Icon(Icons.skip_previous),
+      icon: const Icon(Icons.skip_previous),
     );
   }
 }
@@ -420,7 +420,7 @@ class _NextButton extends StatelessWidget {
           Theme.of(context).colorScheme.secondaryContainer,
         ),
       ),
-      icon: Icon(Icons.skip_next),
+      icon: const Icon(Icons.skip_next),
     );
   }
 }
