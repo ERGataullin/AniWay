@@ -171,7 +171,7 @@ class VideoControlsWidgetModel
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    model.aspectRatio = MediaQuery.of(context).size.aspectRatio;
+    model.surfaceAspectRatio = MediaQuery.of(context).size.aspectRatio;
   }
 
   @override
@@ -249,7 +249,9 @@ class VideoControlsWidgetModel
       ..duration.removeListener(_updateDuration)
       ..duration.removeListener(_updatePositionValue);
     _playPauseAnimationController.dispose();
-    _fullscreen.exit(_fullscreenElementQuerySelector);
+    if (_fullscreenElementQuerySelector == null && _fullscreen.isFullscreen()) {
+      _fullscreen.exit(_fullscreenElementQuerySelector);
+    }
     title.dispose();
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();

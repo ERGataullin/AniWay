@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:math';
 
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
@@ -22,7 +23,7 @@ abstract interface class IVideoControlsModel implements ElementaryModel {
 
   set videoController(VideoController value);
 
-  set aspectRatio(double value);
+  set surfaceAspectRatio(double value);
 
   void togglePlayPause();
 }
@@ -64,12 +65,12 @@ class VideoControlsModel extends ElementaryModel
   }
 
   @override
-  set aspectRatio(double value) {
-    _aspectRatio = value;
+  set surfaceAspectRatio(double value) {
+    _surfaceAspectRatio = value;
     _updateScaling();
   }
 
-  double _aspectRatio = 1;
+  double _surfaceAspectRatio = 1;
 
   VideoController? _videoController;
 
@@ -104,7 +105,10 @@ class VideoControlsModel extends ElementaryModel
   }
 
   void _updateScaling() {
-    maxScale.value = _aspectRatio / videoController.value.aspectRatio;
+    maxScale.value = max(
+      _surfaceAspectRatio / videoController.value.aspectRatio,
+      videoController.value.aspectRatio / _surfaceAspectRatio,
+    );
     scaleAnchors.value = List.unmodifiable(<double>[1, maxScale.value]);
   }
 }

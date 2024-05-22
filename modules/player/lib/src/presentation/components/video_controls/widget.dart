@@ -86,33 +86,30 @@ class _Gestures extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTapUp: context.wm.onTapUp,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          ValueListenableBuilder(
-            valueListenable: context.wm.maxScale,
-            child: child,
-            builder: (context, maxScale, child) => ValueListenableBuilder(
-              valueListenable: context.wm.scaleAnchors,
-              builder: (context, scaleAnchors, ___) => ScalableWidget(
-                maxScale: maxScale,
-                anchors: scaleAnchors,
-                child: child!,
-              ),
+    return Stack(
+      clipBehavior: Clip.none,
+      fit: StackFit.expand,
+      children: [
+        ValueListenableBuilder(
+          valueListenable: context.wm.maxScale,
+          child: child,
+          builder: (context, maxScale, child) => ValueListenableBuilder(
+            valueListenable: context.wm.scaleAnchors,
+            builder: (context, scaleAnchors, ___) => ScalableWidget(
+              maxScale: maxScale,
+              anchors: scaleAnchors,
+              child: child!,
             ),
           ),
-          const Row(
-            children: [
-              _SeekGesture(side: Side.left),
-              _SeekGesture(side: Side.right),
-            ],
-          ),
-        ],
-      ),
+        ),
+        GestureDetector(onTapUp: context.wm.onTapUp),
+        const Row(
+          children: [
+            _SeekGesture(side: Side.left),
+            _SeekGesture(side: Side.right),
+          ],
+        ),
+      ],
     );
   }
 }

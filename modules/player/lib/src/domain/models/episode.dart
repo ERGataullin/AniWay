@@ -9,7 +9,9 @@ enum EpisodeTypeData {
 
   ona,
 
-  special;
+  special,
+
+  tvSpecial,
 }
 
 class EpisodeData {
@@ -27,6 +29,7 @@ class EpisodeData {
           'ova' => EpisodeTypeData.ova,
           'ona' => EpisodeTypeData.ona,
           'special' => EpisodeTypeData.special,
+          'tv_special' => EpisodeTypeData.tvSpecial,
           _ => throw UnsupportedError('Unsupported episode type: ${dto.type}'),
         },
         number: dto.number,
