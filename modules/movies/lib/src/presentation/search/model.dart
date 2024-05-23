@@ -77,9 +77,9 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   }
 
   void _ensureHasScrollReserve() {
-    final bool hasMinScrollReserve = scrollController.position.extentAfter >
+    final bool hasScrollReserve = scrollController.position.extentAfter >
         scrollController.position.viewportDimension;
-    if (!hasMinScrollReserve) {
+    if (!hasScrollReserve) {
       _loadMovies();
     }
   }
@@ -109,7 +109,6 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     movies.value = List.unmodifiable(_movies);
     loading.value = false;
 
-    WidgetsBinding.instance.endOfFrame
-        .then((_) => _ensureHasScrollReserve());
+    WidgetsBinding.instance.endOfFrame.then((_) => _ensureHasScrollReserve());
   }
 }
