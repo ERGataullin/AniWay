@@ -17,9 +17,10 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 
   VideoController get videoController;
 
-  set movieId(Object value);
-
-  set episodeId(Object value);
+  void setMovieEpisode({
+    required Object movieId,
+    required Object episodeId,
+  });
 
   void changeTranslation(VideoTranslationData value);
 
@@ -47,29 +48,32 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   @override
   final VideoController videoController = VideoController();
 
-  @override
-  set movieId(Object value) {
-    _loadMovie(movieId: value);
-  }
-
-  @override
-  set episodeId(Object value) {
-    _episodeId = value;
-    _loadTranslations();
-  }
-
   final PlayerService _service;
 
-  late MovieData _movie;
-
-  late Object _episodeId;
+  late int _episodeIndex;
 
   late VideoData _video;
+
+  MovieData? _movie;
 
   @override
   void init() {
     translation.addListener(_loadVideo);
     videoController.addListener(_onVideoControllerValueChanged);
+  }
+
+  @override
+  Future<void> setMovieEpisode({
+    required Object movieId,
+    required Object episodeId,
+  }) async {
+    if (movieId != _movie?.id) {
+      await _loadMovie(movieId: movieId);
+    }
+    _episodeIndex = _movie!.episodes.indexWhere(
+      (episode) => episode.id == episodeId,
+    );
+    await _loadTranslations();
   }
 
   @override
@@ -79,17 +83,13 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   void loadPreviousEpisode() {
-    final int previousIndex =
-        _movie.episodes.indexWhere((episode) => episode.id == _episodeId) - 1;
-    _episodeId = _movie.episodes[previousIndex].id;
+    _episodeIndex--;
     _loadTranslations();
   }
 
   @override
   void loadNextEpisode() {
-    final int nextIndex =
-        _movie.episodes.indexWhere((episode) => episode.id == _episodeId) + 1;
-    _episodeId = _movie.episodes[nextIndex].id;
+    _episodeIndex++;
     _loadTranslations();
   }
 
@@ -106,12 +106,15 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
     required Object movieId,
   }) async {
     _movie = await _service.getMovie(movieId);
-    title.value = _movie.title;
+    title.value = _movie!.title;
   }
 
   Future<void> _loadTranslations() async {
+    assert(_movie != null);
+
+    final Object episodeId = _movie!.episodes[_episodeIndex].id;
     final List<VideoTranslationData> translationsList =
-        await _service.getTranslations(_episodeId);
+        await _service.getTranslations(episodeId);
     final TranslationsData translations = {
       for (final VideoTranslationTypeData type
           in VideoTranslationTypeData.values)
@@ -130,7 +133,12 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   }
 
   Future<void> _onVideoControllerValueChanged() async {
+    assert(_movie != null);
+
     if (videoController.value.isCompleted) {
+      if (_episodeIndex < _movie!.episodes.length - 1) {
+        loadNextEpisode();
+      }
       await _service.postTranslationWatched(
         translation.value!.id,
         csrf: _video.csrf,

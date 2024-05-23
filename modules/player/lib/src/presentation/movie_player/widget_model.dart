@@ -48,8 +48,10 @@ class MoviePlayerWidgetModel
     model
       ..translations.addListener(_updatePreferences)
       ..translation.addListener(_updatePreferences)
-      ..movieId = widget.movieId
-      ..episodeId = widget.episodeId;
+      ..setMovieEpisode(
+        movieId: widget.movieId,
+        episodeId: widget.episodeId,
+      );
     _lockOrientation();
   }
 
