@@ -20,19 +20,20 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWidgetModel> {
   Widget build(IMoviePlayerWidgetModel wm) {
     return Provider<IMoviePlayerWidgetModel>.value(
       value: wm,
-      child: ValueListenableBuilder<String>(
-        valueListenable: wm.title,
-        builder: (context, title, ___) =>
-            ValueListenableBuilder<List<MenuItemData>>(
-          valueListenable: wm.preferences,
-          builder: (context, preferences, ___) => VideoControlsWidget(
-            controller: wm.controller,
-            title: title,
-            preferences: preferences,
-            onPreviousPressed: wm.onPreviousPressed,
-            onNextPressed: wm.onNextPressed,
-            child: VideoPlayerWidget(controller: wm.controller),
-          ),
+      child: ListenableBuilder(
+        listenable: Listenable.merge([
+          wm.title,
+          wm.subtitle,
+          wm.preferences,
+        ]),
+        builder: (context, __) => VideoControlsWidget(
+          controller: wm.controller,
+          title: wm.title.value,
+          subtitle: wm.subtitle.value,
+          preferences: wm.preferences.value,
+          onPreviousPressed: wm.onPreviousPressed,
+          onNextPressed: wm.onNextPressed,
+          child: VideoPlayerWidget(controller: wm.controller),
         ),
       ),
     );

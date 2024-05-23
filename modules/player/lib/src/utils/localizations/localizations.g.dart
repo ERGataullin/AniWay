@@ -91,6 +91,12 @@ abstract class PlayerLocalizations {
     Locale('ru')
   ];
 
+  /// No description provided for @moviePlayerEpisode.
+  ///
+  /// In ru, this message translates to:
+  /// **'{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} music{Музыка {episode}} pv{Промо {episode}} other{{episode} серия}}'**
+  String moviePlayerEpisode(String type, num episode);
+
   /// No description provided for @moviePlayerPreferencesTranslationTypeLabel.
   ///
   /// In ru, this message translates to:

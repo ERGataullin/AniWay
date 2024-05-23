@@ -15,6 +15,7 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
     super.key,
     required this.controller,
     required this.title,
+    required this.subtitle,
     this.preferences = const [],
     required this.onPreviousPressed,
     required this.onNextPressed,
@@ -25,6 +26,8 @@ class VideoControlsWidget extends ElementaryWidget<IVideoControlsWidgetModel> {
   final VideoController controller;
 
   final String title;
+
+  final String subtitle;
 
   final List<MenuItemData> preferences;
 
@@ -199,7 +202,13 @@ class _Top extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: AppBar(
         forceMaterialTransparency: true,
-        title: const _Title(),
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _Title(),
+            _Subtitle(),
+          ],
+        ),
         actions: const [
           _PreferencesButton(),
         ],
@@ -215,7 +224,35 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
       valueListenable: context.wm.title,
-      builder: (context, title, ___) => Text(title),
+      builder: (context, title, ___) => AnimatedSwitcher(
+        switchInCurve: Easing.standardDecelerate,
+        switchOutCurve: Easing.standardAccelerate,
+        duration: Durations.medium1,
+        reverseDuration: Durations.short4,
+        child: Text(title),
+      ),
+    );
+  }
+}
+
+class _Subtitle extends StatelessWidget {
+  const _Subtitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String>(
+      valueListenable: context.wm.subtitle,
+      builder: (context, subtitle, ___) => AnimatedSwitcher(
+        switchInCurve: Easing.standardDecelerate,
+        switchOutCurve: Easing.standardAccelerate,
+        duration: Durations.medium1,
+        reverseDuration: Durations.short4,
+        child: Text(
+          subtitle,
+          key: Key(subtitle),
+          style: Theme.of(context).primaryTextTheme.titleSmall,
+        ),
+      ),
     );
   }
 }

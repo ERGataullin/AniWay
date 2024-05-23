@@ -19,6 +19,8 @@ MoviePlayerWidgetModel moviePlayerWidgetModelFactory(BuildContext context) =>
 abstract interface class IMoviePlayerWidgetModel implements IWidgetModel {
   ValueListenable<String> get title;
 
+  ValueListenable<String> get subtitle;
+
   ValueListenable<List<MenuItemData>> get preferences;
 
   VideoController get controller;
@@ -34,10 +36,13 @@ class MoviePlayerWidgetModel
   MoviePlayerWidgetModel(super._model);
 
   @override
-  final ValueNotifier<List<MenuItemData>> preferences = ValueNotifier(const []);
+  final ValueNotifier<String> title = ValueNotifier('');
 
   @override
-  ValueListenable<String> get title => model.title;
+  final ValueNotifier<String> subtitle = ValueNotifier('');
+
+  @override
+  final ValueNotifier<List<MenuItemData>> preferences = ValueNotifier(const []);
 
   @override
   VideoController get controller => model.videoController;
@@ -46,12 +51,11 @@ class MoviePlayerWidgetModel
   void initWidgetModel() {
     super.initWidgetModel();
     model
-      ..translations.addListener(_updatePreferences)
-      ..translation.addListener(_updatePreferences)
-      ..setMovieEpisode(
+      ..initialize(
         movieId: widget.movieId,
         episodeId: widget.episodeId,
-      );
+      )
+      ..addListener(_onModelChanged);
     _lockOrientation();
   }
 
@@ -68,13 +72,10 @@ class MoviePlayerWidgetModel
   @override
   Future<void> dispose() async {
     super.dispose();
-    model
-      ..translations.removeListener(_updatePreferences)
-      ..translation.removeListener(_updatePreferences);
+    title.dispose();
+    subtitle.dispose();
     preferences.dispose();
-    await Future.wait([
-      _unlockOrientation(),
-    ]);
+    await _unlockOrientation();
   }
 
   Future<void> _lockOrientation() {
@@ -88,15 +89,20 @@ class MoviePlayerWidgetModel
     return SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
-  void _updatePreferences() {
+  void _onModelChanged() {
+    title.value = model.movie.title;
+    subtitle.value = PlayerLocalizations.of(context).moviePlayerEpisode(
+      model.episode.type.name,
+      model.episode.number,
+    );
     preferences.value = [
       MenuItemData.group(
         icon: Icons.type_specimen,
         label: context.localizations.moviePlayerPreferencesTranslationTypeLabel,
-        children: model.translations.value.keys
+        children: model.translations.keys
             .map(
               (type) => MenuItemData.group(
-                selected: type == model.translation.value?.type,
+                selected: type == model.translation.type,
                 label: context.localizations
                     .moviePlayerPreferencesTranslationType(type.toString()),
                 children: _getTranslationMenuItems(type: type),
@@ -104,26 +110,25 @@ class MoviePlayerWidgetModel
             )
             .toList(growable: false),
       ),
-      if (model.translation.value != null)
-        MenuItemData.group(
-          icon: Icons.voice_chat,
-          label: context.localizations.moviePlayerPreferencesTranslationLabel,
-          children: _getTranslationMenuItems(
-            type: model.translation.value!.type,
-          ),
+      MenuItemData.group(
+        icon: Icons.voice_chat,
+        label: context.localizations.moviePlayerPreferencesTranslationLabel,
+        children: _getTranslationMenuItems(
+          type: model.translation.type,
         ),
+      ),
     ];
   }
 
   List<MenuItemData> _getTranslationMenuItems({
     required VideoTranslationTypeData type,
   }) {
-    return model.translations.value[type]!
+    return model.translations[type]!
         .map(
           (translation) => MenuItemData.single(
-            selected: translation == model.translation.value,
+            selected: translation == model.translation,
             label: translation.title,
-            onSelected: () => model.changeTranslation(translation),
+            onSelected: () => model.translation = translation,
           ),
         )
         .toList(growable: false);
