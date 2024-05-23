@@ -67,7 +67,7 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     if (_query == queryController.text) {
       return;
     }
-    
+
     _query = queryController.text;
     _queryDebounceTimer?.cancel();
     _queryDebounceTimer = Timer(
@@ -77,14 +77,11 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   }
 
   void _onScrollChanged() {
-    final bool scrolledToEnd = scrollController.position.pixels ==
+    final bool reachedBottomEdge = scrollController.position.pixels >=
         scrollController.position.maxScrollExtent;
-
-    if (!scrolledToEnd) {
-      return;
+    if (reachedBottomEdge) {
+      _loadMovies();
     }
-
-    _loadMovies();
   }
 
   Future<void> _loadMovies({
