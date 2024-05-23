@@ -33,7 +33,7 @@ class Anime365PlayerDataSource implements PlayerDataSource {
           .cast<Map<String, dynamic>>()
           .map(
             (Map<String, dynamic> episodeJson) => EpisodeDto(
-              id: episodeJson['id'] as String,
+              id: episodeJson['id'] as Object,
               type: episodeJson['episodeType'] as String,
               number: num.parse(episodeJson['episodeInt'] as String),
             ),
