@@ -51,7 +51,7 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   void init() {
     _loadMovies();
     queryController.addListener(_onQueryChanged);
-    scrollController.addListener(_onScrollChanged);
+    scrollController.addListener(_ensureHasScrollReserve);
   }
 
   @override
@@ -67,7 +67,7 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     if (_query == queryController.text) {
       return;
     }
-    
+
     _query = queryController.text;
     _queryDebounceTimer?.cancel();
     _queryDebounceTimer = Timer(
@@ -76,15 +76,12 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     );
   }
 
-  void _onScrollChanged() {
-    final bool scrolledToEnd = scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent;
-
-    if (!scrolledToEnd) {
-      return;
+  void _ensureHasScrollReserve() {
+    final bool hasScrollReserve = scrollController.position.extentAfter >
+        scrollController.position.viewportDimension;
+    if (!hasScrollReserve) {
+      _loadMovies();
     }
-
-    _loadMovies();
   }
 
   Future<void> _loadMovies({
@@ -111,5 +108,7 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     _movies.addAll(newMovies);
     movies.value = List.unmodifiable(_movies);
     loading.value = false;
+
+    WidgetsBinding.instance.endOfFrame.then((_) => _ensureHasScrollReserve());
   }
 }
