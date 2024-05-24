@@ -362,35 +362,23 @@ class _Timer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable: context.wm.duration,
-      builder: (context, duration, ___) => ValueListenableBuilder<String>(
-        valueListenable: context.wm.position,
-        builder: (context, position, ___) => RichText(
-          text: TextSpan(
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.secondary,
-              shadows: <Shadow>[
-                Shadow(
-                  blurRadius: 16,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ],
-            ),
-            children: [
-              TextSpan(
-                text: position,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+    return ListenableBuilder(
+      listenable: context.wm.timer,
+      builder: (context, __) {
+        final ThemeData theme = Theme.of(context);
+        return Text.rich(
+          context.wm.timer.value,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.secondary,
+            shadows: [
+              Shadow(
+                blurRadius: 16,
+                color: Theme.of(context).colorScheme.shadow,
               ),
-              const TextSpan(text: ' / '),
-              TextSpan(text: duration),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -60,9 +60,7 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<IconData> get fullscreenButtonIcon;
 
-  ValueListenable<String> get position;
-
-  ValueListenable<String> get duration;
+  ValueListenable<TextSpan> get timer;
 
   ValueListenable<double> get positionValue;
 
@@ -120,10 +118,7 @@ class VideoControlsWidgetModel
       ValueNotifier(Icons.fullscreen);
 
   @override
-  final ValueNotifier<String> position = ValueNotifier('');
-
-  @override
-  final ValueNotifier<String> duration = ValueNotifier('');
+  final ValueNotifier<TextSpan> timer = ValueNotifier(const TextSpan());
 
   @override
   final ValueNotifier<double> positionValue = ValueNotifier(0);
@@ -153,6 +148,8 @@ class VideoControlsWidgetModel
     value: controller.value.isPlaying ? 1 : 0,
   );
 
+  Color? _onSurfaceColor;
+
   String? get _fullscreenElementQuerySelector =>
       defaultTargetPlatform == TargetPlatform.iOS
           ? 'video#videoElement-${controller.textureId}'
@@ -164,9 +161,9 @@ class VideoControlsWidgetModel
     model
       ..playing.addListener(_onPlayingChanged)
       ..loading.addListener(_onLoadingChanged)
-      ..position.addListener(_updatePosition)
+      ..position.addListener(_updateTimer)
       ..position.addListener(_updatePositionValue)
-      ..duration.addListener(_updateDuration)
+      ..duration.addListener(_updateTimer)
       ..duration.addListener(_updatePositionValue)
       ..videoController = widget.controller;
     _updateTitle();
@@ -177,6 +174,8 @@ class VideoControlsWidgetModel
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _onSurfaceColor = Theme.of(context).colorScheme.onSurface;
+    _updateTimer();
     model.surfaceAspectRatio = MediaQuery.of(context).size.aspectRatio;
   }
 
@@ -251,9 +250,9 @@ class VideoControlsWidgetModel
     model
       ..playing.removeListener(_onPlayingChanged)
       ..loading.removeListener(_onLoadingChanged)
-      ..position.removeListener(_updatePosition)
+      ..position.removeListener(_updateTimer)
       ..position.removeListener(_updatePositionValue)
-      ..duration.removeListener(_updateDuration)
+      ..duration.removeListener(_updateTimer)
       ..duration.removeListener(_updatePositionValue);
     _playPauseAnimationController.dispose();
     if (_fullscreenElementQuerySelector == null && _fullscreen.isFullscreen()) {
@@ -264,8 +263,7 @@ class VideoControlsWidgetModel
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();
     fullscreenButtonIcon.dispose();
-    position.dispose();
-    duration.dispose();
+    timer.dispose();
     positionValue.dispose();
     playPauseAnimation.dispose();
   }
@@ -308,12 +306,17 @@ class VideoControlsWidgetModel
         model.loading.value ? null : model.togglePlayPause;
   }
 
-  void _updatePosition() {
-    position.value = model.position.value.format();
-  }
-
-  void _updateDuration() {
-    duration.value = model.duration.value.format();
+  void _updateTimer() {
+    timer.value = TextSpan(
+      children: [
+        TextSpan(
+          text: model.position.value.format(),
+          style: TextStyle(color: _onSurfaceColor),
+        ),
+        const TextSpan(text: ' / '),
+        TextSpan(text: model.duration.value.format()),
+      ],
+    );
   }
 
   void _updatePositionValue() {
