@@ -21,6 +21,8 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
 
   ValueListenable<bool> get obscurePassword;
 
+  ValueListenable<bool> get showLoader;
+
   ValueListenable<String> get submitLabel;
 
   TextEditingController get emailController;
@@ -51,6 +53,9 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
 
   @override
   final ValueNotifier<bool> obscurePassword = ValueNotifier(true);
+
+  @override
+  final ValueNotifier<bool> showLoader = ValueNotifier(false);
 
   @override
   final ValueNotifier<String> submitLabel = ValueNotifier('');
@@ -91,11 +96,13 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
 
   @override
   Future<void> onSubmitPressed() async {
+    showLoader.value = true;
     await model.signIn(
       email: emailController.text,
       password: passwordController.text,
     );
     widget.onSignedIn();
+    showLoader.value = false;
   }
 
   @override
@@ -105,6 +112,7 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
     emailLabel.dispose();
     passwordLabel.dispose();
     obscurePassword.dispose();
+    showLoader.dispose();
     submitLabel.dispose();
     emailController.dispose();
     passwordController.dispose();
