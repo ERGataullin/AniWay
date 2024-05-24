@@ -47,6 +47,7 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
 
   @override
   void didChangeDependencies() {
+    model.scrollController = PrimaryScrollController.of(context);
     _updateQueryHint();
   }
 
