@@ -146,9 +146,9 @@ class _SubmitButton extends StatelessWidget {
           switchInCurve: Easing.standard,
           duration: Durations.medium2,
           child: context.wm.showLoader.value
-              ? const SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator.adaptive(),
+              ? SizedBox.square(
+                  dimension: IconTheme.of(context).size,
+                  child: const CircularProgressIndicator.adaptive(),
                 )
               : ValueListenableBuilder(
                   valueListenable: context.wm.submitLabel,
