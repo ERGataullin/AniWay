@@ -23,12 +23,11 @@ class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
         appBar: AppBar(
           title: const _Title(),
         ),
-        body: Form(
-          key: wm.formKey,
+        body: const Form(
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: const AutofillGroup(
-            child: Padding(
-              padding: EdgeInsets.all(16),
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: AutofillGroup(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -41,12 +40,8 @@ class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
                   SizedBox(height: 16),
                   _PasswordField(),
                   SizedBox(height: 16),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: _SubmitButton(),
-                    ),
-                  ),
+                  _SubmitButton(),
+                  Spacer(),
                 ],
               ),
             ),
@@ -112,25 +107,26 @@ class _PasswordField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.passwordLabel,
-      builder: (context, label, ___) => ValueListenableBuilder(
-        valueListenable: context.wm.obscurePassword,
-        builder: (context, obscure, ___) => TextFormField(
-          controller: context.wm.passwordController,
-          autofocus: true,
-          obscureText: obscure,
-          textInputAction: TextInputAction.done,
-          keyboardType: TextInputType.visiblePassword,
-          autofillHints: const [AutofillHints.password],
-          decoration: InputDecoration(
-            label: Text(label),
-            suffixIcon: IconButton(
-              onPressed: context.wm.onPasswordVisibilityPressed,
-              isSelected: !obscure,
-              icon: const Icon(Icons.visibility_off_outlined),
-              selectedIcon: const Icon(Icons.visibility_outlined),
-            ),
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        context.wm.passwordLabel,
+        context.wm.obscurePassword,
+      ]),
+      builder: (context, __) => TextFormField(
+        controller: context.wm.passwordController,
+        autofocus: true,
+        obscureText: context.wm.obscurePassword.value,
+        textInputAction: TextInputAction.done,
+        keyboardType: TextInputType.visiblePassword,
+        autofillHints: const [AutofillHints.password],
+        onFieldSubmitted: context.wm.onPasswordSubmitted,
+        decoration: InputDecoration(
+          label: Text(context.wm.passwordLabel.value),
+          suffixIcon: IconButton(
+            onPressed: context.wm.onPasswordVisibilityPressed,
+            isSelected: !context.wm.obscurePassword.value,
+            icon: const Icon(Icons.visibility_off_outlined),
+            selectedIcon: const Icon(Icons.visibility_outlined),
           ),
         ),
       ),
@@ -143,14 +139,11 @@ class _SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: FilledButton(
-        onPressed: context.wm.onSubmitPressed,
-        child: ValueListenableBuilder(
-          valueListenable: context.wm.submitLabel,
-          builder: (context, label, ___) => Text(label),
-        ),
+    return FilledButton(
+      onPressed: context.wm.onSubmitPressed,
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.submitLabel,
+        builder: (context, label, ___) => Text(label),
       ),
     );
   }

@@ -27,11 +27,11 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
 
   TextEditingController get passwordController;
 
-  Key? get formKey;
-
   String? onValidateEmail(String? value);
 
   void onPasswordVisibilityPressed();
+
+  void onPasswordSubmitted(String password);
 
   void onSubmitPressed();
 }
@@ -62,14 +62,6 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   final TextEditingController passwordController = TextEditingController();
 
   @override
-  final GlobalKey<FormState> formKey = GlobalKey();
-
-  @override
-  void initWidgetModel() {
-    super.initWidgetModel();
-  }
-
-  @override
   void didChangeDependencies() {
     title.value = context.localizations.signInTitle;
     emailLabel.value = context.localizations.signInEmailLabel;
@@ -90,7 +82,16 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   }
 
   @override
-  Future<void> onSubmitPressed() async {
+  void onPasswordSubmitted(String password) {
+    _onSubmit();
+  }
+
+  @override
+  void onSubmitPressed() {
+    _onSubmit();
+  }
+
+  Future<void> _onSubmit() async {
     await model.signIn(
       email: emailController.text,
       password: passwordController.text,
