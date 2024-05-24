@@ -31,6 +31,8 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
 
   Key? get formKey;
 
+  ImageProvider get logo;
+
   String? onValidateEmail(String? value);
 
   void onPasswordVisibilityPressed();
@@ -68,6 +70,12 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
 
   @override
   final GlobalKey<FormState> formKey = GlobalKey();
+
+  @override
+  final ImageProvider logo = const AssetImage(
+    'assets/images/logo.webp',
+    package: 'auth',
+  );
 
   @override
   void initWidgetModel() {

@@ -74,10 +74,9 @@ class _Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/logo.webp',
-      package: 'auth',
+    return Image(
       height: 256,
+      image: context.wm.logo,
     );
   }
 }

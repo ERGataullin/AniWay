@@ -14,7 +14,7 @@ UpNextWidgetModel upNextWidgetModelFactory(BuildContext context) =>
     );
 
 abstract interface class IUpNextWidgetModel implements IWidgetModel {
-  ValueListenable<String> get posterUrl;
+  ValueListenable<ImageProvider> get poster;
 
   ValueListenable<String> get title;
 
@@ -26,7 +26,9 @@ class UpNextWidgetModel extends WidgetModel<UpNextWidget, IUpNextModel>
   UpNextWidgetModel(super._model);
 
   @override
-  final ValueNotifier<String> posterUrl = ValueNotifier('');
+  final ValueNotifier<ImageProvider> poster = ValueNotifier(
+    const NetworkImage(''),
+  );
 
   @override
   final ValueNotifier<String> episode = ValueNotifier('');
@@ -61,12 +63,12 @@ class UpNextWidgetModel extends WidgetModel<UpNextWidget, IUpNextModel>
       ..posterUri.removeListener(_updatePosterUrl)
       ..episodeType.removeListener(_updateStatus)
       ..episodeNumber.removeListener(_updateStatus);
-    posterUrl.dispose();
+    poster.dispose();
     episode.dispose();
   }
 
   void _updatePosterUrl() {
-    posterUrl.value = model.posterUri.value.toString();
+    poster.value = NetworkImage(model.posterUri.value.toString());
   }
 
   void _updateStatus() {
