@@ -147,9 +147,21 @@ class _SubmitButton extends StatelessWidget {
       width: double.infinity,
       child: FilledButton(
         onPressed: context.wm.onSubmitPressed,
-        child: ValueListenableBuilder(
-          valueListenable: context.wm.submitLabel,
-          builder: (context, label, ___) => Text(label),
+        child: ListenableBuilder(
+          listenable: context.wm.showLoader,
+          builder: (context, __) => AnimatedSwitcher(
+            switchInCurve: Easing.standard,
+            duration: Durations.medium2,
+            child: context.wm.showLoader.value
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator.adaptive(),
+                  )
+                : ValueListenableBuilder(
+                    valueListenable: context.wm.submitLabel,
+                    builder: (context, label, ___) => Text(label),
+                  ),
+          ),
         ),
       ),
     );
