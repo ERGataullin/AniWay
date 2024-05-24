@@ -28,11 +28,11 @@ abstract interface class IWatchNowWidgetModel implements IWidgetModel {
   ValueListenable<List<MoviePreviewData>> get mostPopularItems;
 
   void onUpNextPressed({
-    required int movieId,
-    required int episodeId,
+    required Object movieId,
+    required Object episodeId,
   });
 
-  void onMoviePressed(int id);
+  void onMoviePressed(Object id);
 }
 
 class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
@@ -67,8 +67,8 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
 
   @override
   void onUpNextPressed({
-    required int movieId,
-    required int episodeId,
+    required Object movieId,
+    required Object episodeId,
   }) {
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute<void>(
@@ -80,7 +80,7 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
   }
 
   @override
-  void onMoviePressed(int id) {
+  void onMoviePressed(Object id) {
     widget.onMoviePressed(id);
   }
 
