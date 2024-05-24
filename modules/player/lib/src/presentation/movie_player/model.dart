@@ -61,6 +61,8 @@ class MoviePlayerModel extends ElementaryModel
 
   late int _episodeIndex;
 
+  bool _episodeCompleted = false;
+
   @override
   VideoTranslationData get translation => _translation;
 
@@ -76,6 +78,7 @@ class MoviePlayerModel extends ElementaryModel
     required Object movieId,
     required Object episodeId,
   }) async {
+    videoController.addListener(_onVideoPlayerChanged);
     movie = await _service.getMovie(movieId);
     _episodeIndex = movie.episodes.indexWhere(
       (episode) => episode.id == episodeId,
@@ -91,6 +94,12 @@ class MoviePlayerModel extends ElementaryModel
   @override
   Future<void> loadNextEpisode() async {
     await _loadEpisode(index: _episodeIndex + 1);
+  }
+
+  @override
+  Future<void> dispose() async {
+    super.dispose();
+    await videoController.dispose();
   }
 
   Future<void> _loadEpisode({
@@ -114,5 +123,23 @@ class MoviePlayerModel extends ElementaryModel
     _video = await _service.getTranslationVideo(translation.embedUri);
     videoController.initializeUri(_video.sources.values.first.uri);
     await videoController.play();
+  }
+
+  void _onVideoPlayerChanged() {
+    if (_episodeCompleted) {
+      _episodeCompleted = videoController.value.isCompleted;
+      return;
+    } else if (!videoController.value.isCompleted) {
+      return;
+    }
+
+    _episodeCompleted = true;
+    if (_episodeIndex < movie.episodes.length - 1) {
+      loadNextEpisode();
+    }
+    _service.postTranslationWatched(
+      translation.id,
+      csrf: _video.csrf,
+    );
   }
 }
