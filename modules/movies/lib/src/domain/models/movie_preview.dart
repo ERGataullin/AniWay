@@ -6,12 +6,12 @@ class MoviePreviewData {
     required this.title,
     required this.posterUri,
     required this.type,
-    required this.score,
+    this.score,
   });
 
   final int id;
   final String title;
   final Uri posterUri;
   final MovieTypeData type;
-  final double score;
+  final double? score;
 }

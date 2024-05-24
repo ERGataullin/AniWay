@@ -76,7 +76,9 @@ class Anime365MoviesService implements MoviesService {
                     'pv' => MovieTypeData.pv,
                     _ => MovieTypeData.unknown,
                   },
-                  score: double.parse(movieJson['myAnimeListScore'] as String),
+                  score: movieJson['myAnimeListScore'] == '-1'
+                      ? null
+                      : double.parse(movieJson['myAnimeListScore'] as String),
                 ),
               )
               .toList(growable: false),
