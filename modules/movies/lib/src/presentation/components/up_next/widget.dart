@@ -53,10 +53,10 @@ class _Poster extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ValueListenableBuilder<String>(
-        valueListenable: context.wm.posterUrl,
-        builder: (context, posterUrl, ___) => Ink.image(
-          image: NetworkImage(posterUrl),
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.poster,
+        builder: (context, poster, ___) => Ink.image(
+          image: poster,
           fit: BoxFit.cover,
         ),
       ),
