@@ -225,10 +225,8 @@ class _Title extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: context.wm.title,
       builder: (context, title, ___) => AnimatedSwitcher(
-        switchInCurve: Easing.standardDecelerate,
-        switchOutCurve: Easing.standardAccelerate,
-        duration: Durations.medium1,
-        reverseDuration: Durations.short4,
+        switchInCurve: Easing.standard,
+        duration: Durations.medium2,
         child: Text(title),
       ),
     );
@@ -243,10 +241,8 @@ class _Subtitle extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: context.wm.subtitle,
       builder: (context, subtitle, ___) => AnimatedSwitcher(
-        switchInCurve: Easing.standardDecelerate,
-        switchOutCurve: Easing.standardAccelerate,
-        duration: Durations.medium1,
-        reverseDuration: Durations.short4,
+        switchInCurve: Easing.standard,
+        duration: Durations.medium2,
         child: Text(
           subtitle,
           key: Key(subtitle),
