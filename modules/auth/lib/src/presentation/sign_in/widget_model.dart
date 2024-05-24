@@ -29,13 +29,13 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
 
   TextEditingController get passwordController;
 
-  Key? get formKey;
-
   ImageProvider get logo;
 
   String? onValidateEmail(String? value);
 
   void onPasswordVisibilityPressed();
+
+  void onPasswordSubmitted(String password);
 
   void onSubmitPressed();
 }
@@ -69,18 +69,10 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   final TextEditingController passwordController = TextEditingController();
 
   @override
-  final GlobalKey<FormState> formKey = GlobalKey();
-
-  @override
   final ImageProvider logo = const AssetImage(
     'assets/images/logo.webp',
     package: 'auth',
   );
-
-  @override
-  void initWidgetModel() {
-    super.initWidgetModel();
-  }
 
   @override
   void didChangeDependencies() {
@@ -103,7 +95,16 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   }
 
   @override
-  Future<void> onSubmitPressed() async {
+  void onPasswordSubmitted(String password) {
+    _onSubmit();
+  }
+
+  @override
+  void onSubmitPressed() {
+    _onSubmit();
+  }
+
+  Future<void> _onSubmit() async {
     showLoader.value = true;
     await model.signIn(
       email: emailController.text,
