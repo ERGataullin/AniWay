@@ -18,9 +18,9 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
     WidgetModelFactory wmFactory = watchNowWidgetModelFactory,
   }) : super(wmFactory);
 
-  final void Function(int id) onMoviePressed;
+  final void Function(Object id) onMoviePressed;
 
-  final Widget Function(int episodeId, int movieId) playerBuilder;
+  final Widget Function(Object episodeId, Object movieId) playerBuilder;
 
   @override
   Widget build(IWatchNowWidgetModel wm) {

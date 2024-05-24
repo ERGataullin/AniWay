@@ -9,7 +9,7 @@ class MoviePreviewData {
     required this.score,
   });
 
-  final int id;
+  final Object id;
   final String title;
   final Uri posterUri;
   final MovieTypeData type;

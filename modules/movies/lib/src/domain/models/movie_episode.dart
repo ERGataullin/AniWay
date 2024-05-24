@@ -16,7 +16,7 @@ class MovieEpisodeData {
     this.number,
   });
 
-  final int id;
+  final Object id;
   final MovieEpisodeTypeData type;
   final num? number;
 }

@@ -5,7 +5,7 @@ class UpNextMovieData {
     required this.posterUri,
   });
 
-  final int id;
+  final Object id;
   final String title;
   final Uri posterUri;
 }
