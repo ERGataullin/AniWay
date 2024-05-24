@@ -34,15 +34,26 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
             builder: (context, title, ___) => Text(title),
           ),
         ),
-        body: const Column(
-          children: [
-            _UpNextCategory(margin: categoriesMargin),
-            Divider(
-              indent: 16,
-              endIndent: 16,
-            ),
-            _MostPopularCategory(margin: categoriesMargin),
-          ],
+        body: ListenableBuilder(
+          listenable: wm.showLoader,
+          builder: (context, __) => AnimatedSwitcher(
+            switchInCurve: Curves.easeInOutCubicEmphasized,
+            duration: Durations.long2,
+            child: wm.showLoader.value
+                ? const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  )
+                : const Column(
+                    children: [
+                      _UpNextCategory(margin: categoriesMargin),
+                      Divider(
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      _MostPopularCategory(margin: categoriesMargin),
+                    ],
+                  ),
+          ),
         ),
       ),
     );
