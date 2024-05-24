@@ -76,6 +76,7 @@ class MoviePreviewWidgetModel
       ..score.removeListener(_updateScore);
     posterUrl.dispose();
     type.dispose();
+    showScore.dispose();
     score.dispose();
   }
 
