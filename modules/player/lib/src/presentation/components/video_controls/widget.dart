@@ -227,7 +227,10 @@ class _Title extends StatelessWidget {
       builder: (context, title, ___) => AnimatedSwitcher(
         switchInCurve: Easing.standard,
         duration: Durations.medium2,
-        child: Text(title),
+        child: Text(
+          title,
+          key: Key(title),
+        ),
       ),
     );
   }
