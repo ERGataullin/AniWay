@@ -11,7 +11,7 @@ class RootMenuLocalizationsRu extends RootMenuLocalizations {
     String _temp0 = intl.Intl.selectLogic(
       destination,
       {
-        'watchNow': 'Смотреть сейчас',
+        'home': 'Главная',
         'store': 'Маркет',
         'library': 'Библиотека',
         'search': 'Поиск',

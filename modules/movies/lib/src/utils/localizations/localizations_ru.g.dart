@@ -7,6 +7,15 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
   MoviesLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get homeMostPopularLabel => 'Самое популярное на AniWay';
+
+  @override
+  String get homeTitle => 'Главная';
+
+  @override
+  String get homeUpNextLabel => 'К просмотру';
+
+  @override
   String moviePreviewType(String type) {
     String _temp0 = intl.Intl.selectLogic(
       type,
@@ -27,15 +36,6 @@ class MoviesLocalizationsRu extends MoviesLocalizations {
 
   @override
   String get searchSearchBarHint => 'Поиск';
-
-  @override
-  String get watchNowMostPopularLabel => 'Самое популярное на AniWay';
-
-  @override
-  String get watchNowTitle => 'Смотреть сейчас';
-
-  @override
-  String get watchNowUpNextLabel => 'К просмотру';
 
   @override
   String upNextStatus(String type, num episode) {
