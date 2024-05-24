@@ -1,5 +1,8 @@
 {
     "@@locale": "ru",
+    "homeMostPopularLabel": "Самое популярное на AniWay",
+    "homeTitle": "Главная",
+    "homeUpNextLabel": "К просмотру",
     "moviePreviewType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} music{Музыкальное} pv{Промо} other{}}",
     "@moviePreviewType": {
         "placeholders": {
@@ -9,9 +12,6 @@
         }
     },
     "searchSearchBarHint": "Поиск",
-    "watchNowMostPopularLabel": "Самое популярное на AniWay",
-    "watchNowTitle": "Смотреть сейчас",
-    "watchNowUpNextLabel": "К просмотру",
     "upNextStatus": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} music{Музыка {episode}} pv{Промо {episode}} other{{episode} серия}}",
     "@upNextStatus": {
         "placeholders": {

@@ -5,7 +5,7 @@ import 'package:movies/src/domain/models/movie_order.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 
-abstract interface class IWatchNowModel implements ElementaryModel {
+abstract interface class IHomeModel implements ElementaryModel {
   ValueListenable<bool> get loading;
 
   ValueListenable<List<UpNextData>> get upNext;
@@ -13,8 +13,8 @@ abstract interface class IWatchNowModel implements ElementaryModel {
   ValueListenable<List<MoviePreviewData>> get mostPopular;
 }
 
-class WatchNowModel extends ElementaryModel implements IWatchNowModel {
-  WatchNowModel(
+class HomeModel extends ElementaryModel implements IHomeModel {
+  HomeModel(
     ErrorHandler errorHandler, {
     required MoviesService service,
   })  : _service = service,

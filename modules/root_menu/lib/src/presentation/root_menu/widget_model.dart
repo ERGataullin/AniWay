@@ -82,7 +82,7 @@ class RootMenuWidgetModel extends WidgetModel<RootMenuWidget, IRootMenuModel>
     destinationsIcons.value = _destinations
         .map(
           (destination) => switch (destination) {
-            MenuDestinationData.watchNow => Icons.play_circle,
+            MenuDestinationData.home => Icons.home,
             MenuDestinationData.store => Icons.store,
             MenuDestinationData.library => Icons.video_library,
             MenuDestinationData.search => Icons.search,

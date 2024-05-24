@@ -91,6 +91,24 @@ abstract class MoviesLocalizations {
     Locale('ru')
   ];
 
+  /// No description provided for @homeMostPopularLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Самое популярное на AniWay'**
+  String get homeMostPopularLabel;
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Главная'**
+  String get homeTitle;
+
+  /// No description provided for @homeUpNextLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'К просмотру'**
+  String get homeUpNextLabel;
+
   /// No description provided for @moviePreviewType.
   ///
   /// In ru, this message translates to:
@@ -102,24 +120,6 @@ abstract class MoviesLocalizations {
   /// In ru, this message translates to:
   /// **'Поиск'**
   String get searchSearchBarHint;
-
-  /// No description provided for @watchNowMostPopularLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'Самое популярное на AniWay'**
-  String get watchNowMostPopularLabel;
-
-  /// No description provided for @watchNowTitle.
-  ///
-  /// In ru, this message translates to:
-  /// **'Смотреть сейчас'**
-  String get watchNowTitle;
-
-  /// No description provided for @watchNowUpNextLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'К просмотру'**
-  String get watchNowUpNextLabel;
 
   /// No description provided for @upNextStatus.
   ///

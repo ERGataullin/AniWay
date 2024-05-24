@@ -94,7 +94,7 @@ abstract class RootMenuLocalizations {
   /// No description provided for @destinationLabel.
   ///
   /// In ru, this message translates to:
-  /// **'{destination, select, watchNow{Смотреть сейчас} store{Маркет} library{Библиотека} search{Поиск} other{}}'**
+  /// **'{destination, select, home{Главная} store{Маркет} library{Библиотека} search{Поиск} other{}}'**
   String destinationLabel(String destination);
 }
 

@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/components/movie_preview/widget.dart';
 import 'package:movies/src/presentation/components/up_next/widget.dart';
-import 'package:movies/src/presentation/watch_now/widget_model.dart';
+import 'package:movies/src/presentation/home/widget_model.dart';
 
-extension _WatchNowContext on BuildContext {
-  IWatchNowWidgetModel get wm => read<IWatchNowWidgetModel>();
+extension _HomeContext on BuildContext {
+  IHomeWidgetModel get wm => read<IHomeWidgetModel>();
 }
 
-class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
-  const WatchNowWidget({
+class HomeWidget extends ElementaryWidget<IHomeWidgetModel> {
+  const HomeWidget({
     super.key,
     required this.onMoviePressed,
     required this.playerBuilder,
-    WidgetModelFactory wmFactory = watchNowWidgetModelFactory,
+    WidgetModelFactory wmFactory = homeWidgetModelFactory,
   }) : super(wmFactory);
 
   final void Function(Object id) onMoviePressed;
@@ -23,9 +23,9 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
   final Widget Function(Object episodeId, Object movieId) playerBuilder;
 
   @override
-  Widget build(IWatchNowWidgetModel wm) {
+  Widget build(IHomeWidgetModel wm) {
     const EdgeInsets categoriesMargin = EdgeInsets.fromLTRB(16, 4, 16, 16);
-    return Provider<IWatchNowWidgetModel>.value(
+    return Provider<IHomeWidgetModel>.value(
       value: wm,
       child: Scaffold(
         appBar: AppBar(

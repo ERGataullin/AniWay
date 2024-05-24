@@ -51,13 +51,13 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   final Uri _movieUri = Uri(path: ':movieId');
 
-  final Uri _watchNowUri = Uri();
+  final Uri _homeUri = Uri();
 
   final Uri _searchUri = Uri(path: 'search');
 
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: _watchNowUri.locate(),
+    initialLocation: _homeUri.locate(),
     refreshListenable: _signedIn,
     redirect: (context, state) {
       final Uri signInUri = _rootUri.resolveUri(_signInUri);
@@ -96,7 +96,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       path: uri.path,
       builder: (context, state) => SignInWidget(
-        onSignedIn: () => context.go(_watchNowUri.locate()),
+        onSignedIn: () => context.go(_homeUri.locate()),
       ),
     );
   }
@@ -109,7 +109,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         key: UniqueKey(),
         selectedIndex: navigationShell.currentIndex,
         destinations: const [
-          MenuDestinationData.watchNow,
+          MenuDestinationData.home,
           MenuDestinationData.search,
           MenuDestinationData.store,
           MenuDestinationData.library,
@@ -123,7 +123,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       branches: [
         StatefulShellBranch(
           routes: [
-            _buildWatchNowRoute(baseUri: baseUri),
+            _buildHomeRoute(baseUri: baseUri),
           ],
         ),
         StatefulShellBranch(
@@ -135,10 +135,10 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  GoRoute _buildWatchNowRoute({
+  GoRoute _buildHomeRoute({
     Uri? baseUri,
   }) {
-    final Uri uri = baseUri?.resolveUri(_watchNowUri) ?? _watchNowUri;
+    final Uri uri = baseUri?.resolveUri(_homeUri) ?? _homeUri;
 
     final GoRoute movieRoute = _buildMovieRoute(
       baseUri: Uri(path: 'movies/'),
@@ -149,7 +149,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       routes: [
         movieRoute,
       ],
-      builder: (context, state) => WatchNowWidget(
+      builder: (context, state) => HomeWidget(
         playerBuilder: (movieId, episodeId) => Theme(
           data: _videoPlayerTheme,
           child: MoviePlayerWidget(

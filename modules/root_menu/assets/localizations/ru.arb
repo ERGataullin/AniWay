@@ -1,6 +1,6 @@
 {
     "@@locale": "ru",
-    "destinationLabel": "{destination, select, watchNow{Смотреть сейчас} store{Маркет} library{Библиотека} search{Поиск} other{}}",
+    "destinationLabel": "{destination, select, home{Главная} store{Маркет} library{Библиотека} search{Поиск} other{}}",
     "@destinationLabel": {
         "placeholders": {
             "destination": {

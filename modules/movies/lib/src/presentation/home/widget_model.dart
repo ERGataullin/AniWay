@@ -4,17 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/up_next.dart';
-import 'package:movies/src/presentation/watch_now/model.dart';
+import 'package:movies/src/presentation/home/model.dart';
 
-WatchNowWidgetModel watchNowWidgetModelFactory(BuildContext context) =>
-    WatchNowWidgetModel(
-      WatchNowModel(
+HomeWidgetModel homeWidgetModelFactory(BuildContext context) => HomeWidgetModel(
+      HomeModel(
         context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
       ),
     );
 
-abstract interface class IWatchNowWidgetModel implements IWidgetModel {
+abstract interface class IHomeWidgetModel implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<bool> get showLoader;
@@ -35,9 +34,9 @@ abstract interface class IWatchNowWidgetModel implements IWidgetModel {
   void onMoviePressed(Object id);
 }
 
-class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
-    implements IWatchNowWidgetModel {
-  WatchNowWidgetModel(super._model);
+class HomeWidgetModel extends WidgetModel<HomeWidget, IHomeModel>
+    implements IHomeWidgetModel {
+  HomeWidgetModel(super._model);
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
@@ -93,14 +92,14 @@ class WatchNowWidgetModel extends WidgetModel<WatchNowWidget, IWatchNowModel>
   }
 
   void _updateTitle() {
-    title.value = context.localizations.watchNowTitle;
+    title.value = context.localizations.homeTitle;
   }
 
   void _updateUpNextLabel() {
-    upNextLabel.value = context.localizations.watchNowUpNextLabel;
+    upNextLabel.value = context.localizations.homeUpNextLabel;
   }
 
   void _updateMostPopularLabel() {
-    mostPopularLabel.value = context.localizations.watchNowMostPopularLabel;
+    mostPopularLabel.value = context.localizations.homeMostPopularLabel;
   }
 }

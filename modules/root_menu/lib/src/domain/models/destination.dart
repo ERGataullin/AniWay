@@ -1,1 +1,1 @@
-enum MenuDestinationData { watchNow, store, library, search }
+enum MenuDestinationData { home, store, library, search }
