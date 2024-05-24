@@ -8,28 +8,33 @@ import 'package:player/src/utils/video_controller.dart';
 typedef TranslationsData
     = Map<VideoTranslationTypeData, List<VideoTranslationData>>;
 
-abstract interface class IMoviePlayerModel implements ElementaryModel {
-  ValueListenable<String> get title;
+abstract interface class IMoviePlayerModel
+    implements ElementaryModel, Listenable {
+  MovieData get movie;
 
-  ValueListenable<TranslationsData> get translations;
+  EpisodeData get episode;
 
-  ValueListenable<VideoTranslationData?> get translation;
+  TranslationsData get translations;
+
+  VideoTranslationData get translation;
 
   VideoController get videoController;
 
-  void setMovieEpisode({
+  set translation(VideoTranslationData value);
+
+  void initialize({
     required Object movieId,
     required Object episodeId,
   });
-
-  void changeTranslation(VideoTranslationData value);
 
   void loadPreviousEpisode();
 
   void loadNextEpisode();
 }
 
-class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
+class MoviePlayerModel extends ElementaryModel
+    with ChangeNotifier
+    implements IMoviePlayerModel {
   MoviePlayerModel(
     ErrorHandler errorHandler, {
     required PlayerService service,
@@ -37,112 +42,104 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
         super(errorHandler: errorHandler);
 
   @override
-  final ValueNotifier<String> title = ValueNotifier('');
-
-  @override
-  final ValueNotifier<TranslationsData> translations = ValueNotifier(const {});
-
-  @override
-  final ValueNotifier<VideoTranslationData?> translation = ValueNotifier(null);
-
-  @override
   final VideoController videoController = VideoController();
+
+  @override
+  late MovieData movie;
+
+  @override
+  late EpisodeData episode;
+
+  @override
+  TranslationsData translations = const {};
 
   final PlayerService _service;
 
-  late int _episodeIndex;
+  late VideoTranslationData _translation;
 
   late VideoData _video;
 
-  MovieData? _movie;
+  late int _episodeIndex;
+
+  bool _episodeCompleted = false;
 
   @override
-  void init() {
-    translation.addListener(_loadVideo);
-    videoController.addListener(_onVideoControllerValueChanged);
+  VideoTranslationData get translation => _translation;
+
+  @override
+  set translation(VideoTranslationData value) {
+    _translation = value;
+    notifyListeners();
+    _loadVideo();
   }
 
   @override
-  Future<void> setMovieEpisode({
+  Future<void> initialize({
     required Object movieId,
     required Object episodeId,
   }) async {
-    if (movieId != _movie?.id) {
-      await _loadMovie(movieId: movieId);
-    }
-    _episodeIndex = _movie!.episodes.indexWhere(
+    videoController.addListener(_onVideoPlayerChanged);
+    movie = await _service.getMovie(movieId);
+    _episodeIndex = movie.episodes.indexWhere(
       (episode) => episode.id == episodeId,
     );
-    await _loadTranslations();
+    _loadEpisode(index: _episodeIndex);
   }
 
   @override
-  void changeTranslation(VideoTranslationData value) {
-    translation.value = value;
+  Future<void> loadPreviousEpisode() async {
+    await _loadEpisode(index: _episodeIndex - 1);
   }
 
   @override
-  void loadPreviousEpisode() {
-    _episodeIndex--;
-    _loadTranslations();
-  }
-
-  @override
-  void loadNextEpisode() {
-    _episodeIndex++;
-    _loadTranslations();
+  Future<void> loadNextEpisode() async {
+    await _loadEpisode(index: _episodeIndex + 1);
   }
 
   @override
   Future<void> dispose() async {
     super.dispose();
-    title.dispose();
-    translations.dispose();
-    translation.dispose();
     await videoController.dispose();
   }
 
-  Future<void> _loadMovie({
-    required Object movieId,
+  Future<void> _loadEpisode({
+    required int index,
   }) async {
-    _movie = await _service.getMovie(movieId);
-    title.value = _movie!.title;
-  }
-
-  Future<void> _loadTranslations() async {
-    assert(_movie != null);
-
-    final Object episodeId = _movie!.episodes[_episodeIndex].id;
+    _episodeIndex = index;
+    episode = movie.episodes[index];
     final List<VideoTranslationData> translationsList =
-        await _service.getTranslations(episodeId);
-    final TranslationsData translations = {
+        await _service.getTranslations(episode.id);
+    translations = {
       for (final VideoTranslationTypeData type
           in VideoTranslationTypeData.values)
         type: translationsList
             .where((translation) => translation.type == type)
             .toList(growable: false),
     };
-    this.translations.value = translations;
-    translation.value = translations[VideoTranslationTypeData.raw]!.first;
+    translation = translations[VideoTranslationTypeData.raw]!.first;
   }
 
   Future<void> _loadVideo() async {
-    _video = await _service.getTranslationVideo(translation.value!.embedUri);
+    _video = await _service.getTranslationVideo(translation.embedUri);
     videoController.initializeUri(_video.sources.values.first.uri);
     await videoController.play();
   }
 
-  Future<void> _onVideoControllerValueChanged() async {
-    assert(_movie != null);
-
-    if (videoController.value.isCompleted) {
-      if (_episodeIndex < _movie!.episodes.length - 1) {
-        loadNextEpisode();
-      }
-      await _service.postTranslationWatched(
-        translation.value!.id,
-        csrf: _video.csrf,
-      );
+  void _onVideoPlayerChanged() {
+    if (_episodeCompleted) {
+      _episodeCompleted = videoController.value.isCompleted;
+      return;
+    } else if (!videoController.value.isCompleted) {
+      return;
     }
+
+    _episodeCompleted = true;
+    if (_episodeIndex < movie.episodes.length - 1) {
+      loadNextEpisode();
+    }
+    _service.postTranslationWatched(
+      translation.id,
+      csrf: _video.csrf,
+    );
   }
 }

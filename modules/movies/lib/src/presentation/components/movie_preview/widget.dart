@@ -53,10 +53,10 @@ class _Poster extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ValueListenableBuilder<String>(
-        valueListenable: context.wm.posterUrl,
-        builder: (context, posterUrl, ___) => Ink.image(
-          image: NetworkImage(posterUrl),
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.poster,
+        builder: (context, poster, ___) => Ink.image(
+          image: poster,
           fit: BoxFit.cover,
         ),
       ),
@@ -144,27 +144,33 @@ class _Score extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextStyle style = DefaultTextStyle.of(context).style;
 
-    return ValueListenableBuilder<String>(
-      valueListenable: context.wm.score,
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        context.wm.showScore,
+        context.wm.score,
+      ]),
       child: Icon(
         Icons.star,
         size: style.fontSize,
         weight: style.fontWeight?.value.toDouble(),
         color: style.color,
       ),
-      builder: (context, score, icon) => Row(
-        children: [
-          if (icon != null) icon,
-          const SizedBox(width: 4),
-          Text(
-            score,
-            maxLines: 1,
-            softWrap: false,
-            overflow: TextOverflow.fade,
-            textAlign: TextAlign.start,
-            style: style,
-          ),
-        ],
+      builder: (context, icon) => Visibility(
+        visible: context.wm.showScore.value,
+        child: Row(
+          children: [
+            if (icon != null) icon,
+            const SizedBox(width: 4),
+            Text(
+              context.wm.score.value,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              textAlign: TextAlign.start,
+              style: style,
+            ),
+          ],
+        ),
       ),
     );
   }

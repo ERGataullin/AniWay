@@ -1,5 +1,16 @@
 {
     "@@locale": "ru",
+    "moviePlayerEpisode": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} music{Музыка {episode}} pv{Промо {episode}} other{{episode} серия}}",
+    "@moviePlayerEpisode": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            },
+            "episode": {
+                "type": "num"
+            }
+        }
+    },
     "moviePlayerPreferencesTranslationTypeLabel": "Тип перевода",
     "moviePlayerPreferencesTranslationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}",
     "moviePlayerPreferencesTranslationLabel": "Перевод",

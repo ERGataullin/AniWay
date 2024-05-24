@@ -14,6 +14,8 @@ abstract interface class ISearchModel implements ElementaryModel {
   SearchController get queryController;
 
   ScrollController get scrollController;
+
+  set scrollController(ScrollController value);
 }
 
 class SearchModel extends ElementaryModel implements ISearchModel {
@@ -32,12 +34,11 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   @override
   final SearchController queryController = SearchController();
 
-  @override
-  final ScrollController scrollController = ScrollController();
-
   final MoviesService _service;
 
   final List<MoviePreviewData> _movies = [];
+
+  ScrollController? _scrollController;
 
   bool _hasNextPage = true;
 
@@ -48,19 +49,27 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   Timer? _queryDebounceTimer;
 
   @override
+  ScrollController get scrollController => _scrollController!;
+
+  @override
+  set scrollController(ScrollController value) {
+    _scrollController?.removeListener(_ensureHasScrollReserve);
+    _scrollController = value..addListener(_ensureHasScrollReserve);
+  }
+
+  @override
   void init() {
     _loadMovies();
     queryController.addListener(_onQueryChanged);
-    scrollController.addListener(_ensureHasScrollReserve);
   }
 
   @override
   void dispose() {
     _queryDebounceTimer?.cancel();
+    scrollController.removeListener(_ensureHasScrollReserve);
     loading.dispose();
     movies.dispose();
     queryController.dispose();
-    scrollController.dispose();
   }
 
   void _onQueryChanged() {
@@ -109,6 +118,7 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     movies.value = List.unmodifiable(_movies);
     loading.value = false;
 
-    WidgetsBinding.instance.endOfFrame.then((_) => _ensureHasScrollReserve());
+    await WidgetsBinding.instance.endOfFrame;
+    _ensureHasScrollReserve();
   }
 }

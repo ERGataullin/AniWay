@@ -18,9 +18,9 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
     WidgetModelFactory wmFactory = watchNowWidgetModelFactory,
   }) : super(wmFactory);
 
-  final void Function(int id) onMoviePressed;
+  final void Function(Object id) onMoviePressed;
 
-  final Widget Function(int episodeId, int movieId) playerBuilder;
+  final Widget Function(Object episodeId, Object movieId) playerBuilder;
 
   @override
   Widget build(IWatchNowWidgetModel wm) {
@@ -34,15 +34,26 @@ class WatchNowWidget extends ElementaryWidget<IWatchNowWidgetModel> {
             builder: (context, title, ___) => Text(title),
           ),
         ),
-        body: const Column(
-          children: [
-            _UpNextCategory(margin: categoriesMargin),
-            Divider(
-              indent: 16,
-              endIndent: 16,
-            ),
-            _MostPopularCategory(margin: categoriesMargin),
-          ],
+        body: ListenableBuilder(
+          listenable: wm.showLoader,
+          builder: (context, __) => AnimatedSwitcher(
+            switchInCurve: Curves.easeInOutCubicEmphasized,
+            duration: Durations.long2,
+            child: wm.showLoader.value
+                ? const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  )
+                : const Column(
+                    children: [
+                      _UpNextCategory(margin: categoriesMargin),
+                      Divider(
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      _MostPopularCategory(margin: categoriesMargin),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

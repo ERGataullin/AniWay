@@ -10,7 +10,7 @@ abstract interface class IMoviePreviewModel implements ElementaryModel {
 
   ValueListenable<MovieTypeData> get type;
 
-  ValueListenable<num> get score;
+  ValueListenable<num?> get score;
 
   set movie(MoviePreviewData value);
 }
@@ -34,7 +34,7 @@ class MoviePreviewModel extends ElementaryModel implements IMoviePreviewModel {
   );
 
   @override
-  final ValueNotifier<num> score = ValueNotifier(0);
+  final ValueNotifier<num?> score = ValueNotifier(0);
 
   @override
   set movie(MoviePreviewData value) {

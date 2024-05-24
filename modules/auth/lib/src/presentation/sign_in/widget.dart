@@ -69,10 +69,9 @@ class _Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/logo.webp',
-      package: 'auth',
+    return Image(
       height: 256,
+      image: context.wm.logo,
     );
   }
 }
@@ -141,9 +140,21 @@ class _SubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton(
       onPressed: context.wm.onSubmitPressed,
-      child: ValueListenableBuilder(
-        valueListenable: context.wm.submitLabel,
-        builder: (context, label, ___) => Text(label),
+      child: ListenableBuilder(
+        listenable: context.wm.showLoader,
+        builder: (context, __) => AnimatedSwitcher(
+          switchInCurve: Easing.standard,
+          duration: Durations.medium2,
+          child: context.wm.showLoader.value
+              ? const SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator.adaptive(),
+                )
+              : ValueListenableBuilder(
+                  valueListenable: context.wm.submitLabel,
+                  builder: (context, label, ___) => Text(label),
+                ),
+        ),
       ),
     );
   }

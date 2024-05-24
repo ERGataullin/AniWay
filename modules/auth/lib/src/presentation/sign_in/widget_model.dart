@@ -21,11 +21,15 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
 
   ValueListenable<bool> get obscurePassword;
 
+  ValueListenable<bool> get showLoader;
+
   ValueListenable<String> get submitLabel;
 
   TextEditingController get emailController;
 
   TextEditingController get passwordController;
+
+  ImageProvider get logo;
 
   String? onValidateEmail(String? value);
 
@@ -53,6 +57,9 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   final ValueNotifier<bool> obscurePassword = ValueNotifier(true);
 
   @override
+  final ValueNotifier<bool> showLoader = ValueNotifier(false);
+
+  @override
   final ValueNotifier<String> submitLabel = ValueNotifier('');
 
   @override
@@ -60,6 +67,12 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
 
   @override
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  final ImageProvider logo = const AssetImage(
+    'assets/images/logo.webp',
+    package: 'auth',
+  );
 
   @override
   void didChangeDependencies() {
@@ -92,11 +105,13 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
   }
 
   Future<void> _onSubmit() async {
+    showLoader.value = true;
     await model.signIn(
       email: emailController.text,
       password: passwordController.text,
     );
     widget.onSignedIn();
+    showLoader.value = false;
   }
 
   @override
@@ -106,6 +121,7 @@ class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
     emailLabel.dispose();
     passwordLabel.dispose();
     obscurePassword.dispose();
+    showLoader.dispose();
     submitLabel.dispose();
     emailController.dispose();
     passwordController.dispose();

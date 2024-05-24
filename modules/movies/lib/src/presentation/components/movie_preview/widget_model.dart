@@ -14,11 +14,13 @@ MoviePreviewWidgetModel moviePreviewWidgetModelFactory(BuildContext context) =>
     );
 
 abstract interface class IMoviePreviewWidgetModel implements IWidgetModel {
-  ValueListenable<String> get posterUrl;
+  ValueListenable<ImageProvider> get poster;
 
   ValueListenable<String> get title;
 
   ValueListenable<String> get type;
+
+  ValueListenable<bool> get showScore;
 
   ValueListenable<String> get score;
 }
@@ -29,10 +31,15 @@ class MoviePreviewWidgetModel
   MoviePreviewWidgetModel(super._model);
 
   @override
-  final ValueNotifier<String> posterUrl = ValueNotifier('');
+  final ValueNotifier<ImageProvider> poster = ValueNotifier(
+    const NetworkImage(''),
+  );
 
   @override
   final ValueNotifier<String> type = ValueNotifier('');
+
+  @override
+  final ValueNotifier<bool> showScore = ValueNotifier(false);
 
   @override
   final ValueNotifier<String> score = ValueNotifier('');
@@ -46,7 +53,7 @@ class MoviePreviewWidgetModel
   void initWidgetModel() {
     super.initWidgetModel();
     model
-      ..posterUri.addListener(_updatePosterUrl)
+      ..posterUri.addListener(_updatePoster)
       ..type.addListener(_updateType)
       ..score.addListener(_updateScore)
       ..movie = widget.movie;
@@ -66,16 +73,17 @@ class MoviePreviewWidgetModel
   void dispose() {
     super.dispose();
     model
-      ..posterUri.removeListener(_updatePosterUrl)
+      ..posterUri.removeListener(_updatePoster)
       ..type.removeListener(_updateType)
       ..score.removeListener(_updateScore);
-    posterUrl.dispose();
+    poster.dispose();
     type.dispose();
+    showScore.dispose();
     score.dispose();
   }
 
-  void _updatePosterUrl() {
-    posterUrl.value = model.posterUri.value.toString();
+  void _updatePoster() {
+    poster.value = NetworkImage(model.posterUri.value.toString());
   }
 
   void _updateType() {
@@ -83,6 +91,7 @@ class MoviePreviewWidgetModel
   }
 
   void _updateScore() {
+    showScore.value = model.score.value != null;
     score.value = _scoreFormat.format(model.score.value);
   }
 }

@@ -23,7 +23,7 @@ abstract interface class ISearchWidgetModel implements IWidgetModel {
 
   ScrollController get scrollController;
 
-  void onMoviePressed(int id);
+  void onMoviePressed(Object id);
 }
 
 class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
@@ -47,11 +47,12 @@ class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
 
   @override
   void didChangeDependencies() {
+    model.scrollController = PrimaryScrollController.of(context);
     _updateQueryHint();
   }
 
   @override
-  void onMoviePressed(int id) {
+  void onMoviePressed(Object id) {
     widget.onMoviePressed(id);
   }
 

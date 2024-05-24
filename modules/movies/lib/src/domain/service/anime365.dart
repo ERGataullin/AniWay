@@ -62,7 +62,7 @@ class Anime365MoviesService implements MoviesService {
           (moviesJson) => moviesJson
               .map(
                 (movieJson) => MoviePreviewData(
-                  id: movieJson['id'] as int,
+                  id: movieJson['id'] as Object,
                   title: movieJson['titles']['ru'] as String,
                   posterUri: Uri.parse(movieJson['posterUrl'] as String),
                   type: switch (movieJson['type']) {
@@ -76,7 +76,9 @@ class Anime365MoviesService implements MoviesService {
                     'pv' => MovieTypeData.pv,
                     _ => MovieTypeData.unknown,
                   },
-                  score: double.parse(movieJson['myAnimeListScore'] as String),
+                  score: movieJson['myAnimeListScore'] == '-1'
+                      ? null
+                      : double.parse(movieJson['myAnimeListScore'] as String),
                 ),
               )
               .toList(growable: false),
@@ -90,14 +92,14 @@ class Anime365MoviesService implements MoviesService {
               .map(
                 (itemJson) => UpNextData(
                   movie: UpNextMovieData(
-                    id: itemJson['movie']['id'] as int,
+                    id: itemJson['movie']['id'] as Object,
                     title: itemJson['movie']['titles']['ru'] as String,
                     posterUri: Uri.parse(
                       itemJson['movie']['posterUrl'] as String,
                     ),
                   ),
                   episode: MovieEpisodeData(
-                    id: itemJson['episode']['id'] as int,
+                    id: itemJson['episode']['id'] as Object,
                     type: switch (itemJson['episode']['type']) {
                       'tv' => MovieEpisodeTypeData.tv,
                       'movie' => MovieEpisodeTypeData.movie,
