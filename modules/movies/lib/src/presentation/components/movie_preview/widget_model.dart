@@ -20,6 +20,8 @@ abstract interface class IMoviePreviewWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get type;
 
+  ValueListenable<bool> get showScore;
+
   ValueListenable<String> get score;
 }
 
@@ -33,6 +35,9 @@ class MoviePreviewWidgetModel
 
   @override
   final ValueNotifier<String> type = ValueNotifier('');
+
+  @override
+  final ValueNotifier<bool> showScore = ValueNotifier(false);
 
   @override
   final ValueNotifier<String> score = ValueNotifier('');
@@ -71,6 +76,7 @@ class MoviePreviewWidgetModel
       ..score.removeListener(_updateScore);
     posterUrl.dispose();
     type.dispose();
+    showScore.dispose();
     score.dispose();
   }
 
@@ -83,6 +89,7 @@ class MoviePreviewWidgetModel
   }
 
   void _updateScore() {
+    showScore.value = model.score.value != null;
     score.value = _scoreFormat.format(model.score.value);
   }
 }
