@@ -7,6 +7,25 @@ class PlayerLocalizationsRu extends PlayerLocalizations {
   PlayerLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String moviePlayerEpisode(String type, num episode) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'tv': '$episode серия',
+        'movie': 'Фильм',
+        'ova': 'OVA $episode',
+        'ona': 'ONA $episode',
+        'special': 'Спешл $episode',
+        'tvSpecial': 'ТВ спешл $episode',
+        'music': 'Музыка $episode',
+        'pv': 'Промо $episode',
+        'other': '$episode серия',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get moviePlayerPreferencesTranslationTypeLabel => 'Тип перевода';
 
   @override

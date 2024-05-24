@@ -109,6 +109,7 @@ class SearchModel extends ElementaryModel implements ISearchModel {
     movies.value = List.unmodifiable(_movies);
     loading.value = false;
 
-    WidgetsBinding.instance.endOfFrame.then((_) => _ensureHasScrollReserve());
+    await WidgetsBinding.instance.endOfFrame;
+    _ensureHasScrollReserve();
   }
 }

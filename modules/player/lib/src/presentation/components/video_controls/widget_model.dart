@@ -52,6 +52,8 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get title;
 
+  ValueListenable<String> get subtitle;
+
   ValueListenable<CrossFadeState> get playPauseLoaderState;
 
   ValueListenable<VoidCallback?> get playPauseLoaderCallback;
@@ -100,6 +102,9 @@ class VideoControlsWidgetModel
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
+
+  @override
+  final ValueNotifier<String> subtitle = ValueNotifier('');
 
   @override
   final ValueNotifier<CrossFadeState> playPauseLoaderState = ValueNotifier(
@@ -165,6 +170,7 @@ class VideoControlsWidgetModel
       ..duration.addListener(_updatePositionValue)
       ..videoController = widget.controller;
     _updateTitle();
+    _updateSubtitle();
     show();
   }
 
@@ -177,6 +183,7 @@ class VideoControlsWidgetModel
   @override
   void didUpdateWidget(VideoControlsWidget oldWidget) {
     _updateTitle();
+    _updateSubtitle();
 
     if (widget.controller != oldWidget.controller) {
       model.videoController = widget.controller;
@@ -253,6 +260,7 @@ class VideoControlsWidgetModel
       _fullscreen.exit(_fullscreenElementQuerySelector);
     }
     title.dispose();
+    subtitle.dispose();
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();
     fullscreenButtonIcon.dispose();
@@ -283,6 +291,10 @@ class VideoControlsWidgetModel
 
   void _updateTitle() {
     title.value = widget.title;
+  }
+
+  void _updateSubtitle() {
+    subtitle.value = widget.subtitle;
   }
 
   void _updatePlayPauseLoaderState() {
