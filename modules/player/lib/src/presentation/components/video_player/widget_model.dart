@@ -66,7 +66,7 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   VideoController get controller;
 
-  ValueListenable<FullscreenController> get fullscreenController;
+  FullscreenController get fullscreenController;
 
   Animation<double> get playPauseAnimation;
 
@@ -125,8 +125,7 @@ class VideoPlayerWidgetModel
   final ValueNotifier<double> positionValue = ValueNotifier(0);
 
   @override
-  late final ValueNotifier<FullscreenController> fullscreenController =
-      ValueNotifier(FullscreenController());
+  final FullscreenController fullscreenController = FullscreenController();
 
   @override
   late final CurvedAnimation playPauseAnimation = CurvedAnimation(
@@ -261,8 +260,7 @@ class VideoPlayerWidgetModel
     timer.dispose();
     positionValue.dispose();
     fullscreenController
-      ..value.exit()
-      ..value.dispose()
+      ..exit()
       ..dispose();
     playPauseAnimation.dispose();
   }
@@ -288,13 +286,10 @@ class VideoPlayerWidgetModel
 
   void _updateFullscreenController() {
     final Object textureId = model.textureId.value;
-    fullscreenController
-      ..value.dispose()
-      ..value = FullscreenController(
-        webElementQuery: defaultTargetPlatform == TargetPlatform.iOS
+    fullscreenController.webElementQuery =
+        defaultTargetPlatform == TargetPlatform.iOS
             ? 'video#videoElement-$textureId'
-            : null,
-      );
+            : null;
   }
 
   void _updateTitle() {

@@ -3,13 +3,13 @@ import 'package:player/src/presentation/components/fullscreen/io.dart'
     if (dart.library.html) 'package:player/src/presentation/components/fullscreen/web.dart';
 
 abstract class FullscreenController implements ChangeNotifier {
-  factory FullscreenController({
-    String? webElementQuery,
-  }) {
-    return FullscreenControllerPlatform(webElementQuery: webElementQuery);
+  factory FullscreenController() {
+    return FullscreenControllerPlatform();
   }
 
   bool get isFullscreen;
+
+  set webElementQuery(String? value);
 
   Future<void> request();
 

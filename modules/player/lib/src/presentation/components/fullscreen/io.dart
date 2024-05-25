@@ -5,10 +5,7 @@ import 'package:player/src/presentation/components/fullscreen/fullscreen_button.
 class FullscreenControllerPlatform
     with ChangeNotifier
     implements FullscreenController {
-  FullscreenControllerPlatform({
-    // ignore: avoid_unused_constructor_parameters
-    String? webElementQuery,
-  }) {
+  FullscreenControllerPlatform() {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }
@@ -20,6 +17,9 @@ class FullscreenControllerPlatform
   bool get isFullscreen {
     return _isFullscreen;
   }
+
+  @override
+  set webElementQuery(String? value) {}
 
   @override
   Future<void> request() async {

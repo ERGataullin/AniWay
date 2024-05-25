@@ -26,34 +26,46 @@ extension _ElementFullscreen on Element {
 class FullscreenControllerPlatform
     with ChangeNotifier
     implements FullscreenController {
-  FullscreenControllerPlatform({
-    String? webElementQuery,
-  }) : element = webElementQuery == null
-            ? document.documentElement!
-            : document.querySelector(webElementQuery)! {
+  FullscreenControllerPlatform() : _element = document.documentElement! {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }
     _fullscreenSubscription =
-        element.nonWebkitOnFullscreenChange.listen(_onFullscreenChanged);
+        _element.nonWebkitOnFullscreenChange.listen(_onFullscreenChanged);
   }
 
-  final Element element;
+  Element _element;
 
-  late final StreamSubscription<Event> _fullscreenSubscription;
+  late StreamSubscription<Event> _fullscreenSubscription;
 
   @override
   bool get isFullscreen {
     return _isIos
-        ? element.tagName == 'video' && element.webkitDisplayingFullscreen
-        : document.fullscreenElement == element;
+        ? _element.tagName == 'video' && _element.webkitDisplayingFullscreen
+        : document.fullscreenElement == _element;
   }
 
   bool get _isIos => defaultTargetPlatform == TargetPlatform.iOS;
 
   @override
+  set webElementQuery(String? value) {
+    final Element newElement = value == null
+        ? document.documentElement!
+        : document.querySelector(value)!;
+
+    if (_element == newElement) {
+      return;
+    }
+
+    _element = newElement;
+    _fullscreenSubscription.cancel();
+    _fullscreenSubscription =
+        _element.nonWebkitOnFullscreenChange.listen(_onFullscreenChanged);
+  }
+
+  @override
   Future<void> request() {
-    _isIos ? element.webkitEnterFullscreen() : element.requestFullscreen();
+    _isIos ? _element.webkitEnterFullscreen() : _element.requestFullscreen();
     return SynchronousFuture(null);
   }
 
@@ -62,7 +74,7 @@ class FullscreenControllerPlatform
     if (!isFullscreen) {
       return SynchronousFuture(null);
     }
-    _isIos ? element.webkitExitFullscreen() : document.exitFullscreen();
+    _isIos ? _element.webkitExitFullscreen() : document.exitFullscreen();
     return SynchronousFuture(null);
   }
 

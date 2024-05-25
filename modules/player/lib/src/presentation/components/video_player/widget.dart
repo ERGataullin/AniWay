@@ -341,10 +341,10 @@ class _Bottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Align(
+    return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -352,12 +352,12 @@ class _Bottom extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _Timer(),
-                _FullscreenButton(),
+                const _Timer(),
+                FullscreenButton(controller: context.wm.fullscreenController),
               ],
             ),
-            SizedBox(height: 4),
-            _SeekBar(),
+            const SizedBox(height: 4),
+            const _SeekBar(),
           ],
         ),
       ),
@@ -387,20 +387,6 @@ class _Timer extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _FullscreenButton extends StatelessWidget {
-  const _FullscreenButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: context.wm.fullscreenController,
-      builder: (context, __) => FullscreenButton(
-        controller: context.wm.fullscreenController.value,
-      ),
     );
   }
 }
