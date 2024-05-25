@@ -80,7 +80,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     _surfaceAspectRatio = value;
     _updateScaling();
   }
-
+  
   double _surfaceAspectRatio = 1;
 
   VideoController? _videoController;
@@ -123,7 +123,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
     _updateScaling();
   }
-
+  
   void _updateScaling() {
     maxScale.value = max(
       _surfaceAspectRatio / videoController.value.aspectRatio,

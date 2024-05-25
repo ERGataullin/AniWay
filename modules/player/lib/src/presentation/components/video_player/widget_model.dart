@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/components/video_player/model.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
+import 'package:player/src/utils/fullscreen/util.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 VideoPlayerWidgetModel videoPlayerWidgetModelFactory(
@@ -95,7 +96,10 @@ class VideoPlayerWidgetModel
     extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
     implements IVideoPlayerWidgetModel {
-  VideoPlayerWidgetModel(super._model);
+  VideoPlayerWidgetModel(
+    super._model, {
+    required Fullscreen fullscreen,
+  }) : _fullscreen = fullscreen;
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
