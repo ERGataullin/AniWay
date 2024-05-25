@@ -115,11 +115,11 @@ abstract class PlayerLocalizations {
   /// **'Перевод'**
   String get moviePlayerPreferencesTranslationLabel;
 
-  /// No description provided for @seekGestureSeekValue.
+  /// No description provided for @seekAreaSeekValue.
   ///
   /// In ru, this message translates to:
   /// **'{seconds} секунд'**
-  String seekGestureSeekValue(int seconds);
+  String seekAreaSeekValue(int seconds);
 }
 
 class _PlayerLocalizationsDelegate extends LocalizationsDelegate<PlayerLocalizations> {

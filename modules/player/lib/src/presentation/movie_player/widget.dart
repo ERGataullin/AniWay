@@ -1,6 +1,5 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/presentation/components/video_controls/widget.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/presentation/movie_player/widget_model.dart';
 
@@ -26,14 +25,13 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWidgetModel> {
           wm.subtitle,
           wm.preferences,
         ]),
-        builder: (context, __) => VideoControlsWidget(
+        builder: (context, __) => VideoPlayerWidget(
           controller: wm.controller,
           title: wm.title.value,
           subtitle: wm.subtitle.value,
           preferences: wm.preferences.value,
           onPreviousPressed: wm.onPreviousPressed,
           onNextPressed: wm.onNextPressed,
-          child: VideoPlayerWidget(controller: wm.controller),
         ),
       ),
     );

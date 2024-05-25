@@ -46,7 +46,7 @@ class PlayerLocalizationsRu extends PlayerLocalizations {
   String get moviePlayerPreferencesTranslationLabel => 'Перевод';
 
   @override
-  String seekGestureSeekValue(int seconds) {
+  String seekAreaSeekValue(int seconds) {
     return '$seconds секунд';
   }
 }
