@@ -61,7 +61,9 @@ class MoviePlayerModel extends ElementaryModel
 
   late int _episodeIndex;
 
-  bool _episodeCompleted = false;
+  bool _episodeWatched = false;
+
+  bool _listeningVideoPlayer = false;
 
   @override
   VideoTranslationData get translation => _translation;
@@ -78,7 +80,6 @@ class MoviePlayerModel extends ElementaryModel
     required Object movieId,
     required Object episodeId,
   }) async {
-    videoController.addListener(_onVideoPlayerChanged);
     movie = await _service.getMovie(movieId);
     _episodeIndex = movie.episodes.indexWhere(
       (episode) => episode.id == episodeId,
@@ -105,6 +106,11 @@ class MoviePlayerModel extends ElementaryModel
   Future<void> _loadEpisode({
     required int index,
   }) async {
+    if (_listeningVideoPlayer) {
+      videoController.removeListener(_onVideoPlayerChanged);
+      _listeningVideoPlayer = false;
+    }
+    _episodeWatched = false;
     _episodeIndex = index;
     episode = movie.episodes[index];
     final List<VideoTranslationData> translationsList =
@@ -117,6 +123,8 @@ class MoviePlayerModel extends ElementaryModel
             .toList(growable: false),
     };
     translation = translations[VideoTranslationTypeData.raw]!.first;
+    videoController.addListener(_onVideoPlayerChanged);
+    _listeningVideoPlayer = true;
   }
 
   Future<void> _loadVideo() async {
@@ -126,20 +134,20 @@ class MoviePlayerModel extends ElementaryModel
   }
 
   void _onVideoPlayerChanged() {
-    if (_episodeCompleted) {
-      _episodeCompleted = videoController.value.isCompleted;
-      return;
-    } else if (!videoController.value.isCompleted) {
-      return;
+    final double positionPercentage = videoController.value.position.inSeconds /
+        videoController.value.duration.inSeconds;
+    if (positionPercentage >= 0.85 && !_episodeWatched) {
+      _episodeWatched = true;
+      _service.postTranslationWatched(
+        translation.id,
+        csrf: _video.csrf,
+      );
     }
 
-    _episodeCompleted = true;
-    if (_episodeIndex < movie.episodes.length - 1) {
+    final bool shouldLoadNextEpisode = videoController.value.isCompleted &&
+        _episodeIndex < movie.episodes.length - 1;
+    if (shouldLoadNextEpisode) {
       loadNextEpisode();
     }
-    _service.postTranslationWatched(
-      translation.id,
-      csrf: _video.csrf,
-    );
   }
 }
