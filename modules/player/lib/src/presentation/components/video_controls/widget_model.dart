@@ -58,6 +58,10 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
 
   ValueListenable<VoidCallback?> get playPauseLoaderCallback;
 
+  ValueListenable<bool> get rewindEnabled;
+
+  ValueListenable<bool> get fastForwardEnabled;
+
   ValueListenable<IconData> get fullscreenButtonIcon;
 
   ValueListenable<TextSpan> get timer;
@@ -81,6 +85,8 @@ abstract interface class IVideoControlsWidgetModel implements IWidgetModel {
   void onPositionChangeEnd(double position);
 
   void onPositionChanged(double position);
+
+  void onSeek(Duration seekDuration);
 
   void onPreviousButtonPressed();
 
@@ -112,6 +118,12 @@ class VideoControlsWidgetModel
   @override
   final ValueNotifier<VoidCallback?> playPauseLoaderCallback =
       ValueNotifier(null);
+
+  @override
+  final ValueNotifier<bool> rewindEnabled = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> fastForwardEnabled = ValueNotifier(false);
 
   @override
   final ValueNotifier<IconData> fullscreenButtonIcon =
@@ -224,6 +236,11 @@ class VideoControlsWidgetModel
   }
 
   @override
+  Future<void> onSeek(Duration seekDuration) async {
+    await controller.seekTo(controller.value.position + seekDuration);
+  }
+
+  @override
   void onPreviousButtonPressed() {
     widget.onPreviousPressed();
   }
@@ -262,6 +279,8 @@ class VideoControlsWidgetModel
     subtitle.dispose();
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();
+    rewindEnabled.dispose();
+    fastForwardEnabled.dispose();
     fullscreenButtonIcon.dispose();
     timer.dispose();
     positionValue.dispose();
@@ -307,6 +326,8 @@ class VideoControlsWidgetModel
   }
 
   void _updateTimer() {
+    rewindEnabled.value = model.position.value > Duration.zero;
+    fastForwardEnabled.value = model.position.value < model.duration.value;
     timer.value = TextSpan(
       children: [
         TextSpan(

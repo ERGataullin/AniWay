@@ -1,8 +1,8 @@
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/domain/models/side.dart';
 import 'package:player/src/presentation/components/scalable.dart';
-import 'package:player/src/presentation/components/seek_gesture/widget.dart';
+import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
 
@@ -93,23 +93,22 @@ class _Gestures extends StatelessWidget {
       clipBehavior: Clip.none,
       fit: StackFit.expand,
       children: [
-        ValueListenableBuilder(
-          valueListenable: context.wm.maxScale,
-          child: child,
-          builder: (context, maxScale, child) => ValueListenableBuilder(
-            valueListenable: context.wm.scaleAnchors,
-            builder: (context, scaleAnchors, ___) => Scalable(
-              maxScale: maxScale,
-              anchors: scaleAnchors,
-              child: child!,
-            ),
+        ListenableBuilder(
+          listenable: Listenable.merge([
+            context.wm.maxScale,
+            context.wm.scaleAnchors,
+          ]),
+          builder: (context, __) => Scalable(
+            maxScale: context.wm.maxScale.value,
+            anchors: context.wm.scaleAnchors.value,
+            child: child,
           ),
         ),
         GestureDetector(onTapUp: context.wm.onTapUp),
         const Row(
           children: [
-            _SeekGesture(side: Side.left),
-            _SeekGesture(side: Side.right),
+            _SeekArea(type: SeekType.rewind),
+            _SeekArea(type: SeekType.fastForward),
           ],
         ),
       ],
@@ -117,19 +116,27 @@ class _Gestures extends StatelessWidget {
   }
 }
 
-class _SeekGesture extends StatelessWidget {
-  const _SeekGesture({
-    required this.side,
+class _SeekArea extends StatelessWidget {
+  const _SeekArea({
+    required this.type,
   });
 
-  final Side side;
+  final SeekType type;
 
   @override
   Widget build(BuildContext context) {
+    final ValueListenable<bool> enabled = switch (type) {
+      SeekType.rewind => context.wm.rewindEnabled,
+      SeekType.fastForward => context.wm.fastForwardEnabled,
+    };
     return Expanded(
-      child: SeekGestureWidget(
-        side: side,
-        videoController: context.wm.controller,
+      child: ListenableBuilder(
+        listenable: enabled,
+        builder: (context, __) => SeekAreaWidget(
+          type: type,
+          enabled: enabled.value,
+          onSeek: context.wm.onSeek,
+        ),
       ),
     );
   }
@@ -320,7 +327,7 @@ class _PlayPauseLoader extends StatelessWidget {
               icon: AnimatedIcons.play_pause,
               progress: context.wm.playPauseAnimation,
             ),
-            secondChild: const CircularProgressIndicator(),
+            secondChild: const CircularProgressIndicator.adaptive(),
           ),
         ),
       ),

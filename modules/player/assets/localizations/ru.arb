@@ -14,8 +14,8 @@
     "moviePlayerPreferencesTranslationTypeLabel": "Тип перевода",
     "moviePlayerPreferencesTranslationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}",
     "moviePlayerPreferencesTranslationLabel": "Перевод",
-    "seekGestureSeekValue": "{seconds} секунд",
-    "@seekGestureSeekValue": {
+    "seekAreaSeekValue": "{seconds} секунд",
+    "@seekAreaSeekValue": {
         "placeholders": {
             "seconds": {
                 "type": "int"
