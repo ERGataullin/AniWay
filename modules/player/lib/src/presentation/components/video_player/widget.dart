@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/presentation/components/video_player/widget_model.dart';
@@ -395,11 +396,10 @@ class _FullscreenButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.fullscreenButtonIcon,
-      builder: (context, iconData, ___) => IconButton(
-        onPressed: context.wm.onFullscreenPressed,
-        icon: Icon(iconData),
+    return ListenableBuilder(
+      listenable: context.wm.fullscreenController,
+      builder: (context, __) => FullscreenButton(
+        controller: context.wm.fullscreenController.value,
       ),
     );
   }
