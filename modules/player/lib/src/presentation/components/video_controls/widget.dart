@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/domain/models/side.dart';
-import 'package:player/src/presentation/components/scalable/widget.dart';
+import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_gesture/widget.dart';
 import 'package:player/src/presentation/components/video_controls/widget_model.dart';
 import 'package:player/src/utils/video_controller.dart';
@@ -98,7 +98,7 @@ class _Gestures extends StatelessWidget {
           child: child,
           builder: (context, maxScale, child) => ValueListenableBuilder(
             valueListenable: context.wm.scaleAnchors,
-            builder: (context, scaleAnchors, ___) => ScalableWidget(
+            builder: (context, scaleAnchors, ___) => Scalable(
               maxScale: maxScale,
               anchors: scaleAnchors,
               child: child!,
