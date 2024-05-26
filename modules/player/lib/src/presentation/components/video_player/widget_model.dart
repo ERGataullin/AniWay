@@ -4,20 +4,16 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:player/player.dart';
+import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/components/video_player/model.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
-import 'package:player/src/utils/fullscreen/util.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 VideoPlayerWidgetModel videoPlayerWidgetModelFactory(
   BuildContext context,
 ) =>
     VideoPlayerWidgetModel(
-      VideoPlayerModel(
-        context.read<ErrorHandler>(),
-      ),
-      fullscreen: context.read<Fullscreen>(),
+      VideoPlayerModel(context.read<ErrorHandler>()),
     );
 
 extension _DurationFormat on Duration {
@@ -64,13 +60,13 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   ValueListenable<bool> get fastForwardEnabled;
 
-  ValueListenable<IconData> get fullscreenButtonIcon;
-
   ValueListenable<TextSpan> get timer;
 
   ValueListenable<double> get positionValue;
 
   VideoController get controller;
+
+  FullscreenController get fullscreenController;
 
   Animation<double> get playPauseAnimation;
 
@@ -93,18 +89,13 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   void onPreviousButtonPressed();
 
   void onNextPressed();
-
-  void onFullscreenPressed();
 }
 
 class VideoPlayerWidgetModel
     extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
     implements IVideoPlayerWidgetModel {
-  VideoPlayerWidgetModel(
-    super._model, {
-    required Fullscreen fullscreen,
-  }) : _fullscreen = fullscreen;
+  VideoPlayerWidgetModel(super._model);
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
@@ -128,14 +119,13 @@ class VideoPlayerWidgetModel
   final ValueNotifier<bool> fastForwardEnabled = ValueNotifier(false);
 
   @override
-  final ValueNotifier<IconData> fullscreenButtonIcon =
-      ValueNotifier(Icons.fullscreen);
-
-  @override
   final ValueNotifier<TextSpan> timer = ValueNotifier(const TextSpan());
 
   @override
   final ValueNotifier<double> positionValue = ValueNotifier(0);
+
+  @override
+  final FullscreenController fullscreenController = FullscreenController();
 
   @override
   late final CurvedAnimation playPauseAnimation = CurvedAnimation(
@@ -143,8 +133,6 @@ class VideoPlayerWidgetModel
     curve: Easing.standard,
     reverseCurve: Easing.standard.flipped,
   );
-
-  final Fullscreen _fullscreen;
 
   @override
   ValueListenable<double> get aspectRatio => model.aspectRatio;
@@ -167,17 +155,13 @@ class VideoPlayerWidgetModel
 
   Color? _onSurfaceColor;
 
-  String? get _fullscreenElementQuerySelector =>
-      defaultTargetPlatform == TargetPlatform.iOS
-          ? 'video#videoElement-${controller.textureId}'
-          : null;
-
   @override
   void initWidgetModel() {
     super.initWidgetModel();
     model
       ..playing.addListener(_onPlayingChanged)
       ..loading.addListener(_onLoadingChanged)
+      ..textureId.addListener(_updateFullscreenController)
       ..position.addListener(_updateTimer)
       ..position.addListener(_updatePositionValue)
       ..duration.addListener(_updateTimer)
@@ -256,39 +240,28 @@ class VideoPlayerWidgetModel
   }
 
   @override
-  void onFullscreenPressed() {
-    final bool isFullscreen =
-        _fullscreen.isFullscreen(_fullscreenElementQuerySelector);
-    fullscreenButtonIcon.value =
-        isFullscreen ? Icons.fullscreen : Icons.fullscreen_exit;
-    isFullscreen
-        ? _fullscreen.exit(_fullscreenElementQuerySelector)
-        : _fullscreen.request(_fullscreenElementQuerySelector);
-  }
-
-  @override
   void dispose() {
     super.dispose();
     model
       ..playing.removeListener(_onPlayingChanged)
       ..loading.removeListener(_onLoadingChanged)
+      ..textureId.removeListener(_updateFullscreenController)
       ..position.removeListener(_updateTimer)
       ..position.removeListener(_updatePositionValue)
       ..duration.removeListener(_updateTimer)
       ..duration.removeListener(_updatePositionValue);
     _playPauseAnimationController.dispose();
-    if (_fullscreenElementQuerySelector == null && _fullscreen.isFullscreen()) {
-      _fullscreen.exit(_fullscreenElementQuerySelector);
-    }
     title.dispose();
     subtitle.dispose();
     playPauseLoaderState.dispose();
     playPauseLoaderCallback.dispose();
     rewindEnabled.dispose();
     fastForwardEnabled.dispose();
-    fullscreenButtonIcon.dispose();
     timer.dispose();
     positionValue.dispose();
+    fullscreenController
+      ..exit()
+      ..dispose();
     playPauseAnimation.dispose();
   }
 
@@ -309,6 +282,14 @@ class VideoPlayerWidgetModel
     if (model.loading.value) {
       show(hideOnUserInactivity: false);
     }
+  }
+
+  void _updateFullscreenController() {
+    final Object textureId = model.textureId.value;
+    fullscreenController.webElementQuery =
+        defaultTargetPlatform == TargetPlatform.iOS
+            ? 'video#videoElement-$textureId'
+            : null;
   }
 
   void _updateTitle() {

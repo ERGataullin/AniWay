@@ -11,6 +11,8 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 
   ValueListenable<bool> get playing;
 
+  ValueListenable<Object> get textureId;
+
   ValueListenable<double> get aspectRatio;
 
   ValueListenable<double> get maxScale;
@@ -41,6 +43,11 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   ValueNotifier<bool> playing = ValueNotifier(false);
 
   @override
+  final ValueNotifier<Object> textureId = ValueNotifier(
+    VideoController.kUninitializedTextureId,
+  );
+
+  @override
   final ValueNotifier<double> aspectRatio = ValueNotifier(1);
 
   @override
@@ -63,9 +70,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   set videoController(VideoController value) {
-    _videoController?.removeListener(_onVideoControllerValueChanged);
-    _videoController = value..addListener(_onVideoControllerValueChanged);
-    _onVideoControllerValueChanged();
+    _videoController?.removeListener(_onVideoPlayerChanged);
+    _videoController = value..addListener(_onVideoPlayerChanged);
+    _onVideoPlayerChanged();
   }
 
   @override
@@ -73,7 +80,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     _surfaceAspectRatio = value;
     _updateScaling();
   }
-
+  
   double _surfaceAspectRatio = 1;
 
   VideoController? _videoController;
@@ -88,9 +95,10 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   @override
   void dispose() {
     super.dispose();
-    _videoController?.removeListener(_onVideoControllerValueChanged);
+    _videoController?.removeListener(_onVideoPlayerChanged);
     loading.dispose();
     playing.dispose();
+    textureId.dispose();
     aspectRatio.dispose();
     maxScale.dispose();
     scaleAnchors.dispose();
@@ -98,18 +106,24 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     duration.dispose();
   }
 
-  void _onVideoControllerValueChanged() {
+  void _onVideoPlayerChanged() {
     final VideoPlayerValue value = videoController.value;
+
+    if (!value.isInitialized) {
+      loading.value = true;
+      return;
+    }
 
     loading.value = !value.isInitialized || value.isBuffering;
     playing.value = value.isPlaying;
+    textureId.value = videoController.textureId;
     aspectRatio.value = value.aspectRatio;
     position.value = value.position;
     duration.value = value.duration;
 
     _updateScaling();
   }
-
+  
   void _updateScaling() {
     maxScale.value = max(
       _surfaceAspectRatio / videoController.value.aspectRatio,

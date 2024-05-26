@@ -56,7 +56,9 @@ class MoviePlayerWidgetModel
         episodeId: widget.episodeId,
       )
       ..addListener(_onModelChanged);
-    _lockOrientation();
+    if (!kIsWeb) {
+      _lockOrientation();
+    }
   }
 
   @override
@@ -75,7 +77,9 @@ class MoviePlayerWidgetModel
     title.dispose();
     subtitle.dispose();
     preferences.dispose();
-    await _unlockOrientation();
+    if (!kIsWeb) {
+      await _unlockOrientation();
+    }
   }
 
   Future<void> _lockOrientation() {

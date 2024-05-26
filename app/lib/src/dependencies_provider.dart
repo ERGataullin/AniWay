@@ -14,7 +14,6 @@ class AppDependenciesProvider extends StatelessWidget {
     this.authService,
     this.moviesService,
     this.playerService,
-    this.fullscreen,
     required this.child,
   });
 
@@ -24,7 +23,6 @@ class AppDependenciesProvider extends StatelessWidget {
   final AuthService? authService;
   final MoviesService? moviesService;
   final PlayerService? playerService;
-  final Fullscreen? fullscreen;
   final Widget child;
 
   @override
@@ -94,9 +92,6 @@ class AppDependenciesProvider extends StatelessWidget {
                   ),
                 ),
               ),
-        ),
-        Provider<Fullscreen>(
-          create: (context) => fullscreen ?? Fullscreen(),
         ),
       ],
       child: child,
