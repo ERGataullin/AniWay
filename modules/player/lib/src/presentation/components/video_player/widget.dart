@@ -6,6 +6,7 @@ import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/presentation/components/video_play_pause_loader.dart';
 import 'package:player/src/presentation/components/video_player/widget_model.dart';
+import 'package:player/src/presentation/components/video_seek_bar.dart';
 import 'package:player/src/presentation/components/video_timer.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:video_player/video_player.dart';
@@ -299,26 +300,13 @@ class _Bottom extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            const _SeekBar(),
+            VideoSeekBar(
+              videoController: context.wm.controller,
+              onPositionChangeStart: context.wm.onPositionChangeStart,
+              onPositionChangeEnd: context.wm.onPositionChangeEnd,
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _SeekBar extends StatelessWidget {
-  const _SeekBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.positionValue,
-      builder: (context, value, ___) => Slider.adaptive(
-        value: value,
-        onChangeStart: context.wm.onPositionChangeStart,
-        onChangeEnd: context.wm.onPositionChangeEnd,
-        onChanged: context.wm.onPositionChanged,
       ),
     );
   }

@@ -35,8 +35,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   ValueListenable<bool> get fastForwardEnabled;
 
-  ValueListenable<double> get positionValue;
-
   VideoController get controller;
 
   FullscreenController get fullscreenController;
@@ -52,8 +50,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   void onPositionChangeStart(double position);
 
   void onPositionChangeEnd(double position);
-
-  void onPositionChanged(double position);
 
   void onSeek(Duration seekDuration);
 
@@ -88,9 +84,6 @@ class VideoPlayerWidgetModel
 
   @override
   final ValueNotifier<bool> fastForwardEnabled = ValueNotifier(false);
-
-  @override
-  final ValueNotifier<double> positionValue = ValueNotifier(0);
 
   @override
   final FullscreenController fullscreenController = FullscreenController();
@@ -155,11 +148,6 @@ class VideoPlayerWidgetModel
   }
 
   @override
-  Future<void> onPositionChanged(double position) async {
-    await controller.seekTo(controller.value.duration * position);
-  }
-
-  @override
   Future<void> onSeek(Duration seekDuration) async {
     await controller.seekTo(controller.value.position + seekDuration);
   }
@@ -185,7 +173,6 @@ class VideoPlayerWidgetModel
     subtitle.dispose();
     rewindEnabled.dispose();
     fastForwardEnabled.dispose();
-    positionValue.dispose();
     fullscreenController
       ..exit()
       ..dispose();
@@ -203,10 +190,6 @@ class VideoPlayerWidgetModel
 
     rewindEnabled.value = model.position > Duration.zero;
     fastForwardEnabled.value = model.position < model.duration;
-
-    positionValue.value = model.duration == Duration.zero
-        ? 0
-        : model.position.inSeconds / model.duration.inSeconds;
 
     if (model.loading || !model.playing) {
       show(hideOnUserInactivity: false);
