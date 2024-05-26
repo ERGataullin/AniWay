@@ -42,6 +42,7 @@ class AppTheme {
       surfaceContainerHighest: Colors.white24,
     ),
   ).copyWith(
+    appBarTheme: const AppBarTheme(centerTitle: false),
     sliderTheme: SliderThemeData(
       trackHeight: 4,
       allowedInteraction: SliderInteraction.slideOnly,

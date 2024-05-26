@@ -53,7 +53,7 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   void onSeek(Duration seekDuration);
 
-  void onPreviousButtonPressed();
+  void onPreviousPressed();
 
   void onNextPressed();
 }
@@ -153,7 +153,7 @@ class VideoPlayerWidgetModel
   }
 
   @override
-  void onPreviousButtonPressed() {
+  void onPreviousPressed() {
     widget.onPreviousPressed();
   }
 

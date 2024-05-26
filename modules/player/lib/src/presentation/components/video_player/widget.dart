@@ -165,9 +165,7 @@ class _Player extends StatelessWidget {
         AnimatedVisibility.emphasized(
           visible: context.wm.visible,
           child: const DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.black54,
-            ),
+            decoration: BoxDecoration(color: Colors.black54),
           ),
         ),
       ],
@@ -186,42 +184,71 @@ class _Controls extends StatelessWidget {
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
-          const _Top(),
+          Align(
+            alignment: Alignment.topCenter,
+            child: AppBar(
+              forceMaterialTransparency: true,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Title(context.wm.title),
+                  _Title(
+                    context.wm.subtitle,
+                    style: Theme.of(context).primaryTextTheme.titleMedium,
+                  ),
+                ],
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.settings_outlined),
+                  onPressed: context.wm.onPreferencesPressed,
+                ),
+              ],
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const _PreviousButton(),
+              _SkipButton(
+                icon: const Icon(Icons.skip_previous),
+                onPressed: context.wm.onPreviousPressed,
+              ),
               const SizedBox(width: 64),
               VideoPlayPauseLoader(videoController: context.wm.controller),
               const SizedBox(width: 64),
-              const _NextButton(),
+              _SkipButton(
+                icon: const Icon(Icons.skip_next),
+                onPressed: context.wm.onNextPressed,
+              ),
             ],
           ),
-          const _Bottom(),
-        ],
-      ),
-    );
-  }
-}
-
-class _Top extends StatelessWidget {
-  const _Top();
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: AppBar(
-        forceMaterialTransparency: true,
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Title(),
-            _Subtitle(),
-          ],
-        ),
-        actions: const [
-          _PreferencesButton(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VideoTimer(videoController: context.wm.controller),
+                      FullscreenButton(
+                        controller: context.wm.fullscreenController,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  VideoSeekBar(
+                    videoController: context.wm.controller,
+                    onPositionChangeStart: context.wm.onPositionChangeStart,
+                    onPositionChangeEnd: context.wm.onPositionChangeEnd,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -229,121 +256,53 @@ class _Top extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  const _Title();
+  const _Title(
+    this.data, {
+    this.style,
+  });
+
+  final ValueListenable<String> data;
+
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
-      valueListenable: context.wm.title,
-      builder: (context, title, ___) => AnimatedSwitcher(
+      valueListenable: data,
+      builder: (context, data, ___) => AnimatedSwitcher(
         switchInCurve: Easing.standard,
         switchOutCurve: Easing.standard.flipped,
         duration: Durations.medium2,
         child: Text(
-          title,
-          key: Key(title),
+          data,
+          key: Key(data),
+          style: style,
         ),
       ),
     );
   }
 }
 
-class _Subtitle extends StatelessWidget {
-  const _Subtitle();
+class _SkipButton extends StatelessWidget {
+  const _SkipButton({
+    this.onPressed,
+    required this.icon,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable: context.wm.subtitle,
-      builder: (context, subtitle, ___) => AnimatedSwitcher(
-        switchInCurve: Easing.standard,
-        switchOutCurve: Easing.standard.flipped,
-        duration: Durations.medium2,
-        child: Text(
-          subtitle,
-          key: Key(subtitle),
-          style: Theme.of(context).primaryTextTheme.titleSmall,
-        ),
-      ),
-    );
-  }
-}
+  final VoidCallback? onPressed;
 
-class _PreferencesButton extends StatelessWidget {
-  const _PreferencesButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.settings_outlined),
-      onPressed: context.wm.onPreferencesPressed,
-    );
-  }
-}
-
-class _Bottom extends StatelessWidget {
-  const _Bottom();
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                VideoTimer(videoController: context.wm.controller),
-                FullscreenButton(controller: context.wm.fullscreenController),
-              ],
-            ),
-            const SizedBox(height: 4),
-            VideoSeekBar(
-              videoController: context.wm.controller,
-              onPositionChangeStart: context.wm.onPositionChangeStart,
-              onPositionChangeEnd: context.wm.onPositionChangeEnd,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PreviousButton extends StatelessWidget {
-  const _PreviousButton();
+  final Widget icon;
 
   @override
   Widget build(BuildContext context) {
     return IconButton.filledTonal(
-      onPressed: context.wm.onPreviousButtonPressed,
+      onPressed: onPressed,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(
           Theme.of(context).colorScheme.secondaryContainer,
         ),
       ),
-      icon: const Icon(Icons.skip_previous),
-    );
-  }
-}
-
-class _NextButton extends StatelessWidget {
-  const _NextButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton.filledTonal(
-      onPressed: context.wm.onNextPressed,
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(
-          Theme.of(context).colorScheme.secondaryContainer,
-        ),
-      ),
-      icon: const Icon(Icons.skip_next),
+      icon: icon,
     );
   }
 }
