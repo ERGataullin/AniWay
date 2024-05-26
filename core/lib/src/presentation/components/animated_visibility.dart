@@ -2,25 +2,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedVisibility extends StatefulWidget {
-  const AnimatedVisibility.standard({
+  AnimatedVisibility.standard({
     super.key,
     this.fadeInCurve = Easing.standardDecelerate,
-    this.fadeOutCurve = Easing.standardAccelerate,
+    Curve? fadeOutCurve,
     this.fadeInDuration = Durations.medium1,
     this.fadeOutDuration = Durations.short4,
     required this.visible,
     required this.child,
-  });
+  }) : fadeOutCurve = fadeOutCurve ?? Easing.standardAccelerate.flipped;
 
-  const AnimatedVisibility.emphasized({
+  AnimatedVisibility.emphasized({
     super.key,
     this.fadeInCurve = Easing.emphasizedDecelerate,
-    this.fadeOutCurve = Easing.standardAccelerate,
+    Curve? fadeOutCurve,
     this.fadeInDuration = Durations.medium4,
     this.fadeOutDuration = Durations.short4,
     required this.visible,
     required this.child,
-  });
+  }) : fadeOutCurve = fadeOutCurve ?? Easing.emphasizedAccelerate.flipped;
 
   final ValueListenable<bool> visible;
 

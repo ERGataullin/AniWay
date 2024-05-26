@@ -144,6 +144,7 @@ class _SubmitButton extends StatelessWidget {
         listenable: context.wm.showLoader,
         builder: (context, __) => AnimatedSwitcher(
           switchInCurve: Easing.standard,
+          switchOutCurve: Easing.standard.flipped,
           duration: Durations.medium2,
           child: context.wm.showLoader.value
               ? SizedBox.square(

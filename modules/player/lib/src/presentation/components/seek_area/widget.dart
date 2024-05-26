@@ -130,7 +130,7 @@ class _Value extends StatelessWidget {
       valueListenable: context.wm.seekValue,
       builder: (context, value, ___) => AnimatedSwitcher(
         switchInCurve: Easing.standardDecelerate,
-        switchOutCurve: Easing.standardAccelerate,
+        switchOutCurve: Easing.standardAccelerate.flipped,
         duration: Durations.medium1,
         reverseDuration: Durations.short4,
         child: Text(
