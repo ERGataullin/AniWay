@@ -5,6 +5,7 @@ import 'package:player/src/presentation/components/fullscreen/fullscreen_button.
 import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/presentation/components/video_player/widget_model.dart';
+import 'package:player/src/presentation/components/video_timer.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:video_player/video_player.dart';
 
@@ -352,7 +353,7 @@ class _Bottom extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const _Timer(),
+                VideoTimer(videoController: context.wm.controller),
                 FullscreenButton(controller: context.wm.fullscreenController),
               ],
             ),
@@ -361,32 +362,6 @@ class _Bottom extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _Timer extends StatelessWidget {
-  const _Timer();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: context.wm.timer,
-      builder: (context, __) {
-        final ThemeData theme = Theme.of(context);
-        return Text.rich(
-          context.wm.timer.value,
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.secondary,
-            shadows: [
-              Shadow(
-                blurRadius: 16,
-                color: Theme.of(context).colorScheme.shadow,
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

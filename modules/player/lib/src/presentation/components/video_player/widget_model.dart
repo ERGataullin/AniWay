@@ -16,27 +16,6 @@ VideoPlayerWidgetModel videoPlayerWidgetModelFactory(
       VideoPlayerModel(context.read<ErrorHandler>()),
     );
 
-extension _DurationFormat on Duration {
-  String format() {
-    final int hours = inHours;
-    final int minutes = inMinutes % 60;
-    final int seconds = inSeconds % 60;
-
-    final StringBuffer buffer = StringBuffer();
-    if (hours > 0) {
-      buffer
-        ..write(hours)
-        ..write(':');
-    }
-    buffer
-      ..write(minutes.toString().padLeft(hours > 0 ? 2 : 1, '0'))
-      ..write(':')
-      ..write(seconds.toString().padLeft(2, '0'));
-
-    return buffer.toString();
-  }
-}
-
 abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   ValueListenable<bool> get visible;
 
@@ -59,8 +38,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   ValueListenable<bool> get rewindEnabled;
 
   ValueListenable<bool> get fastForwardEnabled;
-
-  ValueListenable<TextSpan> get timer;
 
   ValueListenable<double> get positionValue;
 
@@ -129,9 +106,6 @@ class VideoPlayerWidgetModel
   final ValueNotifier<bool> fastForwardEnabled = ValueNotifier(false);
 
   @override
-  final ValueNotifier<TextSpan> timer = ValueNotifier(const TextSpan());
-
-  @override
   final ValueNotifier<double> positionValue = ValueNotifier(0);
 
   @override
@@ -154,8 +128,6 @@ class VideoPlayerWidgetModel
     value: controller.value.isPlaying ? 1 : 0,
   );
 
-  Color? _onSurfaceColor;
-
   @override
   void initWidgetModel() {
     super.initWidgetModel();
@@ -170,8 +142,6 @@ class VideoPlayerWidgetModel
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _onSurfaceColor = Theme.of(context).colorScheme.onSurface;
-    _updateTimer();
     model.surfaceAspectRatio = MediaQuery.of(context).size.aspectRatio;
   }
 
@@ -248,7 +218,6 @@ class VideoPlayerWidgetModel
     playPauseLoaderCallback.dispose();
     rewindEnabled.dispose();
     fastForwardEnabled.dispose();
-    timer.dispose();
     positionValue.dispose();
     fullscreenController
       ..exit()
@@ -285,24 +254,9 @@ class VideoPlayerWidgetModel
     rewindEnabled.value = model.position > Duration.zero;
     fastForwardEnabled.value = model.position < model.duration;
 
-    _updateTimer();
-
     positionValue.value = model.duration == Duration.zero
         ? 0
         : model.position.inSeconds / model.duration.inSeconds;
-  }
-
-  void _updateTimer() {
-    timer.value = TextSpan(
-      children: [
-        TextSpan(
-          text: model.position.format(),
-          style: TextStyle(color: _onSurfaceColor),
-        ),
-        const TextSpan(text: ' / '),
-        TextSpan(text: model.duration.format()),
-      ],
-    );
   }
 }
 

@@ -110,6 +110,9 @@ class MoviePlayerModel extends ElementaryModel
       videoController.removeListener(_onVideoPlayerChanged);
       _listeningVideoPlayer = false;
     }
+    if (videoController.value.isInitialized) {
+      videoController.pause();
+    }
     _episodeWatched = false;
     _episodeIndex = index;
     episode = movie.episodes[index];
