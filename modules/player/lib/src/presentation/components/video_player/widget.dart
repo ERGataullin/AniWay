@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
+import 'package:player/src/presentation/components/video_play_pause_loader.dart';
 import 'package:player/src/presentation/components/video_player/widget_model.dart';
 import 'package:player/src/presentation/components/video_timer.dart';
 import 'package:player/src/utils/video_controller.dart';
@@ -180,22 +181,22 @@ class _Controls extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedVisibility.emphasized(
       visible: context.wm.visible,
-      child: const Stack(
+      child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
-          _Top(),
+          const _Top(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _PreviousButton(),
-              SizedBox(width: 64),
-              _PlayPauseLoader(),
-              SizedBox(width: 64),
-              _NextButton(),
+              const _PreviousButton(),
+              const SizedBox(width: 64),
+              VideoPlayPauseLoader(videoController: context.wm.controller),
+              const SizedBox(width: 64),
+              const _NextButton(),
             ],
           ),
-          _Bottom(),
+          const _Bottom(),
         ],
       ),
     );
@@ -273,66 +274,6 @@ class _PreferencesButton extends StatelessWidget {
     return IconButton(
       icon: const Icon(Icons.settings_outlined),
       onPressed: context.wm.onPreferencesPressed,
-    );
-  }
-}
-
-class _PlayPauseLoader extends StatelessWidget {
-  const _PlayPauseLoader();
-
-  static Widget _animatedCrossFadeLayoutBuilder(
-    Widget topChild,
-    Key topChildKey,
-    Widget bottomChild,
-    Key bottomChildKey,
-  ) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: <Widget>[
-        SizedBox(
-          key: bottomChildKey,
-          child: bottomChild,
-        ),
-        SizedBox(
-          key: topChildKey,
-          child: topChild,
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    const double size = 48;
-    return ValueListenableBuilder(
-      valueListenable: context.wm.playPauseLoaderCallback,
-      builder: (context, callback, ___) => IconButton.filledTonal(
-        iconSize: size,
-        onPressed: callback,
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            Theme.of(context).colorScheme.secondaryContainer,
-          ),
-        ),
-        icon: ValueListenableBuilder(
-          valueListenable: context.wm.playPauseLoaderState,
-          builder: (context, state, ___) => AnimatedCrossFade(
-            alignment: Alignment.center,
-            // TODO(ERGataullin): replace with Easing.emphasized
-            firstCurve: Easing.standard,
-            secondCurve: Easing.standard,
-            duration: Durations.medium2,
-            crossFadeState: state,
-            layoutBuilder: _animatedCrossFadeLayoutBuilder,
-            firstChild: AnimatedIcon(
-              icon: AnimatedIcons.play_pause,
-              progress: context.wm.playPauseAnimation,
-            ),
-            secondChild: const CircularProgressIndicator.adaptive(),
-          ),
-        ),
-      ),
     );
   }
 }

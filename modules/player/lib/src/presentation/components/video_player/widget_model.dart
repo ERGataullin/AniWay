@@ -31,10 +31,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
-  ValueListenable<CrossFadeState> get playPauseLoaderState;
-
-  ValueListenable<VoidCallback?> get playPauseLoaderCallback;
-
   ValueListenable<bool> get rewindEnabled;
 
   ValueListenable<bool> get fastForwardEnabled;
@@ -44,8 +40,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   VideoController get controller;
 
   FullscreenController get fullscreenController;
-
-  Animation<double> get playPauseAnimation;
 
   void onTapUp(TapUpDetails details);
 
@@ -70,7 +64,7 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
 class VideoPlayerWidgetModel
     extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
-    with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
+    with _HideOnUserInactivityWidgetModelMixin
     implements IVideoPlayerWidgetModel {
   VideoPlayerWidgetModel(super._model);
 
@@ -90,16 +84,6 @@ class VideoPlayerWidgetModel
   final ValueNotifier<String> subtitle = ValueNotifier('');
 
   @override
-  final ValueNotifier<CrossFadeState> playPauseLoaderState = ValueNotifier(
-    CrossFadeState.showFirst,
-  );
-
-  @override
-  final ValueNotifier<VoidCallback?> playPauseLoaderCallback = ValueNotifier(
-    null,
-  );
-
-  @override
   final ValueNotifier<bool> rewindEnabled = ValueNotifier(false);
 
   @override
@@ -112,21 +96,7 @@ class VideoPlayerWidgetModel
   final FullscreenController fullscreenController = FullscreenController();
 
   @override
-  late final CurvedAnimation playPauseAnimation = CurvedAnimation(
-    parent: _playPauseAnimationController,
-    curve: Easing.standard,
-    reverseCurve: Easing.standard.flipped,
-  );
-
-  @override
   VideoController get controller => model.videoController;
-
-  late final AnimationController _playPauseAnimationController =
-      AnimationController(
-    vsync: this,
-    duration: Durations.medium2,
-    value: controller.value.isPlaying ? 1 : 0,
-  );
 
   @override
   void initWidgetModel() {
@@ -208,43 +178,23 @@ class VideoPlayerWidgetModel
   void dispose() {
     super.dispose();
     model.removeListener(_onModelChanged);
-    _playPauseAnimationController.dispose();
     aspectRatio.dispose();
     maxScale.dispose();
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
-    playPauseLoaderState.dispose();
-    playPauseLoaderCallback.dispose();
     rewindEnabled.dispose();
     fastForwardEnabled.dispose();
     positionValue.dispose();
     fullscreenController
       ..exit()
       ..dispose();
-    playPauseAnimation.dispose();
   }
 
   void _onModelChanged() {
     aspectRatio.value = model.aspectRatio;
     maxScale.value = model.maxScale;
     scaleAnchors.value = model.scaleAnchors;
-
-    if (model.playing) {
-      _playPauseAnimationController.forward();
-      hideOnUserInactivity(restartUserInactivityTimer: false);
-    } else {
-      _playPauseAnimationController.reverse();
-      show(hideOnUserInactivity: false);
-    }
-
-    playPauseLoaderState.value =
-        model.loading ? CrossFadeState.showSecond : CrossFadeState.showFirst;
-    playPauseLoaderCallback.value =
-        model.loading ? null : model.togglePlayPause;
-    if (model.loading) {
-      show(hideOnUserInactivity: false);
-    }
 
     fullscreenController.webElementQuery =
         defaultTargetPlatform == TargetPlatform.iOS
@@ -257,6 +207,12 @@ class VideoPlayerWidgetModel
     positionValue.value = model.duration == Duration.zero
         ? 0
         : model.position.inSeconds / model.duration.inSeconds;
+
+    if (model.loading || !model.playing) {
+      show(hideOnUserInactivity: false);
+    } else if (model.playing) {
+      hideOnUserInactivity(restartUserInactivityTimer: false);
+    }
   }
 }
 
