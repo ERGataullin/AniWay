@@ -98,6 +98,15 @@ class VideoPlayerWidgetModel
   VideoPlayerWidgetModel(super._model);
 
   @override
+  final ValueNotifier<double> aspectRatio = ValueNotifier(1);
+
+  @override
+  final ValueNotifier<double> maxScale = ValueNotifier(1);
+
+  @override
+  final ValueNotifier<List<double>> scaleAnchors = ValueNotifier(const [1]);
+
+  @override
   final ValueNotifier<String> title = ValueNotifier('');
 
   @override
@@ -109,8 +118,9 @@ class VideoPlayerWidgetModel
   );
 
   @override
-  final ValueNotifier<VoidCallback?> playPauseLoaderCallback =
-      ValueNotifier(null);
+  final ValueNotifier<VoidCallback?> playPauseLoaderCallback = ValueNotifier(
+    null,
+  );
 
   @override
   final ValueNotifier<bool> rewindEnabled = ValueNotifier(false);
@@ -135,15 +145,6 @@ class VideoPlayerWidgetModel
   );
 
   @override
-  ValueListenable<double> get aspectRatio => model.aspectRatio;
-
-  @override
-  ValueListenable<double> get maxScale => model.maxScale;
-
-  @override
-  ValueListenable<List<double>> get scaleAnchors => model.scaleAnchors;
-
-  @override
   VideoController get controller => model.videoController;
 
   late final AnimationController _playPauseAnimationController =
@@ -159,16 +160,10 @@ class VideoPlayerWidgetModel
   void initWidgetModel() {
     super.initWidgetModel();
     model
-      ..playing.addListener(_onPlayingChanged)
-      ..loading.addListener(_onLoadingChanged)
-      ..textureId.addListener(_updateFullscreenController)
-      ..position.addListener(_updateTimer)
-      ..position.addListener(_updatePositionValue)
-      ..duration.addListener(_updateTimer)
-      ..duration.addListener(_updatePositionValue)
+      ..addListener(_onModelChanged)
       ..videoController = widget.controller;
-    _updateTitle();
-    _updateSubtitle();
+    title.value = widget.title;
+    subtitle.value = widget.subtitle;
     show();
   }
 
@@ -182,8 +177,8 @@ class VideoPlayerWidgetModel
 
   @override
   void didUpdateWidget(VideoPlayerWidget oldWidget) {
-    _updateTitle();
-    _updateSubtitle();
+    title.value = widget.title;
+    subtitle.value = widget.subtitle;
 
     if (widget.controller != oldWidget.controller) {
       model.videoController = widget.controller;
@@ -242,15 +237,11 @@ class VideoPlayerWidgetModel
   @override
   void dispose() {
     super.dispose();
-    model
-      ..playing.removeListener(_onPlayingChanged)
-      ..loading.removeListener(_onLoadingChanged)
-      ..textureId.removeListener(_updateFullscreenController)
-      ..position.removeListener(_updateTimer)
-      ..position.removeListener(_updatePositionValue)
-      ..duration.removeListener(_updateTimer)
-      ..duration.removeListener(_updatePositionValue);
+    model.removeListener(_onModelChanged);
     _playPauseAnimationController.dispose();
+    aspectRatio.dispose();
+    maxScale.dispose();
+    scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
     playPauseLoaderState.dispose();
@@ -265,71 +256,53 @@ class VideoPlayerWidgetModel
     playPauseAnimation.dispose();
   }
 
-  void _onPlayingChanged() {
-    if (model.playing.value) {
+  void _onModelChanged() {
+    aspectRatio.value = model.aspectRatio;
+    maxScale.value = model.maxScale;
+    scaleAnchors.value = model.scaleAnchors;
+
+    if (model.playing) {
       _playPauseAnimationController.forward();
       hideOnUserInactivity(restartUserInactivityTimer: false);
     } else {
       _playPauseAnimationController.reverse();
       show(hideOnUserInactivity: false);
     }
-  }
 
-  void _onLoadingChanged() {
-    _updatePlayPauseLoaderState();
-    _updatePlayPauseLoaderCallback();
-
-    if (model.loading.value) {
+    playPauseLoaderState.value =
+        model.loading ? CrossFadeState.showSecond : CrossFadeState.showFirst;
+    playPauseLoaderCallback.value =
+        model.loading ? null : model.togglePlayPause;
+    if (model.loading) {
       show(hideOnUserInactivity: false);
     }
-  }
 
-  void _updateFullscreenController() {
-    final Object textureId = model.textureId.value;
     fullscreenController.webElementQuery =
         defaultTargetPlatform == TargetPlatform.iOS
-            ? 'video#videoElement-$textureId'
+            ? 'video#videoElement-${model.textureId}'
             : null;
-  }
 
-  void _updateTitle() {
-    title.value = widget.title;
-  }
+    rewindEnabled.value = model.position > Duration.zero;
+    fastForwardEnabled.value = model.position < model.duration;
 
-  void _updateSubtitle() {
-    subtitle.value = widget.subtitle;
-  }
+    _updateTimer();
 
-  void _updatePlayPauseLoaderState() {
-    playPauseLoaderState.value = model.loading.value
-        ? CrossFadeState.showSecond
-        : CrossFadeState.showFirst;
-  }
-
-  void _updatePlayPauseLoaderCallback() {
-    playPauseLoaderCallback.value =
-        model.loading.value ? null : model.togglePlayPause;
+    positionValue.value = model.duration == Duration.zero
+        ? 0
+        : model.position.inSeconds / model.duration.inSeconds;
   }
 
   void _updateTimer() {
-    rewindEnabled.value = model.position.value > Duration.zero;
-    fastForwardEnabled.value = model.position.value < model.duration.value;
     timer.value = TextSpan(
       children: [
         TextSpan(
-          text: model.position.value.format(),
+          text: model.position.format(),
           style: TextStyle(color: _onSurfaceColor),
         ),
         const TextSpan(text: ' / '),
-        TextSpan(text: model.duration.value.format()),
+        TextSpan(text: model.duration.format()),
       ],
     );
-  }
-
-  void _updatePositionValue() {
-    positionValue.value = model.duration.value == Duration.zero
-        ? 0
-        : model.position.value.inSeconds / model.duration.value.inSeconds;
   }
 }
 
