@@ -1,4 +1,3 @@
-import 'dart:core';
 import 'dart:math';
 
 import 'package:core/core.dart';
@@ -6,22 +5,23 @@ import 'package:flutter/foundation.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:video_player/video_player.dart';
 
-abstract interface class IVideoPlayerModel implements ElementaryModel {
-  ValueListenable<bool> get loading;
+abstract interface class IVideoPlayerModel
+    implements ElementaryModel, Listenable {
+  bool get loading;
 
-  ValueListenable<bool> get playing;
+  bool get playing;
 
-  ValueListenable<Object> get textureId;
+  Object get textureId;
 
-  ValueListenable<double> get aspectRatio;
+  double get aspectRatio;
 
-  ValueListenable<double> get maxScale;
+  double get maxScale;
 
-  ValueListenable<List<double>> get scaleAnchors;
+  List<double> get scaleAnchors;
 
-  ValueListenable<Duration> get position;
+  Duration get position;
 
-  ValueListenable<Duration> get duration;
+  Duration get duration;
 
   VideoController get videoController;
 
@@ -32,35 +32,39 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
   void togglePlayPause();
 }
 
-class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
+class VideoPlayerModel extends ElementaryModel
+    with ChangeNotifier
+    implements IVideoPlayerModel {
   VideoPlayerModel(ErrorHandler errorHandler)
-      : super(errorHandler: errorHandler);
+      : super(errorHandler: errorHandler) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      ChangeNotifier.maybeDispatchObjectCreation(this);
+    }
+  }
 
   @override
-  ValueNotifier<bool> loading = ValueNotifier(false);
+  bool loading = false;
 
   @override
-  ValueNotifier<bool> playing = ValueNotifier(false);
+  bool playing = false;
 
   @override
-  final ValueNotifier<Object> textureId = ValueNotifier(
-    VideoController.kUninitializedTextureId,
-  );
+  Object textureId = VideoController.kUninitializedTextureId;
 
   @override
-  final ValueNotifier<double> aspectRatio = ValueNotifier(1);
+  double aspectRatio = 1;
 
   @override
-  ValueNotifier<double> maxScale = ValueNotifier(1);
+  double maxScale = 1;
 
   @override
-  ValueNotifier<List<double>> scaleAnchors = ValueNotifier(const [1]);
+  List<double> scaleAnchors = const [1];
 
   @override
-  ValueNotifier<Duration> position = ValueNotifier(Duration.zero);
+  Duration position = Duration.zero;
 
   @override
-  ValueNotifier<Duration> duration = ValueNotifier(Duration.zero);
+  Duration duration = Duration.zero;
 
   @override
   VideoController get videoController {
@@ -80,7 +84,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     _surfaceAspectRatio = value;
     _updateScaling();
   }
-  
+
   double _surfaceAspectRatio = 1;
 
   VideoController? _videoController;
@@ -96,39 +100,33 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   void dispose() {
     super.dispose();
     _videoController?.removeListener(_onVideoPlayerChanged);
-    loading.dispose();
-    playing.dispose();
-    textureId.dispose();
-    aspectRatio.dispose();
-    maxScale.dispose();
-    scaleAnchors.dispose();
-    position.dispose();
-    duration.dispose();
   }
 
   void _onVideoPlayerChanged() {
     final VideoPlayerValue value = videoController.value;
 
     if (!value.isInitialized) {
-      loading.value = true;
+      loading = true;
+      notifyListeners();
       return;
     }
 
-    loading.value = !value.isInitialized || value.isBuffering;
-    playing.value = value.isPlaying;
-    textureId.value = videoController.textureId;
-    aspectRatio.value = value.aspectRatio;
-    position.value = value.position;
-    duration.value = value.duration;
+    loading = !value.isInitialized || value.isBuffering;
+    playing = value.isPlaying;
+    textureId = videoController.textureId;
+    aspectRatio = value.aspectRatio;
+    position = value.position;
+    duration = value.duration;
 
     _updateScaling();
   }
-  
+
   void _updateScaling() {
-    maxScale.value = max(
+    maxScale = max(
       _surfaceAspectRatio / videoController.value.aspectRatio,
       videoController.value.aspectRatio / _surfaceAspectRatio,
     );
-    scaleAnchors.value = List.unmodifiable(<double>[1, maxScale.value]);
+    scaleAnchors = List.unmodifiable([1, maxScale]);
+    notifyListeners();
   }
 }

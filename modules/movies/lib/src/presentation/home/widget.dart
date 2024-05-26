@@ -38,6 +38,7 @@ class HomeWidget extends ElementaryWidget<IHomeWidgetModel> {
           listenable: wm.showLoader,
           builder: (context, __) => AnimatedSwitcher(
             switchInCurve: Curves.easeInOutCubicEmphasized,
+            switchOutCurve: Curves.easeInOutCubicEmphasized.flipped,
             duration: Durations.long2,
             child: wm.showLoader.value
                 ? const Center(

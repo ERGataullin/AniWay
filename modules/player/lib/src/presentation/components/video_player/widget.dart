@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
+import 'package:player/src/presentation/components/video_play_pause_loader.dart';
 import 'package:player/src/presentation/components/video_player/widget_model.dart';
+import 'package:player/src/presentation/components/video_seek_bar.dart';
+import 'package:player/src/presentation/components/video_timer.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:video_player/video_player.dart';
 
@@ -162,9 +165,7 @@ class _Player extends StatelessWidget {
         AnimatedVisibility.emphasized(
           visible: context.wm.visible,
           child: const DecoratedBox(
-            decoration: BoxDecoration(
-              color: Colors.black54,
-            ),
+            decoration: BoxDecoration(color: Colors.black54),
           ),
         ),
       ],
@@ -179,46 +180,75 @@ class _Controls extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedVisibility.emphasized(
       visible: context.wm.visible,
-      child: const Stack(
+      child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
-          _Top(),
+          Align(
+            alignment: Alignment.topCenter,
+            child: AppBar(
+              forceMaterialTransparency: true,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Title(context.wm.title),
+                  _Title(
+                    context.wm.subtitle,
+                    style: Theme.of(context).primaryTextTheme.titleMedium,
+                  ),
+                ],
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.settings_outlined),
+                  onPressed: context.wm.onPreferencesPressed,
+                ),
+              ],
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _PreviousButton(),
-              SizedBox(width: 64),
-              _PlayPauseLoader(),
-              SizedBox(width: 64),
-              _NextButton(),
+              _SkipButton(
+                icon: const Icon(Icons.skip_previous),
+                onPressed: context.wm.onPreviousPressed,
+              ),
+              const SizedBox(width: 64),
+              VideoPlayPauseLoader(videoController: context.wm.controller),
+              const SizedBox(width: 64),
+              _SkipButton(
+                icon: const Icon(Icons.skip_next),
+                onPressed: context.wm.onNextPressed,
+              ),
             ],
           ),
-          _Bottom(),
-        ],
-      ),
-    );
-  }
-}
-
-class _Top extends StatelessWidget {
-  const _Top();
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: AppBar(
-        forceMaterialTransparency: true,
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Title(),
-            _Subtitle(),
-          ],
-        ),
-        actions: const [
-          _PreferencesButton(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      VideoTimer(videoController: context.wm.controller),
+                      FullscreenButton(
+                        controller: context.wm.fullscreenController,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  VideoSeekBar(
+                    videoController: context.wm.controller,
+                    onPositionChangeStart: context.wm.onPositionChangeStart,
+                    onPositionChangeEnd: context.wm.onPositionChangeEnd,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -226,218 +256,53 @@ class _Top extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  const _Title();
+  const _Title(
+    this.data, {
+    this.style,
+  });
+
+  final ValueListenable<String> data;
+
+  final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
-      valueListenable: context.wm.title,
-      builder: (context, title, ___) => AnimatedSwitcher(
+      valueListenable: data,
+      builder: (context, data, ___) => AnimatedSwitcher(
         switchInCurve: Easing.standard,
+        switchOutCurve: Easing.standard.flipped,
         duration: Durations.medium2,
         child: Text(
-          title,
-          key: Key(title),
+          data,
+          key: Key(data),
+          style: style,
         ),
       ),
     );
   }
 }
 
-class _Subtitle extends StatelessWidget {
-  const _Subtitle();
+class _SkipButton extends StatelessWidget {
+  const _SkipButton({
+    this.onPressed,
+    required this.icon,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable: context.wm.subtitle,
-      builder: (context, subtitle, ___) => AnimatedSwitcher(
-        switchInCurve: Easing.standard,
-        duration: Durations.medium2,
-        child: Text(
-          subtitle,
-          key: Key(subtitle),
-          style: Theme.of(context).primaryTextTheme.titleSmall,
-        ),
-      ),
-    );
-  }
-}
+  final VoidCallback? onPressed;
 
-class _PreferencesButton extends StatelessWidget {
-  const _PreferencesButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.settings_outlined),
-      onPressed: context.wm.onPreferencesPressed,
-    );
-  }
-}
-
-class _PlayPauseLoader extends StatelessWidget {
-  const _PlayPauseLoader();
-
-  static Widget _animatedCrossFadeLayoutBuilder(
-    Widget topChild,
-    Key topChildKey,
-    Widget bottomChild,
-    Key bottomChildKey,
-  ) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: <Widget>[
-        SizedBox(
-          key: bottomChildKey,
-          child: bottomChild,
-        ),
-        SizedBox(
-          key: topChildKey,
-          child: topChild,
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    const double size = 48;
-    return ValueListenableBuilder(
-      valueListenable: context.wm.playPauseLoaderCallback,
-      builder: (context, callback, ___) => IconButton.filledTonal(
-        iconSize: size,
-        onPressed: callback,
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            Theme.of(context).colorScheme.secondaryContainer,
-          ),
-        ),
-        icon: ValueListenableBuilder(
-          valueListenable: context.wm.playPauseLoaderState,
-          builder: (context, state, ___) => AnimatedCrossFade(
-            alignment: Alignment.center,
-            // TODO(ERGataullin): replace with Easing.emphasized
-            firstCurve: Easing.standard,
-            secondCurve: Easing.standard,
-            duration: Durations.medium2,
-            crossFadeState: state,
-            layoutBuilder: _animatedCrossFadeLayoutBuilder,
-            firstChild: AnimatedIcon(
-              icon: AnimatedIcons.play_pause,
-              progress: context.wm.playPauseAnimation,
-            ),
-            secondChild: const CircularProgressIndicator.adaptive(),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Bottom extends StatelessWidget {
-  const _Bottom();
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const _Timer(),
-                FullscreenButton(controller: context.wm.fullscreenController),
-              ],
-            ),
-            const SizedBox(height: 4),
-            const _SeekBar(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Timer extends StatelessWidget {
-  const _Timer();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: context.wm.timer,
-      builder: (context, __) {
-        final ThemeData theme = Theme.of(context);
-        return Text.rich(
-          context.wm.timer.value,
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.secondary,
-            shadows: [
-              Shadow(
-                blurRadius: 16,
-                color: Theme.of(context).colorScheme.shadow,
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _SeekBar extends StatelessWidget {
-  const _SeekBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.positionValue,
-      builder: (context, value, ___) => Slider.adaptive(
-        value: value,
-        onChangeStart: context.wm.onPositionChangeStart,
-        onChangeEnd: context.wm.onPositionChangeEnd,
-        onChanged: context.wm.onPositionChanged,
-      ),
-    );
-  }
-}
-
-class _PreviousButton extends StatelessWidget {
-  const _PreviousButton();
+  final Widget icon;
 
   @override
   Widget build(BuildContext context) {
     return IconButton.filledTonal(
-      onPressed: context.wm.onPreviousButtonPressed,
+      onPressed: onPressed,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(
           Theme.of(context).colorScheme.secondaryContainer,
         ),
       ),
-      icon: const Icon(Icons.skip_previous),
-    );
-  }
-}
-
-class _NextButton extends StatelessWidget {
-  const _NextButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton.filledTonal(
-      onPressed: context.wm.onNextPressed,
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(
-          Theme.of(context).colorScheme.secondaryContainer,
-        ),
-      ),
-      icon: const Icon(Icons.skip_next),
+      icon: icon,
     );
   }
 }

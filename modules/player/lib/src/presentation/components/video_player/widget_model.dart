@@ -16,27 +16,6 @@ VideoPlayerWidgetModel videoPlayerWidgetModelFactory(
       VideoPlayerModel(context.read<ErrorHandler>()),
     );
 
-extension _DurationFormat on Duration {
-  String format() {
-    final int hours = inHours;
-    final int minutes = inMinutes % 60;
-    final int seconds = inSeconds % 60;
-
-    final StringBuffer buffer = StringBuffer();
-    if (hours > 0) {
-      buffer
-        ..write(hours)
-        ..write(':');
-    }
-    buffer
-      ..write(minutes.toString().padLeft(hours > 0 ? 2 : 1, '0'))
-      ..write(':')
-      ..write(seconds.toString().padLeft(2, '0'));
-
-    return buffer.toString();
-  }
-}
-
 abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   ValueListenable<bool> get visible;
 
@@ -52,23 +31,13 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
-  ValueListenable<CrossFadeState> get playPauseLoaderState;
-
-  ValueListenable<VoidCallback?> get playPauseLoaderCallback;
-
   ValueListenable<bool> get rewindEnabled;
 
   ValueListenable<bool> get fastForwardEnabled;
 
-  ValueListenable<TextSpan> get timer;
-
-  ValueListenable<double> get positionValue;
-
   VideoController get controller;
 
   FullscreenController get fullscreenController;
-
-  Animation<double> get playPauseAnimation;
 
   void onTapUp(TapUpDetails details);
 
@@ -82,20 +51,27 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   void onPositionChangeEnd(double position);
 
-  void onPositionChanged(double position);
-
   void onSeek(Duration seekDuration);
 
-  void onPreviousButtonPressed();
+  void onPreviousPressed();
 
   void onNextPressed();
 }
 
 class VideoPlayerWidgetModel
     extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
-    with TickerProviderWidgetModelMixin, _HideOnUserInactivityWidgetModelMixin
+    with _HideOnUserInactivityWidgetModelMixin
     implements IVideoPlayerWidgetModel {
   VideoPlayerWidgetModel(super._model);
+
+  @override
+  final ValueNotifier<double> aspectRatio = ValueNotifier(1);
+
+  @override
+  final ValueNotifier<double> maxScale = ValueNotifier(1);
+
+  @override
+  final ValueNotifier<List<double>> scaleAnchors = ValueNotifier(const [1]);
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
@@ -104,86 +80,38 @@ class VideoPlayerWidgetModel
   final ValueNotifier<String> subtitle = ValueNotifier('');
 
   @override
-  final ValueNotifier<CrossFadeState> playPauseLoaderState = ValueNotifier(
-    CrossFadeState.showFirst,
-  );
-
-  @override
-  final ValueNotifier<VoidCallback?> playPauseLoaderCallback =
-      ValueNotifier(null);
-
-  @override
   final ValueNotifier<bool> rewindEnabled = ValueNotifier(false);
 
   @override
   final ValueNotifier<bool> fastForwardEnabled = ValueNotifier(false);
 
   @override
-  final ValueNotifier<TextSpan> timer = ValueNotifier(const TextSpan());
-
-  @override
-  final ValueNotifier<double> positionValue = ValueNotifier(0);
-
-  @override
   final FullscreenController fullscreenController = FullscreenController();
 
   @override
-  late final CurvedAnimation playPauseAnimation = CurvedAnimation(
-    parent: _playPauseAnimationController,
-    curve: Easing.standard,
-    reverseCurve: Easing.standard.flipped,
-  );
-
-  @override
-  ValueListenable<double> get aspectRatio => model.aspectRatio;
-
-  @override
-  ValueListenable<double> get maxScale => model.maxScale;
-
-  @override
-  ValueListenable<List<double>> get scaleAnchors => model.scaleAnchors;
-
-  @override
   VideoController get controller => model.videoController;
-
-  late final AnimationController _playPauseAnimationController =
-      AnimationController(
-    vsync: this,
-    duration: Durations.medium2,
-    value: controller.value.isPlaying ? 1 : 0,
-  );
-
-  Color? _onSurfaceColor;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
     model
-      ..playing.addListener(_onPlayingChanged)
-      ..loading.addListener(_onLoadingChanged)
-      ..textureId.addListener(_updateFullscreenController)
-      ..position.addListener(_updateTimer)
-      ..position.addListener(_updatePositionValue)
-      ..duration.addListener(_updateTimer)
-      ..duration.addListener(_updatePositionValue)
+      ..addListener(_onModelChanged)
       ..videoController = widget.controller;
-    _updateTitle();
-    _updateSubtitle();
+    title.value = widget.title;
+    subtitle.value = widget.subtitle;
     show();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _onSurfaceColor = Theme.of(context).colorScheme.onSurface;
-    _updateTimer();
     model.surfaceAspectRatio = MediaQuery.of(context).size.aspectRatio;
   }
 
   @override
   void didUpdateWidget(VideoPlayerWidget oldWidget) {
-    _updateTitle();
-    _updateSubtitle();
+    title.value = widget.title;
+    subtitle.value = widget.subtitle;
 
     if (widget.controller != oldWidget.controller) {
       model.videoController = widget.controller;
@@ -220,17 +148,12 @@ class VideoPlayerWidgetModel
   }
 
   @override
-  Future<void> onPositionChanged(double position) async {
-    await controller.seekTo(controller.value.duration * position);
-  }
-
-  @override
   Future<void> onSeek(Duration seekDuration) async {
     await controller.seekTo(controller.value.position + seekDuration);
   }
 
   @override
-  void onPreviousButtonPressed() {
+  void onPreviousPressed() {
     widget.onPreviousPressed();
   }
 
@@ -242,94 +165,37 @@ class VideoPlayerWidgetModel
   @override
   void dispose() {
     super.dispose();
-    model
-      ..playing.removeListener(_onPlayingChanged)
-      ..loading.removeListener(_onLoadingChanged)
-      ..textureId.removeListener(_updateFullscreenController)
-      ..position.removeListener(_updateTimer)
-      ..position.removeListener(_updatePositionValue)
-      ..duration.removeListener(_updateTimer)
-      ..duration.removeListener(_updatePositionValue);
-    _playPauseAnimationController.dispose();
+    model.removeListener(_onModelChanged);
+    aspectRatio.dispose();
+    maxScale.dispose();
+    scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
-    playPauseLoaderState.dispose();
-    playPauseLoaderCallback.dispose();
     rewindEnabled.dispose();
     fastForwardEnabled.dispose();
-    timer.dispose();
-    positionValue.dispose();
     fullscreenController
       ..exit()
       ..dispose();
-    playPauseAnimation.dispose();
   }
 
-  void _onPlayingChanged() {
-    if (model.playing.value) {
-      _playPauseAnimationController.forward();
-      hideOnUserInactivity(restartUserInactivityTimer: false);
-    } else {
-      _playPauseAnimationController.reverse();
-      show(hideOnUserInactivity: false);
-    }
-  }
+  void _onModelChanged() {
+    aspectRatio.value = model.aspectRatio;
+    maxScale.value = model.maxScale;
+    scaleAnchors.value = model.scaleAnchors;
 
-  void _onLoadingChanged() {
-    _updatePlayPauseLoaderState();
-    _updatePlayPauseLoaderCallback();
-
-    if (model.loading.value) {
-      show(hideOnUserInactivity: false);
-    }
-  }
-
-  void _updateFullscreenController() {
-    final Object textureId = model.textureId.value;
     fullscreenController.webElementQuery =
         defaultTargetPlatform == TargetPlatform.iOS
-            ? 'video#videoElement-$textureId'
+            ? 'video#videoElement-${model.textureId}'
             : null;
-  }
 
-  void _updateTitle() {
-    title.value = widget.title;
-  }
+    rewindEnabled.value = model.position > Duration.zero;
+    fastForwardEnabled.value = model.position < model.duration;
 
-  void _updateSubtitle() {
-    subtitle.value = widget.subtitle;
-  }
-
-  void _updatePlayPauseLoaderState() {
-    playPauseLoaderState.value = model.loading.value
-        ? CrossFadeState.showSecond
-        : CrossFadeState.showFirst;
-  }
-
-  void _updatePlayPauseLoaderCallback() {
-    playPauseLoaderCallback.value =
-        model.loading.value ? null : model.togglePlayPause;
-  }
-
-  void _updateTimer() {
-    rewindEnabled.value = model.position.value > Duration.zero;
-    fastForwardEnabled.value = model.position.value < model.duration.value;
-    timer.value = TextSpan(
-      children: [
-        TextSpan(
-          text: model.position.value.format(),
-          style: TextStyle(color: _onSurfaceColor),
-        ),
-        const TextSpan(text: ' / '),
-        TextSpan(text: model.duration.value.format()),
-      ],
-    );
-  }
-
-  void _updatePositionValue() {
-    positionValue.value = model.duration.value == Duration.zero
-        ? 0
-        : model.position.value.inSeconds / model.duration.value.inSeconds;
+    if (model.loading || !model.playing) {
+      show(hideOnUserInactivity: false);
+    } else if (model.playing) {
+      hideOnUserInactivity(restartUserInactivityTimer: false);
+    }
   }
 }
 
