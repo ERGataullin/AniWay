@@ -88,7 +88,7 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   void initWidgetModel() {
     super.initWidgetModel();
     model
-      ..addListener(_onValueChaged)
+      ..addListener(_onValueChanged)
       ..type = widget.type
       ..onSeek = widget.onSeek;
     shape.value = SeekAreaShapeBorder(widget.type);
@@ -163,7 +163,7 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     model.submit();
   }
 
-  Future<void> _onValueChaged() async {
+  Future<void> _onValueChanged() async {
     _visible = model.value != Duration.zero;
     if (!_visible) {
       for (final AnimationController iconController in _iconsControllers) {
