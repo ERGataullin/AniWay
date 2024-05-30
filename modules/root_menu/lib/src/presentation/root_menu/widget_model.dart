@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:root_menu/root_menu.dart';
 import 'package:root_menu/src/presentation/root_menu/model.dart';
 
-RootMenuWidgetModel rootMenuWidgetModelFactory(BuildContext context) =>
-    RootMenuWidgetModel(
+RootMenuWM rootMenuWMFactory(BuildContext context) => RootMenuWM(
       RootMenuModel(
         context.read<ErrorHandler>(),
       ),
     );
 
-abstract interface class IRootMenuWidgetModel implements IWidgetModel {
+abstract interface class IRootMenuWM implements IWidgetModel {
   ValueListenable<int> get selectedIndex;
 
   ValueListenable<int> get destinationsCount;
@@ -23,9 +22,9 @@ abstract interface class IRootMenuWidgetModel implements IWidgetModel {
   void onDestinationSelected(int index);
 }
 
-class RootMenuWidgetModel extends WidgetModel<RootMenuWidget, IRootMenuModel>
-    implements IRootMenuWidgetModel {
-  RootMenuWidgetModel(super._model);
+class RootMenuWM extends WidgetModel<RootMenuWidget, IRootMenuModel>
+    implements IRootMenuWM {
+  RootMenuWM(super._model);
 
   @override
   final ValueNotifier<int> selectedIndex = ValueNotifier(0);

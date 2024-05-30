@@ -7,12 +7,11 @@ import 'package:player/src/presentation/components/seek_area/model.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/utils/seek_gesture_recognizer.dart';
 
-SeekAreaWidgetModel seekAreaWidgetModelFactory(BuildContext context) =>
-    SeekAreaWidgetModel(
+SeekAreaWM seekAreaWMFactory(BuildContext context) => SeekAreaWM(
       SeekAreaModel(context.read<ErrorHandler>()),
     );
 
-abstract interface class ISeekAreaWidgetModel implements IWidgetModel {
+abstract interface class ISeekAreaWM implements IWidgetModel {
   ValueListenable<Map<Type, GestureRecognizerFactory>> get gestures;
 
   ValueListenable<ShapeBorder> get shape;
@@ -26,10 +25,10 @@ abstract interface class ISeekAreaWidgetModel implements IWidgetModel {
   void onMaterialBuilt(BuildContext context);
 }
 
-class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
+class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     with TickerProviderWidgetModelMixin
-    implements ISeekAreaWidgetModel {
-  SeekAreaWidgetModel(super._model);
+    implements ISeekAreaWM {
+  SeekAreaWM(super._model);
 
   static const int _iconsCount = 3;
 

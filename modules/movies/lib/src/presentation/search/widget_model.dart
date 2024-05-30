@@ -5,14 +5,13 @@ import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/search/model.dart';
 
-SearchWidgetModel searchWidgetModelFactory(BuildContext context) =>
-    SearchWidgetModel(
+SearchWM searchWMFactory(BuildContext context) => SearchWM(
       SearchModel(
         service: context.read<MoviesService>(),
       ),
     );
 
-abstract interface class ISearchWidgetModel implements IWidgetModel {
+abstract interface class ISearchWM implements IWidgetModel {
   ValueListenable<bool> get showLoader;
 
   ValueListenable<String> get queryHint;
@@ -26,9 +25,9 @@ abstract interface class ISearchWidgetModel implements IWidgetModel {
   void onMoviePressed(Object id);
 }
 
-class SearchWidgetModel extends WidgetModel<SearchWidget, ISearchModel>
-    implements ISearchWidgetModel {
-  SearchWidgetModel(super._model);
+class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
+    implements ISearchWM {
+  SearchWM(super._model);
 
   @override
   final ValueNotifier<String> queryHint = ValueNotifier('');

@@ -7,15 +7,15 @@ import 'package:movies/src/presentation/components/up_next/widget.dart';
 import 'package:movies/src/presentation/home/widget_model.dart';
 
 extension _HomeContext on BuildContext {
-  IHomeWidgetModel get wm => read<IHomeWidgetModel>();
+  IHomeWM get wm => read<IHomeWM>();
 }
 
-class HomeWidget extends ElementaryWidget<IHomeWidgetModel> {
+class HomeWidget extends ElementaryWidget<IHomeWM> {
   const HomeWidget({
     super.key,
     required this.onMoviePressed,
     required this.playerBuilder,
-    WidgetModelFactory wmFactory = homeWidgetModelFactory,
+    WidgetModelFactory wmFactory = homeWMFactory,
   }) : super(wmFactory);
 
   final void Function(Object id) onMoviePressed;
@@ -23,9 +23,9 @@ class HomeWidget extends ElementaryWidget<IHomeWidgetModel> {
   final Widget Function(Object episodeId, Object movieId) playerBuilder;
 
   @override
-  Widget build(IHomeWidgetModel wm) {
+  Widget build(IHomeWM wm) {
     const EdgeInsets categoriesMargin = EdgeInsets.fromLTRB(16, 4, 16, 16);
-    return Provider<IHomeWidgetModel>.value(
+    return Provider<IHomeWM>.value(
       value: wm,
       child: Scaffold(
         appBar: AppBar(

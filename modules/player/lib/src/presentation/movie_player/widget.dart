@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/presentation/movie_player/widget_model.dart';
 
-class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWidgetModel> {
+class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWM> {
   const MoviePlayerWidget({
     super.key,
     required this.movieId,
     required this.episodeId,
-    WidgetModelFactory wmFactory = moviePlayerWidgetModelFactory,
+    WidgetModelFactory wmFactory = moviePlayerWMFactory,
   }) : super(wmFactory);
 
   final Object movieId;
@@ -16,8 +16,8 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWidgetModel> {
   final Object episodeId;
 
   @override
-  Widget build(IMoviePlayerWidgetModel wm) {
-    return Provider<IMoviePlayerWidgetModel>.value(
+  Widget build(IMoviePlayerWM wm) {
+    return Provider<IMoviePlayerWM>.value(
       value: wm,
       child: ListenableBuilder(
         listenable: Listenable.merge([

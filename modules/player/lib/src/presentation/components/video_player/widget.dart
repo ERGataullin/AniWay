@@ -13,10 +13,10 @@ import 'package:player/src/utils/video_controller.dart';
 import 'package:video_player/video_player.dart';
 
 extension _VideoPlayerContext on BuildContext {
-  IVideoPlayerWidgetModel get wm => read<IVideoPlayerWidgetModel>();
+  IVideoPlayerWM get wm => read<IVideoPlayerWM>();
 }
 
-class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWidgetModel> {
+class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
   const VideoPlayerWidget({
     super.key,
     required this.controller,
@@ -25,7 +25,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWidgetModel> {
     this.preferences = const [],
     required this.onPreviousPressed,
     required this.onNextPressed,
-    WidgetModelFactory wmFactory = videoPlayerWidgetModelFactory,
+    WidgetModelFactory wmFactory = videoPlayerWMFactory,
   }) : super(wmFactory);
 
   final VideoController controller;
@@ -41,8 +41,8 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWidgetModel> {
   final VoidCallback onNextPressed;
 
   @override
-  Widget build(IVideoPlayerWidgetModel wm) {
-    return Provider<IVideoPlayerWidgetModel>.value(
+  Widget build(IVideoPlayerWM wm) {
+    return Provider<IVideoPlayerWM>.value(
       value: wm,
       child: const Scaffold(
         body: Stack(

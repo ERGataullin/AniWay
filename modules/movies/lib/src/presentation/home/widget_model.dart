@@ -6,14 +6,14 @@ import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/home/model.dart';
 
-HomeWidgetModel homeWidgetModelFactory(BuildContext context) => HomeWidgetModel(
+HomeWM homeWMFactory(BuildContext context) => HomeWM(
       HomeModel(
         context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
       ),
     );
 
-abstract interface class IHomeWidgetModel implements IWidgetModel {
+abstract interface class IHomeWM implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<bool> get showLoader;
@@ -34,9 +34,8 @@ abstract interface class IHomeWidgetModel implements IWidgetModel {
   void onMoviePressed(Object id);
 }
 
-class HomeWidgetModel extends WidgetModel<HomeWidget, IHomeModel>
-    implements IHomeWidgetModel {
-  HomeWidgetModel(super._model);
+class HomeWM extends WidgetModel<HomeWidget, IHomeModel> implements IHomeWM {
+  HomeWM(super._model);
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');

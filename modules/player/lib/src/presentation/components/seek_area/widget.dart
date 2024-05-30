@@ -10,15 +10,15 @@ typedef OnSeek = void Function(Duration duration);
 enum SeekType { rewind, fastForward }
 
 extension _SeekAreaContext on BuildContext {
-  ISeekAreaWidgetModel get wm => read<ISeekAreaWidgetModel>();
+  ISeekAreaWM get wm => read<ISeekAreaWM>();
 }
 
-class SeekAreaWidget extends ElementaryWidget<ISeekAreaWidgetModel> {
+class SeekAreaWidget extends ElementaryWidget<ISeekAreaWM> {
   const SeekAreaWidget({
     super.key,
     required this.videoController,
     required this.type,
-    WidgetModelFactory wmFactory = seekAreaWidgetModelFactory,
+    WidgetModelFactory wmFactory = seekAreaWMFactory,
   }) : super(wmFactory);
 
   final VideoPlayerController videoController;
@@ -26,7 +26,7 @@ class SeekAreaWidget extends ElementaryWidget<ISeekAreaWidgetModel> {
   final SeekType type;
 
   @override
-  Widget build(ISeekAreaWidgetModel wm) {
+  Widget build(ISeekAreaWM wm) {
     return Provider.value(
       value: wm,
       child: Material(

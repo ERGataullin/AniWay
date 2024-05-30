@@ -8,15 +8,14 @@ import 'package:player/player.dart';
 import 'package:player/src/presentation/movie_player/model.dart';
 import 'package:player/src/utils/video_controller.dart';
 
-MoviePlayerWidgetModel moviePlayerWidgetModelFactory(BuildContext context) =>
-    MoviePlayerWidgetModel(
+MoviePlayerWM moviePlayerWMFactory(BuildContext context) => MoviePlayerWM(
       MoviePlayerModel(
         context.read<ErrorHandler>(),
         service: context.read<PlayerService>(),
       ),
     );
 
-abstract interface class IMoviePlayerWidgetModel implements IWidgetModel {
+abstract interface class IMoviePlayerWM implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<String> get subtitle;
@@ -30,10 +29,10 @@ abstract interface class IMoviePlayerWidgetModel implements IWidgetModel {
   void onNextPressed();
 }
 
-class MoviePlayerWidgetModel
+class MoviePlayerWM
     extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
-    implements IMoviePlayerWidgetModel {
-  MoviePlayerWidgetModel(super._model);
+    implements IMoviePlayerWM {
+  MoviePlayerWM(super._model);
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');
