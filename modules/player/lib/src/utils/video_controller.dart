@@ -43,10 +43,16 @@ class VideoController extends ValueNotifier<VideoPlayerValue>
   Future<ClosedCaptionFile>? get closedCaptionFile =>
       _controller!.closedCaptionFile;
 
+  Uri get dataSourceUri => _dataSourceUri;
+
+  Uri _dataSourceUri = Uri();
+
   Future<void> initializeUri(Uri uri) async {
     final VideoPlayerController? oldController = _controller;
     _controller = VideoPlayerController.networkUrl(uri)
       ..addListener(_onControllerValueChanged);
+    _dataSourceUri = uri;
+    _onControllerValueChanged();
     oldController?.dispose();
     await _controller!.initialize();
   }
