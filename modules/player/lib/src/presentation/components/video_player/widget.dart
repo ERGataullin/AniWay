@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
+import 'package:player/src/presentation/components/show_on_mouse_hover.dart';
 import 'package:player/src/presentation/components/video_play_pause_loader.dart';
 import 'package:player/src/presentation/components/video_player/widget_model.dart';
 import 'package:player/src/presentation/components/video_seek_bar.dart';
@@ -43,40 +44,17 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWidgetModel> {
   Widget build(IVideoPlayerWidgetModel wm) {
     return Provider<IVideoPlayerWidgetModel>.value(
       value: wm,
-      child: const _MouseRegion(
-        child: Scaffold(
-          body: Stack(
-            clipBehavior: Clip.none,
-            fit: StackFit.expand,
-            children: [
-              _Gestures(
-                child: _Player(),
-              ),
-              _Controls(),
-            ],
-          ),
+      child: const Scaffold(
+        body: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            _Gestures(
+              child: _Player(),
+            ),
+            _Controls(),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _MouseRegion extends StatelessWidget {
-  const _MouseRegion({
-    this.child,
-  });
-
-  final Widget? child;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<MouseCursor>(
-      valueListenable: context.wm.cursor,
-      builder: (context, cursor, ___) => MouseRegion(
-        cursor: cursor,
-        onHover: context.wm.onPointerHover,
-        onExit: context.wm.onPointerExit,
-        child: child,
       ),
     );
   }
@@ -107,38 +85,24 @@ class _Gestures extends StatelessWidget {
           ),
         ),
         GestureDetector(onTapUp: context.wm.onTapUp),
-        const Row(
+        Row(
           children: [
-            _SeekArea(type: SeekType.rewind),
-            _SeekArea(type: SeekType.fastForward),
+            _buildSeekArea(context, type: SeekType.rewind),
+            _buildSeekArea(context, type: SeekType.fastForward),
           ],
         ),
       ],
     );
   }
-}
 
-class _SeekArea extends StatelessWidget {
-  const _SeekArea({
-    required this.type,
-  });
-
-  final SeekType type;
-
-  @override
-  Widget build(BuildContext context) {
-    final ValueListenable<bool> enabled = switch (type) {
-      SeekType.rewind => context.wm.rewindEnabled,
-      SeekType.fastForward => context.wm.fastForwardEnabled,
-    };
+  Widget _buildSeekArea(
+    BuildContext context, {
+    required SeekType type,
+  }) {
     return Expanded(
-      child: ListenableBuilder(
-        listenable: enabled,
-        builder: (context, __) => SeekAreaWidget(
-          type: type,
-          enabled: enabled.value,
-          onSeek: context.wm.onSeek,
-        ),
+      child: SeekAreaWidget(
+        videoController: context.wm.controller,
+        type: type,
       ),
     );
   }
@@ -162,10 +126,13 @@ class _Player extends StatelessWidget {
             ),
           ),
         ),
-        AnimatedVisibility.emphasized(
-          visible: context.wm.visible,
-          child: const DecoratedBox(
-            decoration: BoxDecoration(color: Colors.black54),
+        ListenableBuilder(
+          listenable: context.wm.controlsVisibilityController,
+          builder: (context, __) => AnimatedVisibility.emphasized(
+            visible: context.wm.controlsVisibilityController.visible,
+            child: const DecoratedBox(
+              decoration: BoxDecoration(color: Colors.black54),
+            ),
           ),
         ),
       ],
@@ -178,8 +145,8 @@ class _Controls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedVisibility.emphasized(
-      visible: context.wm.visible,
+    return ShowOnMouseHover(
+      controller: context.wm.controlsVisibilityController,
       child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,

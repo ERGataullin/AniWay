@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:core/core.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/seek_area/widget_model.dart';
+import 'package:video_player/video_player.dart';
 
 typedef OnSeek = void Function(Duration duration);
 
@@ -15,17 +16,14 @@ extension _SeekAreaContext on BuildContext {
 class SeekAreaWidget extends ElementaryWidget<ISeekAreaWidgetModel> {
   const SeekAreaWidget({
     super.key,
+    required this.videoController,
     required this.type,
-    this.enabled = true,
-    required this.onSeek,
     WidgetModelFactory wmFactory = seekAreaWidgetModelFactory,
   }) : super(wmFactory);
 
+  final VideoPlayerController videoController;
+
   final SeekType type;
-
-  final bool enabled;
-
-  final OnSeek onSeek;
 
   @override
   Widget build(ISeekAreaWidgetModel wm) {
