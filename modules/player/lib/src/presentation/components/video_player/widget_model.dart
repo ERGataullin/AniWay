@@ -10,10 +10,7 @@ import 'package:player/src/presentation/components/video_player/model.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
 
-VideoPlayerWM videoPlayerWMFactory(
-  BuildContext context,
-) =>
-    VideoPlayerWM(
+VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
       VideoPlayerModel(context.read<ErrorHandler>()),
     );
 
@@ -47,8 +44,7 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   void onNextPressed();
 }
 
-class VideoPlayerWM
-    extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
+class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     implements IVideoPlayerWM {
   VideoPlayerWM(super._model);
 

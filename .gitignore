@@ -6,13 +6,15 @@
 .DS_Store
 .atom/
 .buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# FVM related
 .fvm/flutter_sdk
 .fvm/release
 .fvm/version
 .fvm/versions/*
-.history
-.svn/
-migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -26,6 +28,7 @@ migrate_working_dir/
 #.vscode/
 
 # Flutter/Dart/Pub related
+pubspec.lock
 **/doc/api/
 **/ios/Flutter/.last_build_id
 *.dart_tool/
