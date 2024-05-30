@@ -28,10 +28,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
-  ValueListenable<bool> get rewindEnabled;
-
-  ValueListenable<bool> get fastForwardEnabled;
-
   VideoController get controller;
 
   HideOnUserInactivityController get controlsVisibilityController;
@@ -45,8 +41,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   void onPositionChangeStart(double position);
 
   void onPositionChangeEnd(double position);
-
-  void onSeek(Duration seekDuration);
 
   void onPreviousPressed();
 
@@ -72,12 +66,6 @@ class VideoPlayerWidgetModel
 
   @override
   final ValueNotifier<String> subtitle = ValueNotifier('');
-
-  @override
-  final ValueNotifier<bool> rewindEnabled = ValueNotifier(false);
-
-  @override
-  final ValueNotifier<bool> fastForwardEnabled = ValueNotifier(false);
 
   @override
   final HideOnUserInactivityController controlsVisibilityController =
@@ -145,11 +133,6 @@ class VideoPlayerWidgetModel
   }
 
   @override
-  Future<void> onSeek(Duration seekDuration) async {
-    await controller.seekTo(controller.value.position + seekDuration);
-  }
-
-  @override
   void onPreviousPressed() {
     widget.onPreviousPressed();
   }
@@ -168,8 +151,7 @@ class VideoPlayerWidgetModel
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
-    rewindEnabled.dispose();
-    fastForwardEnabled.dispose();
+    controlsVisibilityController.dispose();
     fullscreenController
       ..exit()
       ..dispose();
@@ -184,9 +166,6 @@ class VideoPlayerWidgetModel
         defaultTargetPlatform == TargetPlatform.iOS
             ? 'video#videoElement-${model.textureId}'
             : null;
-
-    rewindEnabled.value = model.position > Duration.zero;
-    fastForwardEnabled.value = model.position < model.duration;
 
     model.loading || !model.playing
         ? controlsVisibilityController.startShowing()

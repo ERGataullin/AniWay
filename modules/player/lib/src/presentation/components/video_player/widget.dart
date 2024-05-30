@@ -85,38 +85,24 @@ class _Gestures extends StatelessWidget {
           ),
         ),
         GestureDetector(onTapUp: context.wm.onTapUp),
-        const Row(
+        Row(
           children: [
-            _SeekArea(type: SeekType.rewind),
-            _SeekArea(type: SeekType.fastForward),
+            _buildSeekArea(context, type: SeekType.rewind),
+            _buildSeekArea(context, type: SeekType.fastForward),
           ],
         ),
       ],
     );
   }
-}
 
-class _SeekArea extends StatelessWidget {
-  const _SeekArea({
-    required this.type,
-  });
-
-  final SeekType type;
-
-  @override
-  Widget build(BuildContext context) {
-    final ValueListenable<bool> enabled = switch (type) {
-      SeekType.rewind => context.wm.rewindEnabled,
-      SeekType.fastForward => context.wm.fastForwardEnabled,
-    };
+  Widget _buildSeekArea(
+    BuildContext context, {
+    required SeekType type,
+  }) {
     return Expanded(
-      child: ListenableBuilder(
-        listenable: enabled,
-        builder: (context, __) => SeekAreaWidget(
-          type: type,
-          enabled: enabled.value,
-          onSeek: context.wm.onSeek,
-        ),
+      child: SeekAreaWidget(
+        videoController: context.wm.controller,
+        type: type,
       ),
     );
   }

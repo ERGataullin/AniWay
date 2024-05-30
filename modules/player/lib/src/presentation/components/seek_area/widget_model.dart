@@ -88,9 +88,9 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   void initWidgetModel() {
     super.initWidgetModel();
     model
-      ..addListener(_onValueChaged)
+      ..addListener(_onModelChaged)
       ..type = widget.type
-      ..onSeek = widget.onSeek;
+      ..videoController = widget.videoController;
     shape.value = SeekAreaShapeBorder(widget.type);
     iconsRotation.value = switch (widget.type) {
       SeekType.rewind => 2,
@@ -116,7 +116,7 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   void didUpdateWidget(SeekAreaWidget oldWidget) {
     model
       ..type = widget.type
-      ..onSeek = widget.onSeek;
+      ..videoController = widget.videoController;
     shape.value = SeekAreaShapeBorder(widget.type);
     iconsRotation.value = switch (widget.type) {
       SeekType.rewind => 2,
@@ -127,7 +127,6 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
 
   @override
   void dispose() {
-    super.dispose();
     gestures.dispose();
     shape.dispose();
     iconsRotation.dispose();
@@ -138,6 +137,7 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     for (final AnimationController controller in _iconsControllers) {
       controller.dispose();
     }
+    super.dispose();
   }
 
   Future<void> _onSeekTapUp(TapUpDetails details) async {
@@ -163,7 +163,7 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     model.submit();
   }
 
-  Future<void> _onValueChaged() async {
+  Future<void> _onModelChaged() async {
     _visible = model.value != Duration.zero;
     if (!_visible) {
       for (final AnimationController iconController in _iconsControllers) {
@@ -179,10 +179,11 @@ class SeekAreaWidgetModel extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
         await iconController.forward();
       }
     }
+    _updateGestures();
   }
 
   void _updateGestures() {
-    gestures.value = widget.enabled
+    gestures.value = model.canSeek
         ? {
             SeekGestureRecognizer:
                 GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
