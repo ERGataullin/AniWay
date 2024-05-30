@@ -20,7 +20,9 @@ class VideoSeekBar extends StatefulWidget {
 }
 
 class _VideoSeekBarState extends State<VideoSeekBar> {
-  final ValueNotifier<double> _value = ValueNotifier(0);
+  double _value = 0;
+
+  bool _isMouse = false;
 
   @override
   void initState() {
@@ -41,10 +43,18 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _value,
-      builder: (context, value, ___) => Slider.adaptive(
-        value: value,
+    return MouseRegion(
+      onEnter: (_) => setState(() {
+        _isMouse = true;
+      }),
+      onExit: (_) => setState(() {
+        _isMouse = false;
+      }),
+      child: Slider.adaptive(
+        value: _value,
+        allowedInteraction: _isMouse
+            ? SliderInteraction.tapAndSlide
+            : SliderInteraction.slideOnly,
         onChangeStart: widget.onPositionChangeStart,
         onChangeEnd: widget.onPositionChangeEnd,
         onChanged: (position) => widget.videoController.seekTo(
@@ -58,13 +68,14 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
   void dispose() {
     super.dispose();
     widget.videoController.removeListener(_update);
-    _value.dispose();
   }
 
   void _update() {
-    _value.value = widget.videoController.value.duration == Duration.zero
-        ? 0
-        : widget.videoController.value.position.inSeconds /
-            widget.videoController.value.duration.inSeconds;
+    setState(() {
+      _value = widget.videoController.value.duration == Duration.zero
+          ? 0
+          : widget.videoController.value.position.inSeconds /
+              widget.videoController.value.duration.inSeconds;
+    });
   }
 }
