@@ -2,6 +2,11 @@
   "dart.debugExternalPackageLibraries": true,
   "dart.debugSdkLibraries": true,
   "dart.flutterSdkPath": ".fvm/versions/3.22.0",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.organizeImports": "always",
+  },
   "editor.formatOnSave": true,
   "editor.formatOnType": true,
   "editor.rulers": [
@@ -12,7 +17,7 @@
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "pubspec.yaml": "pubspec.lock,pubspec_overrides.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,.metadata",
-    "*.dart": "${capture}.g.dart"
+    "*.dart": "${capture}.g.dart",
   },
   "files.exclude": {
     "**/.git": true,
