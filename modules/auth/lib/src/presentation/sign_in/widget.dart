@@ -3,21 +3,21 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
 extension SignInContext on BuildContext {
-  ISignInWidgetModel get wm => read<ISignInWidgetModel>();
+  ISignInWM get wm => read<ISignInWM>();
 }
 
-class SignInWidget extends ElementaryWidget<ISignInWidgetModel> {
+class SignInWidget extends ElementaryWidget<ISignInWM> {
   const SignInWidget({
     super.key,
     required this.onSignedIn,
-    WidgetModelFactory wmFactory = signInWidgetModelFactory,
+    WidgetModelFactory wmFactory = signInWMFactory,
   }) : super(wmFactory);
 
   final VoidCallback onSignedIn;
 
   @override
-  Widget build(ISignInWidgetModel wm) {
-    return Provider<ISignInWidgetModel>.value(
+  Widget build(ISignInWM wm) {
+    return Provider<ISignInWM>.value(
       value: wm,
       child: Scaffold(
         appBar: AppBar(

@@ -4,15 +4,14 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-SignInWidgetModel signInWidgetModelFactory(BuildContext context) =>
-    SignInWidgetModel(
+SignInWM signInWMFactory(BuildContext context) => SignInWM(
       SignInModel(
         context.read<ErrorHandler>(),
         service: context.read<AuthService>(),
       ),
     );
 
-abstract interface class ISignInWidgetModel implements IWidgetModel {
+abstract interface class ISignInWM implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<String> get emailLabel;
@@ -40,9 +39,9 @@ abstract interface class ISignInWidgetModel implements IWidgetModel {
   void onSubmitPressed();
 }
 
-class SignInWidgetModel extends WidgetModel<SignInWidget, ISignInModel>
-    implements ISignInWidgetModel {
-  SignInWidgetModel(super._model);
+class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
+    implements ISignInWM {
+  SignInWM(super._model);
 
   @override
   final ValueNotifier<String> title = ValueNotifier('');

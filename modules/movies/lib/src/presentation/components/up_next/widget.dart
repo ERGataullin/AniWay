@@ -4,15 +4,15 @@ import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/components/up_next/widget_model.dart';
 
 extension _UpNextContext on BuildContext {
-  IUpNextWidgetModel get wm => read<IUpNextWidgetModel>();
+  IUpNextWM get wm => read<IUpNextWM>();
 }
 
-class UpNextWidget extends ElementaryWidget<IUpNextWidgetModel> {
+class UpNextWidget extends ElementaryWidget<IUpNextWM> {
   const UpNextWidget({
     super.key,
     required this.upNext,
     required this.onPressed,
-    WidgetModelFactory wmFactory = upNextWidgetModelFactory,
+    WidgetModelFactory wmFactory = upNextWMFactory,
   }) : super(wmFactory);
 
   static const double aspectRatio = 4 / 3;
@@ -22,7 +22,7 @@ class UpNextWidget extends ElementaryWidget<IUpNextWidgetModel> {
   final VoidCallback onPressed;
 
   @override
-  Widget build(IUpNextWidgetModel wm) {
+  Widget build(IUpNextWM wm) {
     return Provider.value(
       value: wm,
       child: AspectRatio(

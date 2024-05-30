@@ -6,16 +6,16 @@ import 'package:root_menu/src/presentation/root_menu/widget_model.dart';
 typedef OnRootMenuDestinationSelected = void Function(int index);
 
 extension _MenuContext on BuildContext {
-  IRootMenuWidgetModel get wm => read<IRootMenuWidgetModel>();
+  IRootMenuWM get wm => read<IRootMenuWM>();
 }
 
-class RootMenuWidget extends ElementaryWidget<IRootMenuWidgetModel> {
+class RootMenuWidget extends ElementaryWidget<IRootMenuWM> {
   const RootMenuWidget({
     super.key,
     this.selectedIndex = 0,
     required this.destinations,
     required this.onDestinationSelected,
-    WidgetModelFactory wmFactory = rootMenuWidgetModelFactory,
+    WidgetModelFactory wmFactory = rootMenuWMFactory,
     required this.child,
   }) : super(wmFactory);
 
@@ -25,7 +25,7 @@ class RootMenuWidget extends ElementaryWidget<IRootMenuWidgetModel> {
   final Widget child;
 
   @override
-  Widget build(IRootMenuWidgetModel wm) {
+  Widget build(IRootMenuWM wm) {
     return Provider.value(
       value: wm,
       child: Scaffold(

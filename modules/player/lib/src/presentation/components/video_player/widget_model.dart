@@ -10,14 +10,14 @@ import 'package:player/src/presentation/components/video_player/model.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
 
-VideoPlayerWidgetModel videoPlayerWidgetModelFactory(
+VideoPlayerWM videoPlayerWMFactory(
   BuildContext context,
 ) =>
-    VideoPlayerWidgetModel(
+    VideoPlayerWM(
       VideoPlayerModel(context.read<ErrorHandler>()),
     );
 
-abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
+abstract interface class IVideoPlayerWM implements IWidgetModel {
   ValueListenable<double> get aspectRatio;
 
   ValueListenable<double> get maxScale;
@@ -47,10 +47,10 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
   void onNextPressed();
 }
 
-class VideoPlayerWidgetModel
+class VideoPlayerWM
     extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
-    implements IVideoPlayerWidgetModel {
-  VideoPlayerWidgetModel(super._model);
+    implements IVideoPlayerWM {
+  VideoPlayerWM(super._model);
 
   @override
   final ValueNotifier<double> aspectRatio = ValueNotifier(1);

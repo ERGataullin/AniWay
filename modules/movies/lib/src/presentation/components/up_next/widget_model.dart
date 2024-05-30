@@ -5,15 +5,14 @@ import 'package:movies/movies.dart';
 import 'package:movies/src/presentation/components/up_next/model.dart';
 import 'package:movies/src/presentation/components/up_next/widget.dart';
 
-UpNextWidgetModel upNextWidgetModelFactory(BuildContext context) =>
-    UpNextWidgetModel(
+UpNextWM upNextWMFactory(BuildContext context) => UpNextWM(
       UpNextModel(
         context.read<ErrorHandler>(),
         posterBaseUri: context.read<Network>().baseUri,
       ),
     );
 
-abstract interface class IUpNextWidgetModel implements IWidgetModel {
+abstract interface class IUpNextWM implements IWidgetModel {
   ValueListenable<ImageProvider> get poster;
 
   ValueListenable<String> get title;
@@ -21,9 +20,9 @@ abstract interface class IUpNextWidgetModel implements IWidgetModel {
   ValueListenable<String> get episode;
 }
 
-class UpNextWidgetModel extends WidgetModel<UpNextWidget, IUpNextModel>
-    implements IUpNextWidgetModel {
-  UpNextWidgetModel(super._model);
+class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
+    implements IUpNextWM {
+  UpNextWM(super._model);
 
   @override
   final ValueNotifier<ImageProvider> poster = ValueNotifier(

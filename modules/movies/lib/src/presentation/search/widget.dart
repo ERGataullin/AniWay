@@ -4,21 +4,21 @@ import 'package:movies/src/presentation/components/movie_preview/widget.dart';
 import 'package:movies/src/presentation/search/widget_model.dart';
 
 extension _SearchContext on BuildContext {
-  ISearchWidgetModel get wm => read<ISearchWidgetModel>();
+  ISearchWM get wm => read<ISearchWM>();
 }
 
-class SearchWidget extends ElementaryWidget<ISearchWidgetModel> {
+class SearchWidget extends ElementaryWidget<ISearchWM> {
   const SearchWidget({
     super.key,
     required this.onMoviePressed,
-    WidgetModelFactory wmFactory = searchWidgetModelFactory,
+    WidgetModelFactory wmFactory = searchWMFactory,
   }) : super(wmFactory);
 
   final void Function(Object id) onMoviePressed;
 
   @override
-  Widget build(ISearchWidgetModel wm) {
-    return Provider<ISearchWidgetModel>.value(
+  Widget build(ISearchWM wm) {
+    return Provider<ISearchWM>.value(
       value: wm,
       child: Scaffold(
         body: SafeArea(

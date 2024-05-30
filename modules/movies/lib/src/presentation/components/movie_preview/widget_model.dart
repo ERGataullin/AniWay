@@ -5,15 +5,14 @@ import 'package:movies/movies.dart';
 import 'package:movies/src/presentation/components/movie_preview/model.dart';
 import 'package:movies/src/presentation/components/movie_preview/widget.dart';
 
-MoviePreviewWidgetModel moviePreviewWidgetModelFactory(BuildContext context) =>
-    MoviePreviewWidgetModel(
+MoviePreviewWM moviePreviewWMFactory(BuildContext context) => MoviePreviewWM(
       MoviePreviewModel(
         context.read<ErrorHandler>(),
         posterBaseUri: context.read<Network>().baseUri,
       ),
     );
 
-abstract interface class IMoviePreviewWidgetModel implements IWidgetModel {
+abstract interface class IMoviePreviewWM implements IWidgetModel {
   ValueListenable<ImageProvider> get poster;
 
   ValueListenable<String> get title;
@@ -25,10 +24,10 @@ abstract interface class IMoviePreviewWidgetModel implements IWidgetModel {
   ValueListenable<String> get score;
 }
 
-class MoviePreviewWidgetModel
+class MoviePreviewWM
     extends WidgetModel<MoviePreviewWidget, IMoviePreviewModel>
-    implements IMoviePreviewWidgetModel {
-  MoviePreviewWidgetModel(super._model);
+    implements IMoviePreviewWM {
+  MoviePreviewWM(super._model);
 
   @override
   final ValueNotifier<ImageProvider> poster = ValueNotifier(

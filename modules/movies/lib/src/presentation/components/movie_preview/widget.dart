@@ -4,15 +4,15 @@ import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/components/movie_preview/widget_model.dart';
 
 extension _MoviePreviewContext on BuildContext {
-  IMoviePreviewWidgetModel get wm => read<IMoviePreviewWidgetModel>();
+  IMoviePreviewWM get wm => read<IMoviePreviewWM>();
 }
 
-class MoviePreviewWidget extends ElementaryWidget<IMoviePreviewWidgetModel> {
+class MoviePreviewWidget extends ElementaryWidget<IMoviePreviewWM> {
   const MoviePreviewWidget({
     super.key,
     required this.movie,
     required this.onPressed,
-    WidgetModelFactory wmFactory = moviePreviewWidgetModelFactory,
+    WidgetModelFactory wmFactory = moviePreviewWMFactory,
   }) : super(wmFactory);
 
   static const double aspectRatio = 3 / 4;
@@ -22,7 +22,7 @@ class MoviePreviewWidget extends ElementaryWidget<IMoviePreviewWidgetModel> {
   final VoidCallback onPressed;
 
   @override
-  Widget build(IMoviePreviewWidgetModel wm) {
+  Widget build(IMoviePreviewWM wm) {
     return Provider.value(
       value: wm,
       child: AspectRatio(
