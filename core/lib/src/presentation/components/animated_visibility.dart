@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedVisibility extends StatefulWidget {
@@ -22,7 +21,7 @@ class AnimatedVisibility extends StatefulWidget {
     required this.child,
   }) : fadeOutCurve = fadeOutCurve ?? Easing.emphasizedAccelerate.flipped;
 
-  final ValueListenable<bool> visible;
+  final bool visible;
 
   final Duration fadeInDuration;
 
@@ -46,14 +45,13 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
     duration: Duration.zero,
   );
 
-  double get _animationTarget => widget.visible.value ? 1 : 0;
+  double get _animationTarget => widget.visible ? 1 : 0;
 
-  bool get _ignorePointer => !widget.visible.value;
+  bool get _ignorePointer => !widget.visible;
 
   @override
   void initState() {
     super.initState();
-    widget.visible.addListener(_animate);
     _controller.addStatusListener((status) {
       const List<AnimationStatus> boundaryStatuses = [
         AnimationStatus.completed,
@@ -70,13 +68,9 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
   @override
   void didUpdateWidget(AnimatedVisibility oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (widget.visible != oldWidget.visible) {
-      oldWidget.visible.removeListener(_animate);
-      widget.visible.addListener(_animate);
+      _animate();
     }
-
-    _animate();
   }
 
   @override
@@ -88,13 +82,6 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
         child: widget.child,
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-    widget.visible.removeListener(_animate);
   }
 
   void _animate() {

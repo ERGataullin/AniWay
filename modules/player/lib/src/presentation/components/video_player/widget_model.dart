@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
+import 'package:player/src/presentation/components/show_on_mouse_hover.dart';
 import 'package:player/src/presentation/components/video_player/model.dart';
 import 'package:player/src/presentation/components/video_player/widget.dart';
 import 'package:player/src/utils/video_controller.dart';
@@ -17,10 +18,6 @@ VideoPlayerWidgetModel videoPlayerWidgetModelFactory(
     );
 
 abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
-  ValueListenable<bool> get visible;
-
-  ValueListenable<MouseCursor> get cursor;
-
   ValueListenable<double> get aspectRatio;
 
   ValueListenable<double> get maxScale;
@@ -37,13 +34,11 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
   VideoController get controller;
 
+  HideOnUserInactivityController get controlsVisibilityController;
+
   FullscreenController get fullscreenController;
 
   void onTapUp(TapUpDetails details);
-
-  void onPointerHover(PointerHoverEvent event);
-
-  void onPointerExit(PointerExitEvent event);
 
   void onPreferencesPressed();
 
@@ -60,7 +55,6 @@ abstract interface class IVideoPlayerWidgetModel implements IWidgetModel {
 
 class VideoPlayerWidgetModel
     extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
-    with _HideOnUserInactivityWidgetModelMixin
     implements IVideoPlayerWidgetModel {
   VideoPlayerWidgetModel(super._model);
 
@@ -86,6 +80,10 @@ class VideoPlayerWidgetModel
   final ValueNotifier<bool> fastForwardEnabled = ValueNotifier(false);
 
   @override
+  final HideOnUserInactivityController controlsVisibilityController =
+      HideOnUserInactivityController();
+
+  @override
   final FullscreenController fullscreenController = FullscreenController();
 
   @override
@@ -99,7 +97,6 @@ class VideoPlayerWidgetModel
       ..videoController = widget.controller;
     title.value = widget.title;
     subtitle.value = widget.subtitle;
-    show();
   }
 
   @override
@@ -120,13 +117,13 @@ class VideoPlayerWidgetModel
 
   @override
   void onTapUp(TapUpDetails details) {
-    super.onTapUp(details);
-
-    if (details.kind == PointerDeviceKind.touch) {
-      return;
+    const Set<PointerDeviceKind> precisePointerDevices = {
+      PointerDeviceKind.mouse,
+      PointerDeviceKind.trackpad,
+    };
+    if (precisePointerDevices.contains(details.kind)) {
+      model.togglePlayPause();
     }
-
-    model.togglePlayPause();
   }
 
   @override
@@ -139,12 +136,12 @@ class VideoPlayerWidgetModel
 
   @override
   void onPositionChangeStart(double position) {
-    show(hideOnUserInactivity: false);
+    controlsVisibilityController.startShowing();
   }
 
   @override
   void onPositionChangeEnd(double position) {
-    show();
+    controlsVisibilityController.stopShowing();
   }
 
   @override
@@ -191,95 +188,8 @@ class VideoPlayerWidgetModel
     rewindEnabled.value = model.position > Duration.zero;
     fastForwardEnabled.value = model.position < model.duration;
 
-    if (model.loading || !model.playing) {
-      show(hideOnUserInactivity: false);
-    } else if (model.playing) {
-      hideOnUserInactivity(restartUserInactivityTimer: false);
-    }
-  }
-}
-
-mixin _HideOnUserInactivityWidgetModelMixin<W extends ElementaryWidget,
-    M extends ElementaryModel> on WidgetModel<W, M> {
-  static const Duration _hideOnUserInactivityGap = Duration(seconds: 3);
-
-  final ValueNotifier<bool> visible = ValueNotifier(false);
-
-  final ValueNotifier<MouseCursor> cursor = ValueNotifier(
-    SystemMouseCursors.none,
-  );
-
-  bool _hidden = true;
-
-  Timer? _hideOnUserInactivityTimer;
-
-  @override
-  void dispose() {
-    super.dispose();
-    visible.dispose();
-    cursor.dispose();
-    _cancelHideOnUserInactivityTimer();
-  }
-
-  void show({
-    bool hideOnUserInactivity = true,
-  }) {
-    _hidden = false;
-    visible.value = true;
-    cursor.value = SystemMouseCursors.basic;
-
-    hideOnUserInactivity
-        ? this.hideOnUserInactivity()
-        : _cancelHideOnUserInactivityTimer();
-  }
-
-  void hide() {
-    _hidden = true;
-    visible.value = false;
-    cursor.value = SystemMouseCursors.none;
-
-    _cancelHideOnUserInactivityTimer();
-  }
-
-  void hideOnUserInactivity({
-    bool restartUserInactivityTimer = true,
-  }) {
-    if (_hidden) {
-      return;
-    }
-    if (_hideOnUserInactivityTimer != null && !restartUserInactivityTimer) {
-      return;
-    }
-
-    _cancelHideOnUserInactivityTimer();
-    _hideOnUserInactivityTimer = Timer(_hideOnUserInactivityGap, hide);
-  }
-
-  void onTapUp(TapUpDetails details) {
-    if (details.kind != PointerDeviceKind.touch) {
-      return;
-    }
-
-    _hidden ? show() : hide();
-  }
-
-  void onPointerHover(PointerHoverEvent event) {
-    if (event.kind == PointerDeviceKind.touch) {
-      return;
-    }
-    if (!_hidden && _hideOnUserInactivityTimer == null) {
-      return;
-    }
-
-    show();
-  }
-
-  void onPointerExit(PointerExitEvent event) {
-    hide();
-  }
-
-  void _cancelHideOnUserInactivityTimer() {
-    _hideOnUserInactivityTimer?.cancel();
-    _hideOnUserInactivityTimer = null;
+    model.loading || !model.playing
+        ? controlsVisibilityController.startShowing()
+        : controlsVisibilityController.stopShowing();
   }
 }
