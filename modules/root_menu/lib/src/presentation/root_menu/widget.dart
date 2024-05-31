@@ -28,9 +28,12 @@ class RootMenuWidget extends ElementaryWidget<IRootMenuWM> {
   Widget build(IRootMenuWM wm) {
     return Provider.value(
       value: wm,
-      child: Scaffold(
-        body: child,
-        bottomNavigationBar: const _BottomNavigationBar(),
+      child: ListenableBuilder(
+        listenable: wm.child,
+        builder: (context, __) => Scaffold(
+          body: wm.child.value,
+          bottomNavigationBar: const _BottomNavigationBar(),
+        ),
       ),
     );
   }

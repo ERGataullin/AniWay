@@ -106,7 +106,6 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }) {
     return StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) => RootMenuWidget(
-        key: UniqueKey(),
         selectedIndex: navigationShell.currentIndex,
         destinations: const [
           MenuDestinationData.home,
