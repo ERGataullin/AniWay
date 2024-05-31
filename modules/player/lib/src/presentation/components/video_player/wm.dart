@@ -27,7 +27,7 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   VideoController get controller;
 
-  HideOnUserInactivityController get controlsVisibilityController;
+  VisibilityController get controlsVisibilityController;
 
   FullscreenController get fullscreenController;
 
@@ -64,8 +64,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   final ValueNotifier<String> subtitle = ValueNotifier('');
 
   @override
-  final HideOnUserInactivityController controlsVisibilityController =
-      HideOnUserInactivityController();
+  final VisibilityController controlsVisibilityController =
+      VisibilityController();
 
   @override
   final FullscreenController fullscreenController = FullscreenController();
@@ -125,7 +125,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void onPositionChangeEnd(double position) {
-    controlsVisibilityController.stopShowing();
+    controlsVisibilityController.scheduleStopShowing();
   }
 
   @override
@@ -165,6 +165,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
     model.loading || !model.playing
         ? controlsVisibilityController.startShowing()
-        : controlsVisibilityController.stopShowing();
+        : controlsVisibilityController.scheduleStopShowing();
   }
 }

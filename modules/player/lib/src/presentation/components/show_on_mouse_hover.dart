@@ -4,8 +4,8 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class HideOnUserInactivityController with ChangeNotifier {
-  HideOnUserInactivityController() {
+class VisibilityController with ChangeNotifier {
+  VisibilityController() {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }
@@ -41,7 +41,7 @@ class HideOnUserInactivityController with ChangeNotifier {
     _cancelHidingTimer();
   }
 
-  void stopShowing() {
+  void scheduleStopShowing() {
     if (_hidingTimer == null) {
       _startHidingTimer();
     }
@@ -72,7 +72,7 @@ class ShowOnMouseHover extends StatelessWidget {
     required this.child,
   });
 
-  final HideOnUserInactivityController controller;
+  final VisibilityController controller;
 
   final Widget child;
 
