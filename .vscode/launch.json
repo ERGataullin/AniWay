@@ -12,6 +12,7 @@
             "program": "app/lib/main.dart",
             "args": [
                 "--web-browser-flag=--disable-web-security",
+                "--web-renderer=canvaskit",
                 "--web-port=8008",
             ]
         },
@@ -23,6 +24,7 @@
             "program": "app/lib/main.dart",
             "args": [
                 "--web-browser-flag=--disable-web-security",
+                "--web-renderer=canvaskit",
                 "--web-port=8008",
             ]
         },
@@ -34,6 +36,7 @@
             "program": "app/lib/main.dart",
             "args": [
                 "--web-browser-flag=--disable-web-security",
+                "--web-renderer=canvaskit",
                 "--web-port=8008",
             ]
         }

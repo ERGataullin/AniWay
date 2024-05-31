@@ -1,10 +1,11 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
-import 'package:movies/src/presentation/components/movie_preview/widget.dart';
-import 'package:movies/src/presentation/components/up_next/widget.dart';
-import 'package:movies/src/presentation/home/widget_model.dart';
+import 'package:movies/src/domain/models/up_next.dart';
+import 'package:movies/src/presentation/components/movie_preview.dart';
+import 'package:movies/src/presentation/home/wm.dart';
 
 extension _HomeContext on BuildContext {
   IHomeWM get wm => read<IHomeWM>();
@@ -24,7 +25,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
 
   @override
   Widget build(IHomeWM wm) {
-    const EdgeInsets categoriesMargin = EdgeInsets.fromLTRB(16, 4, 16, 16);
+    const EdgeInsets categoriesMargin = EdgeInsets.symmetric(horizontal: 16);
     return Provider<IHomeWM>.value(
       value: wm,
       child: Scaffold(
@@ -50,6 +51,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
                       Divider(
                         indent: 16,
                         endIndent: 16,
+                        height: 32,
                       ),
                       _MostPopularCategory(margin: categoriesMargin),
                     ],
@@ -82,13 +84,21 @@ class _UpNextCategory extends StatelessWidget {
             padding: margin,
             scrollDirection: Axis.horizontal,
             separatorBuilder: (context, __) => const SizedBox(width: 8),
-            itemBuilder: (context, index) => UpNextWidget(
-              upNext: items[index],
-              onPressed: () => context.wm.onUpNextPressed(
-                movieId: items[index].movie.id,
-                episodeId: items[index].episode.id,
-              ),
-            ),
+            itemBuilder: (context, index) {
+              final UpNextData upNext = items[index];
+              return MoviePreview(
+                posterUri: upNext.movie.posterUri,
+                title: upNext.movie.title,
+                subtitle: context.localizations.upNextStatus(
+                  upNext.episode.type.name,
+                  upNext.episode.number ?? 0,
+                ),
+                onPressed: () => context.wm.onUpNextPressed(
+                  movieId: items[index].movie.id,
+                  episodeId: items[index].episode.id,
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -187,10 +197,16 @@ class _Movies extends StatelessWidget {
           padding: margin,
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, __) => const SizedBox(width: 8),
-          itemBuilder: (context, index) => MoviePreviewWidget(
-            movie: movies[index],
-            onPressed: () => context.wm.onMoviePressed(movies[index].id),
-          ),
+          itemBuilder: (context, index) {
+            final MoviePreviewData movie = movies[index];
+            return MoviePreview(
+              posterUri: movie.posterUri,
+              title: movie.title,
+              subtitle: context.localizations.moviePreviewType(movie.type.name),
+              score: movie.score,
+              onPressed: () => context.wm.onMoviePressed(movies[index].id),
+            );
+          },
         ),
       ),
     );

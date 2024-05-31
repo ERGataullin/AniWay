@@ -11,6 +11,8 @@ RootMenuWM rootMenuWMFactory(BuildContext context) => RootMenuWM(
     );
 
 abstract interface class IRootMenuWM implements IWidgetModel {
+  ValueListenable<Widget> get child;
+
   ValueListenable<int> get selectedIndex;
 
   ValueListenable<int> get destinationsCount;
@@ -25,6 +27,9 @@ abstract interface class IRootMenuWM implements IWidgetModel {
 class RootMenuWM extends WidgetModel<RootMenuWidget, IRootMenuModel>
     implements IRootMenuWM {
   RootMenuWM(super._model);
+
+  @override
+  late final ValueNotifier<Widget> child;
 
   @override
   final ValueNotifier<int> selectedIndex = ValueNotifier(0);
@@ -48,11 +53,13 @@ class RootMenuWM extends WidgetModel<RootMenuWidget, IRootMenuModel>
   @override
   void initWidgetModel() {
     super.initWidgetModel();
+    child = ValueNotifier(widget.child);
     _updateConfiguration();
   }
 
   @override
   void didUpdateWidget(Widget oldWidget) {
+    child.value = widget.child;
     _updateConfiguration();
   }
 
@@ -69,6 +76,7 @@ class RootMenuWM extends WidgetModel<RootMenuWidget, IRootMenuModel>
   @override
   void dispose() {
     super.dispose();
+    child.dispose();
     selectedIndex.dispose();
     destinationsCount.dispose();
     destinationsIcons.dispose();

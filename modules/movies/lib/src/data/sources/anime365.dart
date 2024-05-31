@@ -76,7 +76,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         String posterUrl = posterStyle.substring(
           posterStyle.indexOf(posterUrlPrefix) + posterUrlPrefix.length,
         );
-        posterUrl = posterUrl.substring(0, posterUrl.indexOf(posterUrlPostfix));
+        posterUrl = posterUrl
+            .substring(0, posterUrl.indexOf(posterUrlPostfix))
+            .replaceFirst('140x140.1.', '');
 
         final String episodePathSegment = hrefUri.pathSegments[2];
         final int episodeId = int.parse(

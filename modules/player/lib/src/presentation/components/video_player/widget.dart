@@ -6,7 +6,7 @@ import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/presentation/components/show_on_mouse_hover.dart';
 import 'package:player/src/presentation/components/video_play_pause_loader.dart';
-import 'package:player/src/presentation/components/video_player/widget_model.dart';
+import 'package:player/src/presentation/components/video_player/wm.dart';
 import 'package:player/src/presentation/components/video_seek_bar.dart';
 import 'package:player/src/presentation/components/video_timer.dart';
 import 'package:player/src/utils/video_controller.dart';

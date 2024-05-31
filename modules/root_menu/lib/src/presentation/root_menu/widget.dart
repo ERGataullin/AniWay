@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:root_menu/root_menu.dart';
-import 'package:root_menu/src/presentation/root_menu/widget_model.dart';
+import 'package:root_menu/src/presentation/root_menu/wm.dart';
 
 typedef OnRootMenuDestinationSelected = void Function(int index);
 
@@ -28,9 +28,12 @@ class RootMenuWidget extends ElementaryWidget<IRootMenuWM> {
   Widget build(IRootMenuWM wm) {
     return Provider.value(
       value: wm,
-      child: Scaffold(
-        body: child,
-        bottomNavigationBar: const _BottomNavigationBar(),
+      child: ListenableBuilder(
+        listenable: wm.child,
+        builder: (context, __) => Scaffold(
+          body: wm.child.value,
+          bottomNavigationBar: const _BottomNavigationBar(),
+        ),
       ),
     );
   }

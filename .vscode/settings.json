@@ -1,12 +1,39 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.22.0",
-  "search.exclude": {
-    "**/.fvm": true
-  },
-  "files.watcherExclude": {
-    "**/.fvm": true
-  },
   "dart.debugExternalPackageLibraries": true,
   "dart.debugSdkLibraries": true,
-  "files.insertFinalNewline": true
+  "dart.flutterSdkPath": ".fvm/versions/3.22.0",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.organizeImports": "always",
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.rulers": [
+    80,
+  ],
+  "editor.tabCompletion": "off",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "pubspec.yaml": "pubspec.lock,pubspec_overrides.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,.metadata",
+    "*.dart": "${capture}.g.dart",
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.dart_tool": true,
+    "**/build": true,
+  },
+  "files.insertFinalNewline": true,
+  "files.watcherExclude": {
+    "**/.fvm": true,
+  },
+  "search.exclude": {
+    "**/.fvm": true,
+  },
 }
