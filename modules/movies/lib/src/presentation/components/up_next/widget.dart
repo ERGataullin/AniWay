@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/up_next.dart';
-import 'package:movies/src/presentation/components/up_next/widget_model.dart';
+import 'package:movies/src/presentation/components/up_next/wm.dart';
 
 extension _UpNextContext on BuildContext {
   IUpNextWM get wm => read<IUpNextWM>();

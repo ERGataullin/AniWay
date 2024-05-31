@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:core/core.dart' hide TextDirection;
 import 'package:flutter/material.dart';
-import 'package:player/src/presentation/components/seek_area/widget_model.dart';
+import 'package:player/src/presentation/components/seek_area/wm.dart';
 import 'package:video_player/video_player.dart';
 
 typedef OnSeek = void Function(Duration duration);

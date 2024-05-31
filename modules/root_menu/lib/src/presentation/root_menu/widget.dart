@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:root_menu/root_menu.dart';
-import 'package:root_menu/src/presentation/root_menu/widget_model.dart';
+import 'package:root_menu/src/presentation/root_menu/wm.dart';
 
 typedef OnRootMenuDestinationSelected = void Function(int index);
 

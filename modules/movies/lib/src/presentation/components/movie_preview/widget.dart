@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
-import 'package:movies/src/presentation/components/movie_preview/widget_model.dart';
+import 'package:movies/src/presentation/components/movie_preview/wm.dart';
 
 extension _MoviePreviewContext on BuildContext {
   IMoviePreviewWM get wm => read<IMoviePreviewWM>();

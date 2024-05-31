@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/src/presentation/movie/widget_model.dart';
+import 'package:movies/src/presentation/movie/wm.dart';
 
 class MovieWidget extends ElementaryWidget<IMovieWM> {
   const MovieWidget({
