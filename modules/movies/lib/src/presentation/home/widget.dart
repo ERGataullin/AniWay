@@ -2,7 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/movie_preview.dart';
-import 'package:movies/src/presentation/components/movie_preview/widget.dart';
+import 'package:movies/src/presentation/components/movie_preview.dart';
 import 'package:movies/src/presentation/components/up_next/widget.dart';
 import 'package:movies/src/presentation/home/wm.dart';
 
@@ -187,7 +187,7 @@ class _Movies extends StatelessWidget {
           padding: margin,
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, __) => const SizedBox(width: 8),
-          itemBuilder: (context, index) => MoviePreviewWidget(
+          itemBuilder: (context, index) => MoviePreview(
             movie: movies[index],
             onPressed: () => context.wm.onMoviePressed(movies[index].id),
           ),
