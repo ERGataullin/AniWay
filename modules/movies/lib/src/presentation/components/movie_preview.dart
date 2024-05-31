@@ -1,18 +1,25 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/movies.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
 
 class MoviePreview extends StatelessWidget {
   const MoviePreview({
     super.key,
-    required this.movie,
+    required this.posterUri,
+    required this.title,
+    required this.subtitle,
+    this.score,
     required this.onPressed,
   });
 
   static const double aspectRatio = 3 / 4;
 
-  final MoviePreviewData movie;
+  final Uri posterUri;
+
+  final String title;
+
+  final String subtitle;
+
+  final double? score;
 
   final VoidCallback onPressed;
 
@@ -34,7 +41,7 @@ class MoviePreview extends StatelessWidget {
                       context
                           .read<Network>()
                           .baseUri
-                          .resolveUri(movie.posterUri)
+                          .resolveUri(posterUri)
                           .toString(),
                     ),
                     fit: BoxFit.cover,
@@ -42,7 +49,9 @@ class MoviePreview extends StatelessWidget {
                 ),
                 _Footer(
                   margin: const EdgeInsets.all(8),
-                  movie: movie,
+                  title: title,
+                  subtitle: subtitle,
+                  score: score,
                 ),
               ],
             ),
@@ -56,14 +65,20 @@ class MoviePreview extends StatelessWidget {
 class _Footer extends StatelessWidget {
   const _Footer({
     this.margin = EdgeInsets.zero,
-    required this.movie,
+    required this.title,
+    required this.subtitle,
+    this.score,
   });
 
   static final NumberFormat _scoreFormat = NumberFormat('#0.0');
 
   final EdgeInsets margin;
 
-  final MoviePreviewData movie;
+  final String title;
+
+  final String subtitle;
+
+  final double? score;
 
   @override
   Widget build(BuildContext context) {
@@ -81,17 +96,17 @@ class _Footer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              movie.title,
+              title,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 2),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  context.localizations.moviePreviewType(movie.type.name),
+                  subtitle,
                 ),
-                if (movie.score != null) ...[
+                if (score != null) ...[
                   const Expanded(
                     child: SizedBox(width: 16),
                   ),
@@ -103,7 +118,7 @@ class _Footer extends StatelessWidget {
                     color: textStyle.color,
                   ),
                   const SizedBox(width: 4),
-                  Text(_scoreFormat.format(movie.score)),
+                  Text(_scoreFormat.format(score)),
                 ],
               ],
             ),

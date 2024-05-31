@@ -1,5 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/movies.dart';
+import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/components/movie_preview.dart';
 import 'package:movies/src/presentation/search/wm.dart';
 
@@ -109,10 +111,16 @@ class _Result extends StatelessWidget {
             maxCrossAxisExtent: 200,
           ),
           itemCount: items.length,
-          itemBuilder: (context, index) => MoviePreview(
-            movie: items[index],
+          itemBuilder: (context, index) {
+            final MoviePreviewData movie = items[index];
+            return MoviePreview(
+              posterUri: movie.posterUri,
+              title: movie.title,
+              subtitle: context.localizations.moviePreviewType(movie.type.name),
+              score: movie.score,
             onPressed: () => context.wm.onMoviePressed(items[index].id),
-          ),
+            );
+          },
         ),
       ),
     );
