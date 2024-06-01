@@ -115,12 +115,6 @@ abstract class L10n {
   /// **'Главная'**
   String get homePageTitle;
 
-  /// No description provided for @mostPopularLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'Популярное'**
-  String get mostPopularLabel;
-
   /// No description provided for @movieEpisode.
   ///
   /// In ru, this message translates to:
@@ -138,6 +132,12 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'Пароль'**
   String get passwordLabel;
+
+  /// No description provided for @popularLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Популярное'**
+  String get popularLabel;
 
   /// No description provided for @signInSubmitLabel.
   ///

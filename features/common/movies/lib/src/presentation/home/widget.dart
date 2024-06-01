@@ -53,7 +53,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
                         endIndent: 16,
                         height: 32,
                       ),
-                      _MostPopularCategory(margin: categoriesMargin),
+                      _PopularCategory(margin: categoriesMargin),
                     ],
                   ),
           ),
@@ -106,8 +106,8 @@ class _UpNextCategory extends StatelessWidget {
   }
 }
 
-class _MostPopularCategory extends StatelessWidget {
-  const _MostPopularCategory({
+class _PopularCategory extends StatelessWidget {
+  const _PopularCategory({
     this.margin = EdgeInsets.zero,
   });
 
@@ -117,13 +117,13 @@ class _MostPopularCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return _Category(
       margin: margin,
-      label: context.wm.mostPopularLabel,
+      label: context.wm.popularLabel,
       child: _Movies(
         margin: EdgeInsets.only(
           left: margin.left,
           right: margin.right,
         ),
-        movies: context.wm.mostPopularItems,
+        movies: context.wm.popularItems,
       ),
     );
   }

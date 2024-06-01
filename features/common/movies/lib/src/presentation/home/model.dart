@@ -10,7 +10,7 @@ abstract interface class IHomeModel implements ElementaryModel {
 
   ValueListenable<List<UpNextData>> get upNext;
 
-  ValueListenable<List<MovieBaseData>> get mostPopular;
+  ValueListenable<List<MovieBaseData>> get popular;
 }
 
 class HomeModel extends ElementaryModel implements IHomeModel {
@@ -27,7 +27,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   final ValueNotifier<List<UpNextData>> upNext = ValueNotifier(const []);
 
   @override
-  final ValueNotifier<List<MovieBaseData>> mostPopular = ValueNotifier(
+  final ValueNotifier<List<MovieBaseData>> popular = ValueNotifier(
     const [],
   );
 
@@ -35,7 +35,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
 
   final List<UpNextData> _upNext = [];
 
-  final List<MovieBaseData> _mostPopular = [];
+  final List<MovieBaseData> _popular = [];
 
   @override
   void init() {
@@ -47,27 +47,27 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     super.dispose();
     loading.dispose();
     upNext.dispose();
-    mostPopular.dispose();
+    popular.dispose();
   }
 
   Future<void> _load() async {
     loading.value = true;
 
     final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
-    final Future<List<MovieBaseData>> newMostPopularFuture =
+    final Future<List<MovieBaseData>> newPopularFuture =
         _service.getMovies(order: MovieOrderData.byPopularity);
 
     final List<UpNextData> newUpNext = await newUpNextFuture;
-    final List<MovieBaseData> newMostPopular = await newMostPopularFuture;
+    final List<MovieBaseData> newPopular = await newPopularFuture;
 
     _upNext
       ..clear()
       ..addAll(newUpNext);
-    _mostPopular
+    _popular
       ..clear()
-      ..addAll(newMostPopular);
+      ..addAll(newPopular);
     loading.value = false;
     upNext.value = List.unmodifiable(_upNext);
-    mostPopular.value = List.unmodifiable(_mostPopular);
+    popular.value = List.unmodifiable(_popular);
   }
 }

@@ -21,9 +21,6 @@ class L10nRu extends L10n {
   String get homePageTitle => 'Главная';
 
   @override
-  String get mostPopularLabel => 'Популярное';
-
-  @override
   String movieEpisode(String type, num episode) {
     String _temp0 = intl.Intl.selectLogic(
       type,
@@ -63,6 +60,9 @@ class L10nRu extends L10n {
 
   @override
   String get passwordLabel => 'Пароль';
+
+  @override
+  String get popularLabel => 'Популярное';
 
   @override
   String get signInSubmitLabel => 'Войти';

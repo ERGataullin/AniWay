@@ -23,9 +23,9 @@ abstract interface class IHomeWM implements IWidgetModel {
 
   ValueListenable<List<UpNextData>> get upNextItems;
 
-  ValueListenable<String> get mostPopularLabel;
+  ValueListenable<String> get popularLabel;
 
-  ValueListenable<List<MovieBaseData>> get mostPopularItems;
+  ValueListenable<List<MovieBaseData>> get popularItems;
 
   void onUpNextPressed({
     required Object movieId,
@@ -53,9 +53,9 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
-  late final ListenableNotifier<String> mostPopularLabel = ListenableNotifier(
+  late final ListenableNotifier<String> popularLabel = ListenableNotifier(
     l10n,
-    () => l10n.value.mostPopularLabel,
+    () => l10n.value.popularLabel,
   );
 
   @override
@@ -65,8 +65,7 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   ValueListenable<List<UpNextData>> get upNextItems => model.upNext;
 
   @override
-  ValueListenable<List<MovieBaseData>> get mostPopularItems =>
-      model.mostPopular;
+  ValueListenable<List<MovieBaseData>> get popularItems => model.popular;
 
   @override
   void onUpNextPressed({
@@ -92,6 +91,6 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     super.dispose();
     title.dispose();
     upNextLabel.dispose();
-    mostPopularLabel.dispose();
+    popularLabel.dispose();
   }
 }
