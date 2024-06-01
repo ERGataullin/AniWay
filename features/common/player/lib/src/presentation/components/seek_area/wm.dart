@@ -101,6 +101,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     _theme = Theme.of(context);
     _textDirection = Directionality.of(context);
     _gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -196,6 +197,6 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   void _updateValue() {
     seekValue.value = model.value == Duration.zero
         ? ''
-        : l10n.durationSeconds(model.value.inSeconds);
+        : l10n.value.durationSeconds(model.value.inSeconds);
   }
 }

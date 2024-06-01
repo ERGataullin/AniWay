@@ -10,22 +10,22 @@ typedef TranslationsData
 
 abstract interface class IMoviePlayerModel
     implements ElementaryModel, Listenable {
-  MovieData get movie;
+  MovieData? get movie;
 
-  EpisodeData get episode;
+  EpisodeData? get episode;
 
   TranslationsData get translations;
 
-  VideoTranslationData get translation;
+  VideoTranslationData? get translation;
 
   VideoController get videoController;
-
-  set translation(VideoTranslationData value);
 
   void initialize({
     required Object movieId,
     required Object episodeId,
   });
+
+  void changeTranslation(VideoTranslationData value);
 
   void loadPreviousEpisode();
 
@@ -45,19 +45,19 @@ class MoviePlayerModel extends ElementaryModel
   final VideoController videoController = VideoController();
 
   @override
-  late MovieData movie;
+  MovieData? movie;
 
   @override
-  late EpisodeData episode;
+  EpisodeData? episode;
 
   @override
   TranslationsData translations = const {};
 
   final PlayerService _service;
 
-  late VideoTranslationData _translation;
+  VideoTranslationData? _translation;
 
-  late VideoData _video;
+  VideoData? _video;
 
   late int _episodeIndex;
 
@@ -66,14 +66,7 @@ class MoviePlayerModel extends ElementaryModel
   bool _listeningVideoPlayer = false;
 
   @override
-  VideoTranslationData get translation => _translation;
-
-  @override
-  set translation(VideoTranslationData value) {
-    _translation = value;
-    notifyListeners();
-    _loadVideo();
-  }
+  VideoTranslationData? get translation => _translation;
 
   @override
   Future<void> initialize({
@@ -81,10 +74,17 @@ class MoviePlayerModel extends ElementaryModel
     required Object episodeId,
   }) async {
     movie = await _service.getMovie(movieId);
-    _episodeIndex = movie.episodes.indexWhere(
+    _episodeIndex = movie!.episodes.indexWhere(
       (episode) => episode.id == episodeId,
     );
     _loadEpisode(index: _episodeIndex);
+  }
+
+  @override
+  void changeTranslation(VideoTranslationData value) {
+    _translation = value;
+    notifyListeners();
+    _loadVideo();
   }
 
   @override
@@ -115,9 +115,9 @@ class MoviePlayerModel extends ElementaryModel
     }
     _episodeWatched = false;
     _episodeIndex = index;
-    episode = movie.episodes[index];
+    episode = movie!.episodes[index];
     final List<VideoTranslationData> translationsList =
-        await _service.getTranslations(episode.id);
+        await _service.getTranslations(episode!.id);
     translations = {
       for (final VideoTranslationTypeData type
           in VideoTranslationTypeData.values)
@@ -125,14 +125,14 @@ class MoviePlayerModel extends ElementaryModel
             .where((translation) => translation.type == type)
             .toList(growable: false),
     };
-    translation = translations[VideoTranslationTypeData.raw]!.first;
+    changeTranslation(translations[VideoTranslationTypeData.raw]!.first);
     videoController.addListener(_onVideoPlayerChanged);
     _listeningVideoPlayer = true;
   }
 
   Future<void> _loadVideo() async {
-    _video = await _service.getTranslationVideo(translation.embedUri);
-    videoController.initializeUri(_video.sources.values.first.uri);
+    _video = await _service.getTranslationVideo(translation!.embedUri);
+    videoController.initializeUri(_video!.sources.values.first.uri);
     await videoController.play();
   }
 
@@ -142,13 +142,13 @@ class MoviePlayerModel extends ElementaryModel
     if (positionPercentage >= 0.85 && !_episodeWatched) {
       _episodeWatched = true;
       _service.postTranslationWatched(
-        translation.id,
-        csrf: _video.csrf,
+        translation!.id,
+        csrf: _video!.csrf,
       );
     }
 
     final bool shouldLoadNextEpisode = videoController.value.isCompleted &&
-        _episodeIndex < movie.episodes.length - 1;
+        _episodeIndex < movie!.episodes.length - 1;
     if (shouldLoadNextEpisode) {
       loadNextEpisode();
     }

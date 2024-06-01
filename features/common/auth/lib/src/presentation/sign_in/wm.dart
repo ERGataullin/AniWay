@@ -46,13 +46,22 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   SignInWM(super._model);
 
   @override
-  final ValueNotifier<String> title = ValueNotifier('');
+  late final ListenableNotifier<String> title = ListenableNotifier(
+    l10n,
+    () => l10n.value.signInTitle,
+  );
 
   @override
-  final ValueNotifier<String> emailLabel = ValueNotifier('');
+  late final ListenableNotifier<String> emailLabel = ListenableNotifier(
+    l10n,
+    () => l10n.value.emailLabel,
+  );
 
   @override
-  final ValueNotifier<String> passwordLabel = ValueNotifier('');
+  late final ListenableNotifier<String> passwordLabel = ListenableNotifier(
+    l10n,
+    () => l10n.value.passwordLabel,
+  );
 
   @override
   final ValueNotifier<bool> obscurePassword = ValueNotifier(true);
@@ -61,7 +70,10 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   final ValueNotifier<bool> showLoader = ValueNotifier(false);
 
   @override
-  final ValueNotifier<String> submitLabel = ValueNotifier('');
+  late final ListenableNotifier<String> submitLabel = ListenableNotifier(
+    l10n,
+    () => l10n.value.signInSubmitLabel,
+  );
 
   @override
   final TextEditingController emailController = TextEditingController();
@@ -76,16 +88,8 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   );
 
   @override
-  void didChangeDependencies() {
-    title.value = l10n.signInTitle;
-    emailLabel.value = l10n.emailLabel;
-    passwordLabel.value = l10n.passwordLabel;
-    submitLabel.value = l10n.signInSubmitLabel;
-  }
-
-  @override
   String? onValidateEmail(String? value) {
-    return model.isEmailValid(value) ? null : l10n.emailValidationError;
+    return model.isEmailValid(value) ? null : l10n.value.emailValidationError;
   }
 
   @override

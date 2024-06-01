@@ -36,13 +36,50 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   MoviePlayerWM(super._model);
 
   @override
-  final ValueNotifier<String> title = ValueNotifier('');
+  late final ListenableNotifier<String> title = ListenableNotifier(
+    model,
+    () => model.movie?.title ?? '',
+  );
 
   @override
-  final ValueNotifier<String> subtitle = ValueNotifier('');
+  late final ListenableNotifier<String> subtitle = ListenableNotifier(
+    Listenable.merge([model, l10n]),
+    () => model.episode == null
+        ? ''
+        : l10n.value.movieEpisode(
+            model.episode!.type.name,
+            model.episode!.number,
+          ),
+  );
 
   @override
-  final ValueNotifier<List<MenuItemData>> preferences = ValueNotifier(const []);
+  late final ListenableNotifier<List<MenuItemData>> preferences =
+      ListenableNotifier(
+    Listenable.merge([model, l10n]),
+    () => [
+      MenuItemData.group(
+        icon: Icons.type_specimen,
+        label: l10n.value.translationTypeLabel,
+        children: model.translations.keys
+            .map(
+              (type) => MenuItemData.group(
+                selected: type == model.translation?.type,
+                label: l10n.value.translationType(type.toString()),
+                children: _getTranslationMenuItems(type: type),
+              ),
+            )
+            .toList(growable: false),
+      ),
+      if (model.translation != null)
+        MenuItemData.group(
+          icon: Icons.voice_chat,
+          label: l10n.value.translationLabel,
+          children: _getTranslationMenuItems(
+            type: model.translation!.type,
+          ),
+        ),
+    ],
+  );
 
   @override
   VideoController get controller => model.videoController;
@@ -50,12 +87,10 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    model
-      ..initialize(
-        movieId: widget.movieId,
-        episodeId: widget.episodeId,
-      )
-      ..addListener(_onModelChanged);
+    model.initialize(
+      movieId: widget.movieId,
+      episodeId: widget.episodeId,
+    );
     if (!kIsWeb) {
       _lockOrientation();
     }
@@ -93,36 +128,6 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
     return SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
-  void _onModelChanged() {
-    title.value = model.movie.title;
-    subtitle.value = l10n.movieEpisode(
-      model.episode.type.name,
-      model.episode.number,
-    );
-    preferences.value = [
-      MenuItemData.group(
-        icon: Icons.type_specimen,
-        label: l10n.translationTypeLabel,
-        children: model.translations.keys
-            .map(
-              (type) => MenuItemData.group(
-                selected: type == model.translation.type,
-                label: l10n.translationType(type.toString()),
-                children: _getTranslationMenuItems(type: type),
-              ),
-            )
-            .toList(growable: false),
-      ),
-      MenuItemData.group(
-        icon: Icons.voice_chat,
-        label: l10n.translationLabel,
-        children: _getTranslationMenuItems(
-          type: model.translation.type,
-        ),
-      ),
-    ];
-  }
-
   List<MenuItemData> _getTranslationMenuItems({
     required VideoTranslationTypeData type,
   }) {
@@ -131,7 +136,7 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
           (translation) => MenuItemData.single(
             selected: translation == model.translation,
             label: translation.title,
-            onSelected: () => model.translation = translation,
+            onSelected: () => model.changeTranslation(translation),
           ),
         )
         .toList(growable: false);

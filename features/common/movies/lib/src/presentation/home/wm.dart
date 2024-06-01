@@ -41,13 +41,22 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   HomeWM(super._model);
 
   @override
-  final ValueNotifier<String> title = ValueNotifier('');
+  late final ListenableNotifier<String> title = ListenableNotifier(
+    l10n,
+    () => l10n.value.homePageTitle,
+  );
 
   @override
-  final ValueNotifier<String> upNextLabel = ValueNotifier('');
+  late final ListenableNotifier<String> upNextLabel = ListenableNotifier(
+    l10n,
+    () => l10n.value.upNextLabel,
+  );
 
   @override
-  final ValueNotifier<String> mostPopularLabel = ValueNotifier('');
+  late final ListenableNotifier<String> mostPopularLabel = ListenableNotifier(
+    l10n,
+    () => l10n.value.mostPopularLabel,
+  );
 
   @override
   ValueListenable<bool> get showLoader => model.loading;
@@ -58,13 +67,6 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   @override
   ValueListenable<List<MovieBaseData>> get mostPopularItems =>
       model.mostPopular;
-
-  @override
-  void didChangeDependencies() {
-    _updateTitle();
-    _updateUpNextLabel();
-    _updateMostPopularLabel();
-  }
 
   @override
   void onUpNextPressed({
@@ -91,17 +93,5 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     title.dispose();
     upNextLabel.dispose();
     mostPopularLabel.dispose();
-  }
-
-  void _updateTitle() {
-    title.value = l10n.homePageTitle;
-  }
-
-  void _updateUpNextLabel() {
-    upNextLabel.value = l10n.upNextLabel;
-  }
-
-  void _updateMostPopularLabel() {
-    mostPopularLabel.value = l10n.mostPopularLabel;
   }
 }

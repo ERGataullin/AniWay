@@ -32,7 +32,10 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   SearchWM(super._model);
 
   @override
-  final ValueNotifier<String> queryHint = ValueNotifier('');
+  late final ListenableNotifier<String> queryHint = ListenableNotifier(
+    l10n,
+    () => l10n.value.searchPageTitle,
+  );
 
   @override
   ValueListenable<bool> get showLoader => model.loading;
@@ -49,7 +52,7 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   @override
   void didChangeDependencies() {
     model.scrollController = PrimaryScrollController.of(context);
-    _updateQueryHint();
+    super.didChangeDependencies();
   }
 
   @override
@@ -61,9 +64,5 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   void dispose() {
     super.dispose();
     queryHint.dispose();
-  }
-
-  void _updateQueryHint() {
-    queryHint.value = l10n.searchPageTitle;
   }
 }
