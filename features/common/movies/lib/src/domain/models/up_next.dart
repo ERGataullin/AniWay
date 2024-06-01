@@ -1,5 +1,5 @@
-import 'package:movies/src/domain/models/movie_episode.dart';
-import 'package:movies/src/domain/models/up_next_movie.dart';
+import 'package:movies/src/domain/models/episode.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
 
 class UpNextData {
   const UpNextData({
@@ -7,6 +7,7 @@ class UpNextData {
     required this.episode,
   });
 
-  final UpNextMovieData movie;
-  final MovieEpisodeData episode;
+  final MovieBaseData movie;
+
+  final EpisodeData episode;
 }

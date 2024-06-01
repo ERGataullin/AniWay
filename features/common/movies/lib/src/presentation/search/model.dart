@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/service/service.dart';
 
 abstract interface class ISearchModel implements ElementaryModel {
   ValueListenable<bool> get loading;
 
-  ValueListenable<List<MoviePreviewData>> get movies;
+  ValueListenable<List<MovieBaseData>> get movies;
 
   SearchController get queryController;
 
@@ -29,14 +29,14 @@ class SearchModel extends ElementaryModel implements ISearchModel {
   final ValueNotifier<bool> loading = ValueNotifier(false);
 
   @override
-  final ValueNotifier<List<MoviePreviewData>> movies = ValueNotifier(const []);
+  final ValueNotifier<List<MovieBaseData>> movies = ValueNotifier(const []);
 
   @override
   final SearchController queryController = SearchController();
 
   final MoviesService _service;
 
-  final List<MoviePreviewData> _movies = [];
+  final List<MovieBaseData> _movies = [];
 
   ScrollController? _scrollController;
 
@@ -107,7 +107,7 @@ class SearchModel extends ElementaryModel implements ISearchModel {
       movies.value = const [];
     }
 
-    final List<MoviePreviewData> newMovies = await _service.getMovies(
+    final List<MovieBaseData> newMovies = await _service.getMovies(
       query: queryController.text,
       offset: (_page - 1) * _service.defaultMoviesLimit,
     );

@@ -1,8 +1,8 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 
 abstract interface class IHomeModel implements ElementaryModel {
@@ -10,7 +10,7 @@ abstract interface class IHomeModel implements ElementaryModel {
 
   ValueListenable<List<UpNextData>> get upNext;
 
-  ValueListenable<List<MoviePreviewData>> get mostPopular;
+  ValueListenable<List<MovieBaseData>> get mostPopular;
 }
 
 class HomeModel extends ElementaryModel implements IHomeModel {
@@ -27,7 +27,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   final ValueNotifier<List<UpNextData>> upNext = ValueNotifier(const []);
 
   @override
-  final ValueNotifier<List<MoviePreviewData>> mostPopular = ValueNotifier(
+  final ValueNotifier<List<MovieBaseData>> mostPopular = ValueNotifier(
     const [],
   );
 
@@ -35,7 +35,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
 
   final List<UpNextData> _upNext = [];
 
-  final List<MoviePreviewData> _mostPopular = [];
+  final List<MovieBaseData> _mostPopular = [];
 
   @override
   void init() {
@@ -54,11 +54,11 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     loading.value = true;
 
     final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
-    final Future<List<MoviePreviewData>> newMostPopularFuture =
+    final Future<List<MovieBaseData>> newMostPopularFuture =
         _service.getMovies(order: MovieOrderData.byPopularity);
 
     final List<UpNextData> newUpNext = await newUpNextFuture;
-    final List<MoviePreviewData> newMostPopular = await newMostPopularFuture;
+    final List<MovieBaseData> newMostPopular = await newMostPopularFuture;
 
     _upNext
       ..clear()

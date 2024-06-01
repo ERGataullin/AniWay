@@ -1,4 +1,4 @@
-enum MovieWatchStatusData {
+enum ViewStatusData {
   none,
   planned,
   watching,

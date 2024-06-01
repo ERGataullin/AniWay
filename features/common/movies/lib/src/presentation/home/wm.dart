@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/home/model.dart';
 
@@ -25,7 +25,7 @@ abstract interface class IHomeWM implements IWidgetModel {
 
   ValueListenable<String> get mostPopularLabel;
 
-  ValueListenable<List<MoviePreviewData>> get mostPopularItems;
+  ValueListenable<List<MovieBaseData>> get mostPopularItems;
 
   void onUpNextPressed({
     required Object movieId,
@@ -56,7 +56,7 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   ValueListenable<List<UpNextData>> get upNextItems => model.upNext;
 
   @override
-  ValueListenable<List<MoviePreviewData>> get mostPopularItems =>
+  ValueListenable<List<MovieBaseData>> get mostPopularItems =>
       model.mostPopular;
 
   @override

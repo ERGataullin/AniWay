@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:movies/movies.dart';
-import 'package:movies/src/domain/models/movie_episode.dart';
+import 'package:movies/src/domain/models/episode.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
-import 'package:movies/src/domain/models/movie_watch_status.dart';
 import 'package:movies/src/domain/models/up_next.dart';
-import 'package:movies/src/domain/models/up_next_movie.dart';
+import 'package:movies/src/domain/models/view_status.dart';
 
 class Anime365MoviesService implements MoviesService {
   Anime365MoviesService({
@@ -22,12 +21,12 @@ class Anime365MoviesService implements MoviesService {
   final MoviesRepository _repository;
 
   @override
-  Future<List<MoviePreviewData>> getMovies({
+  Future<List<MovieBaseData>> getMovies({
     MovieOrderData? order,
     String? query,
     int? limit = _defaultMoviesLimit,
     int? offset,
-    List<MovieWatchStatusData> watchStatus = const [],
+    List<ViewStatusData> viewStatuses = const [],
   }) {
     return _repository
         .getMovies(
@@ -42,18 +41,16 @@ class Anime365MoviesService implements MoviesService {
             MovieOrderData.random => 'random',
             null => null,
           },
-          watchStatus: watchStatus
+          watchStatus: viewStatuses
               .map(
                 (watchStatus) => switch (watchStatus) {
-                  MovieWatchStatusData.none ||
-                  MovieWatchStatusData.unknown =>
-                    null,
-                  MovieWatchStatusData.planned => 'planned',
-                  MovieWatchStatusData.watching => 'watching',
-                  MovieWatchStatusData.rewatching => 'rewatching',
-                  MovieWatchStatusData.completed => 'completed',
-                  MovieWatchStatusData.onHold => 'on_hold',
-                  MovieWatchStatusData.dropped => 'dropped',
+                  ViewStatusData.none || ViewStatusData.unknown => null,
+                  ViewStatusData.planned => 'planned',
+                  ViewStatusData.watching => 'watching',
+                  ViewStatusData.rewatching => 'rewatching',
+                  ViewStatusData.completed => 'completed',
+                  ViewStatusData.onHold => 'on_hold',
+                  ViewStatusData.dropped => 'dropped',
                 },
               )
               .toList(growable: false),
@@ -61,7 +58,7 @@ class Anime365MoviesService implements MoviesService {
         .then(
           (moviesJson) => moviesJson
               .map(
-                (movieJson) => MoviePreviewData(
+                (movieJson) => MovieBaseData(
                   id: movieJson['id'] as Object,
                   title: movieJson['titles']['ru'] as String,
                   posterUri: Uri.parse(movieJson['posterUrl'] as String),
@@ -74,7 +71,9 @@ class Anime365MoviesService implements MoviesService {
                     'tv_special' => MovieTypeData.tvSpecial,
                     'music' => MovieTypeData.music,
                     'pv' => MovieTypeData.pv,
-                    _ => MovieTypeData.unknown,
+                    _ => throw UnimplementedError(
+                        'Unimplemented movie type: ${movieJson['type']}',
+                      ),
                   },
                   score: movieJson['myAnimeListScore'] == '-1'
                       ? null
@@ -88,33 +87,39 @@ class Anime365MoviesService implements MoviesService {
   @override
   Future<List<UpNextData>> getUpNext() {
     return _repository.getUpNext().then(
-          (upNextJson) => upNextJson
-              .map(
-                (itemJson) => UpNextData(
-                  movie: UpNextMovieData(
-                    id: itemJson['movie']['id'] as Object,
-                    title: itemJson['movie']['titles']['ru'] as String,
-                    posterUri: Uri.parse(
-                      itemJson['movie']['posterUrl'] as String,
-                    ),
+          (upNextJson) => upNextJson.map(
+            (itemJson) {
+              final MovieTypeData type = switch (itemJson['episode']['type']) {
+                'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieTypeData.tv,
+                'movie' => MovieTypeData.movie,
+                'ova' => MovieTypeData.ova,
+                'ona' => MovieTypeData.ona,
+                'special' => MovieTypeData.special,
+                'tv_special' => MovieTypeData.tvSpecial,
+                'music' => MovieTypeData.music,
+                'pv' => MovieTypeData.pv,
+                _ => throw UnimplementedError(
+                    'Unimplemented movie type: '
+                    '${itemJson['episode']['type']}',
                   ),
-                  episode: MovieEpisodeData(
-                    id: itemJson['episode']['id'] as Object,
-                    type: switch (itemJson['episode']['type']) {
-                      'tv' => MovieEpisodeTypeData.tv,
-                      'movie' => MovieEpisodeTypeData.movie,
-                      'ova' => MovieEpisodeTypeData.ova,
-                      'ona' => MovieEpisodeTypeData.ona,
-                      'special' => MovieEpisodeTypeData.special,
-                      'tv_special' => MovieEpisodeTypeData.tvSpecial,
-                      'pv' => MovieEpisodeTypeData.pv,
-                      _ => MovieEpisodeTypeData.unknown,
-                    },
-                    number: itemJson['episode']['number'] as num?,
+              };
+              return UpNextData(
+                movie: MovieBaseData(
+                  id: itemJson['movie']['id'] as Object,
+                  title: itemJson['movie']['titles']['ru'] as String,
+                  posterUri: Uri.parse(
+                    itemJson['movie']['posterUrl'] as String,
                   ),
+                  type: type,
                 ),
-              )
-              .toList(growable: false),
+                episode: EpisodeData(
+                  id: itemJson['episode']['id'] as Object,
+                  type: type,
+                  number: itemJson['episode']['number'] as num?,
+                ),
+              );
+            },
+          ).toList(growable: false),
         );
   }
 }

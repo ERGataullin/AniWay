@@ -6,6 +6,5 @@ enum MovieTypeData {
   special,
   tvSpecial,
   music,
-  pv,
-  unknown;
+  pv;
 }

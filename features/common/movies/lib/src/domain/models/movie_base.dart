@@ -1,7 +1,7 @@
 import 'package:movies/src/domain/models/movie_type.dart';
 
-class MoviePreviewData {
-  const MoviePreviewData({
+class MovieBaseData {
+  const MovieBaseData({
     required this.id,
     required this.title,
     required this.posterUri,

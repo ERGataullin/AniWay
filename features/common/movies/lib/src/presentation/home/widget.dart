@@ -2,7 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/components/movie_preview.dart';
 import 'package:movies/src/presentation/home/wm.dart';
@@ -94,8 +94,8 @@ class _UpNextCategory extends StatelessWidget {
                   upNext.episode.number ?? 0,
                 ),
                 onPressed: () => context.wm.onUpNextPressed(
-                  movieId: items[index].movie.id,
-                  episodeId: items[index].episode.id,
+                  movieId: upNext.movie.id,
+                  episodeId: upNext.episode.id,
                 ),
               );
             },
@@ -184,7 +184,7 @@ class _Movies extends StatelessWidget {
 
   final EdgeInsets margin;
 
-  final ValueListenable<List<MoviePreviewData>> movies;
+  final ValueListenable<List<MovieBaseData>> movies;
 
   @override
   Widget build(BuildContext context) {
@@ -198,13 +198,13 @@ class _Movies extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, __) => const SizedBox(width: 8),
           itemBuilder: (context, index) {
-            final MoviePreviewData movie = movies[index];
+            final MovieBaseData movie = movies[index];
             return MoviePreview(
               posterUri: movie.posterUri,
               title: movie.title,
               subtitle: context.l10n.movieType(movie.type.name),
               score: movie.score,
-              onPressed: () => context.wm.onMoviePressed(movies[index].id),
+              onPressed: () => context.wm.onMoviePressed(movie.id),
             );
           },
         ),

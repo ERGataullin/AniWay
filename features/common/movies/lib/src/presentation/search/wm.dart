@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/presentation/search/model.dart';
 
 SearchWM searchWMFactory(BuildContext context) => SearchWM(
@@ -17,7 +17,7 @@ abstract interface class ISearchWM implements IWidgetModel {
 
   ValueListenable<String> get queryHint;
 
-  ValueListenable<List<MoviePreviewData>> get movies;
+  ValueListenable<List<MovieBaseData>> get movies;
 
   SearchController get queryController;
 
@@ -38,7 +38,7 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
-  ValueListenable<List<MoviePreviewData>> get movies => model.movies;
+  ValueListenable<List<MovieBaseData>> get movies => model.movies;
 
   @override
   SearchController get queryController => model.queryController;
