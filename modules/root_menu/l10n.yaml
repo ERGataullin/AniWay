@@ -1,7 +1,0 @@
-arb-dir: assets/localizations
-output-dir: lib/src/utils/localizations
-template-arb-file: ru.arb
-output-localization-file: localizations.g.dart
-output-class: RootMenuLocalizations
-synthetic-package: false
-nullable-getter: false

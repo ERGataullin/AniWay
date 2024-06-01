@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   auth:
-    path: ../modules/auth
+    path: ../features/common/auth
   core: 
     path: ../core
   flutter:
@@ -18,13 +18,15 @@ dependencies:
     sdk: flutter
   go_router: ^14.1.1
   hive: ^2.2.3
+  l10n:
+    path: ../features/shared/l10n
   movies: 
-    path: ../modules/movies
+    path: ../features/common/movies
   path_provider: ^2.1.1
   player:
-    path: ../modules/player
+    path: ../features/common/player
   root_menu:
-    path: ../modules/root_menu
+    path: ../features/common/root_menu
 
 dev_dependencies:
   flutter_lints:

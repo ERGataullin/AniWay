@@ -2,6 +2,7 @@ import 'package:auth/auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:player/player.dart';
 import 'package:root_menu/root_menu.dart';
@@ -34,10 +35,14 @@ extension _RouteLocating on Uri {
 
 class AppRouter implements RouterConfig<RouteMatchList> {
   AppRouter({
+    required L10n l10n,
     required ThemeData videoPlayerTheme,
     required ValueListenable<bool> signedIn,
-  })  : _videoPlayerTheme = videoPlayerTheme,
+  })  : _l10n = l10n,
+        _videoPlayerTheme = videoPlayerTheme,
         _signedIn = signedIn;
+
+  final L10n _l10n;
 
   final ThemeData _videoPlayerTheme;
 
@@ -105,13 +110,16 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     Uri? baseUri,
   }) {
     return StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => RootMenuWidget(
-        selectedIndex: navigationShell.currentIndex,
-        destinations: const [
-          MenuDestinationData.home,
-          MenuDestinationData.search,
-          MenuDestinationData.store,
-          MenuDestinationData.library,
+      builder: (context, state, navigationShell) => RootMenu(
+        destinations: [
+          NavigationDestination(
+            icon: const Icon(Icons.home),
+            label: _l10n.homePageTitle,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.search),
+            label: _l10n.searchPageTitle,
+          ),
         ],
         onDestinationSelected: (index) => navigationShell.goBranch(
           index,

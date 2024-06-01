@@ -12,7 +12,7 @@ packages:
   auth:
     dependency: "direct main"
     description:
-      path: "../modules/auth"
+      path: "../features/common/auth"
       relative: true
     source: path
     version: "0.0.0"
@@ -179,6 +179,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.19.0"
+  l10n:
+    dependency: "direct main"
+    description:
+      path: "../features/shared/l10n"
+      relative: true
+    source: path
+    version: "0.0.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -246,7 +253,7 @@ packages:
   movies:
     dependency: "direct main"
     description:
-      path: "../modules/movies"
+      path: "../features/common/movies"
       relative: true
     source: path
     version: "0.0.0"
@@ -325,7 +332,7 @@ packages:
   player:
     dependency: "direct main"
     description:
-      path: "../modules/player"
+      path: "../features/common/player"
       relative: true
     source: path
     version: "0.0.0"
@@ -348,7 +355,7 @@ packages:
   root_menu:
     dependency: "direct main"
     description:
-      path: "../modules/root_menu"
+      path: "../features/common/root_menu"
       relative: true
     source: path
     version: "0.0.0"
@@ -494,5 +501,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.0 <4.0.0"
+  dart: ">=3.4.1 <4.0.0"
   flutter: ">=3.19.0"

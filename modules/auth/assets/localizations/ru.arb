@@ -1,8 +1,0 @@
-{
-    "@@locale": "ru",
-    "signInEmailLabel": "Электронная почта",
-    "signInEmailInvalidError": "Неверный адрес электронной почты",
-    "signInPasswordLabel": "Пароль",
-    "singInSubmitLabel": "Войти",
-    "signInTitle": "Авторизация"
-}
