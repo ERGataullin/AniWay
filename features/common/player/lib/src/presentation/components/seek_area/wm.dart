@@ -33,19 +33,43 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   static const int _iconsCount = 3;
 
   @override
-  final ValueNotifier<Map<Type, GestureRecognizerFactory>> gestures =
-      ValueNotifier(const {});
-
-  @override
-  final ValueNotifier<ShapeBorder> shape = ValueNotifier(
-    const RoundedRectangleBorder(),
+  late final ComputationNotifier<Map<Type, GestureRecognizerFactory>> gestures =
+      ComputationNotifier(
+    trigger: model,
+    computation: () => model.canSeek
+        ? {
+            SeekGestureRecognizer:
+                GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
+              SeekGestureRecognizer.new,
+              (instance) => instance
+                ..onSeekTapUp = _onSeekTapUp
+                ..onSeekTapCancel = _onSeekTapCancel
+                ..gestureSettings = _gestureSettings,
+            ),
+          }
+        : const {},
   );
 
   @override
-  final ValueNotifier<String> seekValue = ValueNotifier('');
+  late final ComputationNotifier<ShapeBorder> shape = ComputationNotifier(
+    computation: () => SeekAreaShapeBorder(widget.type),
+  );
 
   @override
-  final ValueNotifier<int> iconsRotation = ValueNotifier(0);
+  late final ComputationNotifier<String> seekValue = ComputationNotifier(
+    trigger: model,
+    computation: () => model.value == Duration.zero
+        ? ''
+        : l10n.value.durationSeconds(model.value.inSeconds),
+  );
+
+  @override
+  late final ComputationNotifier<int> iconsRotation = ComputationNotifier(
+    computation: () => switch (widget.type) {
+      SeekType.rewind => 2,
+      SeekType.fastForward => 0,
+    },
+  );
 
   @override
   late final List<CurvedAnimation> iconsOpacities = _iconsControllers
@@ -88,12 +112,8 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
       ..addListener(_onModelChaged)
       ..type = widget.type
       ..videoController = widget.videoController;
-    shape.value = SeekAreaShapeBorder(widget.type);
-    iconsRotation.value = switch (widget.type) {
-      SeekType.rewind => 2,
-      SeekType.fastForward => 0,
-    };
-    _updateGestures();
+    shape.update();
+    iconsRotation.update();
   }
 
   @override
@@ -114,12 +134,8 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     model
       ..type = widget.type
       ..videoController = widget.videoController;
-    shape.value = SeekAreaShapeBorder(widget.type);
-    iconsRotation.value = switch (widget.type) {
-      SeekType.rewind => 2,
-      SeekType.fastForward => 0,
-    };
-    _updateGestures();
+    shape.update();
+    iconsRotation.update();
   }
 
   @override
@@ -170,33 +186,10 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
         await iconController.reverse();
       }
     }
-    _updateValue();
     if (_visible) {
       for (final AnimationController iconController in _iconsControllers) {
         await iconController.forward();
       }
     }
-    _updateGestures();
-  }
-
-  void _updateGestures() {
-    gestures.value = model.canSeek
-        ? {
-            SeekGestureRecognizer:
-                GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
-              SeekGestureRecognizer.new,
-              (SeekGestureRecognizer instance) => instance
-                ..onSeekTapUp = _onSeekTapUp
-                ..onSeekTapCancel = _onSeekTapCancel
-                ..gestureSettings = _gestureSettings,
-            ),
-          }
-        : const {};
-  }
-
-  void _updateValue() {
-    seekValue.value = model.value == Duration.zero
-        ? ''
-        : l10n.value.durationSeconds(model.value.inSeconds);
   }
 }

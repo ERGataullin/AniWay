@@ -36,15 +36,15 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   MoviePlayerWM(super._model);
 
   @override
-  late final ListenableNotifier<String> title = ListenableNotifier(
-    model,
-    () => model.movie?.title ?? '',
+  late final ComputationNotifier<String> title = ComputationNotifier(
+    trigger: model,
+    computation: () => model.movie?.title ?? '',
   );
 
   @override
-  late final ListenableNotifier<String> subtitle = ListenableNotifier(
-    Listenable.merge([model, l10n]),
-    () => model.episode == null
+  late final ComputationNotifier<String> subtitle = ComputationNotifier(
+    trigger: Listenable.merge([model, l10n]),
+    computation: () => model.episode == null
         ? ''
         : l10n.value.movieEpisode(
             model.episode!.type.name,
@@ -53,10 +53,10 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   );
 
   @override
-  late final ListenableNotifier<List<MenuItemData>> preferences =
-      ListenableNotifier(
-    Listenable.merge([model, l10n]),
-    () => [
+  late final ComputationNotifier<List<MenuItemData>> preferences =
+      ComputationNotifier(
+    trigger: Listenable.merge([model, l10n]),
+    computation: () => [
       MenuItemData.group(
         icon: Icons.type_specimen,
         label: l10n.value.translationTypeLabel,

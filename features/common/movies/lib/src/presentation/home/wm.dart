@@ -41,21 +41,21 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   HomeWM(super._model);
 
   @override
-  late final ListenableNotifier<String> title = ListenableNotifier(
-    l10n,
-    () => l10n.value.homePageTitle,
+  late final ComputationNotifier<String> title = ComputationNotifier(
+    trigger: l10n,
+    computation: () => l10n.value.homePageTitle,
   );
 
   @override
-  late final ListenableNotifier<String> upNextLabel = ListenableNotifier(
-    l10n,
-    () => l10n.value.upNextLabel,
+  late final ComputationNotifier<String> upNextLabel = ComputationNotifier(
+    trigger: l10n,
+    computation: () => l10n.value.upNextLabel,
   );
 
   @override
-  late final ListenableNotifier<String> popularLabel = ListenableNotifier(
-    l10n,
-    () => l10n.value.popularLabel,
+  late final ComputationNotifier<String> popularLabel = ComputationNotifier(
+    trigger: l10n,
+    computation: () => l10n.value.popularLabel,
   );
 
   @override

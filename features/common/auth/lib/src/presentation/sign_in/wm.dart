@@ -46,21 +46,21 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   SignInWM(super._model);
 
   @override
-  late final ListenableNotifier<String> title = ListenableNotifier(
-    l10n,
-    () => l10n.value.signInTitle,
+  late final ComputationNotifier<String> title = ComputationNotifier(
+    trigger: l10n,
+    computation: () => l10n.value.signInTitle,
   );
 
   @override
-  late final ListenableNotifier<String> emailLabel = ListenableNotifier(
-    l10n,
-    () => l10n.value.emailLabel,
+  late final ComputationNotifier<String> emailLabel = ComputationNotifier(
+    trigger: l10n,
+    computation: () => l10n.value.emailLabel,
   );
 
   @override
-  late final ListenableNotifier<String> passwordLabel = ListenableNotifier(
-    l10n,
-    () => l10n.value.passwordLabel,
+  late final ComputationNotifier<String> passwordLabel = ComputationNotifier(
+    trigger: l10n,
+    computation: () => l10n.value.passwordLabel,
   );
 
   @override
@@ -70,9 +70,9 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   final ValueNotifier<bool> showLoader = ValueNotifier(false);
 
   @override
-  late final ListenableNotifier<String> submitLabel = ListenableNotifier(
-    l10n,
-    () => l10n.value.signInSubmitLabel,
+  late final ComputationNotifier<String> submitLabel = ComputationNotifier(
+    trigger: l10n,
+    computation: () => l10n.value.signInSubmitLabel,
   );
 
   @override

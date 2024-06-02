@@ -49,19 +49,33 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   VideoPlayerWM(super._model);
 
   @override
-  final ValueNotifier<double> aspectRatio = ValueNotifier(1);
+  late final ComputationNotifier<double> aspectRatio = ComputationNotifier(
+    trigger: model,
+    computation: () => model.aspectRatio,
+  );
 
   @override
-  final ValueNotifier<double> maxScale = ValueNotifier(1);
+  late final ComputationNotifier<double> maxScale = ComputationNotifier(
+    trigger: model,
+    computation: () => model.maxScale,
+  );
 
   @override
-  final ValueNotifier<List<double>> scaleAnchors = ValueNotifier(const [1]);
+  late final ComputationNotifier<List<double>> scaleAnchors =
+      ComputationNotifier(
+    trigger: model,
+    computation: () => model.scaleAnchors,
+  );
 
   @override
-  final ValueNotifier<String> title = ValueNotifier('');
+  late final ComputationNotifier<String> title = ComputationNotifier(
+    computation: () => widget.title,
+  );
 
   @override
-  final ValueNotifier<String> subtitle = ValueNotifier('');
+  late final ComputationNotifier<String> subtitle = ComputationNotifier(
+    computation: () => widget.subtitle,
+  );
 
   @override
   final VisibilityController controlsVisibilityController =
@@ -79,8 +93,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     model
       ..addListener(_onModelChanged)
       ..videoController = widget.controller;
-    title.value = widget.title;
-    subtitle.value = widget.subtitle;
+    title.update();
+    subtitle.update();
   }
 
   @override
@@ -91,9 +105,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void didUpdateWidget(VideoPlayerWidget oldWidget) {
-    title.value = widget.title;
-    subtitle.value = widget.subtitle;
-
+    title.update();
+    subtitle.update();
     if (widget.controller != oldWidget.controller) {
       model.videoController = widget.controller;
     }
@@ -154,10 +167,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   void _onModelChanged() {
-    aspectRatio.value = model.aspectRatio;
-    maxScale.value = model.maxScale;
-    scaleAnchors.value = model.scaleAnchors;
-
     fullscreenController.webElementQuery =
         defaultTargetPlatform == TargetPlatform.iOS
             ? 'video#videoElement-${model.textureId}'
