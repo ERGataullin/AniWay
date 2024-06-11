@@ -1,0 +1,23 @@
+name: player
+
+environment:
+  sdk: '>=3.1.5 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  core: 
+    path: ../../../core
+  flutter:
+    sdk: flutter
+  l10n:
+    path: ../../shared/l10n
+  video_player: ^2.8.6
+  web: ^0.5.1
+
+dev_dependencies:
+  flutter_lints:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

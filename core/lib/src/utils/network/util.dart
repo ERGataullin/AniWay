@@ -19,6 +19,10 @@ abstract interface class Network {
 
   Uri get baseUri;
 
+  String? get csrf;
+
+  set csrf(String? value);
+
   void addInterceptor(NetworkRequestInterceptor interceptor);
 
   void removeInterceptor(NetworkRequestInterceptor interceptor);

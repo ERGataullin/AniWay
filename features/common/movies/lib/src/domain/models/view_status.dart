@@ -1,0 +1,10 @@
+enum ViewStatusData {
+  none,
+  planned,
+  watching,
+  rewatching,
+  completed,
+  onHold,
+  dropped,
+  unknown;
+}
