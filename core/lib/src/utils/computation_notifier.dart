@@ -13,14 +13,22 @@ class ComputationNotifier<T> with ChangeNotifier implements ValueListenable<T> {
     _trigger?.addListener(update);
   }
 
-  final Listenable? _trigger;
-
   final T Function() _computation;
+
+  Listenable? _trigger;
 
   T _value;
 
   @override
   T get value => _value;
+
+  set trigger(Listenable value) {
+    if (_trigger == value) return;
+
+    _trigger?.removeListener(update);
+    _trigger = value..addListener(update);
+    update();
+  }
 
   @override
   void dispose() {

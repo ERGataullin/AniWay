@@ -23,8 +23,6 @@ dependencies:
   movies: 
     path: ../features/common/movies
   path_provider: ^2.1.1
-  player:
-    path: ../features/common/player
   root_menu:
     path: ../features/common/root_menu
 

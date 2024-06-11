@@ -330,9 +330,9 @@ packages:
     source: hosted
     version: "3.1.4"
   player:
-    dependency: "direct main"
+    dependency: transitive
     description:
-      path: "../features/common/player"
+      path: "../features/shared/player"
       relative: true
     source: path
     version: "0.0.0"

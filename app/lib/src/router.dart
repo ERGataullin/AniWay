@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
-import 'package:player/player.dart';
 import 'package:root_menu/root_menu.dart';
 
 extension _RouteLocating on Uri {
@@ -157,12 +156,9 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         movieRoute,
       ],
       builder: (context, state) => HomeWidget(
-        playerBuilder: (movieId, episodeId) => Theme(
+        playerBuilder: (child) => Theme(
           data: _videoPlayerTheme,
-          child: MoviePlayerWidget(
-            movieId: movieId,
-            episodeId: episodeId,
-          ),
+          child: child,
         ),
         onMoviePressed: (id) => context.go(
           state.uri.resolveUri(Uri(path: movieRoute.path)).locate(

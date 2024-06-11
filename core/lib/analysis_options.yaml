@@ -3,7 +3,7 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude: [build/**, lib/**.g.dart]
   language:
-    strict-casts: true
+    strict-casts: false
     strict-inference: true
     strict-raw-types: true
 
@@ -55,7 +55,7 @@ linter:
 
     # Style rules
     always_declare_return_types: true
-    always_put_control_body_on_new_line: true
+    always_put_control_body_on_new_line: false
     annotate_overrides: true
     avoid_bool_literals_in_conditional_expressions: true
     avoid_catching_errors: true
@@ -89,7 +89,7 @@ linter:
     combinators_ordering: true
     conditional_uri_does_not_exist: true
     constant_identifier_names: true
-    curly_braces_in_flow_control_structures: true
+    curly_braces_in_flow_control_structures: false
     dangling_library_doc_comments: true
     deprecated_consistency: true
     directives_ordering: true

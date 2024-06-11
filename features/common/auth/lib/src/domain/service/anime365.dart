@@ -42,6 +42,9 @@ class Anime365AuthService implements AuthService {
     final Map<String, Cookie> cookies = cookiesString == null
         ? const {}
         : _cookiesFromCookieValue(cookiesString);
+    _network.csrf = cookies['csrf'] == null
+        ? null
+        : Uri.decodeComponent(cookies['csrf']!.value);
     _authInterceptor._cookies = cookies;
     _network.addInterceptor(_authInterceptor);
     signedIn.value = cookies.isNotEmpty;
@@ -90,6 +93,9 @@ class Anime365AuthService implements AuthService {
   }
 
   Future<void> _onCookiesChanged(_Cookies value) async {
+    _network.csrf = value['csrf'] == null
+        ? null
+        : Uri.decodeComponent(value['csrf']!.value);
     final String valueString = value.values
         .map((cookie) => '${cookie.name}=${cookie.value}')
         .join('; ');

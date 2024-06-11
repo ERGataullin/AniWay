@@ -3,7 +3,6 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
-import 'package:player/player.dart';
 
 class AppDependenciesProvider extends StatelessWidget {
   const AppDependenciesProvider({
@@ -13,7 +12,6 @@ class AppDependenciesProvider extends StatelessWidget {
     this.storageService,
     this.authService,
     this.moviesService,
-    this.playerService,
     required this.child,
   });
 
@@ -22,7 +20,6 @@ class AppDependenciesProvider extends StatelessWidget {
   final Storage? storageService;
   final AuthService? authService;
   final MoviesService? moviesService;
-  final PlayerService? playerService;
   final Widget child;
 
   @override
@@ -45,12 +42,12 @@ class AppDependenciesProvider extends StatelessWidget {
                         ),
                         original: Uri(
                           scheme: 'https',
-                          host: 'anime365.ru',
+                          host: 'smotret-anime.com',
                         ),
                       )
                     : Uri(
                         scheme: 'https',
-                        host: 'anime365.ru',
+                        host: 'smotret-anime.com',
                       ),
               ),
         ),
@@ -76,18 +73,6 @@ class AppDependenciesProvider extends StatelessWidget {
               Anime365MoviesService(
                 repository: MoviesRepository(
                   remote: Anime365MoviesDataSource(
-                    network: context.read<Network>(),
-                  ),
-                ),
-              ),
-        ),
-        Provider<PlayerService>(
-          create: (context) =>
-              playerService ??
-              Anime365PlayerService(
-                network: context.read<Network>(),
-                repository: PlayerRepository(
-                  remote: Anime365PlayerDataSource(
                     network: context.read<Network>(),
                   ),
                 ),

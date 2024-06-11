@@ -76,7 +76,12 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         barrierDismissible: true,
-        builder: (context) => widget.playerBuilder(movieId, episodeId),
+        builder: (context) => widget.playerBuilder(
+          MoviePlayerWidget(
+            movieId: movieId,
+            episodeId: episodeId,
+          ),
+        ),
       ),
     );
   }

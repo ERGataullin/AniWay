@@ -4,9 +4,11 @@ import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
+import 'package:movies/src/domain/models/movie_player.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/domain/models/view_status.dart';
+import 'package:player/player.dart';
 
 class Anime365MoviesService implements MoviesService {
   Anime365MoviesService({
@@ -121,5 +123,28 @@ class Anime365MoviesService implements MoviesService {
             },
           ).toList(growable: false),
         );
+  }
+
+  @override
+  Future<MoviePlayerData> getPlayerMovie(Object id) {
+    return _repository.getPlayerMovie(id).then(MoviePlayerData.fromDto);
+  }
+
+  @override
+  Future<List<VideoTranslationData>> getTranslations(Object episodeId) async {
+    final List<VideoTranslationDto> dtos =
+        await _repository.getTranslations(episodeId);
+    return dtos.map(VideoTranslationData.fromDto).toList(growable: false);
+  }
+
+  @override
+  Future<VideoData> getTranslationVideo(Object translationId) async {
+    final VideoDto dto = await _repository.getTranslationVideo(translationId);
+    return VideoData.fromDto(dto);
+  }
+
+  @override
+  Future<void> saveTranslationWatched(Object translationId) {
+    return _repository.saveTranslationWatched(translationId);
   }
 }

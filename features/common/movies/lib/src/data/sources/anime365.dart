@@ -1,5 +1,8 @@
 import 'package:core/core.dart';
 import 'package:movies/movies.dart';
+import 'package:movies/src/data/dto/episode.dart';
+import 'package:movies/src/data/dto/movie_player.dart';
+import 'package:player/player.dart';
 
 class Anime365MoviesDataSource implements MoviesDataSource {
   const Anime365MoviesDataSource({
@@ -46,10 +49,14 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     );
     final Document document = parse(response.body as String);
     final Element upNextItemsContainer = document.querySelector(
-      'content > div.body-container > ' // content body
-      'div.container.section > div#m-index-personal-episodes > ' // up next
+      // Content body
+      'content > div.body-container > '
+      // Up next
+      'div.container.section > div#m-index-personal-episodes > '
+      // Items card
       // ignore: lines_longer_than_80_chars
-      'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > ' // items card
+      'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
+      // Up next items
       'div.row > div.items', // up next items
     )!;
 
@@ -126,7 +133,6 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         }
         final Iterable<RegExpMatch> episodeNumberMatches =
             episodeNumberPattern.allMatches(episodeTitle);
-        assert(episodeNumberMatches.length <= 1);
         final num? episodeNumber = episodeNumberMatches.isEmpty
             ? null
             : num.parse(
@@ -152,5 +158,114 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         };
       },
     ).toList(growable: false);
+  }
+
+  @override
+  Future<MoviePlayerDto> getPlayerMovie(Object id) async {
+    final NetworkResponseData response = await _network.request(
+      NetworkRequestData(
+        uri: Uri(
+          path: '/api/series/$id',
+          queryParameters: {
+            'fields': 'titles,episodes',
+          },
+        ),
+        method: NetworkRequestMethodData.get,
+      ),
+    );
+
+    final Map<String, dynamic> json =
+        response.body['data'] as Map<String, dynamic>;
+    return MoviePlayerDto(
+      id: id,
+      title: json['titles']['ru'] as String,
+      episodes: (json['episodes'] as List<dynamic>)
+          .cast<Map<String, dynamic>>()
+          .map(
+            (Map<String, dynamic> episodeJson) => EpisodeDto(
+              id: episodeJson['id'] as Object,
+              type: episodeJson['episodeType'] as String,
+              number: num.parse(episodeJson['episodeInt'] as String),
+            ),
+          )
+          .toList(growable: false),
+    );
+  }
+
+  @override
+  Future<List<VideoTranslationDto>> getTranslations(Object episodeId) async {
+    final NetworkResponseData response = await _network.request(
+      NetworkRequestData(
+        uri: Uri(
+          path: '/api/episodes/$episodeId',
+          queryParameters: {
+            'fields': 'translations',
+          },
+        ),
+        method: NetworkRequestMethodData.get,
+      ),
+    );
+
+    final Map<String, dynamic> json =
+        response.body['data'] as Map<String, dynamic>;
+    return (json['translations'] as List<dynamic>)
+        .cast<Map<String, dynamic>>()
+        .where(
+          (translationJson) =>
+              translationJson['isActive'] == 1 &&
+              translationJson['type'] != 'voiceOther',
+        )
+        .map(
+      (translationJson) {
+        String title = translationJson['authorsSummary'] as String;
+        if (title.contains('(')) {
+          title = title.substring(0, title.indexOf('(') - 1);
+        }
+
+        return VideoTranslationDto(
+          id: translationJson['id'] as Object,
+          title: title,
+          type: translationJson['typeKind'] as String,
+          language: translationJson['typeLang'] as String,
+        );
+      },
+    ).toList(growable: false);
+  }
+
+  @override
+  Future<VideoDto> getTranslationVideo(Object translationId) async {
+    final NetworkResponseData response = await _network.request(
+      NetworkRequestData(
+        uri: Uri(
+          path: '/api/translations/embed/$translationId',
+        ),
+        method: NetworkRequestMethodData.get,
+      ),
+    );
+
+    return VideoDto(
+      download: {
+        for (final Map<String, dynamic> sourceJson in response.body['data']
+            ['download'])
+          sourceJson['height'] as num: sourceJson['url'] as String,
+      },
+      stream: {
+        for (final Map<String, dynamic> sourceJson in response.body['data']
+            ['stream'])
+          sourceJson['height'] as num: sourceJson['urls'].first as String,
+      },
+      subtitlesUrl: response.body['data']['subtitlesUrl'] as String?,
+    );
+  }
+
+  @override
+  Future<void> saveTranslationWatched(Object translationId) {
+    return _network.request(
+      NetworkRequestData(
+        uri: Uri(path: '/translations/watched/$translationId'),
+        method: NetworkRequestMethodData.post,
+        body: {'csrf': _network.csrf},
+      ),
+    );
   }
 }

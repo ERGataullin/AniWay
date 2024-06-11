@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
+import 'package:movies/src/domain/models/movie_player.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/domain/models/view_status.dart';
+import 'package:player/player.dart';
 
 abstract interface class MoviesService {
   const MoviesService();
@@ -19,4 +21,12 @@ abstract interface class MoviesService {
   });
 
   Future<List<UpNextData>> getUpNext();
+
+  Future<MoviePlayerData> getPlayerMovie(Object id);
+
+  Future<List<VideoTranslationData>> getTranslations(Object episodeId);
+
+  Future<VideoData> getTranslationVideo(Object translationId);
+
+  Future<void> saveTranslationWatched(Object translationId);
 }

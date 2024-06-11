@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   l10n:
     path: ../../shared/l10n
+  player: 
+    path: ../../shared/player
 
 dev_dependencies:
   flutter_lints:

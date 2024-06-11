@@ -21,7 +21,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
 
   final void Function(Object id) onMoviePressed;
 
-  final Widget Function(Object episodeId, Object movieId) playerBuilder;
+  final Widget Function(Widget child) playerBuilder;
 
   @override
   Widget build(IHomeWM wm) {
