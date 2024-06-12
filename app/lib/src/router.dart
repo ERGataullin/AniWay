@@ -35,15 +35,11 @@ extension _RouteLocating on Uri {
 class AppRouter implements RouterConfig<RouteMatchList> {
   AppRouter({
     required L10n l10n,
-    required ThemeData videoPlayerTheme,
     required ValueListenable<bool> signedIn,
   })  : _l10n = l10n,
-        _videoPlayerTheme = videoPlayerTheme,
         _signedIn = signedIn;
 
   final L10n _l10n;
-
-  final ThemeData _videoPlayerTheme;
 
   final ValueListenable<bool> _signedIn;
 
@@ -156,10 +152,6 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         movieRoute,
       ],
       builder: (context, state) => HomeWidget(
-        playerBuilder: (child) => Theme(
-          data: _videoPlayerTheme,
-          child: child,
-        ),
         onMoviePressed: (id) => context.go(
           state.uri.resolveUri(Uri(path: movieRoute.path)).locate(
             pathParameters: {

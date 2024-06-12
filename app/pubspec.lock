@@ -412,6 +412,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  theme:
+    dependency: "direct main"
+    description:
+      path: "../features/shared/theme"
+      relative: true
+    source: path
+    version: "0.0.0"
   typed_data:
     dependency: transitive
     description:
@@ -501,5 +508,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.1 <4.0.0"
+  dart: ">=3.4.3 <4.0.0"
   flutter: ">=3.19.0"

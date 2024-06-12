@@ -14,18 +14,15 @@ extension _AppOverrides on ThemeData {
       );
 }
 
-class AppTheme {
-  AppTheme()
-      : light = ThemeData.light(useMaterial3: true).appOverrides,
-        dark = ThemeData.dark(useMaterial3: true).appOverrides;
+class Themes {
+  Themes._();
 
-  static const double _videoPlayerSliderThumbRadius = 8;
+  static final ThemeData light =
+      ThemeData.light(useMaterial3: true).appOverrides;
 
-  final ThemeData light;
+  static final ThemeData dark = ThemeData.dark(useMaterial3: true).appOverrides;
 
-  final ThemeData dark;
-
-  late final ThemeData videoPlayer = ThemeData.from(
+  static final ThemeData videoPlayer = ThemeData.from(
     useMaterial3: true,
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
@@ -49,7 +46,7 @@ class AppTheme {
       overlayShape: SliderComponentShape.noOverlay,
       trackShape: const _VideoPlayerSliderTrackShape(),
       thumbShape: const _VideoPlayerSliderThumbShape(
-        thumbRadius: _videoPlayerSliderThumbRadius,
+        thumbRadius: 8,
       ),
     ),
   );

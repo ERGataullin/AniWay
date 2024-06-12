@@ -15,13 +15,10 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   const HomeWidget({
     super.key,
     required this.onMoviePressed,
-    required this.playerBuilder,
     WidgetModelFactory wmFactory = homeWMFactory,
   }) : super(wmFactory);
 
   final void Function(Object id) onMoviePressed;
-
-  final Widget Function(Widget child) playerBuilder;
 
   @override
   Widget build(IHomeWM wm) {

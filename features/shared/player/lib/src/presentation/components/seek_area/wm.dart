@@ -7,6 +7,7 @@ import 'package:player/src/presentation/components/seek_area/model.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/utils/seek_gesture_recognizer.dart';
 import 'package:player/src/utils/video_controller.dart';
+import 'package:theme/theme.dart';
 
 SeekAreaWM seekAreaWMFactory(BuildContext context) => SeekAreaWM(
       SeekAreaModel(context.read<ErrorHandler>()),
@@ -27,7 +28,7 @@ abstract interface class ISeekAreaWM implements IWidgetModel {
 }
 
 class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
-    with L10nWMMixin, TickerProviderWidgetModelMixin
+    with L10nWMMixin, ThemeWMMixin, TickerProviderWidgetModelMixin
     implements ISeekAreaWM {
   SeekAreaWM(super._model);
 
@@ -106,8 +107,6 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     ),
   );
 
-  late ThemeData _theme;
-
   late TextDirection _textDirection;
 
   late DeviceGestureSettings? _gestureSettings;
@@ -124,7 +123,6 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
 
   @override
   void didChangeDependencies() {
-    _theme = Theme.of(context);
     _textDirection = Directionality.of(context);
     _gestureSettings = MediaQuery.maybeGestureSettingsOf(context);
     super.didChangeDependencies();
@@ -157,12 +155,12 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
 
-    _theme.splashFactory
+    theme.value.splashFactory
         .create(
           controller: Material.of(materialChildKey.currentContext!),
           referenceBox: referenceBox,
           position: position,
-          color: _theme.splashColor,
+          color: theme.value.splashColor,
           textDirection: _textDirection,
           containedInkWell: true,
           customBorder: shape.value,

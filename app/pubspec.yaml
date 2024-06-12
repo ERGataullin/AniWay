@@ -25,6 +25,8 @@ dependencies:
   path_provider: ^2.1.1
   root_menu:
     path: ../features/common/root_menu
+  theme:
+    path: ../features/shared/theme
 
 dev_dependencies:
   flutter_lints:
