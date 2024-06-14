@@ -35,16 +35,16 @@ class Anime365AuthService implements AuthService {
     required String password,
   }) async {
     await _network.request(
-      NetworkRequestData(
+      RequestData(
         uri: Uri(path: '/users/login'),
-        method: NetworkRequestMethodData.get,
+        method: RequestMethod.get,
       ),
     );
 
     await _network.request(
-      NetworkRequestData(
+      RequestData(
         uri: Uri(path: '/users/login'),
-        method: NetworkRequestMethodData.post,
+        method: RequestMethod.post,
         headers: const {
           'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },

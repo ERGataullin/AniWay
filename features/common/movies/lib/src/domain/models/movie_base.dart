@@ -12,6 +12,6 @@ class MovieBaseData {
   final Object id;
   final String title;
   final Uri posterUri;
-  final MovieTypeData type;
+  final MovieType type;
   final double? score;
 }

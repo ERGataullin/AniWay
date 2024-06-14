@@ -9,10 +9,10 @@ typedef CookieMap = Map<String, Cookie>;
 abstract class CookieManager implements Initable {
   ValueListenable<CookieMap> get cookie;
 
-  NetworkRequestInterceptor get interceptor;
+  NetworkInterceptor get interceptor;
 }
 
-class CookieManagerImpl extends NetworkRequestInterceptor
+class CookieManagerImpl extends NetworkInterceptor
     implements CookieManager {
   CookieManagerImpl({
     required Storage storage,
@@ -37,7 +37,7 @@ class CookieManagerImpl extends NetworkRequestInterceptor
   final Storage _storage;
 
   @override
-  NetworkRequestInterceptor get interceptor => this;
+  NetworkInterceptor get interceptor => this;
 
   @override
   Future<void> init() async {
@@ -49,7 +49,7 @@ class CookieManagerImpl extends NetworkRequestInterceptor
   }
 
   @override
-  FutureOr<NetworkRequestData> onRequest(NetworkRequestData data) async {
+  FutureOr<RequestData> onRequest(RequestData data) async {
     return data.copyWith(
       headers: {
         ...data.headers,
@@ -61,7 +61,7 @@ class CookieManagerImpl extends NetworkRequestInterceptor
   }
 
   @override
-  FutureOr<NetworkResponseData> onResponse(NetworkResponseData data) {
+  FutureOr<ResponseData> onResponse(ResponseData data) {
     if (data.headers[_effectiveSetCookieHeaderName]?.isNotEmpty != true) {
       return data;
     }

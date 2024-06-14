@@ -4,7 +4,7 @@ import 'package:core/core.dart';
 
 typedef Headers = Map<String, String>;
 
-enum NetworkRequestMethodData {
+enum RequestMethod {
   get,
   head,
   post,
@@ -21,23 +21,23 @@ abstract interface class Network implements Initable {
 
   Uri get baseUri;
 
-  void addInterceptor(NetworkRequestInterceptor interceptor);
+  void addInterceptor(NetworkInterceptor interceptor);
 
-  void removeInterceptor(NetworkRequestInterceptor interceptor);
+  void removeInterceptor(NetworkInterceptor interceptor);
 
-  Future<NetworkResponseData> request(NetworkRequestData data);
+  Future<ResponseData> request(RequestData data);
 }
 
-abstract class NetworkRequestInterceptor {
-  const NetworkRequestInterceptor();
+abstract class NetworkInterceptor {
+  const NetworkInterceptor();
 
-  FutureOr<NetworkRequestData> onRequest(NetworkRequestData data) => data;
+  FutureOr<RequestData> onRequest(RequestData data) => data;
 
-  FutureOr<NetworkResponseData> onResponse(NetworkResponseData data) => data;
+  FutureOr<ResponseData> onResponse(ResponseData data) => data;
 }
 
-class NetworkRequestData {
-  const NetworkRequestData({
+class RequestData {
+  const RequestData({
     required this.uri,
     required this.method,
     this.headers = const {},
@@ -46,19 +46,19 @@ class NetworkRequestData {
 
   final Uri uri;
 
-  final NetworkRequestMethodData method;
+  final RequestMethod method;
 
   final Headers headers;
 
   final dynamic body;
 
-  NetworkRequestData copyWith({
+  RequestData copyWith({
     Uri? uri,
-    NetworkRequestMethodData? method,
+    RequestMethod? method,
     Headers? headers,
     dynamic body,
   }) =>
-      NetworkRequestData(
+      RequestData(
         uri: uri ?? this.uri,
         method: method ?? this.method,
         headers: headers ?? this.headers,
@@ -66,8 +66,8 @@ class NetworkRequestData {
       );
 }
 
-class NetworkResponseData {
-  const NetworkResponseData({
+class ResponseData {
+  const ResponseData({
     this.headers = const {},
     required this.body,
   });

@@ -14,11 +14,11 @@ abstract interface class MoviesService implements Initable {
   int get defaultMoviesLimit;
 
   Future<List<MovieBaseData>> getMovies({
-    MovieOrderData? order,
+    MovieOrder? order,
     String? query,
     int? limit,
     int? offset,
-    List<ViewStatusData> viewStatuses = const [],
+    List<ViewStatus> viewStatuses = const [],
   });
 
   Future<List<UpNextData>> getUpNext();
