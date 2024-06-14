@@ -7,8 +7,7 @@ abstract interface class AuthService {
 
   ValueListenable<bool> get signedIn;
 
-  @mustCallSuper
-  FutureOr<void> initialize() {}
+  Future<void> init();
 
   Future<void> signIn({
     required String email,
@@ -17,6 +16,5 @@ abstract interface class AuthService {
 
   Future<void> signUp();
 
-  @mustCallSuper
-  void dispose() {}
+  void dispose();
 }

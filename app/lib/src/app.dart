@@ -1,6 +1,7 @@
 import 'package:app/src/dependencies_provider.dart';
 import 'package:app/src/router.dart';
 import 'package:auth/auth.dart';
+import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -30,8 +31,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    usePathUrlStrategy();
-    _initializeDependencies();
+    _init();
   }
 
   @override
@@ -55,12 +55,24 @@ class _AppState extends State<App> {
         : const SizedBox.shrink();
   }
 
-  Future<void> _initializeDependencies() async {
+  @override
+  void dispose() {
+    context.read<CookieManager>().dispose();
+    super.dispose();
+  }
+
+  Future<void> _init() async {
+    usePathUrlStrategy();
+
     await context.read<Storage>().initialize();
-    if (!mounted) {
-      return;
-    }
-    await context.read<AuthService>().initialize();
+
+    if (!mounted) return;
+    final CookieManager cookieManager = context.read<CookieManager>();
+    context.read<Network>().addInterceptor(cookieManager.interceptor);
+    await cookieManager.init();
+
+    if (!mounted) return;
+    await context.read<AuthService>().init();
 
     setState(() {
       _initialized = true;

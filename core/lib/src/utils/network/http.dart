@@ -12,9 +12,6 @@ class HttpNetwork implements Network {
   @override
   final Uri baseUri;
 
-  @override
-  String? csrf;
-
   final Client _client;
 
   final List<NetworkRequestInterceptor> _interceptors = [];

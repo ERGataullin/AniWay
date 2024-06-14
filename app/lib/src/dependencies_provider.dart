@@ -1,4 +1,5 @@
 import 'package:auth/auth.dart';
+import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -10,6 +11,7 @@ class AppDependenciesProvider extends StatelessWidget {
     this.errorHandleService,
     this.networkService,
     this.storageService,
+    this.cookieManager,
     this.authService,
     this.moviesService,
     required this.child,
@@ -18,6 +20,7 @@ class AppDependenciesProvider extends StatelessWidget {
   final ErrorHandler? errorHandleService;
   final Network? networkService;
   final Storage? storageService;
+  final CookieManager? cookieManager;
   final AuthService? authService;
   final MoviesService? moviesService;
   final Widget child;
@@ -54,17 +57,20 @@ class AppDependenciesProvider extends StatelessWidget {
         Provider<Storage>(
           create: (context) => storageService ?? const HiveStorage(),
         ),
+        Provider<CookieManager>(
+          create: (context) =>
+              cookieManager ??
+              CookieManagerImpl(
+                storage: context.read<Storage>(),
+              ),
+        ),
         Provider<AuthService>(
           lazy: false,
           create: (context) =>
               authService ??
               Anime365AuthService(
+                cookieManager: context.read<CookieManager>(),
                 network: context.read<Network>(),
-                repository: AuthRepository(
-                  local: StorageAuthDataSource(
-                    storage: context.read<Storage>(),
-                  ),
-                ),
               ),
         ),
         Provider<MoviesService>(
@@ -73,6 +79,7 @@ class AppDependenciesProvider extends StatelessWidget {
               Anime365MoviesService(
                 repository: MoviesRepository(
                   remote: Anime365MoviesDataSource(
+                    cookieManager: context.read<CookieManager>(),
                     network: context.read<Network>(),
                   ),
                 ),
