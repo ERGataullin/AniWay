@@ -34,7 +34,7 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   @override
   late final ComputationNotifier<String> queryHint = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.searchPageTitle,
+    () => l10n.value.searchPageTitle,
   );
 
   @override

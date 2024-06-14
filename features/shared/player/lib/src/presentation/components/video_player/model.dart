@@ -41,7 +41,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   @override
   late final ComputationNotifier<Uri?> videoDataSource = ComputationNotifier(
     trigger: video,
-    computation: () => video.value?.stream.values.first,
+    () => video.value?.stream.values.first,
   );
 
   late VideoResolver _videoResolver;

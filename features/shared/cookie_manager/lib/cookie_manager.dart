@@ -12,8 +12,7 @@ abstract class CookieManager implements Initable {
   NetworkInterceptor get interceptor;
 }
 
-class CookieManagerImpl extends NetworkInterceptor
-    implements CookieManager {
+class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   CookieManagerImpl({
     required Storage storage,
   }) : _storage = storage;

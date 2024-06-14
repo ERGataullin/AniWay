@@ -44,7 +44,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
       _videoController.position,
       _videoController.duration,
     ]),
-    computation: () => model.canSeek(
+    () => model.canSeek(
       seekType: widget.type,
       position: _videoController.position.value,
       duration: _videoController.duration.value,
@@ -64,20 +64,20 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
 
   @override
   late final ComputationNotifier<ShapeBorder> shape = ComputationNotifier(
-    computation: () => SeekAreaShapeBorder(widget.type),
+    () => SeekAreaShapeBorder(widget.type),
   );
 
   @override
   late final ComputationNotifier<String> value = ComputationNotifier(
     trigger: model.value,
-    computation: () => model.value.value == Duration.zero
+    () => model.value.value == Duration.zero
         ? ''
         : l10n.value.durationSeconds(model.value.value.inSeconds),
   );
 
   @override
   late final ComputationNotifier<int> iconsRotation = ComputationNotifier(
-    computation: () => switch (widget.type) {
+    () => switch (widget.type) {
       SeekType.rewind => 2,
       SeekType.fastForward => 0,
     },

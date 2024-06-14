@@ -26,7 +26,7 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
       widget.videoController.position,
       widget.videoController.duration,
     ]),
-    computation: () => widget.videoController.duration.value == Duration.zero
+    () => widget.videoController.duration.value == Duration.zero
         ? 0
         : widget.videoController.position.value.inSeconds /
             widget.videoController.duration.value.inSeconds,

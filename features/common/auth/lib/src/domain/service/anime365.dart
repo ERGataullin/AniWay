@@ -15,7 +15,7 @@ class Anime365AuthService implements AuthService {
   @override
   late final ComputationNotifier<bool> signedIn = ComputationNotifier(
     trigger: _cookieManager.cookie,
-    computation: () {
+    () {
       final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];
       return session != null &&
           (session.expires == null || session.expires!.isAfter(DateTime.now()));

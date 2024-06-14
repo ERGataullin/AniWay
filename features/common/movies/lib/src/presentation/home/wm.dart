@@ -43,19 +43,19 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   @override
   late final ComputationNotifier<String> title = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.homePageTitle,
+    () => l10n.value.homePageTitle,
   );
 
   @override
   late final ComputationNotifier<String> upNextLabel = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.upNextLabel,
+    () => l10n.value.upNextLabel,
   );
 
   @override
   late final ComputationNotifier<String> popularLabel = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.popularLabel,
+    () => l10n.value.popularLabel,
   );
 
   @override

@@ -42,13 +42,13 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   @override
   late final ComputationNotifier<String> title = ComputationNotifier(
     trigger: model.movie,
-    computation: () => model.movie.value?.title ?? '',
+    () => model.movie.value?.title ?? '',
   );
 
   @override
   late final ComputationNotifier<String> subtitle = ComputationNotifier(
     trigger: Listenable.merge([model.episode, l10n]),
-    computation: () => model.episode.value == null
+    () => model.episode.value == null
         ? ''
         : l10n.value.movieEpisode(
             model.episode.value!.type.name,
