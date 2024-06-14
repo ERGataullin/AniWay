@@ -1,7 +1,6 @@
-import 'package:app/src/dependencies_provider.dart';
+import 'package:app/src/app_scope.dart';
 import 'package:app/src/router.dart';
 import 'package:auth/auth.dart';
-import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -16,7 +15,7 @@ class App extends StatefulWidget {
 
   void run() {
     runApp(
-      AppDependenciesProvider(
+      AppScope(
         child: this,
       ),
     );
@@ -31,13 +30,28 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    _init();
+    usePathUrlStrategy();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final AppScope scope = AppScope.of(context);
+    scope
+      ..network.addInterceptor(scope.cookieManager.interceptor)
+      ..ensureInitialized().then(
+        (_) => setState(() {
+          _initialized = true;
+        }),
+      );
+
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _initialized
-        ? MaterialApp(
+    return !_initialized
+        ? const SizedBox.shrink()
+        : MaterialApp(
             debugShowCheckedModeBanner: false,
             supportedLocales: L10n.supportedLocales,
             localizationsDelegates: L10n.localizationsDelegates,
@@ -51,31 +65,12 @@ class _AppState extends State<App> {
               );
               return Router.withConfig(config: _router!);
             },
-          )
-        : const SizedBox.shrink();
+          );
   }
 
   @override
   void dispose() {
-    context.read<CookieManager>().dispose();
+    AppScope.of(context).ensureDisposed();
     super.dispose();
-  }
-
-  Future<void> _init() async {
-    usePathUrlStrategy();
-
-    await context.read<Storage>().initialize();
-
-    if (!mounted) return;
-    final CookieManager cookieManager = context.read<CookieManager>();
-    context.read<Network>().addInterceptor(cookieManager.interceptor);
-    await cookieManager.init();
-
-    if (!mounted) return;
-    await context.read<AuthService>().init();
-
-    setState(() {
-      _initialized = true;
-    });
   }
 }

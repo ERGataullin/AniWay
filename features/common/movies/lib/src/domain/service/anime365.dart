@@ -23,6 +23,9 @@ class Anime365MoviesService implements MoviesService {
   final MoviesRepository _repository;
 
   @override
+  void init() {}
+
+  @override
   Future<List<MovieBaseData>> getMovies({
     MovieOrderData? order,
     String? query,
@@ -147,4 +150,7 @@ class Anime365MoviesService implements MoviesService {
   Future<void> saveTranslationWatched(Object translationId) {
     return _repository.saveTranslationWatched(translationId);
   }
+
+  @override
+  void dispose() {}
 }

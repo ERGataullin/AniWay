@@ -6,16 +6,10 @@ import 'package:flutter/foundation.dart';
 
 typedef CookieMap = Map<String, Cookie>;
 
-abstract class CookieManager {
+abstract class CookieManager implements Initable {
   ValueListenable<CookieMap> get cookie;
 
   NetworkRequestInterceptor get interceptor;
-
-  @mustCallSuper
-  Future<void> init();
-
-  @mustCallSuper
-  void dispose();
 }
 
 class CookieManagerImpl extends NetworkRequestInterceptor
@@ -42,21 +36,16 @@ class CookieManagerImpl extends NetworkRequestInterceptor
 
   final Storage _storage;
 
-  bool _initialized = false;
-
   @override
   NetworkRequestInterceptor get interceptor => this;
 
   @override
   Future<void> init() async {
-    if (_initialized) return;
-
     cookie
       ..value = await _storage
           .get<String>(collection: 'cookie_manager', key: 'cookie')
           .then(_parseCookie)
       ..addListener(_onCookieChanged);
-    _initialized = true;
   }
 
   @override
@@ -95,7 +84,7 @@ class CookieManagerImpl extends NetworkRequestInterceptor
   CookieMap _parseCookie(String? setCookie) {
     if (setCookie == null) return const {};
 
-    final List<Cookie> setCookieList = Uri.decodeComponent(setCookie)
+    final List<Cookie> setCookieList = setCookie
         .split(_setCookieSplitter)
         .map(Cookie.fromSetCookieValue)
         .toList(growable: false);

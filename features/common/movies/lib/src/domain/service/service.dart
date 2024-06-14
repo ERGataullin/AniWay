@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
 import 'package:movies/src/domain/models/movie_player.dart';
@@ -7,7 +8,7 @@ import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/domain/models/view_status.dart';
 import 'package:player/player.dart';
 
-abstract interface class MoviesService {
+abstract interface class MoviesService implements Initable {
   const MoviesService();
 
   int get defaultMoviesLimit;

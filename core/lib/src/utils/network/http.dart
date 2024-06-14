@@ -17,6 +17,9 @@ class HttpNetwork implements Network {
   final List<NetworkRequestInterceptor> _interceptors = [];
 
   @override
+  void init() {}
+
+  @override
   void addInterceptor(NetworkRequestInterceptor interceptor) =>
       _interceptors.add(interceptor);
 
@@ -27,6 +30,11 @@ class HttpNetwork implements Network {
   @override
   Future<NetworkResponseData> request(NetworkRequestData data) {
     return _interceptRequest(data).then(_request).then(_interceptResponse);
+  }
+
+  @override
+  void dispose() {
+    _client.close();
   }
 
   Future<NetworkRequestData> _interceptRequest(NetworkRequestData data) {

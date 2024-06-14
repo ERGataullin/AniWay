@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
+
 typedef Headers = Map<String, String>;
 
 enum NetworkRequestMethodData {
@@ -14,7 +16,7 @@ enum NetworkRequestMethodData {
   patch;
 }
 
-abstract interface class Network {
+abstract interface class Network implements Initable {
   const Network();
 
   Uri get baseUri;

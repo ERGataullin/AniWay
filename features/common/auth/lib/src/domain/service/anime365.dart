@@ -27,9 +27,7 @@ class Anime365AuthService implements AuthService {
   final Network _network;
 
   @override
-  Future<void> init() async {
-    await _cookieManager.init();
-  }
+  void init() {}
 
   @override
   Future<void> signIn({

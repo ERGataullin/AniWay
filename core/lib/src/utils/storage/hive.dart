@@ -8,7 +8,7 @@ class HiveStorage implements Storage {
   const HiveStorage();
 
   @override
-  Future<void> initialize() async {
+  Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     final String? storagePath = kIsWeb
@@ -37,5 +37,10 @@ class HiveStorage implements Storage {
     required T value,
   }) {
     return Hive.openBox<T>(collection).then((box) => box.put(key, value));
+  }
+
+  @override
+  Future<void> dispose() {
+    return Hive.close();
   }
 }
