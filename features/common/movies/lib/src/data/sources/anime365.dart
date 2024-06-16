@@ -269,9 +269,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       RequestData(
         uri: Uri(path: '/translations/watched/$translationId'),
         method: RequestMethod.post,
-        body: {
-          'csrf': _cookieManager.cookie.value['csrf']?.value,
-        },
+        body: {'csrf': _cookieManager.csrf},
       ),
     );
   }

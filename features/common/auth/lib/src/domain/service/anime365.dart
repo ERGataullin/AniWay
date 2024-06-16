@@ -18,6 +18,8 @@ class Anime365AuthService implements AuthService {
     () {
       final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];
       return session != null &&
+          _cookieManager.cookie.value['aaaa8ed0da05b797653c4bd51877d861'] !=
+              null &&
           (session.expires == null || session.expires!.isAfter(DateTime.now()));
     },
   );
@@ -49,7 +51,7 @@ class Anime365AuthService implements AuthService {
           'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
         body: {
-          'csrf': _cookieManager.cookie.value['csrf']?.value,
+          'csrf': _cookieManager.csrf,
           'LoginForm[username]': email,
           'LoginForm[password]': password,
         },
