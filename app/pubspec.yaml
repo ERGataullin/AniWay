@@ -18,13 +18,11 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  go_router: ^14.1.1
-  hive: ^2.2.3
+  go_router: ^14.2.0
   l10n:
     path: ../features/shared/l10n
   movies: 
     path: ../features/common/movies
-  path_provider: ^2.1.1
   root_menu:
     path: ../features/common/root_menu
   theme:

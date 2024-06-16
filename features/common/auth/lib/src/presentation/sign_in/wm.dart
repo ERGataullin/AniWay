@@ -113,7 +113,6 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
       email: emailController.text,
       password: passwordController.text,
     );
-    widget.onSignedIn();
     showLoader.value = false;
   }
 
