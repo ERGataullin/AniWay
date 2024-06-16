@@ -48,6 +48,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  cookie_manager:
+    dependency: "direct main"
+    description:
+      path: "../features/shared/cookie_manager"
+      relative: true
+    source: path
+    version: "0.0.0"
   core:
     dependency: "direct main"
     description:
@@ -135,12 +142,12 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "7685acd06244ba4be60f455c5cafe5790c63dc91fc03f7385b1e922a6b85b17c"
+      sha256: cdae1b9c8bd7efadcef6112e81c903662ef2ce105cbd220a04bbb7c3425b5554
       url: "https://pub.dev"
     source: hosted
-    version: "14.1.1"
+    version: "14.2.0"
   hive:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: hive
       sha256: "8dcf6db979d7933da8217edcec84e9df1bdb4e4edc7fc77dbd5aa74356d6d941"
@@ -274,7 +281,7 @@ packages:
     source: hosted
     version: "1.9.0"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       sha256: c9e7d3a4cd1410877472158bee69963a4579f78b68c65a2b7d40d1a7a88bb161
@@ -412,6 +419,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  theme:
+    dependency: "direct main"
+    description:
+      path: "../features/shared/theme"
+      relative: true
+    source: path
+    version: "0.0.0"
   typed_data:
     dependency: transitive
     description:
@@ -501,5 +515,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.4.1 <4.0.0"
+  dart: ">=3.4.3 <4.0.0"
   flutter: ">=3.19.0"

@@ -1,4 +1,4 @@
-enum MovieOrderData {
+enum MovieOrder {
   byScore,
   byPopularity,
   byName,

@@ -9,11 +9,8 @@ extension SignInContext on BuildContext {
 class SignInWidget extends ElementaryWidget<ISignInWM> {
   const SignInWidget({
     super.key,
-    required this.onSignedIn,
     WidgetModelFactory wmFactory = signInWMFactory,
   }) : super(wmFactory);
-
-  final VoidCallback onSignedIn;
 
   @override
   Widget build(ISignInWM wm) {

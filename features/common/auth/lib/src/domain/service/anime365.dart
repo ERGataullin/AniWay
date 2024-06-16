@@ -2,53 +2,34 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:auth/auth.dart';
+import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
-
-_Cookies _cookiesFromCookieValue(String cookieValue) {
-  final List<Cookie> cookiesList = cookieValue
-      .split(RegExp('; ?'))
-      .map(Cookie.fromSetCookieValue)
-      .toList(growable: false);
-
-  return {
-    for (final Cookie cookie in cookiesList) cookie.name: cookie,
-  };
-}
-
-typedef _Cookies = Map<String, Cookie>;
 
 class Anime365AuthService implements AuthService {
   Anime365AuthService({
+    required CookieManager cookieManager,
     required Network network,
-    required AuthRepository repository,
-  })  : _network = network,
-        _repository = repository;
+  })  : _cookieManager = cookieManager,
+        _network = network;
 
   @override
-  final ValueNotifier<bool> signedIn = ValueNotifier(false);
+  late final ComputationNotifier<bool> signedIn = ComputationNotifier(
+    trigger: _cookieManager.cookie,
+    () {
+      final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];
+      return session != null &&
+          _cookieManager.cookie.value['aaaa8ed0da05b797653c4bd51877d861'] !=
+              null &&
+          (session.expires == null || session.expires!.isAfter(DateTime.now()));
+    },
+  );
+
+  final CookieManager _cookieManager;
 
   final Network _network;
 
-  final AuthRepository _repository;
-
-  late final _AuthInterceptor _authInterceptor = _AuthInterceptor(
-    onCookiesChanged: _onCookiesChanged,
-  );
-
   @override
-  Future<void> initialize() async {
-    final String? cookiesString = await _repository.getCookies();
-    final Map<String, Cookie> cookies = cookiesString == null
-        ? const {}
-        : _cookiesFromCookieValue(cookiesString);
-    _network.csrf = cookies['csrf'] == null
-        ? null
-        : Uri.decodeComponent(cookies['csrf']!.value);
-    _authInterceptor._cookies = cookies;
-    _network.addInterceptor(_authInterceptor);
-    signedIn.value = cookies.isNotEmpty;
-  }
+  void init() {}
 
   @override
   Future<void> signIn({
@@ -56,29 +37,26 @@ class Anime365AuthService implements AuthService {
     required String password,
   }) async {
     await _network.request(
-      NetworkRequestData(
+      RequestData(
         uri: Uri(path: '/users/login'),
-        method: NetworkRequestMethodData.get,
+        method: RequestMethod.get,
       ),
     );
 
     await _network.request(
-      NetworkRequestData(
+      RequestData(
         uri: Uri(path: '/users/login'),
-        method: NetworkRequestMethodData.post,
+        method: RequestMethod.post,
         headers: const {
           'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
         body: {
-          'csrf':
-              _authInterceptor._cookies['csrf']?.value.replaceAll('%3D', '='),
+          'csrf': _cookieManager.csrf,
           'LoginForm[username]': email,
           'LoginForm[password]': password,
         },
       ),
     );
-
-    signedIn.value = true;
   }
 
   @override
@@ -88,80 +66,6 @@ class Anime365AuthService implements AuthService {
 
   @override
   void dispose() {
-    _network.removeInterceptor(_authInterceptor);
     signedIn.dispose();
-  }
-
-  Future<void> _onCookiesChanged(_Cookies value) async {
-    _network.csrf = value['csrf'] == null
-        ? null
-        : Uri.decodeComponent(value['csrf']!.value);
-    final String valueString = value.values
-        .map((cookie) => '${cookie.name}=${cookie.value}')
-        .join('; ');
-    await _repository.saveCookies(valueString);
-  }
-}
-
-class _AuthInterceptor extends NetworkRequestInterceptor {
-  _AuthInterceptor({
-    _Cookies cookies = const {},
-    ValueChanged<_Cookies>? onCookiesChanged,
-  })  : _cookies = cookies,
-        _onCookiesChanged = onCookiesChanged;
-
-  static const String _effectiveCookieHeaderName =
-      kIsWeb ? 'kaki' : HttpHeaders.cookieHeader;
-
-  static const String _effectiveSetCookieHeaderName =
-      kIsWeb ? 'set-kaki' : HttpHeaders.setCookieHeader;
-
-  final ValueChanged<_Cookies>? _onCookiesChanged;
-
-  final Pattern _setCookieSplitter = RegExp(
-    r'[ \t]*,[ \t]*(?=['
-    r"!#$%&'*+\-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ^_`"
-    'abcdefghijklmnopqrstuvwxyz|~'
-    ']+=)',
-  );
-
-  _Cookies _cookies;
-
-  @override
-  FutureOr<NetworkRequestData> onRequest(NetworkRequestData data) async {
-    final String? currentCookiesString =
-        data.headers[_effectiveCookieHeaderName];
-
-    return data.copyWith(
-      headers: {
-        ...data.headers,
-        _effectiveCookieHeaderName: {
-          if (currentCookiesString != null)
-            ..._cookiesFromCookieValue(currentCookiesString),
-          ..._cookies,
-        }.values.map((cookie) => '${cookie.name}=${cookie.value}').join('; '),
-      },
-    );
-  }
-
-  @override
-  FutureOr<NetworkResponseData> onResponse(NetworkResponseData data) {
-    final List<Cookie> setCookies = data.headers[_effectiveSetCookieHeaderName]
-            ?.split(_setCookieSplitter)
-            .map(Cookie.fromSetCookieValue)
-            .toList(growable: false) ??
-        const [];
-
-    if (setCookies.isEmpty) {
-      return data;
-    }
-
-    _cookies = {
-      ..._cookies,
-      for (final Cookie cookie in setCookies) cookie.name: cookie,
-    };
-    _onCookiesChanged?.call(_cookies);
-
-    return data;
   }
 }

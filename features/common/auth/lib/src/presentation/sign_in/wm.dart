@@ -48,19 +48,19 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   @override
   late final ComputationNotifier<String> title = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.signInTitle,
+    () => l10n.value.signInTitle,
   );
 
   @override
   late final ComputationNotifier<String> emailLabel = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.emailLabel,
+    () => l10n.value.emailLabel,
   );
 
   @override
   late final ComputationNotifier<String> passwordLabel = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.passwordLabel,
+    () => l10n.value.passwordLabel,
   );
 
   @override
@@ -72,7 +72,7 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   @override
   late final ComputationNotifier<String> submitLabel = ComputationNotifier(
     trigger: l10n,
-    computation: () => l10n.value.signInSubmitLabel,
+    () => l10n.value.signInSubmitLabel,
   );
 
   @override
@@ -113,7 +113,6 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
       email: emailController.text,
       password: passwordController.text,
     );
-    widget.onSignedIn();
     showLoader.value = false;
   }
 

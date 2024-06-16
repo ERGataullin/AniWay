@@ -41,6 +41,8 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   void onPreviousPressed();
 
   void onNextPressed();
+
+  void onPopInvoked(bool didPop);
 }
 
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
@@ -61,7 +63,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   @override
   late final ComputationNotifier<double> maxScale = ComputationNotifier(
     trigger: videoController.aspectRatio,
-    computation: () => model.getMaxScale(
+    () => model.getMaxScale(
       surfaceAspectRatio: MediaQuery.sizeOf(context).aspectRatio,
       videoAspectRatio: videoController.aspectRatio.value,
     ),
@@ -71,17 +73,17 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   late final ComputationNotifier<List<double>> scaleAnchors =
       ComputationNotifier(
     trigger: maxScale,
-    computation: () => [1, maxScale.value],
+    () => [1, maxScale.value],
   );
 
   @override
   late final ComputationNotifier<String> title = ComputationNotifier(
-    computation: () => widget.title,
+    () => widget.title,
   );
 
   @override
   late final ComputationNotifier<String> subtitle = ComputationNotifier(
-    computation: () => widget.subtitle,
+    () => widget.subtitle,
   );
 
   bool _watched = false;
@@ -184,6 +186,11 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
+  void onPopInvoked(bool didPop) {
+    if (didPop) fullscreenController.exit();
+  }
+
+  @override
   void dispose() {
     maxScale.dispose();
     scaleAnchors.dispose();
@@ -191,9 +198,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     subtitle.dispose();
     videoController.dispose();
     controlsVisibilityController.dispose();
-    fullscreenController
-      ..exit()
-      ..dispose();
+    fullscreenController.dispose();
     super.dispose();
   }
 

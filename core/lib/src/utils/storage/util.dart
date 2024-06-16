@@ -1,9 +1,9 @@
 import 'dart:async';
 
-abstract interface class Storage {
-  const Storage();
+import 'package:core/core.dart';
 
-  Future<void> initialize();
+abstract interface class Storage implements Initable {
+  const Storage();
 
   Future<T?> get<T>({
     required String collection,

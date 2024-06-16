@@ -1,3 +1,4 @@
+import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/data/dto/episode.dart';
@@ -6,8 +7,12 @@ import 'package:player/player.dart';
 
 class Anime365MoviesDataSource implements MoviesDataSource {
   const Anime365MoviesDataSource({
+    required CookieManager cookieManager,
     required Network network,
-  }) : _network = network;
+  })  : _cookieManager = cookieManager,
+        _network = network;
+
+  final CookieManager _cookieManager;
 
   final Network _network;
 
@@ -19,8 +24,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     int? offset,
     List<String?> watchStatus = const [],
   }) async {
-    final NetworkResponseData response = await _network.request(
-      NetworkRequestData(
+    final ResponseData response = await _network.request(
+      RequestData(
         uri: Uri(
           path: '/api/series',
           queryParameters: {
@@ -31,7 +36,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             if (offset != null) 'offset': offset,
           }.map((key, value) => MapEntry(key, value.toString())),
         ),
-        method: NetworkRequestMethodData.get,
+        method: RequestMethod.get,
       ),
     );
 
@@ -41,10 +46,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<List<Map<String, dynamic>>> getUpNext() async {
-    final NetworkResponseData response = await _network.request(
-      NetworkRequestData(
+    final ResponseData response = await _network.request(
+      RequestData(
         uri: Uri.parse('/?dynpage=1'),
-        method: NetworkRequestMethodData.get,
+        method: RequestMethod.get,
       ),
     );
     final Document document = parse(response.body as String);
@@ -162,15 +167,15 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<MoviePlayerDto> getPlayerMovie(Object id) async {
-    final NetworkResponseData response = await _network.request(
-      NetworkRequestData(
+    final ResponseData response = await _network.request(
+      RequestData(
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
             'fields': 'titles,episodes',
           },
         ),
-        method: NetworkRequestMethodData.get,
+        method: RequestMethod.get,
       ),
     );
 
@@ -194,15 +199,15 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<List<VideoTranslationDto>> getTranslations(Object episodeId) async {
-    final NetworkResponseData response = await _network.request(
-      NetworkRequestData(
+    final ResponseData response = await _network.request(
+      RequestData(
         uri: Uri(
           path: '/api/episodes/$episodeId',
           queryParameters: {
             'fields': 'translations',
           },
         ),
-        method: NetworkRequestMethodData.get,
+        method: RequestMethod.get,
       ),
     );
 
@@ -234,12 +239,12 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<VideoDto> getTranslationVideo(Object translationId) async {
-    final NetworkResponseData response = await _network.request(
-      NetworkRequestData(
+    final ResponseData response = await _network.request(
+      RequestData(
         uri: Uri(
           path: '/api/translations/embed/$translationId',
         ),
-        method: NetworkRequestMethodData.get,
+        method: RequestMethod.get,
       ),
     );
 
@@ -261,10 +266,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   @override
   Future<void> saveTranslationWatched(Object translationId) {
     return _network.request(
-      NetworkRequestData(
+      RequestData(
         uri: Uri(path: '/translations/watched/$translationId'),
-        method: NetworkRequestMethodData.post,
-        body: {'csrf': _network.csrf},
+        method: RequestMethod.post,
+        body: {'csrf': _cookieManager.csrf},
       ),
     );
   }

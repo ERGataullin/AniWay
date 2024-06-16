@@ -12,6 +12,7 @@ import 'package:player/src/presentation/components/video_player/wm.dart';
 import 'package:player/src/presentation/components/video_seek_bar.dart';
 import 'package:player/src/presentation/components/video_timer.dart';
 import 'package:player/src/utils/video_controller.dart';
+import 'package:theme/theme.dart';
 import 'package:video_player/video_player.dart' as video_player;
 
 extension _VideoPlayerContext on BuildContext {
@@ -52,16 +53,22 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
   Widget build(IVideoPlayerWM wm) {
     return Provider<IVideoPlayerWM>.value(
       value: wm,
-      child: const Scaffold(
-        body: Stack(
-          clipBehavior: Clip.none,
-          fit: StackFit.expand,
-          children: [
-            _Gestures(
-              child: _Player(),
+      child: Theme(
+        data: Themes.videoPlayer,
+        child: PopScope(
+          onPopInvoked: wm.onPopInvoked,
+          child: const Scaffold(
+            body: Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: [
+                _Gestures(
+                  child: _Player(),
+                ),
+                _Controls(),
+              ],
             ),
-            _Controls(),
-          ],
+          ),
         ),
       ),
     );

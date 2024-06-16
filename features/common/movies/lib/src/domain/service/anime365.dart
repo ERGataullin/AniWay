@@ -23,12 +23,15 @@ class Anime365MoviesService implements MoviesService {
   final MoviesRepository _repository;
 
   @override
+  void init() {}
+
+  @override
   Future<List<MovieBaseData>> getMovies({
-    MovieOrderData? order,
+    MovieOrder? order,
     String? query,
     int? limit = _defaultMoviesLimit,
     int? offset,
-    List<ViewStatusData> viewStatuses = const [],
+    List<ViewStatus> viewStatuses = const [],
   }) {
     return _repository
         .getMovies(
@@ -36,23 +39,23 @@ class Anime365MoviesService implements MoviesService {
           limit: limit,
           offset: offset,
           order: switch (order) {
-            MovieOrderData.byScore => 'ranked',
-            MovieOrderData.byPopularity => 'popularity',
-            MovieOrderData.byName => 'name',
-            MovieOrderData.byReleaseDate => 'aired_on',
-            MovieOrderData.random => 'random',
+            MovieOrder.byScore => 'ranked',
+            MovieOrder.byPopularity => 'popularity',
+            MovieOrder.byName => 'name',
+            MovieOrder.byReleaseDate => 'aired_on',
+            MovieOrder.random => 'random',
             null => null,
           },
           watchStatus: viewStatuses
               .map(
                 (watchStatus) => switch (watchStatus) {
-                  ViewStatusData.none || ViewStatusData.unknown => null,
-                  ViewStatusData.planned => 'planned',
-                  ViewStatusData.watching => 'watching',
-                  ViewStatusData.rewatching => 'rewatching',
-                  ViewStatusData.completed => 'completed',
-                  ViewStatusData.onHold => 'on_hold',
-                  ViewStatusData.dropped => 'dropped',
+                  ViewStatus.none || ViewStatus.unknown => null,
+                  ViewStatus.planned => 'planned',
+                  ViewStatus.watching => 'watching',
+                  ViewStatus.rewatching => 'rewatching',
+                  ViewStatus.completed => 'completed',
+                  ViewStatus.onHold => 'on_hold',
+                  ViewStatus.dropped => 'dropped',
                 },
               )
               .toList(growable: false),
@@ -65,14 +68,14 @@ class Anime365MoviesService implements MoviesService {
                   title: movieJson['titles']['ru'] as String,
                   posterUri: Uri.parse(movieJson['posterUrl'] as String),
                   type: switch (movieJson['type']) {
-                    'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieTypeData.tv,
-                    'movie' => MovieTypeData.movie,
-                    'ova' => MovieTypeData.ova,
-                    'ona' => MovieTypeData.ona,
-                    'special' => MovieTypeData.special,
-                    'tv_special' => MovieTypeData.tvSpecial,
-                    'music' => MovieTypeData.music,
-                    'pv' => MovieTypeData.pv,
+                    'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
+                    'movie' => MovieType.movie,
+                    'ova' => MovieType.ova,
+                    'ona' => MovieType.ona,
+                    'special' => MovieType.special,
+                    'tv_special' => MovieType.tvSpecial,
+                    'music' => MovieType.music,
+                    'pv' => MovieType.pv,
                     _ => throw UnimplementedError(
                         'Unimplemented movie type: ${movieJson['type']}',
                       ),
@@ -91,15 +94,15 @@ class Anime365MoviesService implements MoviesService {
     return _repository.getUpNext().then(
           (upNextJson) => upNextJson.map(
             (itemJson) {
-              final MovieTypeData type = switch (itemJson['episode']['type']) {
-                'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieTypeData.tv,
-                'movie' => MovieTypeData.movie,
-                'ova' => MovieTypeData.ova,
-                'ona' => MovieTypeData.ona,
-                'special' => MovieTypeData.special,
-                'tv_special' => MovieTypeData.tvSpecial,
-                'music' => MovieTypeData.music,
-                'pv' => MovieTypeData.pv,
+              final MovieType type = switch (itemJson['episode']['type']) {
+                'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
+                'movie' => MovieType.movie,
+                'ova' => MovieType.ova,
+                'ona' => MovieType.ona,
+                'special' => MovieType.special,
+                'tv_special' => MovieType.tvSpecial,
+                'music' => MovieType.music,
+                'pv' => MovieType.pv,
                 _ => throw UnimplementedError(
                     'Unimplemented movie type: '
                     '${itemJson['episode']['type']}',
@@ -147,4 +150,7 @@ class Anime365MoviesService implements MoviesService {
   Future<void> saveTranslationWatched(Object translationId) {
     return _repository.saveTranslationWatched(translationId);
   }
+
+  @override
+  void dispose() {}
 }

@@ -57,9 +57,7 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
         AnimationStatus.completed,
         AnimationStatus.dismissed,
       ];
-      if (!boundaryStatuses.contains(status)) {
-        return;
-      }
+      if (!boundaryStatuses.contains(status)) return;
 
       setState(() {});
     });
@@ -75,10 +73,10 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _controller,
-      child: IgnorePointer(
-        ignoring: _ignorePointer,
+    return IgnorePointer(
+      ignoring: _ignorePointer,
+      child: FadeTransition(
+        opacity: _controller,
         child: widget.child,
       ),
     );

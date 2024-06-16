@@ -5,10 +5,16 @@ class DebugPrintErrorHandler implements ErrorHandler {
   const DebugPrintErrorHandler();
 
   @override
+  void init() {}
+
+  @override
   void handleError(Object error, {StackTrace? stackTrace}) {
     debugPrintStack(
       label: error.toString(),
       stackTrace: stackTrace,
     );
   }
+
+  @override
+  void dispose() {}
 }

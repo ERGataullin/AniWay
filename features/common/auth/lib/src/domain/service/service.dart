@@ -1,14 +1,12 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 
-abstract interface class AuthService {
+abstract interface class AuthService implements Initable {
   const AuthService();
 
   ValueListenable<bool> get signedIn;
-
-  @mustCallSuper
-  FutureOr<void> initialize() {}
 
   Future<void> signIn({
     required String email,
@@ -16,7 +14,4 @@ abstract interface class AuthService {
   });
 
   Future<void> signUp();
-
-  @mustCallSuper
-  void dispose() {}
 }

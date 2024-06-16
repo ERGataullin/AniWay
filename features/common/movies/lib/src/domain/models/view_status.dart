@@ -1,4 +1,4 @@
-enum ViewStatusData {
+enum ViewStatus {
   none,
   planned,
   watching,

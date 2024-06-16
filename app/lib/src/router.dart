@@ -6,75 +6,33 @@ import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:root_menu/root_menu.dart';
 
-extension _RouteLocating on Uri {
-  Uri locateUri({
-    Map<String, dynamic> pathParameters = const {},
-  }) {
-    return replace(
-      path: pathSegments.isEmpty ? '/' : null,
-      pathSegments: pathSegments.isEmpty
-          ? null
-          : [
-              '',
-              ...pathSegments.map(
-                (pathSegment) => pathSegment.startsWith(':')
-                    ? pathParameters[pathSegment.substring(1)]!.toString()
-                    : pathSegment,
-              ),
-            ],
-    );
-  }
-
-  String locate({
-    Map<String, dynamic> pathParameters = const {},
-  }) {
-    return locateUri(pathParameters: pathParameters).toString();
-  }
-}
-
 class AppRouter implements RouterConfig<RouteMatchList> {
   AppRouter({
     required L10n l10n,
-    required ThemeData videoPlayerTheme,
     required ValueListenable<bool> signedIn,
   })  : _l10n = l10n,
-        _videoPlayerTheme = videoPlayerTheme,
         _signedIn = signedIn;
 
   final L10n _l10n;
-
-  final ThemeData _videoPlayerTheme;
 
   final ValueListenable<bool> _signedIn;
 
   final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
 
-  final Uri _rootUri = Uri(path: '/');
-
-  final Uri _signInUri = Uri(path: 'sign-in');
-
-  final Uri _movieUri = Uri(path: ':movieId');
-
-  final Uri _homeUri = Uri();
-
-  final Uri _searchUri = Uri(path: 'search');
-
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: _homeUri.locate(),
     refreshListenable: _signedIn,
-    redirect: (context, state) {
-      final Uri signInUri = _rootUri.resolveUri(_signInUri);
-      if (!_signedIn.value && state.uri != signInUri) {
-        return signInUri.locate();
-      }
-
-      return null;
-    },
     routes: [
-      _buildSignInRoute(baseUri: _rootUri),
-      _buildMenuRoute(baseUri: _rootUri),
+      _buildSignIn(),
+      _buildRootMenu(),
     ],
+    redirect: (context, state) {
+      return _signedIn.value && state.topRoute!.name == _Routes.signIn
+          ? state.namedLocation(_Routes.home)
+          : !_signedIn.value
+              ? state.namedLocation(_Routes.signIn)
+              : null;
+    },
   );
 
   @override
@@ -92,24 +50,34 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   @override
   RouterDelegate<RouteMatchList> get routerDelegate => _goRouter.routerDelegate;
 
-  GoRoute _buildSignInRoute({
-    Uri? baseUri,
-  }) {
-    final Uri uri = baseUri?.resolveUri(_signInUri) ?? _signInUri;
-
+  GoRoute _buildSignIn() {
     return GoRoute(
-      path: uri.path,
-      builder: (context, state) => SignInWidget(
-        onSignedIn: () => context.go(_homeUri.locate()),
-      ),
+      name: _Routes.signIn,
+      path: '/sign-in',
+      builder: (context, state) => const SignInWidget(),
     );
   }
 
-  ShellRouteBase _buildMenuRoute({
-    Uri? baseUri,
-  }) {
+  ShellRouteBase _buildRootMenu() {
     return StatefulShellRoute.indexedStack(
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            _buildHome(),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            _buildSearch(),
+          ],
+        ),
+      ],
       builder: (context, state, navigationShell) => RootMenu(
+        currentIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) => navigationShell.goBranch(
+          index,
+          initialLocation: index == navigationShell.currentIndex,
+        ),
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.home),
@@ -120,93 +88,58 @@ class AppRouter implements RouterConfig<RouteMatchList> {
             label: _l10n.searchPageTitle,
           ),
         ],
-        onDestinationSelected: (index) => navigationShell.goBranch(
-          index,
-          initialLocation: index == navigationShell.currentIndex,
-        ),
         child: navigationShell,
       ),
-      branches: [
-        StatefulShellBranch(
-          routes: [
-            _buildHomeRoute(baseUri: baseUri),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            _buildSearchRoute(baseUri: baseUri),
-          ],
-        ),
-      ],
     );
   }
 
-  GoRoute _buildHomeRoute({
-    Uri? baseUri,
-  }) {
-    final Uri uri = baseUri?.resolveUri(_homeUri) ?? _homeUri;
-
-    final GoRoute movieRoute = _buildMovieRoute(
-      baseUri: Uri(path: 'movies/'),
-    );
-
+  GoRoute _buildHome() {
+    final GoRoute movieRoute = _buildMovie(parent: _Routes.home);
     return GoRoute(
-      path: uri.path,
-      routes: [
-        movieRoute,
-      ],
+      name: _Routes.home,
+      path: '/',
+      routes: [movieRoute],
       builder: (context, state) => HomeWidget(
-        playerBuilder: (child) => Theme(
-          data: _videoPlayerTheme,
-          child: child,
-        ),
-        onMoviePressed: (id) => context.go(
-          state.uri.resolveUri(Uri(path: movieRoute.path)).locate(
-            pathParameters: {
-              'movieId': id,
-            },
-          ),
+        onMoviePressed: (id) => context.goNamed(
+          movieRoute.name!,
+          pathParameters: {'movieId': id.toString()},
         ),
       ),
     );
   }
 
-  GoRoute _buildMovieRoute({
-    Uri? baseUri,
-  }) {
-    final Uri uri = baseUri?.resolveUri(_movieUri) ?? _movieUri;
-
+  GoRoute _buildMovie({required String parent}) {
     return GoRoute(
-      path: uri.path,
+      name: _Routes.movie(parent: parent),
+      path: 'movies/:movieId',
       builder: (context, state) => const MovieWidget(),
     );
   }
 
-  GoRoute _buildSearchRoute({
-    Uri? baseUri,
-  }) {
-    final Uri uri = baseUri?.resolveUri(_searchUri) ?? _searchUri;
-
-    final GoRoute movieRoute = _buildMovieRoute(
-      baseUri: Uri(path: 'movies/'),
-    );
-
+  GoRoute _buildSearch() {
+    final GoRoute movieRoute = _buildMovie(parent: _Routes.search);
     return GoRoute(
-      path: uri.path,
-      routes: [
-        movieRoute,
-      ],
+      name: _Routes.search,
+      path: '/search',
+      routes: [movieRoute],
       builder: (context, state) => SearchWidget(
-        onMoviePressed: (id) => context.go(
-          state.uri
-              .resolveUri(Uri(path: '${uri.path}/${movieRoute.path}'))
-              .locate(
-            pathParameters: {
-              'movieId': id,
-            },
-          ),
+        onMoviePressed: (id) => context.goNamed(
+          movieRoute.name!,
+          pathParameters: {'movieId': id.toString()},
         ),
       ),
     );
   }
+}
+
+class _Routes {
+  const _Routes._();
+
+  static const String signIn = 'sign-in';
+
+  static const String home = 'home';
+
+  static const String search = 'search';
+
+  static String movie({required String parent}) => '$parent/movies/:movieId';
 }

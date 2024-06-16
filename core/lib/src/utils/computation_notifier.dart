@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 
 class ComputationNotifier<T> with ChangeNotifier implements ValueListenable<T> {
-  ComputationNotifier({
+  ComputationNotifier(
+    this._computation, {
     Listenable? trigger,
-    required T Function() computation,
   })  : _trigger = trigger,
-        _computation = computation,
-        _value = computation() {
+        _value = _computation() {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }

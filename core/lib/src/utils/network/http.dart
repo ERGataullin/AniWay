@@ -12,41 +12,46 @@ class HttpNetwork implements Network {
   @override
   final Uri baseUri;
 
-  @override
-  String? csrf;
-
   final Client _client;
 
-  final List<NetworkRequestInterceptor> _interceptors = [];
+  final List<NetworkInterceptor> _interceptors = [];
 
   @override
-  void addInterceptor(NetworkRequestInterceptor interceptor) =>
+  void init() {}
+
+  @override
+  void addInterceptor(NetworkInterceptor interceptor) =>
       _interceptors.add(interceptor);
 
   @override
-  void removeInterceptor(NetworkRequestInterceptor interceptor) =>
+  void removeInterceptor(NetworkInterceptor interceptor) =>
       _interceptors.remove(interceptor);
 
   @override
-  Future<NetworkResponseData> request(NetworkRequestData data) {
+  Future<ResponseData> request(RequestData data) {
     return _interceptRequest(data).then(_request).then(_interceptResponse);
   }
 
-  Future<NetworkRequestData> _interceptRequest(NetworkRequestData data) {
-    return _interceptors.fold<Future<NetworkRequestData>>(
+  @override
+  void dispose() {
+    _client.close();
+  }
+
+  Future<RequestData> _interceptRequest(RequestData data) {
+    return _interceptors.fold<Future<RequestData>>(
       Future.value(data),
       (data, interceptor) => data.then(interceptor.onRequest),
     );
   }
 
-  Future<NetworkResponseData> _request(NetworkRequestData data) async {
+  Future<ResponseData> _request(RequestData data) async {
     final Uri uri = baseUri.resolveUri(data.uri);
     final Response httpResponse = await switch (data.method) {
-      NetworkRequestMethodData.get => _client.get(
+      RequestMethod.get => _client.get(
           uri,
           headers: data.headers,
         ),
-      NetworkRequestMethodData.post => _client.post(
+      RequestMethod.post => _client.post(
           uri,
           headers: data.headers,
           body: data.body,
@@ -61,14 +66,14 @@ class HttpNetwork implements Network {
       body = httpResponse.body;
     }
 
-    return NetworkResponseData(
+    return ResponseData(
       headers: httpResponse.headers,
       body: body,
     );
   }
 
-  Future<NetworkResponseData> _interceptResponse(NetworkResponseData data) {
-    return _interceptors.fold<Future<NetworkResponseData>>(
+  Future<ResponseData> _interceptResponse(ResponseData data) {
+    return _interceptors.fold<Future<ResponseData>>(
       Future.value(data),
       (data, interceptor) => data.then(interceptor.onResponse),
     );
