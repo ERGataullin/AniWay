@@ -41,6 +41,8 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   void onPreviousPressed();
 
   void onNextPressed();
+
+  void onPopInvoked(bool didPop);
 }
 
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
@@ -184,6 +186,11 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
+  void onPopInvoked(bool didPop) {
+    if (didPop) fullscreenController.exit();
+  }
+
+  @override
   void dispose() {
     maxScale.dispose();
     scaleAnchors.dispose();
@@ -191,9 +198,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     subtitle.dispose();
     videoController.dispose();
     controlsVisibilityController.dispose();
-    fullscreenController
-      ..exit()
-      ..dispose();
+    fullscreenController.dispose();
     super.dispose();
   }
 

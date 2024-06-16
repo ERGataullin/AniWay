@@ -55,16 +55,19 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
       value: wm,
       child: Theme(
         data: Themes.videoPlayer,
-        child: const Scaffold(
-          body: Stack(
-            clipBehavior: Clip.none,
-            fit: StackFit.expand,
-            children: [
-              _Gestures(
-                child: _Player(),
-              ),
-              _Controls(),
-            ],
+        child: PopScope(
+          onPopInvoked: wm.onPopInvoked,
+          child: const Scaffold(
+            body: Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: [
+                _Gestures(
+                  child: _Player(),
+                ),
+                _Controls(),
+              ],
+            ),
           ),
         ),
       ),
