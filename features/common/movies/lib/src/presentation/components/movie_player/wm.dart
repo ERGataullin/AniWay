@@ -94,7 +94,7 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
 
   @override
   void onFinished() {
-    model.loadNextEpisode();
+    model.hasNextEpisode ? model.loadNextEpisode() : Navigator.pop(context);
   }
 
   @override
