@@ -2,12 +2,9 @@ import 'dart:math';
 
 import 'package:core/core.dart' hide TextDirection;
 import 'package:flutter/material.dart';
+import 'package:player/src/domain/models/seek_type.dart';
 import 'package:player/src/presentation/components/seek_area/wm.dart';
 import 'package:player/src/utils/video_controller.dart';
-
-typedef OnSeek = void Function(Duration duration);
-
-enum SeekType { rewind, fastForward }
 
 extension _SeekAreaContext on BuildContext {
   ISeekAreaWM get wm => read<ISeekAreaWM>();

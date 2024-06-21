@@ -29,7 +29,7 @@ class Themes {
       primary: dark.colorScheme.primary,
       onPrimary: Colors.white,
       secondary: Colors.grey[400]!,
-      secondaryContainer: Colors.black38,
+      secondaryContainer: Colors.black26,
       onSecondary: Colors.white,
       error: const Color(0xFFF2B8B5),
       onError: const Color(0xFF601410),

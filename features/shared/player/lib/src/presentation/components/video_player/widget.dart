@@ -2,7 +2,9 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:player/player.dart';
+import 'package:player/src/domain/models/seek_type.dart';
 import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
+import 'package:player/src/presentation/components/long_seek_button.dart';
 import 'package:player/src/presentation/components/scalable.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/presentation/components/show_on_mouse_hover.dart';
@@ -207,11 +209,11 @@ class _Controls extends StatelessWidget {
                   icon: const Icon(Icons.skip_previous),
                   onPressed: context.wm.onPreviousPressed,
                 ),
-                const SizedBox(width: 64),
+                const SizedBox(width: 48),
                 VideoPlayPauseLoader(
                   videoController: context.wm.videoController,
                 ),
-                const SizedBox(width: 64),
+                const SizedBox(width: 48),
                 _SkipButton(
                   icon: const Icon(Icons.skip_next),
                   onPressed: context.wm.onNextPressed,
@@ -227,15 +229,23 @@ class _Controls extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         VideoTimer(videoController: context.wm.videoController),
+                        const SizedBox(width: 16),
+                        LongSeekButton(
+                          videoController: context.wm.videoController,
+                          type: SeekType.rewind,
+                        ),
+                        LongSeekButton(
+                          videoController: context.wm.videoController,
+                          type: SeekType.fastForward,
+                        ),
+                        const Spacer(),
                         FullscreenButton(
                           controller: context.wm.fullscreenController,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
                     VideoSeekBar(
                       videoController: context.wm.videoController,
                       onPositionChangeStart: context.wm.onPositionChangeStart,
@@ -293,6 +303,7 @@ class _SkipButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton.filledTonal(
+      iconSize: 36,
       onPressed: onPressed,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(

@@ -141,7 +141,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         MenuItemData.group(
           icon: Icons.type_specimen,
           label: l10n.value.translationTypeLabel,
-          children: VideoTranslationTypeData.values
+          children: VideoTranslationType.values
               .map(
                 (type) => MenuItemData.group(
                   selected: type == model.translation.value?.type,
@@ -216,7 +216,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   List<MenuItemData> _getTranslationMenuItems({
-    required VideoTranslationTypeData type,
+    required VideoTranslationType type,
   }) {
     return model
         .getTranslations(type: type)
