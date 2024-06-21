@@ -173,76 +173,80 @@ class _Controls extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShowOnMouseHover(
       controller: context.wm.controlsVisibilityController,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: AppBar(
-              forceMaterialTransparency: true,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _Title(context.wm.title),
-                  _Title(
-                    context.wm.subtitle,
-                    style: Theme.of(context).primaryTextTheme.titleMedium,
+      child: SafeArea(
+        child: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: AppBar(
+                forceMaterialTransparency: true,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _Title(context.wm.title),
+                    _Title(
+                      context.wm.subtitle,
+                      style: Theme.of(context).primaryTextTheme.titleMedium,
+                    ),
+                  ],
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.settings_outlined),
+                    onPressed: context.wm.onPreferencesPressed,
                   ),
                 ],
               ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.settings_outlined),
-                  onPressed: context.wm.onPreferencesPressed,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _SkipButton(
+                  icon: const Icon(Icons.skip_previous),
+                  onPressed: context.wm.onPreviousPressed,
+                ),
+                const SizedBox(width: 64),
+                VideoPlayPauseLoader(
+                  videoController: context.wm.videoController,
+                ),
+                const SizedBox(width: 64),
+                _SkipButton(
+                  icon: const Icon(Icons.skip_next),
+                  onPressed: context.wm.onNextPressed,
                 ),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _SkipButton(
-                icon: const Icon(Icons.skip_previous),
-                onPressed: context.wm.onPreviousPressed,
-              ),
-              const SizedBox(width: 64),
-              VideoPlayPauseLoader(videoController: context.wm.videoController),
-              const SizedBox(width: 64),
-              _SkipButton(
-                icon: const Icon(Icons.skip_next),
-                onPressed: context.wm.onNextPressed,
-              ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      VideoTimer(videoController: context.wm.videoController),
-                      FullscreenButton(
-                        controller: context.wm.fullscreenController,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  VideoSeekBar(
-                    videoController: context.wm.videoController,
-                    onPositionChangeStart: context.wm.onPositionChangeStart,
-                    onPositionChangeEnd: context.wm.onPositionChangeEnd,
-                  ),
-                ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        VideoTimer(videoController: context.wm.videoController),
+                        FullscreenButton(
+                          controller: context.wm.fullscreenController,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    VideoSeekBar(
+                      videoController: context.wm.videoController,
+                      onPositionChangeStart: context.wm.onPositionChangeStart,
+                      onPositionChangeEnd: context.wm.onPositionChangeEnd,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

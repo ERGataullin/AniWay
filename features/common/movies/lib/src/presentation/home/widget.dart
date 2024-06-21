@@ -32,27 +32,29 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
             builder: (context, title, ___) => Text(title),
           ),
         ),
-        body: ListenableBuilder(
-          listenable: wm.showLoader,
-          builder: (context, __) => AnimatedSwitcher(
-            switchInCurve: Curves.easeInOutCubicEmphasized,
-            switchOutCurve: Curves.easeInOutCubicEmphasized.flipped,
-            duration: Durations.long2,
-            child: wm.showLoader.value
-                ? const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  )
-                : const Column(
-                    children: [
-                      _UpNextCategory(margin: categoriesMargin),
-                      Divider(
-                        indent: 16,
-                        endIndent: 16,
-                        height: 32,
-                      ),
-                      _PopularCategory(margin: categoriesMargin),
-                    ],
-                  ),
+        body: SafeArea(
+          child: ListenableBuilder(
+            listenable: wm.showLoader,
+            builder: (context, __) => AnimatedSwitcher(
+              switchInCurve: Curves.easeInOutCubicEmphasized,
+              switchOutCurve: Curves.easeInOutCubicEmphasized.flipped,
+              duration: Durations.long2,
+              child: wm.showLoader.value
+                  ? const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                  : const Column(
+                      children: [
+                        _UpNextCategory(margin: categoriesMargin),
+                        Divider(
+                          indent: 16,
+                          endIndent: 16,
+                          height: 32,
+                        ),
+                        _PopularCategory(margin: categoriesMargin),
+                      ],
+                    ),
+            ),
           ),
         ),
       ),

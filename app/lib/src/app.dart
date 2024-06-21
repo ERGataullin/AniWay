@@ -1,7 +1,9 @@
 import 'package:app/src/app_scope.dart';
 import 'package:app/src/router.dart';
+import 'package:app/src/web_media_query.dart';
 import 'package:auth/auth.dart';
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:l10n/l10n.dart';
@@ -59,11 +61,14 @@ class _AppState extends State<App> {
             theme: Themes.light,
             darkTheme: Themes.dark,
             builder: (context, __) {
-              _router ??= AppRouter(
-                l10n: context.l10n,
-                signedIn: context.read<AuthService>().signedIn,
+              final Widget router = Router.withConfig(
+                config: _router ??= AppRouter(
+                  l10n: context.l10n,
+                  signedIn: context.read<AuthService>().signedIn,
+                ),
               );
-              return Router.withConfig(config: _router!);
+
+              return kIsWeb ? WebMediaQuery(child: router) : router;
             },
           );
   }
