@@ -38,7 +38,7 @@ class SeekAreaWidget extends ElementaryWidget<ISeekAreaWM> {
             key: wm.materialChildKey,
             listenable: wm.gestures,
             builder: (context, __) => RawGestureDetector(
-              behavior: HitTestBehavior.translucent,
+              behavior: HitTestBehavior.deferToChild,
               gestures: wm.gestures.value,
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
