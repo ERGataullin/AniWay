@@ -276,7 +276,7 @@ class _Title extends StatelessWidget {
 }
 
 class _MenuButton extends StatelessWidget {
-  const _MenuButton({super.key});
+  const _MenuButton();
 
   @override
   Widget build(BuildContext context) {
