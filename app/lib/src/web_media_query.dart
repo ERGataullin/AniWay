@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:web/web.dart' as web;
 
+extension _CSSStyleValue on web.CSSStyleValue {
+  external String operator [](int index);
+}
+
 class WebMediaQuery extends StatefulWidget {
   const WebMediaQuery({
     super.key,
@@ -59,7 +63,7 @@ class _WebMediaQueryState extends State<WebMediaQuery> {
   }
 
   double _getInset(String property) {
-    final String cssValue = _style.computedStyleMap().get(property)!.toString();
-    return double.parse(cssValue.substring(0, cssValue.length - 2));
+    final String cssRawValue = _style.computedStyleMap().get(property)![0];
+    return double.parse(cssRawValue.substring(0, cssRawValue.length - 2));
   }
 }
