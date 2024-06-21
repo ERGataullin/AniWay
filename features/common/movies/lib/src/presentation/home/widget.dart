@@ -32,29 +32,39 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
             builder: (context, title, ___) => Text(title),
           ),
         ),
-        body: SafeArea(
-          child: ListenableBuilder(
-            listenable: wm.showLoader,
-            builder: (context, __) => AnimatedSwitcher(
-              switchInCurve: Curves.easeInOutCubicEmphasized,
-              switchOutCurve: Curves.easeInOutCubicEmphasized.flipped,
-              duration: Durations.long2,
-              child: wm.showLoader.value
-                  ? const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    )
-                  : const Column(
-                      children: [
-                        _UpNextCategory(margin: categoriesMargin),
-                        Divider(
-                          indent: 16,
-                          endIndent: 16,
-                          height: 32,
+        body: ListenableBuilder(
+          listenable: wm.showLoader,
+          builder: (context, __) => AnimatedSwitcher(
+            switchInCurve: Curves.easeInOutCubicEmphasized,
+            switchOutCurve: Curves.easeInOutCubicEmphasized.flipped,
+            duration: Durations.long2,
+            child: wm.showLoader.value
+                ? const Center(child: CircularProgressIndicator.adaptive())
+                : Builder(
+                    builder: (context) {
+                      final EdgeInsets safeAreaPadding =
+                          MediaQuery.paddingOf(context);
+                      return SingleChildScrollView(
+                        padding: EdgeInsets.only(
+                          top: 16 + safeAreaPadding.top,
+                          bottom: 16 + safeAreaPadding.bottom,
                         ),
-                        _PopularCategory(margin: categoriesMargin),
-                      ],
-                    ),
-            ),
+                        child: const Column(
+                          children: [
+                            _UpNextCategory(margin: categoriesMargin),
+                            SafeArea(
+                              child: Divider(
+                                indent: 16,
+                                endIndent: 16,
+                                height: 32,
+                              ),
+                            ),
+                            _PopularCategory(margin: categoriesMargin),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
           ),
         ),
       ),
@@ -71,6 +81,7 @@ class _UpNextCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
     return _Category(
       margin: margin,
       label: context.wm.upNextLabel,
@@ -80,7 +91,12 @@ class _UpNextCategory extends StatelessWidget {
           height: 256,
           child: ListView.separated(
             itemCount: items.length,
-            padding: margin,
+            padding: margin.add(
+              EdgeInsets.only(
+                left: safeAreaPadding.left,
+                right: safeAreaPadding.right,
+              ),
+            ),
             scrollDirection: Axis.horizontal,
             separatorBuilder: (context, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
@@ -157,13 +173,15 @@ class _Category extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: horizontalMargin,
-            child: ValueListenableBuilder<String>(
-              valueListenable: label,
-              builder: (context, label, ___) => Text(
-                label,
-                style: Theme.of(context).textTheme.titleLarge,
+          SafeArea(
+            child: Padding(
+              padding: horizontalMargin,
+              child: ValueListenableBuilder<String>(
+                valueListenable: label,
+                builder: (context, label, ___) => Text(
+                  label,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
             ),
           ),
@@ -187,13 +205,19 @@ class _Movies extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
     return ValueListenableBuilder(
       valueListenable: movies,
       builder: (context, movies, ___) => SizedBox(
         height: 256,
         child: ListView.separated(
           itemCount: movies.length,
-          padding: margin,
+          padding: margin.add(
+            EdgeInsets.only(
+              left: safeAreaPadding.left,
+              right: safeAreaPadding.right,
+            ),
+          ),
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, __) => const SizedBox(width: 8),
           itemBuilder: (context, index) {
