@@ -24,6 +24,8 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
+  ValueListenable<VoidCallback?> get menuCallback;
+
   VideoController get videoController;
 
   VisibilityController get controlsVisibilityController;
@@ -31,8 +33,6 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   FullscreenController get fullscreenController;
 
   void onTapUp(TapUpDetails details);
-
-  void onPreferencesPressed();
 
   void onPositionChangeStart(double position);
 
@@ -86,6 +86,10 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     () => widget.subtitle,
   );
 
+  @override
+  late final ComputationNotifier<VoidCallback?> menuCallback =
+      ComputationNotifier(() => widget.translations.isEmpty ? null : _openMenu);
+
   bool _watched = false;
 
   @override
@@ -123,6 +127,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       ..translations = widget.translations;
     title.update();
     subtitle.update();
+    menuCallback.update();
   }
 
   @override
@@ -130,37 +135,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     details.kind.mobile
         ? controlsVisibilityController.toggle(immediately: true)
         : videoController.playPause();
-  }
-
-  @override
-  Future<void> onPreferencesPressed() async {
-    controlsVisibilityController.show();
-    await showModalMenuBottomSheet(
-      context: context,
-      items: [
-        MenuItemData.group(
-          icon: Icons.type_specimen,
-          label: l10n.value.translationTypeLabel,
-          children: VideoTranslationTypeData.values
-              .map(
-                (type) => MenuItemData.group(
-                  selected: type == model.translation.value?.type,
-                  label: l10n.value.translationType(type.toString()),
-                  children: _getTranslationMenuItems(type: type),
-                ),
-              )
-              .toList(growable: false),
-        ),
-        if (model.translation.value != null)
-          MenuItemData.group(
-            icon: Icons.voice_chat,
-            label: l10n.value.translationLabel,
-            children: _getTranslationMenuItems(
-              type: model.translation.value!.type,
-            ),
-          ),
-      ],
-    );
   }
 
   @override
@@ -196,6 +170,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
+    menuCallback.dispose();
     videoController.dispose();
     controlsVisibilityController.dispose();
     fullscreenController.dispose();
@@ -253,5 +228,35 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   void _updateFullscreenWebElementQuery() {
     fullscreenController.webElementQuery =
         videoController.webElementQuery.value;
+  }
+
+  void _openMenu() {
+    controlsVisibilityController.show();
+    showModalMenuBottomSheet(
+      context: context,
+      items: [
+        MenuItemData.group(
+          icon: Icons.type_specimen,
+          label: l10n.value.translationTypeLabel,
+          children: VideoTranslationTypeData.values
+              .map(
+                (type) => MenuItemData.group(
+                  selected: type == model.translation.value?.type,
+                  label: l10n.value.translationType(type.toString()),
+                  children: _getTranslationMenuItems(type: type),
+                ),
+              )
+              .toList(growable: false),
+        ),
+        if (model.translation.value != null)
+          MenuItemData.group(
+            icon: Icons.voice_chat,
+            label: l10n.value.translationLabel,
+            children: _getTranslationMenuItems(
+              type: model.translation.value!.type,
+            ),
+          ),
+      ],
+    );
   }
 }
