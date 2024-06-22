@@ -62,9 +62,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
               clipBehavior: Clip.none,
               fit: StackFit.expand,
               children: [
-                _Gestures(
-                  child: _Player(),
-                ),
+                _Gestures(child: _Player()),
                 _Controls(),
               ],
             ),
@@ -128,40 +126,45 @@ class _Player extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.expand,
-      children: [
-        Center(
-          child: ListenableBuilder(
-            listenable: context.wm.videoController.aspectRatio,
-            builder: (context, __) => AspectRatio(
-              aspectRatio: context.wm.videoController.aspectRatio.value,
-              child: switch (context.wm.videoController) {
-                final VideoPlayerController videoPlayerController =>
-                  ListenableBuilder(
-                    listenable: videoPlayerController.inner,
-                    builder: (context, __) =>
-                        videoPlayerController.inner.value == null
-                            ? const SizedBox.shrink()
-                            : video_player.VideoPlayer(
-                                videoPlayerController.inner.value!,
-                              ),
-                  ),
-              },
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        fit: StackFit.expand,
+        children: [
+          Center(
+            child: ListenableBuilder(
+              listenable: context.wm.videoController.aspectRatio,
+              builder: (context, __) => AspectRatio(
+                aspectRatio: context.wm.videoController.aspectRatio.value,
+                child: switch (context.wm.videoController) {
+                  final VideoPlayerController videoPlayerController =>
+                    ListenableBuilder(
+                      listenable: videoPlayerController.inner,
+                      builder: (context, __) =>
+                          videoPlayerController.inner.value == null
+                              ? const SizedBox.shrink()
+                              : video_player.VideoPlayer(
+                                  videoPlayerController.inner.value!,
+                                ),
+                    ),
+                },
+              ),
             ),
           ),
-        ),
-        ListenableBuilder(
-          listenable: context.wm.controlsVisibilityController,
-          builder: (context, __) => AnimatedVisibility.emphasized(
-            visible: context.wm.controlsVisibilityController.visible,
-            child: const DecoratedBox(
-              decoration: BoxDecoration(color: Colors.black54),
+          ListenableBuilder(
+            listenable: context.wm.controlsVisibilityController,
+            builder: (context, __) => AnimatedVisibility.emphasized(
+              visible: context.wm.controlsVisibilityController.visible,
+              child: const DecoratedBox(
+                decoration: BoxDecoration(color: Colors.black54),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
