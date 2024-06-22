@@ -192,12 +192,7 @@ class _Controls extends StatelessWidget {
                     ),
                   ],
                 ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.settings_outlined),
-                    onPressed: context.wm.onPreferencesPressed,
-                  ),
-                ],
+                actions: const [_MenuButton()],
               ),
             ),
             Row(
@@ -275,6 +270,21 @@ class _Title extends StatelessWidget {
           key: Key(data),
           style: style,
         ),
+      ),
+    );
+  }
+}
+
+class _MenuButton extends StatelessWidget {
+  const _MenuButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: context.wm.menuCallback,
+      builder: (context, __) => IconButton(
+        icon: const Icon(Icons.settings_outlined),
+        onPressed: context.wm.menuCallback.value,
       ),
     );
   }
