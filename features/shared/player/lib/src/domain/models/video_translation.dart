@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:player/player.dart';
 
-enum VideoTranslationTypeData {
+enum VideoTranslationType {
   raw,
   sub,
   voice;
@@ -21,9 +21,9 @@ class VideoTranslationData {
         id: dto.id,
         title: dto.title,
         type: switch (dto.type) {
-          'raw' => VideoTranslationTypeData.raw,
-          'sub' => VideoTranslationTypeData.sub,
-          'voice' => VideoTranslationTypeData.voice,
+          'raw' => VideoTranslationType.raw,
+          'sub' => VideoTranslationType.sub,
+          'voice' => VideoTranslationType.voice,
           _ => throw UnsupportedError(
               'Unsupported video translation type: ${dto.type}',
             ),
@@ -35,7 +35,7 @@ class VideoTranslationData {
 
   final String title;
 
-  final VideoTranslationTypeData type;
+  final VideoTranslationType type;
 
   final Locale language;
 }

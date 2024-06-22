@@ -1,0 +1,1 @@
+enum SeekType { rewind, fastForward }

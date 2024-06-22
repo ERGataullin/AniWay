@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
+import 'package:player/src/domain/models/seek_type.dart';
 import 'package:player/src/presentation/components/seek_area/model.dart';
 import 'package:player/src/presentation/components/seek_area/widget.dart';
 import 'package:player/src/utils/seek_gesture_recognizer.dart';

@@ -22,7 +22,7 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
   });
 
   List<VideoTranslationData> getTranslations({
-    required VideoTranslationTypeData type,
+    required VideoTranslationType type,
   });
 
   void switchTranslation(VideoTranslationData translation);
@@ -85,7 +85,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   List<VideoTranslationData> getTranslations({
-    required VideoTranslationTypeData type,
+    required VideoTranslationType type,
   }) {
     return _translations
         .where((translation) => type == translation.type)
