@@ -40,16 +40,14 @@ class _WebMediaQueryState extends State<WebMediaQuery> {
 
   @override
   Widget build(BuildContext context) {
-    final EdgeInsets safeAreaInsets = EdgeInsets.fromLTRB(
-      _getInset(_leftInsetProperty),
-      _getInset(_topInsetProperty),
-      _getInset(_rightInsetProperty),
-      _getInset(_bottomInsetProperty),
-    );
-
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
-        padding: safeAreaInsets,
+        padding: EdgeInsets.fromLTRB(
+          _getInset(_leftInsetProperty),
+          _getInset(_topInsetProperty),
+          _getInset(_rightInsetProperty),
+          _getInset(_bottomInsetProperty),
+        ),
         viewPadding: EdgeInsets.zero,
       ),
       child: widget.child,

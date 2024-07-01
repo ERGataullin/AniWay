@@ -26,27 +26,33 @@ class SeekAreaWidget extends ElementaryWidget<ISeekAreaWM> {
   Widget build(ISeekAreaWM wm) {
     return Provider.value(
       value: wm,
-      child: ListenableBuilder(
-        listenable: wm.shape,
-        builder: (context, __) => Material(
-          type: MaterialType.transparency,
-          shape: wm.shape.value,
-          child: ListenableBuilder(
-            key: wm.materialChildKey,
-            listenable: wm.gestures,
-            builder: (context, __) => RawGestureDetector(
-              behavior: HitTestBehavior.deferToChild,
-              gestures: wm.gestures.value,
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _Icons(),
-                  _Value(),
-                ],
-              ),
+      child: Stack(
+        fit: StackFit.expand,
+        clipBehavior: Clip.none,
+        children: [
+          ListenableBuilder(
+            listenable: wm.shape,
+            builder: (context, child) => Material(
+              type: MaterialType.transparency,
+              shape: wm.shape.value,
+              child: child,
+            ),
+            child: Column(
+              key: wm.materialChildKey,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                _Icons(),
+                _Value(),
+              ],
             ),
           ),
-        ),
+          ListenableBuilder(
+            listenable: wm.gestures,
+            builder: (context, __) => RawGestureDetector(
+              gestures: wm.gestures.value,
+            ),
+          ),
+        ],
       ),
     );
   }
