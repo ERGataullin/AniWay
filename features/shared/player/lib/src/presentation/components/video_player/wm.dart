@@ -61,7 +61,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   final FullscreenController fullscreenController = FullscreenController();
 
   @override
-  late final ComputationNotifier<double> maxScale = ComputationNotifier(
+  late final DynamicData<double> maxScale = DynamicData(
     trigger: videoController.aspectRatio,
     () => model.getMaxScale(
       surfaceAspectRatio: MediaQuery.sizeOf(context).aspectRatio,
@@ -70,25 +70,21 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final ComputationNotifier<List<double>> scaleAnchors =
-      ComputationNotifier(
+  late final DynamicData<List<double>> scaleAnchors = DynamicData(
     trigger: maxScale,
     () => [1, maxScale.value],
   );
 
   @override
-  late final ComputationNotifier<String> title = ComputationNotifier(
-    () => widget.title,
-  );
+  late final DynamicData<String> title = DynamicData(() => widget.title);
 
   @override
-  late final ComputationNotifier<String> subtitle = ComputationNotifier(
-    () => widget.subtitle,
-  );
+  late final DynamicData<String> subtitle = DynamicData(() => widget.subtitle);
 
   @override
-  late final ComputationNotifier<VoidCallback?> menuCallback =
-      ComputationNotifier(() => widget.translations.isEmpty ? null : _openMenu);
+  late final DynamicData<VoidCallback?> menuCallback = DynamicData(
+    () => widget.translations.isEmpty ? null : _openMenu,
+  );
 
   bool _watched = false;
 

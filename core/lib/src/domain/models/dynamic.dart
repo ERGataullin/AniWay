@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 
-class ComputationNotifier<T> with ChangeNotifier implements ValueListenable<T> {
-  ComputationNotifier(
-    this._computation, {
+class DynamicData<T> with ChangeNotifier implements ValueListenable<T> {
+  DynamicData(
+    this._valueResolver, {
     Listenable? trigger,
   })  : _trigger = trigger,
-        _value = _computation() {
+        _value = _valueResolver() {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }
     _trigger?.addListener(update);
   }
 
-  final T Function() _computation;
+  final T Function() _valueResolver;
 
   Listenable? _trigger;
 
@@ -36,10 +36,8 @@ class ComputationNotifier<T> with ChangeNotifier implements ValueListenable<T> {
   }
 
   void update() {
-    final T newValue = _computation();
-    if (newValue == value) {
-      return;
-    }
+    final T newValue = _valueResolver();
+    if (newValue == value) return;
     _value = newValue;
     notifyListeners();
   }

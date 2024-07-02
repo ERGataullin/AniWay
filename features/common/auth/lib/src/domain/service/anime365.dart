@@ -13,7 +13,7 @@ class Anime365AuthService implements AuthService {
         _network = network;
 
   @override
-  late final ComputationNotifier<bool> signedIn = ComputationNotifier(
+  late final DynamicData<bool> signedIn = DynamicData(
     trigger: _cookieManager.cookie,
     () {
       final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];
