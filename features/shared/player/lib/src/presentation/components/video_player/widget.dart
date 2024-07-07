@@ -28,8 +28,8 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
     required this.subtitle,
     required this.translations,
     required this.videoResolver,
-    required this.onPreviousPressed,
-    required this.onNextPressed,
+    this.onPreviousPressed,
+    this.onNextPressed,
     required this.onWatched,
     required this.onFinished,
     WidgetModelFactory wmFactory = videoPlayerWMFactory,
@@ -43,9 +43,9 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
 
   final VideoResolver videoResolver;
 
-  final VoidCallback onPreviousPressed;
+  final VoidCallback? onPreviousPressed;
 
-  final VoidCallback onNextPressed;
+  final VoidCallback? onNextPressed;
 
   final TranslationWatchedCallback onWatched;
 
@@ -205,7 +205,7 @@ class _Controls extends StatelessWidget {
               children: [
                 _SkipButton(
                   icon: const Icon(Icons.skip_previous),
-                  onPressed: context.wm.onPreviousPressed,
+                  onPressed: context.wm.previousCallback,
                 ),
                 const SizedBox(width: 48),
                 VideoPlayPauseLoader(
@@ -214,7 +214,7 @@ class _Controls extends StatelessWidget {
                 const SizedBox(width: 48),
                 _SkipButton(
                   icon: const Icon(Icons.skip_next),
-                  onPressed: context.wm.onNextPressed,
+                  onPressed: context.wm.nextCallback,
                 ),
               ],
             ),
@@ -305,25 +305,28 @@ class _MenuButton extends StatelessWidget {
 
 class _SkipButton extends StatelessWidget {
   const _SkipButton({
-    this.onPressed,
+    required this.onPressed,
     required this.icon,
   });
 
-  final VoidCallback? onPressed;
+  final ValueListenable<VoidCallback?> onPressed;
 
   final Widget icon;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton.filledTonal(
-      iconSize: 36,
-      onPressed: onPressed,
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(
-          Theme.of(context).colorScheme.secondaryContainer,
+    return ListenableBuilder(
+      listenable: onPressed,
+      builder: (context, __) => IconButton.filledTonal(
+        iconSize: 36,
+        onPressed: onPressed.value,
+        style: ButtonStyle(
+          backgroundColor: WidgetStatePropertyAll(
+            Theme.of(context).colorScheme.secondaryContainer,
+          ),
         ),
+        icon: icon,
       ),
-      icon: icon,
     );
   }
 }

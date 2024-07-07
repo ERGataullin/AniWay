@@ -14,7 +14,9 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 
   ValueListenable<List<VideoTranslationData>> get translations;
 
-  bool get hasNextEpisode;
+  ValueListenable<bool> get hasPreviousEpisode;
+
+  ValueListenable<bool> get hasNextEpisode;
 
   void loadData({
     required Object movieId,
@@ -48,7 +50,10 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
       ValueNotifier(const []);
 
   @override
-  bool hasNextEpisode = false;
+  final ValueNotifier<bool> hasPreviousEpisode = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> hasNextEpisode = ValueNotifier(false);
 
   final MoviesService _service;
 
@@ -86,13 +91,24 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
     _service.saveTranslationWatched(translationId);
   }
 
+  @override
+  void dispose() {
+    movie.dispose();
+    episode.dispose();
+    translations.dispose();
+    hasPreviousEpisode.dispose();
+    hasNextEpisode.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadEpisode({
     required int index,
   }) async {
     translations.value = const [];
     _episodeIndex = index;
     episode.value = movie.value!.episodes[index];
-    hasNextEpisode = index < movie.value!.episodes.length - 1;
+    hasPreviousEpisode.value = index > 0;
+    hasNextEpisode.value = index < movie.value!.episodes.length - 1;
     translations.value = await _service.getTranslations(episode.value!.id);
   }
 }

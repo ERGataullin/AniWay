@@ -26,6 +26,10 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<VoidCallback?> get menuCallback;
 
+  ValueListenable<VoidCallback?> get previousCallback;
+
+  ValueListenable<VoidCallback?> get nextCallback;
+
   VideoController get videoController;
 
   VisibilityController get controlsVisibilityController;
@@ -37,10 +41,6 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   void onPositionChangeStart(double position);
 
   void onPositionChangeEnd(double position);
-
-  void onPreviousPressed();
-
-  void onNextPressed();
 
   void onPopInvoked(bool didPop);
 }
@@ -90,6 +90,28 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   late final ComputationNotifier<VoidCallback?> menuCallback =
       ComputationNotifier(() => widget.translations.isEmpty ? null : _openMenu);
 
+  @override
+  late final ComputationNotifier<VoidCallback?> previousCallback =
+      ComputationNotifier(
+    () => widget.onPreviousPressed == null
+        ? null
+        : () {
+            controlsVisibilityController.show();
+            widget.onPreviousPressed?.call();
+          },
+  );
+
+  @override
+  late final ComputationNotifier<VoidCallback?> nextCallback =
+      ComputationNotifier(
+    () => widget.onNextPressed == null
+        ? null
+        : () {
+            controlsVisibilityController.show();
+            widget.onNextPressed?.call();
+          },
+  );
+
   bool _watched = false;
 
   @override
@@ -128,6 +150,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     title.update();
     subtitle.update();
     menuCallback.update();
+    previousCallback.update();
+    nextCallback.update();
   }
 
   @override
@@ -148,18 +172,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
-  void onPreviousPressed() {
-    controlsVisibilityController.show();
-    widget.onPreviousPressed();
-  }
-
-  @override
-  void onNextPressed() {
-    controlsVisibilityController.show();
-    widget.onNextPressed();
-  }
-
-  @override
   void onPopInvoked(bool didPop) {
     if (didPop) fullscreenController.exit();
   }
@@ -171,6 +183,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     title.dispose();
     subtitle.dispose();
     menuCallback.dispose();
+    previousCallback.dispose();
+    nextCallback.dispose();
     videoController.dispose();
     controlsVisibilityController.dispose();
     fullscreenController.dispose();

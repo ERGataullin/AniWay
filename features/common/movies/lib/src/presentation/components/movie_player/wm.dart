@@ -23,11 +23,11 @@ abstract interface class IMoviePlayerWM implements IWidgetModel {
 
   ValueListenable<List<VideoTranslationData>> get translations;
 
+  ValueListenable<VoidCallback?> get previousCallback;
+
+  ValueListenable<VoidCallback?> get nextCallback;
+
   Future<VideoData> onResolveVideo(Object translationId);
-
-  void onPreviousPressed();
-
-  void onNextPressed();
 
   void onWatched(Object translationId);
 
@@ -57,6 +57,20 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   );
 
   @override
+  late final ComputationNotifier<VoidCallback?> previousCallback =
+      ComputationNotifier(
+    trigger: model.hasPreviousEpisode,
+    () => model.hasPreviousEpisode.value ? model.loadPreviousEpisode : null,
+  );
+
+  @override
+  late final ComputationNotifier<VoidCallback?> nextCallback =
+      ComputationNotifier(
+    trigger: model.hasNextEpisode,
+    () => model.hasNextEpisode.value ? model.loadNextEpisode : null,
+  );
+
+  @override
   ValueListenable<List<VideoTranslationData>> get translations =>
       model.translations;
 
@@ -78,23 +92,15 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   }
 
   @override
-  void onPreviousPressed() {
-    model.loadPreviousEpisode();
-  }
-
-  @override
-  void onNextPressed() {
-    model.loadNextEpisode();
-  }
-
-  @override
   void onWatched(Object translationId) {
     model.saveTranslationWatched(translationId);
   }
 
   @override
   void onFinished() {
-    model.hasNextEpisode ? model.loadNextEpisode() : Navigator.pop(context);
+    model.hasNextEpisode.value
+        ? model.loadNextEpisode()
+        : Navigator.pop(context);
   }
 
   @override
@@ -102,6 +108,8 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
     super.dispose();
     title.dispose();
     subtitle.dispose();
+    previousCallback.dispose();
+    nextCallback.dispose();
     if (!kIsWeb) {
       await _unlockOrientation();
     }
