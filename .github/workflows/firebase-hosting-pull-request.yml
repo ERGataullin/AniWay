@@ -21,8 +21,7 @@ jobs:
           cd app
           flutter build web
           curl -sL https://firebase.tools | bash
-          firebase use --add ${{ secrets.FIREBASE_PROJECT_ID }}
-          firebase hosting:channel:deploy pr-${{ github.event.number }} --only hosting
+          firebase deploy --only hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
