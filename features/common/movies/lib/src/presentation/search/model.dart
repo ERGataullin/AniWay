@@ -42,8 +42,6 @@ class SearchModel extends ElementaryModel implements ISearchModel {
 
   bool _hasNextPage = true;
 
-  int _page = 1;
-
   String _query = '';
 
   Timer? _queryDebounceTimer;
@@ -102,17 +100,15 @@ class SearchModel extends ElementaryModel implements ISearchModel {
 
     loading.value = true;
     if (reload) {
-      _page = 1;
       _movies.clear();
       movies.value = const [];
     }
 
     final List<MovieBaseData> newMovies = await _service.getMovies(
       query: queryController.text,
-      offset: (_page - 1) * _service.defaultMoviesLimit,
+      offset: _movies.length,
     );
 
-    _page++;
     _hasNextPage = newMovies.length >= _service.defaultMoviesLimit;
     _movies.addAll(newMovies);
     movies.value = List.unmodifiable(_movies);
