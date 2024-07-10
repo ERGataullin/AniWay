@@ -106,6 +106,28 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
           },
   );
 
+  @override
+  late final ComputationNotifier<VoidCallback?> previousCallback =
+      ComputationNotifier(
+    () => widget.onPreviousPressed == null
+        ? null
+        : () {
+            controlsVisibilityController.show();
+            widget.onPreviousPressed?.call();
+          },
+  );
+
+  @override
+  late final ComputationNotifier<VoidCallback?> nextCallback =
+      ComputationNotifier(
+    () => widget.onNextPressed == null
+        ? null
+        : () {
+            controlsVisibilityController.show();
+            widget.onNextPressed?.call();
+          },
+  );
+
   bool _watched = false;
 
   @override
