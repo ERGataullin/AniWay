@@ -118,13 +118,13 @@ abstract class L10n {
   /// No description provided for @movieEpisode.
   ///
   /// In ru, this message translates to:
-  /// **'{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} cm{Реклама {episode}} music{Музыка {episode}} pv{Трейлер {episode}} other{{episode} серия}}'**
+  /// **'{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} ad{Реклама {episode}} music{Музыка {episode}} preview{Трейлер {episode}} other{{episode} серия}}'**
   String movieEpisode(String type, num episode);
 
   /// No description provided for @movieType.
   ///
   /// In ru, this message translates to:
-  /// **'{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} cm{Реклама} music{Музыкальное} pv{Трейлер} other{}}'**
+  /// **'{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыкальное} preview{Трейлер} other{}}'**
   String movieType(String type);
 
   /// No description provided for @passwordLabel.

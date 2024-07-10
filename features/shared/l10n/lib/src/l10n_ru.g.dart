@@ -31,9 +31,9 @@ class L10nRu extends L10n {
         'ona': 'ONA $episode',
         'special': 'Спешл $episode',
         'tvSpecial': 'ТВ спешл $episode',
-        'cm': 'Реклама $episode',
+        'ad': 'Реклама $episode',
         'music': 'Музыка $episode',
-        'pv': 'Трейлер $episode',
+        'preview': 'Трейлер $episode',
         'other': '$episode серия',
       },
     );
@@ -51,9 +51,9 @@ class L10nRu extends L10n {
         'ona': 'ONA',
         'special': 'Спешл',
         'tvSpecial': 'ТВ спешл',
-        'cm': 'Реклама',
+        'ad': 'Реклама',
         'music': 'Музыкальное',
-        'pv': 'Трейлер',
+        'preview': 'Трейлер',
         'other': '',
       },
     );
