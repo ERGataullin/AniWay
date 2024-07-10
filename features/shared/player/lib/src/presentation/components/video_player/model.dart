@@ -102,7 +102,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   Future<void> _onTranslationChanged() async {
     video.value = null;
-    if (translation.value != null)
+    if (translation.value != null) {
       video.value = await _videoResolver(translation.value!.id);
+    }
   }
 }
