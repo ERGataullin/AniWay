@@ -7,13 +7,13 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWM> {
   const MoviePlayerWidget({
     super.key,
     required this.movieId,
-    required this.episodeId,
+    this.initialEpisodeId,
     WidgetModelFactory wmFactory = moviePlayerWMFactory,
   }) : super(wmFactory);
 
   final Object movieId;
 
-  final Object episodeId;
+  final Object? initialEpisodeId;
 
   @override
   Widget build(IMoviePlayerWM wm) {

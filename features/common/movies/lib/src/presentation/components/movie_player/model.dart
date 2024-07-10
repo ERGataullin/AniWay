@@ -20,7 +20,7 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 
   void loadData({
     required Object movieId,
-    required Object episodeId,
+    Object? episodeId,
   });
 
   void loadPreviousEpisode();
@@ -62,12 +62,14 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   @override
   Future<void> loadData({
     required Object movieId,
-    required Object episodeId,
+    Object? episodeId,
   }) async {
     movie.value = await _service.getPlayerMovie(movieId);
-    _episodeIndex = movie.value!.episodes.indexWhere(
-      (episode) => episode.id == episodeId,
-    );
+    _episodeIndex = episodeId == null
+        ? 0
+        : movie.value!.episodes.indexWhere(
+            (episode) => episode.id == episodeId,
+          );
     _loadEpisode(index: _episodeIndex);
   }
 
