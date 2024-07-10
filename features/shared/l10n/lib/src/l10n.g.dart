@@ -121,6 +121,12 @@ abstract class L10n {
   /// **'{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} ad{Реклама {episode}} music{Музыка {episode}} preview{Трейлер {episode}} other{{episode} серия}}'**
   String movieEpisode(String type, num episode);
 
+  /// No description provided for @movieEpisodeWithoutEpisode.
+  ///
+  /// In ru, this message translates to:
+  /// **'{type, select, tv{серия} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыка} preview{Трейлер} other{серия}}'**
+  String movieEpisodeWithoutEpisode(String type);
+
   /// No description provided for @movieType.
   ///
   /// In ru, this message translates to:
