@@ -76,7 +76,7 @@ class Anime365MoviesService implements MoviesService {
                     'tv_special' => MovieType.tvSpecial,
                     'cm' => MovieType.ad,
                     'music' => MovieType.music,
-                    'pv' => MovieType.pv,
+                    'pv' => MovieType.preview,
                     _ => throw UnimplementedError(
                         'Unimplemented movie type: ${movieJson['type']}',
                       ),
@@ -104,7 +104,7 @@ class Anime365MoviesService implements MoviesService {
                 'tv_special' => MovieType.tvSpecial,
                 'cm' => MovieType.ad,
                 'music' => MovieType.music,
-                'pv' => MovieType.pv,
+                'pv' => MovieType.preview,
                 _ => throw UnimplementedError(
                     'Unimplemented movie type: '
                     '${itemJson['episode']['type']}',

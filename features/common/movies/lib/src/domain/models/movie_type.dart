@@ -7,7 +7,7 @@ enum MovieType {
   tvSpecial,
   ad,
   music,
-  pv;
+  preview;
 
   factory MovieType.valueOf(String name) => switch (name) {
         'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
@@ -18,7 +18,7 @@ enum MovieType {
         'tv_special' => MovieType.tvSpecial,
         'cm' => MovieType.ad,
         'music' => MovieType.music,
-        'pv' || 'preview' => MovieType.pv,
+        'pv' || 'preview' => MovieType.preview,
         _ => throw UnimplementedError('Unimplemented movie type: $name'),
       };
 }
