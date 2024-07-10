@@ -40,12 +40,12 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   @override
   void init() {
     _load();
-    _service.upNextChangeNotifier.addListener(_load);
+    _service.upNextChanges.addListener(_load);
   }
 
   @override
   void dispose() {
-    _service.upNextChangeNotifier.removeListener(_load);
+    _service.upNextChanges.removeListener(_load);
     loading.dispose();
     upNext.dispose();
     popular.dispose();
