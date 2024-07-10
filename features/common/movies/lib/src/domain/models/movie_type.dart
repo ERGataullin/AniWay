@@ -5,6 +5,7 @@ enum MovieType {
   ona,
   special,
   tvSpecial,
+  cm,
   music,
   pv;
 
@@ -15,6 +16,7 @@ enum MovieType {
         'ona' => MovieType.ona,
         'special' => MovieType.special,
         'tv_special' => MovieType.tvSpecial,
+        'cm' => MovieType.cm,
         'music' => MovieType.music,
         'pv' || 'preview' => MovieType.pv,
         _ => throw UnimplementedError('Unimplemented movie type: $name'),
