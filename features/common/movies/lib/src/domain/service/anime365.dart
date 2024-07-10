@@ -74,7 +74,7 @@ class Anime365MoviesService implements MoviesService {
                     'ona' => MovieType.ona,
                     'special' => MovieType.special,
                     'tv_special' => MovieType.tvSpecial,
-                    'cm' => MovieType.cm,
+                    'cm' => MovieType.ad,
                     'music' => MovieType.music,
                     'pv' => MovieType.pv,
                     _ => throw UnimplementedError(
@@ -102,7 +102,7 @@ class Anime365MoviesService implements MoviesService {
                 'ona' => MovieType.ona,
                 'special' => MovieType.special,
                 'tv_special' => MovieType.tvSpecial,
-                'cm' => MovieType.cm,
+                'cm' => MovieType.ad,
                 'music' => MovieType.music,
                 'pv' => MovieType.pv,
                 _ => throw UnimplementedError(
