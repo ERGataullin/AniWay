@@ -65,7 +65,8 @@ class Anime365MoviesService implements MoviesService {
               .map(
                 (movieJson) => MovieBaseData(
                   id: movieJson['id'] as Object,
-                  title: movieJson['titles']['ru'] as String,
+                  title:
+                      movieJson['titles']['ru'] ?? movieJson['title'] as String,
                   posterUri: Uri.parse(movieJson['posterUrl'] as String),
                   type: switch (movieJson['type']) {
                     'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
