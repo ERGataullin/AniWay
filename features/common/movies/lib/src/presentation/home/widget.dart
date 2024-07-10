@@ -109,9 +109,7 @@ class _UpNextCategory extends StatelessWidget {
                         upNext.episode.type.name,
                         upNext.episode.number!,
                       )
-                    : context.l10n.movieType(
-                        upNext.episode.type.name,
-                      ),
+                    : context.l10n.movieType(upNext.episode.type.name),
                 onPressed: () => context.wm.onUpNextPressed(
                   movieId: upNext.movie.id,
                   episodeId: upNext.episode.id,
