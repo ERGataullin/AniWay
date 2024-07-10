@@ -69,7 +69,8 @@ class Anime365MoviesService implements MoviesService {
               .map(
                 (movieJson) => MovieBaseData(
                   id: movieJson['id'] as Object,
-                  title: movieJson['titles']['ru'] as String,
+                  title:
+                      movieJson['titles']['ru'] ?? movieJson['title'] as String,
                   posterUri: Uri.parse(movieJson['posterUrl'] as String),
                   type: switch (movieJson['type']) {
                     'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
@@ -78,8 +79,9 @@ class Anime365MoviesService implements MoviesService {
                     'ona' => MovieType.ona,
                     'special' => MovieType.special,
                     'tv_special' => MovieType.tvSpecial,
+                    'cm' => MovieType.ad,
                     'music' => MovieType.music,
-                    'pv' => MovieType.pv,
+                    'pv' => MovieType.preview,
                     _ => throw UnimplementedError(
                         'Unimplemented movie type: ${movieJson['type']}',
                       ),
@@ -105,8 +107,9 @@ class Anime365MoviesService implements MoviesService {
                 'ona' => MovieType.ona,
                 'special' => MovieType.special,
                 'tv_special' => MovieType.tvSpecial,
+                'cm' => MovieType.ad,
                 'music' => MovieType.music,
-                'pv' => MovieType.pv,
+                'pv' => MovieType.preview,
                 _ => throw UnimplementedError(
                     'Unimplemented movie type: ${itemJson['episode']['type']}',
                   ),

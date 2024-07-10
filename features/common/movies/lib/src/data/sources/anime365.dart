@@ -105,16 +105,16 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         );
         final RegExp movieEpisodeTitlePattern = RegExp(r'^Фильм$');
         final RegExp ovaEpisodeTitlePattern = RegExp(
-          '^OVA ${episodeNumberPattern.pattern} серия\$',
+          '^OVA( ${episodeNumberPattern.pattern} серия)?\$',
         );
         final RegExp onaEpisodeTitlePattern = RegExp(
-          '^ONA ${episodeNumberPattern.pattern} серия\$',
+          '^ONA( ${episodeNumberPattern.pattern} серия)?\$',
         );
         final RegExp specialEpisodeTitlePattern = RegExp(
-          '^SPECIAL ${episodeNumberPattern.pattern} серия\$',
+          '^SP( ${episodeNumberPattern.pattern} серия)?\$',
         );
         final RegExp tvSpecialEpisodeTitlePattern = RegExp(
-          '^TV SP ${episodeNumberPattern.pattern} серия\$',
+          '^TV SP( ${episodeNumberPattern.pattern} серия)?\$',
         );
         final RegExp musicEpisodeTitlePattern = RegExp(r'^Музыкальное видео$');
         final RegExp pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
