@@ -41,26 +41,6 @@ class L10nRu extends L10n {
   }
 
   @override
-  String movieEpisodeWithoutEpisode(String type) {
-    String _temp0 = intl.Intl.selectLogic(
-      type,
-      {
-        'tv': 'серия',
-        'movie': 'Фильм',
-        'ova': 'OVA',
-        'ona': 'ONA',
-        'special': 'Спешл',
-        'tvSpecial': 'ТВ спешл',
-        'ad': 'Реклама',
-        'music': 'Музыка',
-        'preview': 'Трейлер',
-        'other': 'серия',
-      },
-    );
-    return '$_temp0';
-  }
-
-  @override
   String movieType(String type) {
     String _temp0 = intl.Intl.selectLogic(
       type,
