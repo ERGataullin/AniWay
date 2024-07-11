@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
@@ -16,6 +17,9 @@ class Anime365MoviesService implements MoviesService {
   }) : _repository = repository;
 
   static const int _defaultMoviesLimit = 50;
+
+  @override
+  final ValueNotifier<int> upNextChanges = ValueNotifier(0);
 
   @override
   int get defaultMoviesLimit => _defaultMoviesLimit;
@@ -107,8 +111,7 @@ class Anime365MoviesService implements MoviesService {
                 'music' => MovieType.music,
                 'pv' => MovieType.preview,
                 _ => throw UnimplementedError(
-                    'Unimplemented movie type: '
-                    '${itemJson['episode']['type']}',
+                    'Unimplemented movie type: ${itemJson['episode']['type']}',
                   ),
               };
               return UpNextData(
@@ -145,15 +148,19 @@ class Anime365MoviesService implements MoviesService {
 
   @override
   Future<VideoData> getTranslationVideo(Object translationId) async {
-    final VideoDto dto = await _repository.getTranslationVideo(translationId);
-    return VideoData.fromDto(dto);
+    return _repository
+        .getTranslationVideo(translationId)
+        .then(VideoData.fromDto);
   }
 
   @override
-  Future<void> saveTranslationWatched(Object translationId) {
-    return _repository.saveTranslationWatched(translationId);
+  Future<void> saveTranslationWatched(Object translationId) async {
+    await _repository.saveTranslationWatched(translationId);
+    upNextChanges.value++;
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    upNextChanges.dispose();
+  }
 }

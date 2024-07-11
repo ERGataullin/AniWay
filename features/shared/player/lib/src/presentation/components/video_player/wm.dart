@@ -61,7 +61,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   final FullscreenController fullscreenController = FullscreenController();
 
   @override
-  late final ComputationNotifier<double> maxScale = ComputationNotifier(
+  late final DynamicData<double> maxScale = DynamicData(
     trigger: videoController.aspectRatio,
     () => model.getMaxScale(
       surfaceAspectRatio: MediaQuery.sizeOf(context).aspectRatio,
@@ -70,29 +70,24 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final ComputationNotifier<List<double>> scaleAnchors =
-      ComputationNotifier(
+  late final DynamicData<List<double>> scaleAnchors = DynamicData(
     trigger: maxScale,
     () => [1, maxScale.value],
   );
 
   @override
-  late final ComputationNotifier<String> title = ComputationNotifier(
-    () => widget.title,
+  late final DynamicData<String> title = DynamicData(() => widget.title);
+
+  @override
+  late final DynamicData<String> subtitle = DynamicData(() => widget.subtitle);
+
+  @override
+  late final DynamicData<VoidCallback?> menuCallback = DynamicData(
+    () => widget.translations.isEmpty ? null : _openMenu,
   );
 
   @override
-  late final ComputationNotifier<String> subtitle = ComputationNotifier(
-    () => widget.subtitle,
-  );
-
-  @override
-  late final ComputationNotifier<VoidCallback?> menuCallback =
-      ComputationNotifier(() => widget.translations.isEmpty ? null : _openMenu);
-
-  @override
-  late final ComputationNotifier<VoidCallback?> previousCallback =
-      ComputationNotifier(
+  late final DynamicData<VoidCallback?> previousCallback = DynamicData(
     () => widget.onPreviousPressed == null
         ? null
         : () {
@@ -102,8 +97,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final ComputationNotifier<VoidCallback?> nextCallback =
-      ComputationNotifier(
+  late final DynamicData<VoidCallback?> nextCallback = DynamicData(
     () => widget.onNextPressed == null
         ? null
         : () {

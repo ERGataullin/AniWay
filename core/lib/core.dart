@@ -5,10 +5,10 @@ export 'package:html/parser.dart';
 export 'package:intl/intl.dart';
 export 'package:provider/provider.dart';
 
+export 'src/domain/models/dynamic.dart';
 export 'src/domain/models/proxied_uri.dart';
 export 'src/presentation/components/animated_visibility.dart';
 export 'src/presentation/components/menu.dart';
-export 'src/utils/computation_notifier.dart';
 export 'src/utils/error_handler/debug_print.dart';
 export 'src/utils/error_handler/util.dart';
 export 'src/utils/initable.dart';

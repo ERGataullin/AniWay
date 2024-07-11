@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
 import 'package:movies/src/domain/models/movie_player.dart';
@@ -10,6 +11,8 @@ import 'package:player/player.dart';
 
 abstract interface class MoviesService implements Initable {
   const MoviesService();
+
+  Listenable get upNextChanges;
 
   int get defaultMoviesLimit;
 

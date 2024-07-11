@@ -39,8 +39,8 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   final GlobalKey materialChildKey = GlobalKey();
 
   @override
-  late final ComputationNotifier<Map<Type, GestureRecognizerFactory>> gestures =
-      ComputationNotifier(
+  late final DynamicData<Map<Type, GestureRecognizerFactory>> gestures =
+      DynamicData(
     trigger: Listenable.merge([
       _videoController.position,
       _videoController.duration,
@@ -64,12 +64,12 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   );
 
   @override
-  late final ComputationNotifier<ShapeBorder> shape = ComputationNotifier(
+  late final DynamicData<ShapeBorder> shape = DynamicData(
     () => SeekAreaShapeBorder(widget.type),
   );
 
   @override
-  late final ComputationNotifier<String> value = ComputationNotifier(
+  late final DynamicData<String> value = DynamicData(
     trigger: model.value,
     () => model.value.value == Duration.zero
         ? ''
@@ -77,7 +77,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   );
 
   @override
-  late final ComputationNotifier<int> iconsRotation = ComputationNotifier(
+  late final DynamicData<int> iconsRotation = DynamicData(
     () => switch (widget.type) {
       SeekType.rewind => 2,
       SeekType.fastForward => 0,

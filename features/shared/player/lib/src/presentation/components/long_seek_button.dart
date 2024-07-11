@@ -26,7 +26,7 @@ class _LongSeekButtonState extends State<LongSeekButton> {
     SeekType.fastForward => _step,
   };
 
-  late final ComputationNotifier<bool> _canSeek = ComputationNotifier(
+  late final DynamicData<bool> _canSeek = DynamicData(
     () => switch (widget.type) {
       SeekType.rewind => _videoController.position.value > Duration.zero,
       SeekType.fastForward =>

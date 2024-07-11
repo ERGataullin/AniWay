@@ -89,7 +89,7 @@ linter:
     combinators_ordering: true
     conditional_uri_does_not_exist: true
     constant_identifier_names: true
-    curly_braces_in_flow_control_structures: false
+    curly_braces_in_flow_control_structures: true
     dangling_library_doc_comments: true
     deprecated_consistency: true
     directives_ordering: true

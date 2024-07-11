@@ -39,7 +39,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   final ValueNotifier<VideoData?> video = ValueNotifier(null);
 
   @override
-  late final ComputationNotifier<Uri?> videoDataSource = ComputationNotifier(
+  late final DynamicData<Uri?> videoDataSource = DynamicData(
     trigger: video,
     () => video.value?.stream.values.first,
   );
@@ -102,7 +102,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   Future<void> _onTranslationChanged() async {
     video.value = null;
-    if (translation.value != null)
+    if (translation.value != null) {
       video.value = await _videoResolver(translation.value!.id);
+    }
   }
 }

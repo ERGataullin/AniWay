@@ -32,7 +32,7 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   SearchWM(super._model);
 
   @override
-  late final ComputationNotifier<String> queryHint = ComputationNotifier(
+  late final DynamicData<String> queryHint = DynamicData(
     trigger: l10n,
     () => l10n.value.searchPageTitle,
   );

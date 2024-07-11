@@ -41,19 +41,19 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   HomeWM(super._model);
 
   @override
-  late final ComputationNotifier<String> title = ComputationNotifier(
+  late final DynamicData<String> title = DynamicData(
     trigger: l10n,
     () => l10n.value.homePageTitle,
   );
 
   @override
-  late final ComputationNotifier<String> upNextLabel = ComputationNotifier(
+  late final DynamicData<String> upNextLabel = DynamicData(
     trigger: l10n,
     () => l10n.value.upNextLabel,
   );
 
   @override
-  late final ComputationNotifier<String> popularLabel = ComputationNotifier(
+  late final DynamicData<String> popularLabel = DynamicData(
     trigger: l10n,
     () => l10n.value.popularLabel,
   );
