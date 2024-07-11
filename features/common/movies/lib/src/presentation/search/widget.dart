@@ -32,7 +32,7 @@ class SearchWidget extends ElementaryWidget<ISearchWM> {
                 delegate: _SearchBarDelegate(margin: EdgeInsets.all(16)),
               ),
               _Result(margin: EdgeInsets.symmetric(horizontal: 16)),
-              _Loader(margin: EdgeInsets.fromLTRB(16, 8, 16, 8)),
+              _Loader(margin: EdgeInsets.fromLTRB(16, 16, 16, 0)),
               SliverToBoxAdapter(
                 child: SizedBox(height: 16),
               ),
@@ -136,12 +136,18 @@ class _Loader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverFillRemaining(
-      hasScrollBody: false,
+    return ListenableBuilder(
+      listenable: context.wm.centerLoader,
+      builder: (context, child) => context.wm.centerLoader.value
+          ? SliverFillRemaining(
+              hasScrollBody: false,
+              child: child,
+            )
+          : SliverToBoxAdapter(child: child),
       child: Center(
         child: ValueListenableBuilder(
           valueListenable: context.wm.showLoader,
-          builder: (context, showLoader, ___) => Visibility(
+          builder: (context, showLoader, ___) => AnimatedVisibility.standard(
             visible: showLoader,
             child: Padding(
               padding: margin,

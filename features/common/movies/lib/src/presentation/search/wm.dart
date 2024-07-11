@@ -15,6 +15,8 @@ SearchWM searchWMFactory(BuildContext context) => SearchWM(
 abstract interface class ISearchWM implements IWidgetModel {
   ValueListenable<bool> get showLoader;
 
+  ValueListenable<bool> get centerLoader;
+
   ValueListenable<String> get queryHint;
 
   ValueListenable<List<MovieBaseData>> get movies;
@@ -30,6 +32,12 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
     with L10nWMMixin
     implements ISearchWM {
   SearchWM(super._model);
+
+  @override
+  late final DynamicData<bool> centerLoader = DynamicData(
+    trigger: model.movies,
+    () => model.movies.value.isEmpty,
+  );
 
   @override
   late final DynamicData<String> queryHint = DynamicData(
@@ -63,6 +71,7 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   @override
   void dispose() {
     super.dispose();
+    centerLoader.dispose();
     queryHint.dispose();
   }
 }
