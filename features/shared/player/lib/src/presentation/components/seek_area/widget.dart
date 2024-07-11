@@ -110,9 +110,12 @@ class _Icons extends StatelessWidget {
             .map(
               (animation) => ValueListenableBuilder(
                 valueListenable: animation,
-                builder: (context, opacity, ___) => Opacity(
-                  opacity: opacity,
-                  child: const Icon(Icons.play_arrow),
+                builder: (context, opacity, ___) => IgnorePointer(
+                  ignoring: opacity == 0,
+                  child: Opacity(
+                    opacity: opacity,
+                    child: const Icon(Icons.play_arrow),
+                  ),
                 ),
               ),
             )
