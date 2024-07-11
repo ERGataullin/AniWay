@@ -32,6 +32,9 @@ class SearchWidget extends ElementaryWidget<ISearchWM> {
                 delegate: _SearchBarDelegate(margin: EdgeInsets.all(16)),
               ),
               _Result(margin: EdgeInsets.symmetric(horizontal: 16)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: 16),
+              ),
               _Loader(margin: EdgeInsets.fromLTRB(16, 8, 16, 8)),
               SliverToBoxAdapter(
                 child: SizedBox(height: 16),
