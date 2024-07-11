@@ -14,9 +14,12 @@ extension _HomeContext on BuildContext {
 class HomeWidget extends ElementaryWidget<IHomeWM> {
   const HomeWidget({
     super.key,
+    required this.onUpNextPressed,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = homeWMFactory,
   }) : super(wmFactory);
+
+  final void Function(Object movieId, Object episodeId) onUpNextPressed;
 
   final void Function(Object id) onMoviePressed;
 

@@ -72,15 +72,12 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     required Object movieId,
     required Object episodeId,
   }) {
-    _openPlayer(
-      movieId: movieId,
-      episodeId: episodeId,
-    );
+    widget.onUpNextPressed(movieId, episodeId);
   }
 
   @override
   void onMoviePressed(Object id) {
-    _openPlayer(movieId: id);
+    widget.onMoviePressed(id);
   }
 
   @override
@@ -89,21 +86,5 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     title.dispose();
     upNextLabel.dispose();
     popularLabel.dispose();
-  }
-
-  void _openPlayer({
-    required Object movieId,
-    Object? episodeId,
-  }) {
-    Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        barrierDismissible: true,
-        builder: (context) => MoviePlayerWidget(
-          movieId: movieId,
-          initialEpisodeId: episodeId,
-        ),
-      ),
-    );
   }
 }
