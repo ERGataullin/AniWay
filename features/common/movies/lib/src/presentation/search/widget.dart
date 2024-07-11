@@ -32,7 +32,7 @@ class SearchWidget extends ElementaryWidget<ISearchWM> {
                 delegate: _SearchBarDelegate(margin: EdgeInsets.all(16)),
               ),
               _Result(margin: EdgeInsets.symmetric(horizontal: 16)),
-              _Loader(margin: EdgeInsets.fromLTRB(16, 8, 16, 8)),
+              _Loader(margin: EdgeInsets.fromLTRB(16, 24, 16, 0)),
               SliverToBoxAdapter(
                 child: SizedBox(height: 16),
               ),
@@ -143,14 +143,9 @@ class _Loader extends StatelessWidget {
           valueListenable: context.wm.showLoader,
           builder: (context, showLoader, ___) => Visibility(
             visible: showLoader,
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: margin,
-                  child: const CircularProgressIndicator(),
-                ),
-              ],
+            child: Padding(
+              padding: margin,
+              child: const CircularProgressIndicator(),
             ),
           ),
         ),
