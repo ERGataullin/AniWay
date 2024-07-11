@@ -77,7 +77,7 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
     super.initWidgetModel();
     model.loadData(
       movieId: widget.movieId,
-      episodeId: widget.episodeId,
+      episodeId: widget.initialEpisodeId,
     );
     if (!kIsWeb) {
       _lockOrientation();

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/domain/models/movie_player.dart';
+import 'package:movies/src/domain/models/movie_type.dart';
 import 'package:player/player.dart';
 
 abstract interface class IMoviePlayerModel implements ElementaryModel {
@@ -20,7 +21,7 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 
   void loadData({
     required Object movieId,
-    required Object episodeId,
+    Object? episodeId,
   });
 
   void loadPreviousEpisode();
@@ -62,11 +63,13 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   @override
   Future<void> loadData({
     required Object movieId,
-    required Object episodeId,
+    Object? episodeId,
   }) async {
     movie.value = await _service.getPlayerMovie(movieId);
     _episodeIndex = movie.value!.episodes.indexWhere(
-      (episode) => episode.id == episodeId,
+      (episode) => episodeId == null
+          ? episode.type != MovieType.preview
+          : episode.id == episodeId,
     );
     _loadEpisode(index: _episodeIndex);
   }
