@@ -85,11 +85,11 @@ class _UpNextCategory extends StatelessWidget {
     return _Category(
       margin: margin,
       label: context.wm.upNextLabel,
-      child: ValueListenableBuilder(
-        valueListenable: context.wm.upNextItems,
-        builder: (context, items, ___) => SizedBox(
-          height: 256,
-          child: ListView.separated(
+      child: SizedBox(
+        height: 256,
+        child: ValueListenableBuilder(
+          valueListenable: context.wm.upNextItems,
+          builder: (context, items, ___) => ListView.separated(
             itemCount: items.length,
             padding: margin.add(
               EdgeInsets.only(
@@ -208,11 +208,11 @@ class _Movies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
-    return ValueListenableBuilder(
-      valueListenable: movies,
-      builder: (context, movies, ___) => SizedBox(
-        height: 256,
-        child: ListView.separated(
+    return SizedBox(
+      height: 256,
+      child: ValueListenableBuilder(
+        valueListenable: movies,
+        builder: (context, movies, ___) => ListView.separated(
           itemCount: movies.length,
           padding: margin.add(
             EdgeInsets.only(
