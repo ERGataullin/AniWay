@@ -71,6 +71,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
           ? episode.type != MovieType.preview
           : episode.id == episodeId,
     );
+    if (_episodeIndex < 0) _episodeIndex = 0;
     _loadEpisode(index: _episodeIndex);
   }
 
