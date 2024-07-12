@@ -14,11 +14,11 @@ abstract interface class MoviesDataSource {
 
   Future<List<Map<String, dynamic>>> getUpNext();
 
-  Future<MoviePlayerDto> getPlayerMovie(Object id);
+  Future<MoviePlayerDto> getPlayerMovie(int id);
 
-  Future<List<VideoTranslationDto>> getTranslations(Object episodeId);
+  Future<List<VideoTranslationDto>> getTranslations(int episodeId);
 
-  Future<VideoDto> getTranslationVideo(Object translationId);
+  Future<VideoDto> getTranslationVideo(int translationId);
 
-  Future<void> saveTranslationWatched(Object translationId);
+  Future<void> saveTranslationWatched(int translationId);
 }

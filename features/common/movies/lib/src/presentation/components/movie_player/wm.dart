@@ -27,9 +27,9 @@ abstract interface class IMoviePlayerWM implements IWidgetModel {
 
   ValueListenable<VoidCallback?> get nextCallback;
 
-  Future<VideoData> onResolveVideo(Object translationId);
+  Future<VideoData> onResolveVideo(int translationId);
 
-  void onWatched(Object translationId);
+  void onWatched(int translationId);
 
   void onFinished();
 }
@@ -85,12 +85,12 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   }
 
   @override
-  Future<VideoData> onResolveVideo(Object translationId) {
+  Future<VideoData> onResolveVideo(int translationId) {
     return model.getVideo(translationId);
   }
 
   @override
-  void onWatched(Object translationId) {
+  void onWatched(int translationId) {
     model.saveTranslationWatched(translationId);
   }
 

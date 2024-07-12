@@ -68,9 +68,9 @@ class Anime365MoviesService implements MoviesService {
           (moviesJson) => moviesJson
               .map(
                 (movieJson) => MovieBaseData(
-                  id: movieJson['id'] as Object,
-                  title:
-                      movieJson['titles']['ru'] ?? movieJson['title'] as String,
+                  id: movieJson['id'] as int,
+                  title: movieJson['titles']['ru'] as String? ??
+                      movieJson['title'] as String,
                   posterUri: Uri.parse(movieJson['posterUrl'] as String),
                   type: switch (movieJson['type']) {
                     'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
@@ -116,7 +116,7 @@ class Anime365MoviesService implements MoviesService {
               };
               return UpNextData(
                 movie: MovieBaseData(
-                  id: itemJson['movie']['id'] as Object,
+                  id: itemJson['movie']['id'] as int,
                   title: itemJson['movie']['titles']['ru'] as String,
                   posterUri: Uri.parse(
                     itemJson['movie']['posterUrl'] as String,
@@ -124,7 +124,7 @@ class Anime365MoviesService implements MoviesService {
                   type: type,
                 ),
                 episode: EpisodeData(
-                  id: itemJson['episode']['id'] as Object,
+                  id: itemJson['episode']['id'] as int,
                   type: type,
                   number: itemJson['episode']['number'] as num?,
                 ),
@@ -135,26 +135,26 @@ class Anime365MoviesService implements MoviesService {
   }
 
   @override
-  Future<MoviePlayerData> getPlayerMovie(Object id) {
+  Future<MoviePlayerData> getPlayerMovie(int id) {
     return _repository.getPlayerMovie(id).then(MoviePlayerData.fromDto);
   }
 
   @override
-  Future<List<VideoTranslationData>> getTranslations(Object episodeId) async {
+  Future<List<VideoTranslationData>> getTranslations(int episodeId) async {
     final List<VideoTranslationDto> dtos =
         await _repository.getTranslations(episodeId);
     return dtos.map(VideoTranslationData.fromDto).toList(growable: false);
   }
 
   @override
-  Future<VideoData> getTranslationVideo(Object translationId) async {
+  Future<VideoData> getTranslationVideo(int translationId) async {
     return _repository
         .getTranslationVideo(translationId)
         .then(VideoData.fromDto);
   }
 
   @override
-  Future<void> saveTranslationWatched(Object translationId) async {
+  Future<void> saveTranslationWatched(int translationId) async {
     await _repository.saveTranslationWatched(translationId);
     upNextChanges.value++;
   }

@@ -11,9 +11,9 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWM> {
     WidgetModelFactory wmFactory = moviePlayerWMFactory,
   }) : super(wmFactory);
 
-  final Object movieId;
+  final int movieId;
 
-  final Object? initialEpisodeId;
+  final int? initialEpisodeId;
 
   @override
   Widget build(IMoviePlayerWM wm) {

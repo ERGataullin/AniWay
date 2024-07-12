@@ -31,7 +31,7 @@ class VideoTranslationData {
         language: Locale.fromSubtags(languageCode: dto.language),
       );
 
-  final Object id;
+  final int id;
 
   final String title;
 

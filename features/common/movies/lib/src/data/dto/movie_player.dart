@@ -7,7 +7,7 @@ class MoviePlayerDto {
     required this.episodes,
   });
 
-  final Object id;
+  final int id;
 
   final String title;
 

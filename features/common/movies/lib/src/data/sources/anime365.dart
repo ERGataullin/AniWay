@@ -166,7 +166,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   }
 
   @override
-  Future<MoviePlayerDto> getPlayerMovie(Object id) async {
+  Future<MoviePlayerDto> getPlayerMovie(int id) async {
     final ResponseData response = await _network.request(
       RequestData(
         uri: Uri(
@@ -188,7 +188,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           .cast<Map<String, dynamic>>()
           .map(
             (Map<String, dynamic> episodeJson) => EpisodeDto(
-              id: episodeJson['id'] as Object,
+              id: episodeJson['id'] as int,
               type: episodeJson['episodeType'] as String,
               number: num.parse(episodeJson['episodeInt'] as String),
             ),
@@ -228,7 +228,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         }
 
         return VideoTranslationDto(
-          id: translationJson['id'] as Object,
+          id: translationJson['id'] as int,
           title: title,
           type: translationJson['typeKind'] as String,
           language: translationJson['typeLang'] as String,
@@ -248,15 +248,17 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       ),
     );
 
+    final Iterable<Map<String, dynamic>> downloadSourcesJsons =
+        (response.body['data']['download'] as Iterable<dynamic>).cast();
+    final Iterable<Map<String, dynamic>> streamSourcesJsons =
+        (response.body['data']['stream'] as Iterable<dynamic>).cast();
     return VideoDto(
       download: {
-        for (final Map<String, dynamic> sourceJson in response.body['data']
-            ['download'])
+        for (final Map<String, dynamic> sourceJson in downloadSourcesJsons)
           sourceJson['height'] as num: sourceJson['url'] as String,
       },
       stream: {
-        for (final Map<String, dynamic> sourceJson in response.body['data']
-            ['stream'])
+        for (final Map<String, dynamic> sourceJson in streamSourcesJsons)
           sourceJson['height'] as num: sourceJson['urls'].first as String,
       },
       subtitlesUrl: response.body['data']['subtitlesUrl'] as String?,
