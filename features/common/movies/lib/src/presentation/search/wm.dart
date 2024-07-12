@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
-import 'package:movies/src/domain/models/movie_base.dart';
+import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/search/model.dart';
 
 SearchWM searchWMFactory(BuildContext context) => SearchWM(
@@ -19,13 +19,11 @@ abstract interface class ISearchWM implements IWidgetModel {
 
   ValueListenable<String> get queryHint;
 
-  ValueListenable<List<MovieBaseData>> get movies;
+  ValueListenable<List<MoviePreviewData>> get movies;
 
   SearchController get queryController;
 
   ScrollController get scrollController;
-
-  void onMoviePressed(Object id);
 }
 
 class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
@@ -46,10 +44,21 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   );
 
   @override
-  ValueListenable<bool> get showLoader => model.loading;
+  late final DynamicData<List<MoviePreviewData>> movies = DynamicData(
+    trigger: Listenable.merge([l10n, model.movies]),
+    () => model.movies.value
+        .map(
+          (movie) => MoviePreviewData.fromMovie(
+            movie,
+            l10n: l10n.value,
+            onPressed: () => widget.onMoviePressed(movie.id),
+          ),
+        )
+        .toList(growable: false),
+  );
 
   @override
-  ValueListenable<List<MovieBaseData>> get movies => model.movies;
+  ValueListenable<bool> get showLoader => model.loading;
 
   @override
   SearchController get queryController => model.queryController;
@@ -64,14 +73,10 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   }
 
   @override
-  void onMoviePressed(Object id) {
-    widget.onMoviePressed(id);
-  }
-
-  @override
   void dispose() {
     super.dispose();
     centerLoader.dispose();
     queryHint.dispose();
+    movies.dispose();
   }
 }

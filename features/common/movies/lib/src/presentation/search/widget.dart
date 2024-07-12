@@ -1,7 +1,5 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:l10n/l10n.dart';
-import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/presentation/components/movie_preview.dart';
 import 'package:movies/src/presentation/search/wm.dart';
 
@@ -103,24 +101,15 @@ class _Result extends StatelessWidget {
       padding: margin,
       sliver: ValueListenableBuilder(
         valueListenable: context.wm.movies,
-        builder: (context, items, ___) => SliverGrid.builder(
+        builder: (context, movies, ___) => SliverGrid.builder(
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
             childAspectRatio: MoviePreview.aspectRatio,
             maxCrossAxisExtent: 200,
           ),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final MovieBaseData movie = items[index];
-            return MoviePreview(
-              posterUri: movie.posterUri,
-              title: movie.title,
-              subtitle: context.l10n.movieType(movie.type.name),
-              score: movie.score,
-              onPressed: () => context.wm.onMoviePressed(movie.id),
-            );
-          },
+          itemCount: movies.length,
+          itemBuilder: (context, index) => MoviePreview(movies[index]),
         ),
       ),
     );

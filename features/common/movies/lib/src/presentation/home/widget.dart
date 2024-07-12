@@ -1,9 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:l10n/l10n.dart';
-import 'package:movies/src/domain/models/movie_base.dart';
-import 'package:movies/src/domain/models/up_next.dart';
+import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/presentation/components/movie_preview.dart';
 import 'package:movies/src/presentation/home/wm.dart';
 
@@ -25,7 +23,6 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
 
   @override
   Widget build(IHomeWM wm) {
-    const EdgeInsets categoriesMargin = EdgeInsets.symmetric(horizontal: 16);
     return Provider<IHomeWM>.value(
       value: wm,
       child: Scaffold(
@@ -43,31 +40,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
             duration: Durations.long2,
             child: wm.showLoader.value
                 ? const Center(child: CircularProgressIndicator.adaptive())
-                : Builder(
-                    builder: (context) {
-                      final EdgeInsets safeAreaPadding =
-                          MediaQuery.paddingOf(context);
-                      return SingleChildScrollView(
-                        padding: EdgeInsets.only(
-                          top: 16 + safeAreaPadding.top,
-                          bottom: 16 + safeAreaPadding.bottom,
-                        ),
-                        child: const Column(
-                          children: [
-                            _UpNextCategory(margin: categoriesMargin),
-                            SafeArea(
-                              child: Divider(
-                                indent: 16,
-                                endIndent: 16,
-                                height: 32,
-                              ),
-                            ),
-                            _PopularCategory(margin: categoriesMargin),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                : const _Content(),
           ),
         ),
       ),
@@ -75,75 +48,39 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   }
 }
 
-class _UpNextCategory extends StatelessWidget {
-  const _UpNextCategory({
-    this.margin = EdgeInsets.zero,
-  });
-
-  final EdgeInsets margin;
+class _Content extends StatelessWidget {
+  const _Content({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const EdgeInsets categoriesMargin = EdgeInsets.symmetric(horizontal: 16);
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
-    return _Category(
-      margin: margin,
-      label: context.wm.upNextLabel,
-      child: SizedBox(
-        height: 256,
-        child: ValueListenableBuilder(
-          valueListenable: context.wm.upNextItems,
-          builder: (context, items, ___) => ListView.separated(
-            itemCount: items.length,
-            padding: margin.add(
-              EdgeInsets.only(
-                left: safeAreaPadding.left,
-                right: safeAreaPadding.right,
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        primary: true,
+        padding: EdgeInsets.only(
+          top: 16 + safeAreaPadding.top,
+          bottom: 16 + safeAreaPadding.bottom,
+        ),
+        child: Column(
+          children: [
+            _Category(
+              margin: categoriesMargin,
+              label: context.wm.upNextLabel,
+              movies: context.wm.upNextItems,
               ),
+            Divider(
+              indent: 16 + safeAreaPadding.left,
+              endIndent: 16 + safeAreaPadding.right,
+              height: 32,
             ),
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, __) => const SizedBox(width: 8),
-            itemBuilder: (context, index) {
-              final UpNextData upNext = items[index];
-              return MoviePreview(
-                posterUri: upNext.movie.posterUri,
-                title: upNext.movie.title,
-                subtitle: upNext.episode.number == null
-                    ? context.l10n.movieType(upNext.episode.type.name)
-                    : context.l10n.movieEpisode(
-                        upNext.episode.type.name,
-                        upNext.episode.number!,
-                      ),
-                onPressed: () => context.wm.onUpNextPressed(
-                  movieId: upNext.movie.id,
-                  episodeId: upNext.episode.id,
-                ),
-              );
-            },
-          ),
+            _Category(
+              margin: categoriesMargin,
+              label: context.wm.popularLabel,
+              movies: context.wm.popularItems,
+            ),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _PopularCategory extends StatelessWidget {
-  const _PopularCategory({
-    this.margin = EdgeInsets.zero,
-  });
-
-  final EdgeInsets margin;
-
-  @override
-  Widget build(BuildContext context) {
-    return _Category(
-      margin: margin,
-      label: context.wm.popularLabel,
-      child: _Movies(
-        margin: EdgeInsets.only(
-          left: margin.left,
-          right: margin.right,
-        ),
-        movies: context.wm.popularItems,
       ),
     );
   }
@@ -153,14 +90,14 @@ class _Category extends StatelessWidget {
   const _Category({
     this.margin = EdgeInsets.zero,
     required this.label,
-    required this.child,
+    required this.movies,
   });
 
   final EdgeInsets margin;
 
   final ValueListenable<String> label;
 
-  final Widget child;
+  final ValueListenable<List<MoviePreviewData>> movies;
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +128,10 @@ class _Category extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          child,
+          _Movies(
+            margin: margin,
+            movies: movies,
+          ),
         ],
       ),
     );
@@ -206,7 +146,7 @@ class _Movies extends StatelessWidget {
 
   final EdgeInsets margin;
 
-  final ValueListenable<List<MovieBaseData>> movies;
+  final ValueListenable<List<MoviePreviewData>> movies;
 
   @override
   Widget build(BuildContext context) {
@@ -216,6 +156,7 @@ class _Movies extends StatelessWidget {
       child: ValueListenableBuilder(
         valueListenable: movies,
         builder: (context, movies, ___) => ListView.separated(
+          clipBehavior: Clip.none,
           itemCount: movies.length,
           padding: margin.add(
             EdgeInsets.only(
@@ -225,16 +166,7 @@ class _Movies extends StatelessWidget {
           ),
           scrollDirection: Axis.horizontal,
           separatorBuilder: (context, __) => const SizedBox(width: 8),
-          itemBuilder: (context, index) {
-            final MovieBaseData movie = movies[index];
-            return MoviePreview(
-              posterUri: movie.posterUri,
-              title: movie.title,
-              subtitle: context.l10n.movieType(movie.type.name),
-              score: movie.score,
-              onPressed: () => context.wm.onMoviePressed(movie.id),
-            );
-          },
+          itemBuilder: (context, index) => MoviePreview(movies[index]),
         ),
       ),
     );
