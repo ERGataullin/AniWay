@@ -147,12 +147,13 @@ class _Loader extends StatelessWidget {
       child: Center(
         child: ValueListenableBuilder(
           valueListenable: context.wm.showLoader,
-          builder: (context, showLoader, ___) => AnimatedVisibility.standard(
+          child: Padding(
+            padding: margin,
+            child: const CircularProgressIndicator(),
+          ),
+          builder: (context, showLoader, child) => AnimatedVisibility.standard(
             visible: showLoader,
-            child: Padding(
-              padding: margin,
-              child: const CircularProgressIndicator(),
-            ),
+            child: child!,
           ),
         ),
       ),

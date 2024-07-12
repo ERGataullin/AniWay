@@ -100,22 +100,26 @@ class _Icons extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: context.wm.iconsRotation,
-      builder: (context, rotation, ___) => RotatedBox(
+      builder: (context, rotation, indicators) => RotatedBox(
         quarterTurns: rotation,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: context.wm.iconsOpacities
-              .map(
-                (animation) => ValueListenableBuilder(
-                  valueListenable: animation,
-                  builder: (context, opacity, ___) => Opacity(
+        child: indicators,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: context.wm.iconsOpacities
+            .map(
+              (animation) => ValueListenableBuilder(
+                valueListenable: animation,
+                builder: (context, opacity, ___) => IgnorePointer(
+                  ignoring: opacity == 0,
+                  child: Opacity(
                     opacity: opacity,
                     child: const Icon(Icons.play_arrow),
                   ),
                 ),
-              )
-              .toList(growable: false),
-        ),
+              ),
+            )
+            .toList(growable: false),
       ),
     );
   }

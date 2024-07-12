@@ -30,11 +30,11 @@ class _ScalableState extends State<Scalable> {
 
   @override
   void didUpdateWidget(Scalable oldWidget) {
-    super.didUpdateWidget(oldWidget);
     _scale.value = math.max(
       widget.minScale,
       math.min(widget.maxScale, _scale.value),
     );
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -54,8 +54,8 @@ class _ScalableState extends State<Scalable> {
 
   @override
   void dispose() {
-    super.dispose();
     _scale.dispose();
+    super.dispose();
   }
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
@@ -75,10 +75,7 @@ class _ScalableState extends State<Scalable> {
         closestAnchorDistance = distance;
       }
     }
-
-    if (closestAnchor != null) {
-      _scale.value = closestAnchor;
-    }
+    if (closestAnchor != null) _scale.value = closestAnchor;
 
     _submittedScale = _scale.value;
   }

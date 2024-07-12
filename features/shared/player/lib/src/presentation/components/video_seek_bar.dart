@@ -62,7 +62,7 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
 
   @override
   void dispose() {
-    super.dispose();
     _value.dispose();
+    super.dispose();
   }
 }
