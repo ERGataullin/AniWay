@@ -149,7 +149,7 @@ class _Loader extends StatelessWidget {
           valueListenable: context.wm.showLoader,
           child: Padding(
             padding: margin,
-            child: const CircularProgressIndicator(),
+            child: const CircularProgressIndicator.adaptive(),
           ),
           builder: (context, showLoader, child) => AnimatedVisibility.standard(
             visible: showLoader,
