@@ -20,17 +20,17 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
   ValueListenable<bool> get hasNextEpisode;
 
   void loadData({
-    required Object movieId,
-    Object? episodeId,
+    required int movieId,
+    int? episodeId,
   });
 
   void loadPreviousEpisode();
 
   void loadNextEpisode();
 
-  Future<VideoData> getVideo(Object translationId);
+  Future<VideoData> getVideo(int translationId);
 
-  void saveTranslationWatched(Object translationId);
+  void saveTranslationWatched(int translationId);
 }
 
 class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
@@ -62,8 +62,8 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   Future<void> loadData({
-    required Object movieId,
-    Object? episodeId,
+    required int movieId,
+    int? episodeId,
   }) async {
     movie.value = await _service.getPlayerMovie(movieId);
     _episodeIndex = movie.value!.episodes.indexWhere(
@@ -86,12 +86,12 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   }
 
   @override
-  Future<VideoData> getVideo(Object translationId) {
+  Future<VideoData> getVideo(int translationId) {
     return _service.getTranslationVideo(translationId);
   }
 
   @override
-  void saveTranslationWatched(Object translationId) {
+  void saveTranslationWatched(int translationId) {
     _service.saveTranslationWatched(translationId);
   }
 

@@ -29,19 +29,19 @@ class MoviesRepository {
     return _remote.getUpNext();
   }
 
-  Future<MoviePlayerDto> getPlayerMovie(Object id) {
+  Future<MoviePlayerDto> getPlayerMovie(int id) {
     return _remote.getPlayerMovie(id);
   }
 
-  Future<List<VideoTranslationDto>> getTranslations(Object episodeId) {
+  Future<List<VideoTranslationDto>> getTranslations(int episodeId) {
     return _remote.getTranslations(episodeId);
   }
 
-  Future<VideoDto> getTranslationVideo(Object translationId) {
+  Future<VideoDto> getTranslationVideo(int translationId) {
     return _remote.getTranslationVideo(translationId);
   }
 
-  Future<void> saveTranslationWatched(Object translationId) {
+  Future<void> saveTranslationWatched(int translationId) {
     return _remote.saveTranslationWatched(translationId);
   }
 }

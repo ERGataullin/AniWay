@@ -14,7 +14,7 @@ class MoviePlayerData {
         episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),
       );
 
-  final Object id;
+  final int id;
 
   final String title;
 

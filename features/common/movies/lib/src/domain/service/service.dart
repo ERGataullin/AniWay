@@ -26,11 +26,11 @@ abstract interface class MoviesService implements Initable {
 
   Future<List<UpNextData>> getUpNext();
 
-  Future<MoviePlayerData> getPlayerMovie(Object id);
+  Future<MoviePlayerData> getPlayerMovie(int id);
 
-  Future<List<VideoTranslationData>> getTranslations(Object episodeId);
+  Future<List<VideoTranslationData>> getTranslations(int episodeId);
 
-  Future<VideoData> getTranslationVideo(Object translationId);
+  Future<VideoData> getTranslationVideo(int translationId);
 
-  Future<void> saveTranslationWatched(Object translationId);
+  Future<void> saveTranslationWatched(int translationId);
 }

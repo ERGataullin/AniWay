@@ -14,7 +14,7 @@ class SearchWidget extends ElementaryWidget<ISearchWM> {
     WidgetModelFactory wmFactory = searchWMFactory,
   }) : super(wmFactory);
 
-  final void Function(Object id) onMoviePressed;
+  final void Function(int id) onMoviePressed;
 
   @override
   Widget build(ISearchWM wm) {
