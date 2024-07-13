@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:player/src/presentation/components/fullscreen/io.dart'
-    if (dart.library.html) 'package:player/src/presentation/components/fullscreen/web.dart';
+import 'package:player/src/presentation/video_player/components/fullscreen/io.dart'
+    if (dart.library.html) 'package:player/src/presentation/video_player/components/fullscreen/web.dart';
 
 abstract class FullscreenController implements ChangeNotifier {
   factory FullscreenController() {

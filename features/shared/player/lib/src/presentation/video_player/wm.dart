@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:l10n/l10n.dart';
 import 'package:player/player.dart';
-import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
-import 'package:player/src/presentation/components/show_on_mouse_hover.dart';
-import 'package:player/src/presentation/components/video_player/model.dart';
-import 'package:player/src/utils/pointer_device_kind_extension.dart';
+import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
+import 'package:player/src/presentation/video_player/components/show_on_mouse_hover.dart';
+import 'package:player/src/presentation/video_player/const.dart';
+import 'package:player/src/presentation/video_player/model.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
@@ -36,7 +37,13 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   FullscreenController get fullscreenController;
 
-  void onTapUp(TapUpDetails details);
+  Map<ShortcutActivator, VoidCallback> get shortcuts;
+
+  void onAccurateTap();
+
+  void onAccurateDoubleTap();
+
+  void onInaccurateTap();
 
   void onPositionChangeStart(double position);
 
@@ -106,6 +113,15 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
           },
   );
 
+  @override
+  late final Map<ShortcutActivator, VoidCallback> shortcuts = {
+    const SingleActivator(LogicalKeyboardKey.arrowLeft): () => videoController
+        .seekTo(videoController.position.value - shortcutSeekDuration),
+    const SingleActivator(LogicalKeyboardKey.arrowRight): () => videoController
+        .seekTo(videoController.position.value + shortcutSeekDuration),
+    const SingleActivator(LogicalKeyboardKey.space): videoController.playPause,
+  };
+
   bool _watched = false;
 
   @override
@@ -149,10 +165,18 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
-  void onTapUp(TapUpDetails details) {
-    details.kind.mobile
-        ? controlsVisibilityController.toggle(immediately: true)
-        : videoController.playPause();
+  Future<void> onAccurateTap() async {
+    await videoController.playPause();
+  }
+
+  @override
+  Future<void> onAccurateDoubleTap() async {
+    await fullscreenController.toggle();
+  }
+
+  @override
+  void onInaccurateTap() {
+    controlsVisibilityController.toggle(immediately: true);
   }
 
   @override

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:core/core.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:player/src/domain/models/seek_type.dart';
-import 'package:player/src/presentation/components/seek_area/wm.dart';
+import 'package:player/src/presentation/video_player/components/seek_area/wm.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 extension _SeekAreaContext on BuildContext {
