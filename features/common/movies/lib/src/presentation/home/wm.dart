@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
+import 'package:movies/src/domain/models/movie_preview.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/home/model.dart';
 
@@ -21,18 +22,11 @@ abstract interface class IHomeWM implements IWidgetModel {
 
   ValueListenable<String> get upNextLabel;
 
-  ValueListenable<List<UpNextData>> get upNextItems;
+  ValueListenable<List<MoviePreviewData>> get upNextItems;
 
   ValueListenable<String> get popularLabel;
 
-  ValueListenable<List<MovieBaseData>> get popularItems;
-
-  void onUpNextPressed({
-    required int movieId,
-    required int episodeId,
-  });
-
-  void onMoviePressed(int id);
+  ValueListenable<List<MoviePreviewData>> get popularItems;
 }
 
 class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
@@ -59,32 +53,48 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
+  late final DynamicData<List<MoviePreviewData>> upNextItems = DynamicData(
+    trigger: Listenable.merge([l10n, model.upNext]),
+    () =>
+        model.upNext.value.map(_moviePreviewFromUpNext).toList(growable: false),
+  );
+
+  @override
+  late final DynamicData<List<MoviePreviewData>> popularItems = DynamicData(
+    trigger: Listenable.merge([l10n, model.popular]),
+    () =>
+        model.popular.value.map(_moviePreviewFromMovie).toList(growable: false),
+  );
+
+  @override
   ValueListenable<bool> get showLoader => model.loading;
-
-  @override
-  ValueListenable<List<UpNextData>> get upNextItems => model.upNext;
-
-  @override
-  ValueListenable<List<MovieBaseData>> get popularItems => model.popular;
-
-  @override
-  void onUpNextPressed({
-    required int movieId,
-    required int episodeId,
-  }) {
-    widget.onUpNextPressed(movieId, episodeId);
-  }
-
-  @override
-  void onMoviePressed(int id) {
-    widget.onMoviePressed(id);
-  }
 
   @override
   void dispose() {
     super.dispose();
     title.dispose();
     upNextLabel.dispose();
+    upNextItems.dispose();
     popularLabel.dispose();
+    popularItems.dispose();
+  }
+
+  MoviePreviewData _moviePreviewFromUpNext(UpNextData upNext) {
+    return MoviePreviewData.fromUpNext(
+      upNext,
+      l10n: l10n.value,
+      onPressed: () => widget.onUpNextPressed(
+        upNext.movie.id,
+        upNext.episode.id,
+      ),
+    );
+  }
+
+  MoviePreviewData _moviePreviewFromMovie(MovieBaseData movie) {
+    return MoviePreviewData.fromMovie(
+      movie,
+      l10n: l10n.value,
+      onPressed: () => widget.onMoviePressed(movie.id),
+    );
   }
 }

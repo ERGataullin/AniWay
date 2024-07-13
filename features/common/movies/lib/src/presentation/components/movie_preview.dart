@@ -1,27 +1,16 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/src/domain/models/movie_preview.dart';
 
 class MoviePreview extends StatelessWidget {
-  const MoviePreview({
+  const MoviePreview(
+    this.data, {
     super.key,
-    required this.posterUri,
-    required this.title,
-    required this.subtitle,
-    this.score,
-    required this.onPressed,
   });
 
   static const double aspectRatio = 3 / 4;
 
-  final Uri posterUri;
-
-  final String title;
-
-  final String subtitle;
-
-  final double? score;
-
-  final VoidCallback onPressed;
+  final MoviePreviewData data;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +20,7 @@ class MoviePreview extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Builder(
           builder: (context) => InkWell(
-            onTap: onPressed,
+            onTap: data.onPressed,
             customBorder: Theme.of(context).cardTheme.shape,
             child: Column(
               children: [
@@ -41,17 +30,15 @@ class MoviePreview extends StatelessWidget {
                       context
                           .read<Network>()
                           .baseUri
-                          .resolveUri(posterUri)
+                          .resolveUri(data.posterUri)
                           .toString(),
                     ),
                     fit: BoxFit.cover,
                   ),
                 ),
                 _Footer(
+                  data,
                   margin: const EdgeInsets.all(8),
-                  title: title,
-                  subtitle: subtitle,
-                  score: score,
                 ),
               ],
             ),
@@ -63,22 +50,16 @@ class MoviePreview extends StatelessWidget {
 }
 
 class _Footer extends StatelessWidget {
-  const _Footer({
+  const _Footer(
+    this.data, {
     this.margin = EdgeInsets.zero,
-    required this.title,
-    required this.subtitle,
-    this.score,
   });
 
   static final NumberFormat _scoreFormat = NumberFormat('#0.0');
 
   final EdgeInsets margin;
 
-  final String title;
-
-  final String subtitle;
-
-  final double? score;
+  final MoviePreviewData data;
 
   @override
   Widget build(BuildContext context) {
@@ -96,17 +77,15 @@ class _Footer extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title,
+              data.title,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 2),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  subtitle,
-                ),
-                if (score != null) ...[
+                Text(data.subtitle),
+                if (data.score != null) ...[
                   const Expanded(
                     child: SizedBox(width: 16),
                   ),
@@ -118,7 +97,7 @@ class _Footer extends StatelessWidget {
                     color: textStyle.color,
                   ),
                   const SizedBox(width: 4),
-                  Text(_scoreFormat.format(score)),
+                  Text(_scoreFormat.format(data.score)),
                 ],
               ],
             ),
