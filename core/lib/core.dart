@@ -6,6 +6,7 @@ export 'package:intl/intl.dart';
 export 'package:provider/provider.dart';
 
 export 'src/domain/models/dynamic.dart';
+export 'src/domain/models/json.dart';
 export 'src/domain/models/proxied_uri.dart';
 export 'src/presentation/components/animated_visibility.dart';
 export 'src/presentation/components/menu.dart';

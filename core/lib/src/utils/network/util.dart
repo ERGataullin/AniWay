@@ -25,7 +25,7 @@ abstract interface class Network implements Initable {
 
   void removeInterceptor(NetworkInterceptor interceptor);
 
-  Future<ResponseData> request(RequestData data);
+  Future<ResponseData<T>> request<T>(RequestData data);
 }
 
 abstract class NetworkInterceptor {
@@ -33,7 +33,7 @@ abstract class NetworkInterceptor {
 
   FutureOr<RequestData> onRequest(RequestData data) => data;
 
-  FutureOr<ResponseData> onResponse(ResponseData data) => data;
+  FutureOr<ResponseData<T>> onResponse<T>(ResponseData<T> data) => data;
 }
 
 class RequestData {
@@ -50,13 +50,13 @@ class RequestData {
 
   final Headers headers;
 
-  final dynamic body;
+  final Object? body;
 
   RequestData copyWith({
     Uri? uri,
     RequestMethod? method,
     Headers? headers,
-    dynamic body,
+    Object? body,
   }) =>
       RequestData(
         uri: uri ?? this.uri,
@@ -66,7 +66,7 @@ class RequestData {
       );
 }
 
-class ResponseData {
+class ResponseData<T> {
   const ResponseData({
     this.headers = const {},
     required this.body,
@@ -74,5 +74,5 @@ class ResponseData {
 
   final Headers headers;
 
-  final dynamic body;
+  final T body;
 }
