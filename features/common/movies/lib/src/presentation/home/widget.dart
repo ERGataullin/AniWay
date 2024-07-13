@@ -68,7 +68,7 @@ class _Content extends StatelessWidget {
               margin: categoriesMargin,
               label: context.wm.upNextLabel,
               movies: context.wm.upNextItems,
-              ),
+            ),
             Divider(
               indent: 16 + safeAreaPadding.left,
               endIndent: 16 + safeAreaPadding.right,

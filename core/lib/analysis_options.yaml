@@ -21,6 +21,7 @@ linter:
   rules:
     # Error rules
     always_use_package_imports: true
+    avoid_dynamic_calls: true
     avoid_empty_else: true
     avoid_print: true
     avoid_slow_async_io: true

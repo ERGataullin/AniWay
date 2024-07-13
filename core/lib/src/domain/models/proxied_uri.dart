@@ -102,7 +102,7 @@ class ProxiedUri implements Uri {
     String? path,
     Iterable<String>? pathSegments,
     String? query,
-    Map<String, dynamic>? queryParameters,
+    Map<String, Object?>? queryParameters,
     String? fragment,
   }) =>
       proxied.replace(

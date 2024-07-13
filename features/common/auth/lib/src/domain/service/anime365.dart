@@ -36,14 +36,14 @@ class Anime365AuthService implements AuthService {
     required String email,
     required String password,
   }) async {
-    await _network.request(
+    await _network.request<void>(
       RequestData(
         uri: Uri(path: '/users/login'),
         method: RequestMethod.get,
       ),
     );
 
-    await _network.request(
+    await _network.request<void>(
       RequestData(
         uri: Uri(path: '/users/login'),
         method: RequestMethod.post,
