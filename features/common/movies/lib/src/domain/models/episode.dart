@@ -14,7 +14,7 @@ class EpisodeData {
         number: dto.number,
       );
 
-  final Object id;
+  final int id;
 
   final MovieType type;
 

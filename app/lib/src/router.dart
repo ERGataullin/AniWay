@@ -101,8 +101,11 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       pageBuilder: (context, state) => MaterialPage(
         fullscreenDialog: true,
         child: MoviePlayerWidget(
-          movieId: state.pathParameters['movieId']!,
-          initialEpisodeId: state.uri.queryParameters['episodeId'],
+          movieId: int.parse(state.pathParameters['movieId']!),
+          initialEpisodeId: switch (state.uri.queryParameters['episodeId']) {
+            final String episodeIdQuery => int.tryParse(episodeIdQuery),
+            _ => null,
+          },
         ),
       ),
     );

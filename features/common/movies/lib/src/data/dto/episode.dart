@@ -5,7 +5,7 @@ class EpisodeDto {
     required this.number,
   });
 
-  final Object id;
+  final int id;
 
   final String type;
 

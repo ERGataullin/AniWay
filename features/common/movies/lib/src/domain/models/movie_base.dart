@@ -9,9 +9,13 @@ class MovieBaseData {
     this.score,
   });
 
-  final Object id;
+  final int id;
+
   final String title;
+
   final Uri posterUri;
+
   final MovieType type;
+  
   final double? score;
 }

@@ -28,11 +28,11 @@ abstract interface class IHomeWM implements IWidgetModel {
   ValueListenable<List<MovieBaseData>> get popularItems;
 
   void onUpNextPressed({
-    required Object movieId,
-    required Object episodeId,
+    required int movieId,
+    required int episodeId,
   });
 
-  void onMoviePressed(Object id);
+  void onMoviePressed(int id);
 }
 
 class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
@@ -69,14 +69,14 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
 
   @override
   void onUpNextPressed({
-    required Object movieId,
-    required Object episodeId,
+    required int movieId,
+    required int episodeId,
   }) {
     widget.onUpNextPressed(movieId, episodeId);
   }
 
   @override
-  void onMoviePressed(Object id) {
+  void onMoviePressed(int id) {
     widget.onMoviePressed(id);
   }
 

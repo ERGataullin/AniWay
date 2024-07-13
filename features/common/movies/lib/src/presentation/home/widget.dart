@@ -19,9 +19,9 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
     WidgetModelFactory wmFactory = homeWMFactory,
   }) : super(wmFactory);
 
-  final void Function(Object movieId, Object episodeId) onUpNextPressed;
+  final void Function(int movieId, int episodeId) onUpNextPressed;
 
-  final void Function(Object id) onMoviePressed;
+  final void Function(int id) onMoviePressed;
 
   @override
   Widget build(IHomeWM wm) {

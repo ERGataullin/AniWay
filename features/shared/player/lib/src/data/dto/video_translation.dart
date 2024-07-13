@@ -6,7 +6,7 @@ class VideoTranslationDto {
     required this.language,
   });
 
-  final Object id;
+  final int id;
 
   final String title;
 
