@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:player/src/utils/pointer_device_kind_extension.dart';
+import 'package:player/src/utils/pointer_devices_accuracy.dart';
 
 class VisibilityController with ChangeNotifier {
   VisibilityController() {
@@ -97,7 +97,7 @@ class ShowOnMouseHover extends StatelessWidget {
             ? SystemMouseCursors.basic
             : SystemMouseCursors.none,
         onHover: (event) {
-          if (!event.kind.mobile) controller.show();
+          if (event.kind.accurate) controller.show();
         },
         child: AnimatedVisibility.emphasized(
           visible: controller.visible,

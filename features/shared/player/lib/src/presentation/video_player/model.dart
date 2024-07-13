@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:player/player.dart';
-import 'package:player/src/presentation/components/video_player/typedefs.dart';
+import 'package:player/src/presentation/video_player/typedefs.dart';
 
 abstract interface class IVideoPlayerModel implements ElementaryModel {
   ValueListenable<VideoTranslationData?> get translation;
