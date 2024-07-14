@@ -137,7 +137,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       name: _Routes.search,
       path: '/search',
       routes: [movieRoute],
-      builder: (context, state) => SearchWidget(
+      builder: (context, state) => MoviesSearchWidget(
         onMoviePressed: (id) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': id.toString()},

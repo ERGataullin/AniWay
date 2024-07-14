@@ -82,8 +82,8 @@ class Anime365MoviesService implements MoviesService {
                     'cm' => MovieType.ad,
                     'music' => MovieType.music,
                     'pv' => MovieType.preview,
-                    _ => throw UnimplementedError(
-                        'Unimplemented movie type: ${movieJson['type']}',
+                    final Object? unsupported => throw UnsupportedError(
+                        'Unsupported movie type: $unsupported',
                       ),
                   },
                   score: movieJson['myAnimeListScore'] == '-1'
