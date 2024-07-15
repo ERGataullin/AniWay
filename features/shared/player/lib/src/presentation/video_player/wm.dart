@@ -223,10 +223,10 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   List<MenuItemData> _getTranslationMenuItems({
-    required VideoLanguage language,
+    required Locale locale,
   }) {
     return model
-        .getTranslations(language: language)
+        .getTranslations(locale: locale)
         .map(
           (translation) => MenuItemData.single(
             selected: translation == model.translation.value,
@@ -270,12 +270,13 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         MenuItemData.group(
           icon: Icons.language,
           label: l10n.value.languageLabel,
-          children: VideoLanguage.values
+          children: model
+              .getLocales()
               .map(
-                (language) => MenuItemData.group(
-                  selected: language == model.translation.value?.language,
-                  label: l10n.value.languageTitle(language.toString()),
-                  children: _getTranslationMenuItems(language: language),
+                (locale) => MenuItemData.group(
+                  selected: locale == model.translation.value?.locale,
+                  label: l10n.value.languageTitle(locale.toString()),
+                  children: _getTranslationMenuItems(locale: locale),
                 ),
               )
               .toList(growable: false),
@@ -285,7 +286,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
             icon: Icons.voice_chat,
             label: l10n.value.authorLabel,
             children: _getTranslationMenuItems(
-              language: model.translation.value!.language,
+              locale: model.translation.value!.locale,
             ),
           ),
       ],

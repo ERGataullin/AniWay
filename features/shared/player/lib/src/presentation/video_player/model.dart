@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
@@ -22,8 +23,10 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
   });
 
   List<VideoTranslationData> getTranslations({
-    required VideoLanguage language,
+    required Locale locale,
   });
+
+  List<Locale> getLocales();
 
   void switchTranslation(VideoTranslationData translation);
 }
@@ -85,15 +88,24 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   List<VideoTranslationData> getTranslations({
-    required VideoLanguage language,
+    required Locale locale,
   }) {
     return _translations
         .where(
           (translation) =>
-              language == translation.language &&
+              locale == translation.locale &&
               translation.type != VideoTranslationType.sub,
         )
         .toList(growable: false);
+  }
+
+  @override
+  List<Locale> getLocales() {
+    return _translations
+        .where((translation) => translation.type != VideoTranslationType.sub)
+        .map((translation) => translation.locale)
+        .toSet()
+        .toList();
   }
 
   @override
