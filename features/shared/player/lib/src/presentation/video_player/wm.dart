@@ -129,7 +129,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     super.initWidgetModel();
     model
       ..videoResolver = widget.videoResolver
-      ..translations = widget.translations
+      ..setTranslations(widget.translations)
       ..video.addListener(_onVideoChanged)
       ..videoDataSource.addListener(_onVideoDataSourceChanged);
     if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
@@ -156,7 +156,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   void didUpdateWidget(VideoPlayerWidget oldWidget) {
     model
       ..videoResolver = widget.videoResolver
-      ..translations = widget.translations;
+      ..setTranslations(widget.translations);
     title.update();
     subtitle.update();
     menuCallback.update();
@@ -223,18 +223,18 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   List<MenuItemData> _getTranslationMenuItems({
-    required VideoTranslationType type,
+    required Locale locale,
   }) {
-    return model
-        .getTranslations(type: type)
-        .map(
-          (translation) => MenuItemData.single(
-            selected: translation == model.translation.value,
-            label: translation.title,
-            onSelected: () => model.switchTranslation(translation),
-          ),
-        )
-        .toList(growable: false);
+    return model.translations.value[locale]
+            ?.map(
+              (translation) => MenuItemData.single(
+                selected: translation == model.translation.value,
+                label: translation.title,
+                onSelected: () => model.switchTranslation(translation),
+              ),
+            )
+            .toList(growable: false) ??
+        const [];
   }
 
   void _onPositionDurationChanged() {
@@ -268,25 +268,23 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       context: context,
       items: [
         MenuItemData.group(
-          icon: Icons.type_specimen,
-          label: l10n.value.translationTypeLabel,
-          children: VideoTranslationType.values
+          icon: Icons.language,
+          label: l10n.value.languageLabel,
+          children: model.translations.value.keys
               .map(
-                (type) => MenuItemData.group(
-                  selected: type == model.translation.value?.type,
-                  label: l10n.value.translationType(type.toString()),
-                  children: _getTranslationMenuItems(type: type),
+                (locale) => MenuItemData.group(
+                  selected: locale == model.translation.value?.locale,
+                  label: l10n.value.languageTitle(locale.toString()),
+                  children: _getTranslationMenuItems(locale: locale),
                 ),
               )
               .toList(growable: false),
         ),
-        if (model.translation.value != null)
+        if (model.translation.value case final VideoTranslationData translation)
           MenuItemData.group(
             icon: Icons.voice_chat,
-            label: l10n.value.translationLabel,
-            children: _getTranslationMenuItems(
-              type: model.translation.value!.type,
-            ),
+            label: l10n.value.authorLabel,
+            children: _getTranslationMenuItems(locale: translation.locale),
           ),
       ],
     );
