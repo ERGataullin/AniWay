@@ -91,6 +91,12 @@ abstract class L10n {
     Locale('ru')
   ];
 
+  /// No description provided for @authorLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Автор'**
+  String get authorLabel;
+
   /// No description provided for @durationSeconds.
   ///
   /// In ru, this message translates to:
@@ -114,6 +120,18 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'Главная'**
   String get homePageTitle;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Язык'**
+  String get languageLabel;
+
+  /// No description provided for @languageTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'{type, select, ja{Японский} en{Английский} ru{Русский} other{Неизвестный язык}}'**
+  String languageTitle(String type);
 
   /// No description provided for @movieEpisode.
   ///
@@ -151,29 +169,11 @@ abstract class L10n {
   /// **'Авторизация'**
   String get signInTitle;
 
-  /// No description provided for @translationLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'Перевод'**
-  String get translationLabel;
-
   /// No description provided for @searchPageTitle.
   ///
   /// In ru, this message translates to:
   /// **'Поиск'**
   String get searchPageTitle;
-
-  /// No description provided for @translationType.
-  ///
-  /// In ru, this message translates to:
-  /// **'{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}'**
-  String translationType(String type);
-
-  /// No description provided for @translationTypeLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'Тип перевода'**
-  String get translationTypeLabel;
 
   /// No description provided for @upNextLabel.
   ///

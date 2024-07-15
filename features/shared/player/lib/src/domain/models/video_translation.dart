@@ -1,6 +1,10 @@
-import 'dart:ui';
-
 import 'package:player/player.dart';
+
+enum VideoLanguage {
+  en,
+  ja,
+  ru;
+}
 
 enum VideoTranslationType {
   raw,
@@ -28,7 +32,14 @@ class VideoTranslationData {
               'Unsupported video translation type: ${dto.type}',
             ),
         },
-        language: Locale.fromSubtags(languageCode: dto.language),
+        language: switch (dto.language) {
+          'en' => VideoLanguage.en,
+          'ja' => VideoLanguage.ja,
+          'ru' => VideoLanguage.ru,
+          _ => throw UnsupportedError(
+              'Unsupported video translation type: ${dto.language}',
+            ),
+        },
       );
 
   final int id;
@@ -37,5 +48,5 @@ class VideoTranslationData {
 
   final VideoTranslationType type;
 
-  final Locale language;
+  final VideoLanguage language;
 }

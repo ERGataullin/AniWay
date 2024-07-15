@@ -223,10 +223,10 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   List<MenuItemData> _getTranslationMenuItems({
-    required VideoTranslationType type,
+    required VideoLanguage language,
   }) {
     return model
-        .getTranslations(type: type)
+        .getTranslations(language: language)
         .map(
           (translation) => MenuItemData.single(
             selected: translation == model.translation.value,
@@ -268,14 +268,14 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       context: context,
       items: [
         MenuItemData.group(
-          icon: Icons.type_specimen,
-          label: l10n.value.translationTypeLabel,
-          children: VideoTranslationType.values
+          icon: Icons.language,
+          label: l10n.value.languageLabel,
+          children: VideoLanguage.values
               .map(
-                (type) => MenuItemData.group(
-                  selected: type == model.translation.value?.type,
-                  label: l10n.value.translationType(type.toString()),
-                  children: _getTranslationMenuItems(type: type),
+                (language) => MenuItemData.group(
+                  selected: language == model.translation.value?.language,
+                  label: l10n.value.languageTitle(language.toString()),
+                  children: _getTranslationMenuItems(language: language),
                 ),
               )
               .toList(growable: false),
@@ -283,9 +283,9 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         if (model.translation.value != null)
           MenuItemData.group(
             icon: Icons.voice_chat,
-            label: l10n.value.translationLabel,
+            label: l10n.value.authorLabel,
             children: _getTranslationMenuItems(
-              type: model.translation.value!.type,
+              language: model.translation.value!.language,
             ),
           ),
       ],
