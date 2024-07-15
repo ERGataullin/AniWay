@@ -6,7 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:player/player.dart';
 import 'package:player/src/presentation/video_player/typedefs.dart';
 
+typedef LocaledTranslations = Map<Locale, List<VideoTranslationData>>;
+
 abstract interface class IVideoPlayerModel implements ElementaryModel {
+  ValueListenable<LocaledTranslations> get translations;
+
   ValueListenable<VideoTranslationData?> get translation;
 
   ValueListenable<VideoData?> get video;
@@ -15,18 +19,12 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 
   set videoResolver(VideoResolver value);
 
-  set translations(List<VideoTranslationData> value);
-
   double getMaxScale({
     required double surfaceAspectRatio,
     required double videoAspectRatio,
   });
 
-  List<VideoTranslationData> getTranslations({
-    required Locale locale,
-  });
-
-  List<Locale> getLocales();
+  void setTranslations(List<VideoTranslationData> value);
 
   void switchTranslation(VideoTranslationData translation);
 }
@@ -34,6 +32,10 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   VideoPlayerModel(ErrorHandler errorHandler)
       : super(errorHandler: errorHandler);
+
+  @override
+  final ValueNotifier<LocaledTranslations> translations =
+      ValueNotifier(const {});
 
   @override
   final ValueNotifier<VideoTranslationData?> translation = ValueNotifier(null);
@@ -49,21 +51,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   late VideoResolver _videoResolver;
 
-  late List<VideoTranslationData> _translations;
-
   @override
   set videoResolver(VideoResolver value) => _videoResolver = value;
-
-  @override
-  set translations(List<VideoTranslationData> value) {
-    _translations = value;
-    if (value.isEmpty) {
-      video.value = null;
-      return;
-    }
-
-    translation.value = value.first;
-  }
 
   @override
   void init() {
@@ -82,34 +71,32 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   @override
+  void setTranslations(List<VideoTranslationData> value) {
+    final LocaledTranslations translations = {};
+    for (final VideoTranslationData translation in value) {
+      if (translation.type == VideoTranslationType.sub) continue;
+      translations[translation.locale] = [
+        ...translations[translation.locale] ?? const [],
+        translation,
+      ];
+    }
+    this.translations.value = Map.unmodifiable(translations);
+    if (value.isEmpty) {
+      video.value = null;
+      return;
+    }
+
+    translation.value = translations.values.first.first;
+  }
+
+  @override
   void switchTranslation(VideoTranslationData translation) {
     this.translation.value = translation;
   }
 
   @override
-  List<VideoTranslationData> getTranslations({
-    required Locale locale,
-  }) {
-    return _translations
-        .where(
-          (translation) =>
-              locale == translation.locale &&
-              translation.type != VideoTranslationType.sub,
-        )
-        .toList(growable: false);
-  }
-
-  @override
-  List<Locale> getLocales() {
-    return _translations
-        .where((translation) => translation.type != VideoTranslationType.sub)
-        .map((translation) => translation.locale)
-        .toSet()
-        .toList();
-  }
-
-  @override
   void dispose() {
+    translations.dispose();
     translation.dispose();
     video.dispose();
     videoDataSource.dispose();
