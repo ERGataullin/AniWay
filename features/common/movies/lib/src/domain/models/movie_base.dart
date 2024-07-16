@@ -16,6 +16,6 @@ class MovieBaseData {
   final Uri posterUri;
 
   final MovieType type;
-  
+
   final double? score;
 }
