@@ -13,7 +13,7 @@ class VideoTranslationData {
     required this.id,
     required this.title,
     required this.type,
-    required this.language,
+    required this.locale,
   });
 
   factory VideoTranslationData.fromDto(VideoTranslationDto dto) =>
@@ -28,7 +28,7 @@ class VideoTranslationData {
               'Unsupported video translation type: ${dto.type}',
             ),
         },
-        language: Locale.fromSubtags(languageCode: dto.language),
+        locale: Locale.fromSubtags(languageCode: dto.language),
       );
 
   final int id;
@@ -37,5 +37,5 @@ class VideoTranslationData {
 
   final VideoTranslationType type;
 
-  final Locale language;
+  final Locale locale;
 }

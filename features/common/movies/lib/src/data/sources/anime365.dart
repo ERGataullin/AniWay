@@ -19,40 +19,40 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   int? _upNextMaxPage;
 
   @override
-  Future<List<Map<String, dynamic>>> getMovies({
+  Future<List<Json>> getMovies({
     String? order,
     String? query,
     int? limit,
     int? offset,
     List<String?> watchStatus = const [],
-  }) async {
-    final ResponseData response = await _network.request(
-      RequestData(
-        uri: Uri(
-          path: '/api/series',
-          queryParameters: {
-            'fields': 'id,titles,posterUrl,type,myAnimeListScore',
-            if (order != null) 'order': order,
-            if (query != null) 'query': query,
-            if (limit != null) 'limit': limit,
-            if (offset != null) 'offset': offset,
-          }.map((key, value) => MapEntry(key, value.toString())),
-        ),
-        method: RequestMethod.get,
-      ),
-    );
-
-    return response.body['data'].cast<Map<String, dynamic>>()
-        as List<Map<String, dynamic>>;
+  }) {
+    return _network
+        .request<Json>(
+          RequestData(
+            uri: Uri(
+              path: '/api/series',
+              queryParameters: {
+                'fields': 'id,titles,title,posterUrl,type,myAnimeListScore',
+                if (order != null) 'order': order,
+                if (query != null) 'query': query,
+                if (limit != null) 'limit': limit,
+                if (offset != null) 'offset': offset,
+              }.map((key, value) => MapEntry(key, value.toString())),
+            ),
+            method: RequestMethod.get,
+          ),
+        )
+        .then((response) => response.body['data']! as List<dynamic>)
+        .then((movies) => movies.cast());
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getUpNext({required int page}) async {
+  Future<List<Json>> getUpNext({required int page}) async {
     if (page != 1 && _upNextMaxPage != null && page > _upNextMaxPage!) {
       return const [];
     }
 
-    final ResponseData response = await _network.request(
+    final ResponseData<String> response = await _network.request(
       RequestData(
         uri: Uri(
           path: '/',
@@ -64,7 +64,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         method: RequestMethod.get,
       ),
     );
-    final Document document = parse(response.body as String);
+    final Document document = parse(response.body);
     final Element upNextCard = document.querySelector(
       'div.body-container > '
       'div.container.section > '
@@ -79,9 +79,31 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       // Items card
       // ignore: lines_longer_than_80_chars
       'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
+
       // Up next items
       'div.row > div.items', // up next items
     )!;
+    final RegExp episodeNumberPattern = RegExp(r'\d+(\.\d)?');
+    final RegExp tvEpisodeTitlePattern = RegExp(
+      '^${episodeNumberPattern.pattern} серия\$',
+    );
+    final RegExp movieEpisodeTitlePattern = RegExp(
+      '^Фильм( ${episodeNumberPattern.pattern} серия)?\$',
+    );
+    final RegExp ovaEpisodeTitlePattern = RegExp(
+      '^OVA( ${episodeNumberPattern.pattern} серия)?\$',
+    );
+    final RegExp onaEpisodeTitlePattern = RegExp(
+      '^ONA( ${episodeNumberPattern.pattern} серия)?\$',
+    );
+    final RegExp specialEpisodeTitlePattern = RegExp(
+      '^SP( ${episodeNumberPattern.pattern} серия)?\$',
+    );
+    final RegExp tvSpecialEpisodeTitlePattern = RegExp(
+      '^TV SP( ${episodeNumberPattern.pattern} серия)?\$',
+    );
+    final RegExp musicEpisodeTitlePattern = RegExp(r'^Музыкальное видео$');
+    final RegExp pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
 
     return upNextItemsContainer.children.map(
       (itemElement) {
@@ -117,27 +139,6 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           ),
         );
         final String episodeTitle = a.children[0].text;
-        final RegExp episodeNumberPattern = RegExp(r'\d+(\.\d)?');
-        final RegExp tvEpisodeTitlePattern = RegExp(
-          '^${episodeNumberPattern.pattern} серия\$',
-        );
-        final RegExp movieEpisodeTitlePattern = RegExp(
-          '^Фильм( ${episodeNumberPattern.pattern} серия)?\$',
-        );
-        final RegExp ovaEpisodeTitlePattern = RegExp(
-          '^OVA( ${episodeNumberPattern.pattern} серия)?\$',
-        );
-        final RegExp onaEpisodeTitlePattern = RegExp(
-          '^ONA( ${episodeNumberPattern.pattern} серия)?\$',
-        );
-        final RegExp specialEpisodeTitlePattern = RegExp(
-          '^SP( ${episodeNumberPattern.pattern} серия)?\$',
-        );
-        final RegExp tvSpecialEpisodeTitlePattern = RegExp(
-          '^TV SP( ${episodeNumberPattern.pattern} серия)?\$',
-        );
-        final RegExp musicEpisodeTitlePattern = RegExp(r'^Музыкальное видео$');
-        final RegExp pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
         late final String episodeType;
         if (tvEpisodeTitlePattern.hasMatch(episodeTitle)) {
           episodeType = 'tv';
@@ -187,7 +188,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<MoviePlayerDto> getPlayerMovie(int id) async {
-    final ResponseData response = await _network.request(
+    final ResponseData<Json> response = await _network.request(
       RequestData(
         uri: Uri(
           path: '/api/series/$id',
@@ -198,19 +199,18 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         method: RequestMethod.get,
       ),
     );
+    final Json data = response.body['data']! as Json;
 
-    final Map<String, dynamic> json =
-        response.body['data'] as Map<String, dynamic>;
     return MoviePlayerDto(
       id: id,
-      title: json['titles']['ru'] as String,
-      episodes: (json['episodes'] as List<dynamic>)
-          .cast<Map<String, dynamic>>()
+      title: (data['titles']! as Json)['ru']! as String,
+      episodes: (data['episodes']! as List<dynamic>)
+          .cast<Json>()
           .map(
-            (Map<String, dynamic> episodeJson) => EpisodeDto(
-              id: episodeJson['id'] as int,
-              type: episodeJson['episodeType'] as String,
-              number: num.parse(episodeJson['episodeInt'] as String),
+            (episodeJson) => EpisodeDto(
+              id: episodeJson['id']! as int,
+              type: episodeJson['episodeType']! as String,
+              number: num.parse(episodeJson['episodeInt']! as String),
             ),
           )
           .toList(growable: false),
@@ -219,7 +219,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<List<VideoTranslationDto>> getTranslations(Object episodeId) async {
-    final ResponseData response = await _network.request(
+    final ResponseData<Json> response = await _network.request(
       RequestData(
         uri: Uri(
           path: '/api/episodes/$episodeId',
@@ -230,11 +230,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         method: RequestMethod.get,
       ),
     );
+    final Json data = response.body['data']! as Json;
 
-    final Map<String, dynamic> json =
-        response.body['data'] as Map<String, dynamic>;
-    return (json['translations'] as List<dynamic>)
-        .cast<Map<String, dynamic>>()
+    return (data['translations']! as List<dynamic>)
+        .cast<Json>()
         .where(
           (translationJson) =>
               translationJson['isActive'] == 1 &&
@@ -242,16 +241,16 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         )
         .map(
       (translationJson) {
-        String title = translationJson['authorsSummary'] as String;
+        String title = translationJson['authorsSummary']! as String;
         if (title.contains('(')) {
           title = title.substring(0, title.indexOf('(') - 1);
         }
 
         return VideoTranslationDto(
-          id: translationJson['id'] as int,
+          id: translationJson['id']! as int,
           title: title,
-          type: translationJson['typeKind'] as String,
-          language: translationJson['typeLang'] as String,
+          type: translationJson['typeKind']! as String,
+          language: translationJson['typeLang']! as String,
         );
       },
     ).toList(growable: false);
@@ -259,7 +258,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<VideoDto> getTranslationVideo(Object translationId) async {
-    final ResponseData response = await _network.request(
+    final ResponseData<Json> response = await _network.request(
       RequestData(
         uri: Uri(
           path: '/api/translations/embed/$translationId',
@@ -267,27 +266,29 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         method: RequestMethod.get,
       ),
     );
+    final Json data = response.body['data']! as Json;
 
-    final Iterable<Map<String, dynamic>> downloadSourcesJsons =
-        (response.body['data']['download'] as Iterable<dynamic>).cast();
-    final Iterable<Map<String, dynamic>> streamSourcesJsons =
-        (response.body['data']['stream'] as Iterable<dynamic>).cast();
+    final List<Json> downloadSourcesJsons =
+        (data['download']! as List<dynamic>).cast();
+    final List<Json> streamSourcesJsons =
+        (data['stream']! as List<dynamic>).cast();
     return VideoDto(
       download: {
-        for (final Map<String, dynamic> sourceJson in downloadSourcesJsons)
-          sourceJson['height'] as num: sourceJson['url'] as String,
+        for (final Json sourceJson in downloadSourcesJsons)
+          sourceJson['height']! as num: sourceJson['url']! as String,
       },
       stream: {
-        for (final Map<String, dynamic> sourceJson in streamSourcesJsons)
-          sourceJson['height'] as num: sourceJson['urls'].first as String,
+        for (final Json sourceJson in streamSourcesJsons)
+          sourceJson['height']! as num:
+              (sourceJson['urls']! as List<dynamic>).first as String,
       },
-      subtitlesUrl: response.body['data']['subtitlesUrl'] as String?,
+      subtitlesUrl: data['subtitlesUrl'] as String?,
     );
   }
 
   @override
   Future<void> saveTranslationWatched(Object translationId) {
-    return _network.request(
+    return _network.request<void>(
       RequestData(
         uri: Uri(path: '/translations/watched/$translationId'),
         method: RequestMethod.post,

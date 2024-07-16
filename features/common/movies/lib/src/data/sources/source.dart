@@ -1,10 +1,11 @@
+import 'package:core/core.dart';
 import 'package:movies/src/data/dto/movie_player.dart';
 import 'package:player/player.dart';
 
 abstract interface class MoviesDataSource {
   const MoviesDataSource();
 
-  Future<List<Map<String, dynamic>>> getMovies({
+  Future<List<Json>> getMovies({
     String? order,
     String? query,
     int? limit,
@@ -12,7 +13,7 @@ abstract interface class MoviesDataSource {
     List<String?> watchStatus = const [],
   });
 
-  Future<List<Map<String, dynamic>>> getUpNext({required int page});
+  Future<List<Json>> getUpNext({required int page});
 
   Future<MoviePlayerDto> getPlayerMovie(int id);
 

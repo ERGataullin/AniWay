@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:l10n/l10n.dart';
 import 'package:player/player.dart';
-import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
-import 'package:player/src/presentation/components/show_on_mouse_hover.dart';
-import 'package:player/src/presentation/components/video_player/model.dart';
-import 'package:player/src/utils/pointer_device_kind_extension.dart';
+import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
+import 'package:player/src/presentation/video_player/components/show_on_mouse_hover.dart';
+import 'package:player/src/presentation/video_player/const.dart';
+import 'package:player/src/presentation/video_player/model.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
@@ -36,7 +37,13 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   FullscreenController get fullscreenController;
 
-  void onTapUp(TapUpDetails details);
+  Map<ShortcutActivator, VoidCallback> get shortcuts;
+
+  void onAccurateTap();
+
+  void onAccurateDoubleTap();
+
+  void onInaccurateTap();
 
   void onPositionChangeStart(double position);
 
@@ -106,6 +113,15 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
           },
   );
 
+  @override
+  late final Map<ShortcutActivator, VoidCallback> shortcuts = {
+    const SingleActivator(LogicalKeyboardKey.arrowLeft): () => videoController
+        .seekTo(videoController.position.value - shortcutSeekDuration),
+    const SingleActivator(LogicalKeyboardKey.arrowRight): () => videoController
+        .seekTo(videoController.position.value + shortcutSeekDuration),
+    const SingleActivator(LogicalKeyboardKey.space): videoController.playPause,
+  };
+
   bool _watched = false;
 
   @override
@@ -113,7 +129,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     super.initWidgetModel();
     model
       ..videoResolver = widget.videoResolver
-      ..translations = widget.translations
+      ..setTranslations(widget.translations)
       ..video.addListener(_onVideoChanged)
       ..videoDataSource.addListener(_onVideoDataSourceChanged);
     if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
@@ -140,7 +156,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   void didUpdateWidget(VideoPlayerWidget oldWidget) {
     model
       ..videoResolver = widget.videoResolver
-      ..translations = widget.translations;
+      ..setTranslations(widget.translations);
     title.update();
     subtitle.update();
     menuCallback.update();
@@ -149,10 +165,18 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
-  void onTapUp(TapUpDetails details) {
-    details.kind.mobile
-        ? controlsVisibilityController.toggle(immediately: true)
-        : videoController.playPause();
+  Future<void> onAccurateTap() async {
+    await videoController.playPause();
+  }
+
+  @override
+  Future<void> onAccurateDoubleTap() async {
+    await fullscreenController.toggle();
+  }
+
+  @override
+  void onInaccurateTap() {
+    controlsVisibilityController.toggle(immediately: true);
   }
 
   @override
@@ -199,18 +223,18 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   List<MenuItemData> _getTranslationMenuItems({
-    required VideoTranslationType type,
+    required Locale locale,
   }) {
-    return model
-        .getTranslations(type: type)
-        .map(
-          (translation) => MenuItemData.single(
-            selected: translation == model.translation.value,
-            label: translation.title,
-            onSelected: () => model.switchTranslation(translation),
-          ),
-        )
-        .toList(growable: false);
+    return model.translations.value[locale]
+            ?.map(
+              (translation) => MenuItemData.single(
+                selected: translation == model.translation.value,
+                label: translation.title,
+                onSelected: () => model.switchTranslation(translation),
+              ),
+            )
+            .toList(growable: false) ??
+        const [];
   }
 
   void _onPositionDurationChanged() {
@@ -244,25 +268,23 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       context: context,
       items: [
         MenuItemData.group(
-          icon: Icons.type_specimen,
-          label: l10n.value.translationTypeLabel,
-          children: VideoTranslationType.values
+          icon: Icons.language,
+          label: l10n.value.languageLabel,
+          children: model.translations.value.keys
               .map(
-                (type) => MenuItemData.group(
-                  selected: type == model.translation.value?.type,
-                  label: l10n.value.translationType(type.toString()),
-                  children: _getTranslationMenuItems(type: type),
+                (locale) => MenuItemData.group(
+                  selected: locale == model.translation.value?.locale,
+                  label: l10n.value.languageTitle(locale.toString()),
+                  children: _getTranslationMenuItems(locale: locale),
                 ),
               )
               .toList(growable: false),
         ),
-        if (model.translation.value != null)
+        if (model.translation.value case final VideoTranslationData translation)
           MenuItemData.group(
             icon: Icons.voice_chat,
-            label: l10n.value.translationLabel,
-            children: _getTranslationMenuItems(
-              type: model.translation.value!.type,
-            ),
+            label: l10n.value.authorLabel,
+            children: _getTranslationMenuItems(locale: translation.locale),
           ),
       ],
     );

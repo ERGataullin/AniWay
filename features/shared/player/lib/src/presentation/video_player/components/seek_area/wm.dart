@@ -4,8 +4,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:player/src/domain/models/seek_type.dart';
-import 'package:player/src/presentation/components/seek_area/model.dart';
-import 'package:player/src/presentation/components/seek_area/widget.dart';
+import 'package:player/src/presentation/video_player/components/seek_area/model.dart';
+import 'package:player/src/presentation/video_player/components/seek_area/widget.dart';
+import 'package:player/src/utils/pointer_devices_accuracy.dart';
 import 'package:player/src/utils/seek_gesture_recognizer.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:theme/theme.dart';
@@ -55,6 +56,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
                 GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
               SeekGestureRecognizer.new,
               (instance) => instance
+                ..supportedDevices = PointerDevicesAccuracy.inaccurateDevices
                 ..onSeekTapUp = _onSeekTapUp
                 ..onSeekTapCancel = _onSeekTapCancel
                 ..gestureSettings = _gestureSettings,

@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:player/src/domain/models/seek_type.dart';
+import 'package:player/src/presentation/video_player/const.dart';
 
 abstract interface class ISeekAreaModel implements ElementaryModel {
   ValueListenable<Duration> get value;
@@ -26,8 +27,6 @@ abstract interface class ISeekAreaModel implements ElementaryModel {
 class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
   SeekAreaModel({super.errorHandler});
 
-  static const Duration _step = Duration(seconds: 10);
-
   @override
   final ValueNotifier<Duration> value = ValueNotifier(Duration.zero);
 
@@ -49,14 +48,14 @@ class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
     required Duration position,
   }) {
     return switch (seekType) {
-      SeekType.rewind => position - _step,
-      SeekType.fastForward => position + _step,
+      SeekType.rewind => position - shortcutSeekDuration,
+      SeekType.fastForward => position + shortcutSeekDuration,
     };
   }
 
   @override
   void incrementValue() {
-    value.value += _step;
+    value.value += shortcutSeekDuration;
   }
 
   @override

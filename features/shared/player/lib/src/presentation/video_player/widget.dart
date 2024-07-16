@@ -3,16 +3,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:player/player.dart';
 import 'package:player/src/domain/models/seek_type.dart';
-import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
-import 'package:player/src/presentation/components/long_seek_button.dart';
-import 'package:player/src/presentation/components/scalable.dart';
-import 'package:player/src/presentation/components/seek_area/widget.dart';
-import 'package:player/src/presentation/components/show_on_mouse_hover.dart';
-import 'package:player/src/presentation/components/video_play_pause_loader.dart';
-import 'package:player/src/presentation/components/video_player/typedefs.dart';
-import 'package:player/src/presentation/components/video_player/wm.dart';
-import 'package:player/src/presentation/components/video_seek_bar.dart';
-import 'package:player/src/presentation/components/video_timer.dart';
+import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
+import 'package:player/src/presentation/video_player/components/long_seek_button.dart';
+import 'package:player/src/presentation/video_player/components/scalable.dart';
+import 'package:player/src/presentation/video_player/components/seek_area/widget.dart';
+import 'package:player/src/presentation/video_player/components/show_on_mouse_hover.dart';
+import 'package:player/src/presentation/video_player/components/video_play_pause_loader.dart';
+import 'package:player/src/presentation/video_player/components/video_seek_bar.dart';
+import 'package:player/src/presentation/video_player/components/video_timer.dart';
+import 'package:player/src/presentation/video_player/typedefs.dart';
+import 'package:player/src/presentation/video_player/wm.dart';
+import 'package:player/src/utils/pointer_devices_accuracy.dart';
 import 'package:player/src/utils/video_controller.dart';
 import 'package:theme/theme.dart';
 import 'package:video_player/video_player.dart' as video_player;
@@ -84,29 +85,43 @@ class _Gestures extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.expand,
-      children: [
-        ListenableBuilder(
-          listenable: Listenable.merge([
-            context.wm.maxScale,
-            context.wm.scaleAnchors,
-          ]),
-          builder: (context, __) => Scalable(
-            maxScale: context.wm.maxScale.value,
-            anchors: context.wm.scaleAnchors.value,
-            child: child,
-          ),
-        ),
-        GestureDetector(onTapUp: context.wm.onTapUp),
-        Row(
+    return CallbackShortcuts(
+      bindings: context.wm.shortcuts,
+      child: Focus(
+        autofocus: true,
+        child: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
           children: [
-            _buildSeekArea(context, type: SeekType.rewind),
-            _buildSeekArea(context, type: SeekType.fastForward),
+            ListenableBuilder(
+              listenable: Listenable.merge([
+                context.wm.maxScale,
+                context.wm.scaleAnchors,
+              ]),
+              builder: (context, __) => Scalable(
+                maxScale: context.wm.maxScale.value,
+                anchors: context.wm.scaleAnchors.value,
+                child: child,
+              ),
+            ),
+            GestureDetector(
+              supportedDevices: PointerDevicesAccuracy.accurateDevices,
+              onTap: context.wm.onAccurateTap,
+              onDoubleTap: context.wm.onAccurateDoubleTap,
+            ),
+            GestureDetector(
+              supportedDevices: PointerDevicesAccuracy.inaccurateDevices,
+              onTap: context.wm.onInaccurateTap,
+            ),
+            Row(
+              children: [
+                _buildSeekArea(context, type: SeekType.rewind),
+                _buildSeekArea(context, type: SeekType.fastForward),
+              ],
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 

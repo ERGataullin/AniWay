@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:player/src/presentation/components/fullscreen/fullscreen_button.dart';
+import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:web/web.dart';
 
 extension _DocumentFullscreen on Document {

@@ -67,7 +67,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   }
 
   @override
-  FutureOr<ResponseData> onResponse(ResponseData data) {
+  FutureOr<ResponseData<T>> onResponse<T>(ResponseData<T> data) {
     if (data.headers[_effectiveSetCookieHeaderName]?.isNotEmpty != true) {
       return data;
     }

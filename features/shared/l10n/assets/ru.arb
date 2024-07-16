@@ -1,5 +1,6 @@
 {
     "@@locale": "ru",
+    "authorLabel": "Автор",
     "durationSeconds": "{seconds} секунд",
     "@durationSeconds": {
         "placeholders": {
@@ -11,6 +12,8 @@
     "emailLabel": "Электронная почта",
     "emailValidationError": "Неверный адрес электронной почты",
     "homePageTitle": "Главная",
+    "languageLabel": "Язык",
+    "languageTitle": "{type, select, ja{Японский} en{Английский} ru{Русский} other{Неизвестный язык}}",
     "movieEpisode": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} ad{Реклама {episode}} music{Музыка {episode}} preview{Трейлер {episode}} other{{episode} серия}}",
     "@movieEpisode": {
         "placeholders": {
@@ -27,9 +30,6 @@
     "popularTitle": "Популярное",
     "signInSubmitLabel": "Войти",
     "signInTitle": "Авторизация",
-    "translationLabel": "Перевод",
     "searchPageTitle": "Поиск",
-    "translationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{Неизвестный тип}}",
-    "translationTypeLabel": "Тип перевода",
     "upNextTitle": "К просмотру"
 }

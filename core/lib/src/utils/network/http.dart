@@ -28,8 +28,10 @@ class HttpNetwork implements Network {
       _interceptors.remove(interceptor);
 
   @override
-  Future<ResponseData> request(RequestData data) {
-    return _interceptRequest(data).then(_request).then(_interceptResponse);
+  Future<ResponseData<T>> request<T>(RequestData data) {
+    return _interceptRequest(data)
+        .then<ResponseData<T>>(_request)
+        .then(_interceptResponse);
   }
 
   @override
@@ -44,7 +46,7 @@ class HttpNetwork implements Network {
     );
   }
 
-  Future<ResponseData> _request(RequestData data) async {
+  Future<ResponseData<T>> _request<T>(RequestData data) async {
     final Uri uri = baseUri.resolveUri(data.uri);
     final Response httpResponse = await switch (data.method) {
       RequestMethod.get => _client.get(
@@ -59,21 +61,17 @@ class HttpNetwork implements Network {
       _ => throw UnimplementedError(),
     };
 
-    late final dynamic body;
-    try {
-      body = json.decode(httpResponse.body);
-    } catch (error) {
-      body = httpResponse.body;
-    }
-
     return ResponseData(
       headers: httpResponse.headers,
-      body: body,
+      body: switch (httpResponse.body) {
+        final T bodyTyped => bodyTyped,
+        _ => json.decode(httpResponse.body) as T,
+      },
     );
   }
 
-  Future<ResponseData> _interceptResponse(ResponseData data) {
-    return _interceptors.fold<Future<ResponseData>>(
+  Future<ResponseData<T>> _interceptResponse<T>(ResponseData<T> data) {
+    return _interceptors.fold<Future<ResponseData<T>>>(
       Future.value(data),
       (data, interceptor) => data.then(interceptor.onResponse),
     );

@@ -7,6 +7,9 @@ class L10nRu extends L10n {
   L10nRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get authorLabel => 'Автор';
+
+  @override
   String durationSeconds(int seconds) {
     return '$seconds секунд';
   }
@@ -19,6 +22,23 @@ class L10nRu extends L10n {
 
   @override
   String get homePageTitle => 'Главная';
+
+  @override
+  String get languageLabel => 'Язык';
+
+  @override
+  String languageTitle(String type) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'ja': 'Японский',
+        'en': 'Английский',
+        'ru': 'Русский',
+        'other': 'Неизвестный язык',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String movieEpisode(String type, num episode) {
@@ -73,27 +93,7 @@ class L10nRu extends L10n {
   String get signInTitle => 'Авторизация';
 
   @override
-  String get translationLabel => 'Перевод';
-
-  @override
   String get searchPageTitle => 'Поиск';
-
-  @override
-  String translationType(String type) {
-    String _temp0 = intl.Intl.selectLogic(
-      type,
-      {
-        'raw': 'Оригинал',
-        'sub': 'Субтитры',
-        'voice': 'Озвучка',
-        'other': 'Неизвестный тип',
-      },
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get translationTypeLabel => 'Тип перевода';
 
   @override
   String get upNextTitle => 'К просмотру';

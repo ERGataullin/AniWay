@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/data/dto/movie_player.dart';
 import 'package:player/player.dart';
@@ -9,7 +10,7 @@ class MoviesRepository {
 
   final MoviesDataSource _remote;
 
-  Future<List<Map<String, dynamic>>> getMovies({
+  Future<List<Json>> getMovies({
     String? order,
     String? query,
     int? limit,
@@ -25,7 +26,7 @@ class MoviesRepository {
     );
   }
 
-  Future<List<Map<String, dynamic>>> getUpNext({required int page}) {
+  Future<List<Json>> getUpNext({required int page}) {
     return _remote.getUpNext(page: page);
   }
 

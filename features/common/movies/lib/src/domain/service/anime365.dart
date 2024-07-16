@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
@@ -63,10 +64,10 @@ class Anime365MoviesService implements MoviesService {
           (moviesJson) => moviesJson
               .map(
                 (movieJson) => MovieBaseData(
-                  id: movieJson['id'] as int,
-                  title: movieJson['titles']['ru'] as String? ??
-                      movieJson['title'] as String,
-                  posterUri: Uri.parse(movieJson['posterUrl'] as String),
+                  id: movieJson['id']! as int,
+                  title: (movieJson['titles'] as Json?)?['ru'] as String? ??
+                      movieJson['title']! as String,
+                  posterUri: Uri.parse(movieJson['posterUrl']! as String),
                   type: switch (movieJson['type']) {
                     'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
                     'movie' => MovieType.movie,
@@ -83,7 +84,7 @@ class Anime365MoviesService implements MoviesService {
                   },
                   score: movieJson['myAnimeListScore'] == '-1'
                       ? null
-                      : double.parse(movieJson['myAnimeListScore'] as String),
+                      : double.parse(movieJson['myAnimeListScore']! as String),
                 ),
               )
               .toList(growable: false),
@@ -96,7 +97,9 @@ class Anime365MoviesService implements MoviesService {
         await _repository.getUpNext(page: page);
     return jsons.map(
       (itemJson) {
-        final MovieType type = switch (itemJson['episode']['type']) {
+        final Json movieJson = itemJson['movie']! as Json;
+        final Json episodeJson = itemJson['episode']! as Json;
+        final MovieType type = switch (episodeJson['type']) {
           'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
           'movie' => MovieType.movie,
           'ova' => MovieType.ova,
@@ -106,23 +109,22 @@ class Anime365MoviesService implements MoviesService {
           'cm' => MovieType.ad,
           'music' => MovieType.music,
           'pv' => MovieType.preview,
-          _ => throw UnimplementedError(
-              'Unimplemented movie type: ${itemJson['episode']['type']}',
+          final Object? unsupportedType => throw UnsupportedError(
+              'Unimplemented movie type: $unsupportedType',
             ),
         };
+
         return UpNextData(
           movie: MovieBaseData(
-            id: itemJson['movie']['id'] as int,
-            title: itemJson['movie']['titles']['ru'] as String,
-            posterUri: Uri.parse(
-              itemJson['movie']['posterUrl'] as String,
-            ),
+            id: movieJson['id']! as int,
+            title: (movieJson['titles']! as Json)['ru']! as String,
+            posterUri: Uri.parse(movieJson['posterUrl']! as String),
             type: type,
           ),
           episode: EpisodeData(
-            id: itemJson['episode']['id'] as int,
+            id: episodeJson['id']! as int,
             type: type,
-            number: itemJson['episode']['number'] as num?,
+            number: episodeJson['number'] as num?,
           ),
         );
       },
@@ -136,8 +138,9 @@ class Anime365MoviesService implements MoviesService {
 
   @override
   Future<List<VideoTranslationData>> getTranslations(int episodeId) async {
-    final List<VideoTranslationDto> dtos =
-        await _repository.getTranslations(episodeId);
+    final List<VideoTranslationDto> dtos = await _repository.getTranslations(
+      episodeId,
+    );
     return dtos.map(VideoTranslationData.fromDto).toList(growable: false);
   }
 
