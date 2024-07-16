@@ -4,6 +4,8 @@ export 'package:html/dom.dart' hide Text;
 export 'package:html/parser.dart';
 export 'package:intl/intl.dart';
 export 'package:provider/provider.dart';
+export 'package:url_launcher/link.dart';
+export 'package:url_launcher/url_launcher.dart';
 
 export 'src/domain/models/dynamic.dart';
 export 'src/domain/models/proxied_uri.dart';

@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/src/presentation/components/movie_preview.dart';
+import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/search/wm.dart';
 
 extension _SearchContext on BuildContext {
@@ -18,13 +18,6 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
 
   @override
   Widget build(IMoviesSearchWM wm) {
-    const SliverGridDelegateWithMaxCrossAxisExtent gridDelegate =
-        SliverGridDelegateWithMaxCrossAxisExtent(
-      crossAxisSpacing: 8,
-      mainAxisSpacing: 8,
-      childAspectRatio: MoviePreview.aspectRatio,
-      maxCrossAxisExtent: 192,
-    );
     return Provider<IMoviesSearchWM>.value(
       value: wm,
       child: Scaffold(
@@ -40,14 +33,12 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                     margin: EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),
-                SliverPagedGrid(
+                SliverPagedGrid.maxCrossAxisExtent(
                   key: wm.pagedGridKey,
                   scrollController: wm.scrollController,
-                  spacing: gridDelegate.mainAxisSpacing,
-                  gridDelegate: gridDelegate,
-                  pageSize: wm.pageSize,
+                  gridDelegate: MovieCard.gridDelegate,
                   loader: wm.onLoadPage,
-                  itemBuilder: (context, movie, ___) => MoviePreview(movie),
+                  itemBuilder: (context, movie, ___) => MovieCard(movie),
                 ),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 16),

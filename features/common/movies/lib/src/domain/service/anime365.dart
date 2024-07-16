@@ -16,13 +16,8 @@ class Anime365MoviesService implements MoviesService {
     required MoviesRepository repository,
   }) : _repository = repository;
 
-  static const int _defaultMoviesLimit = 50;
-
   @override
   final ValueNotifier<int> upNextChanges = ValueNotifier(0);
-
-  @override
-  int get defaultMoviesLimit => _defaultMoviesLimit;
 
   final MoviesRepository _repository;
 
@@ -31,17 +26,17 @@ class Anime365MoviesService implements MoviesService {
 
   @override
   Future<List<MovieBaseData>> getMovies({
+    int page = 1,
+    int limit = 50,
     MovieOrder? order,
     String? query,
-    int? limit = _defaultMoviesLimit,
-    int? offset,
     List<ViewStatus> viewStatuses = const [],
   }) {
     return _repository
         .getMovies(
           query: query,
           limit: limit,
-          offset: offset,
+          offset: (page - 1) * limit,
           order: switch (order) {
             MovieOrder.byScore => 'ranked',
             MovieOrder.byPopularity => 'popularity',
@@ -96,42 +91,42 @@ class Anime365MoviesService implements MoviesService {
   }
 
   @override
-  Future<List<UpNextData>> getUpNext() {
-    return _repository.getUpNext().then(
-          (upNextJson) => upNextJson.map(
-            (itemJson) {
-              final MovieType type = switch (itemJson['episode']['type']) {
-                'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
-                'movie' => MovieType.movie,
-                'ova' => MovieType.ova,
-                'ona' => MovieType.ona,
-                'special' => MovieType.special,
-                'tv_special' => MovieType.tvSpecial,
-                'cm' => MovieType.ad,
-                'music' => MovieType.music,
-                'pv' => MovieType.preview,
-                _ => throw UnimplementedError(
-                    'Unimplemented movie type: ${itemJson['episode']['type']}',
-                  ),
-              };
-              return UpNextData(
-                movie: MovieBaseData(
-                  id: itemJson['movie']['id'] as int,
-                  title: itemJson['movie']['titles']['ru'] as String,
-                  posterUri: Uri.parse(
-                    itemJson['movie']['posterUrl'] as String,
-                  ),
-                  type: type,
-                ),
-                episode: EpisodeData(
-                  id: itemJson['episode']['id'] as int,
-                  type: type,
-                  number: itemJson['episode']['number'] as num?,
-                ),
-              );
-            },
-          ).toList(growable: false),
+  Future<List<UpNextData>> getUpNext({int page = 1}) async {
+    final List<Map<String, dynamic>> jsons =
+        await _repository.getUpNext(page: page);
+    return jsons.map(
+      (itemJson) {
+        final MovieType type = switch (itemJson['episode']['type']) {
+          'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
+          'movie' => MovieType.movie,
+          'ova' => MovieType.ova,
+          'ona' => MovieType.ona,
+          'special' => MovieType.special,
+          'tv_special' => MovieType.tvSpecial,
+          'cm' => MovieType.ad,
+          'music' => MovieType.music,
+          'pv' => MovieType.preview,
+          _ => throw UnimplementedError(
+              'Unimplemented movie type: ${itemJson['episode']['type']}',
+            ),
+        };
+        return UpNextData(
+          movie: MovieBaseData(
+            id: itemJson['movie']['id'] as int,
+            title: itemJson['movie']['titles']['ru'] as String,
+            posterUri: Uri.parse(
+              itemJson['movie']['posterUrl'] as String,
+            ),
+            type: type,
+          ),
+          episode: EpisodeData(
+            id: itemJson['episode']['id'] as int,
+            type: type,
+            number: itemJson['episode']['number'] as num?,
+          ),
         );
+      },
+    ).toList(growable: false);
   }
 
   @override

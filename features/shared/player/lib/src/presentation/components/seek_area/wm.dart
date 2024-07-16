@@ -11,7 +11,7 @@ import 'package:player/src/utils/video_controller.dart';
 import 'package:theme/theme.dart';
 
 SeekAreaWM seekAreaWMFactory(BuildContext context) => SeekAreaWM(
-      SeekAreaModel(context.read<ErrorHandler>()),
+      SeekAreaModel(errorHandler: context.read<ErrorHandler>()),
     );
 
 abstract interface class ISeekAreaWM implements IWidgetModel {

@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_card.dart';
 import 'package:movies/src/presentation/search/model.dart';
 
 MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
       MoviesSearchModel(
+        errorHandler: context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
       ),
     );
@@ -24,9 +25,7 @@ abstract interface class IMoviesSearchWM implements IWidgetModel {
 
   Key? get pagedGridKey;
 
-  int get pageSize;
-
-  Future<List<MoviePreviewData>> onLoadPage(int page);
+  Future<List<MovieCardData>> onLoadPage(int page);
 }
 
 class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
@@ -46,7 +45,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   );
 
   @override
-  final GlobalKey<SliverPagedGridState<MoviePreviewData>> pagedGridKey =
+  final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
       GlobalKey();
 
   String _query = '';
@@ -57,18 +56,15 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   ScrollController get scrollController => PrimaryScrollController.of(context);
 
   @override
-  int get pageSize => model.pageSize;
-
-  @override
   void initWidgetModel() {
     super.initWidgetModel();
     queryController.addListener(_onQueryChanged);
   }
 
   @override
-  Future<List<MoviePreviewData>> onLoadPage(int page) async {
+  Future<List<MovieCardData>> onLoadPage(int page) async {
     final List<MovieBaseData> movies = await model.loadPage(
-      page,
+      page: page,
       query: queryController.text,
     );
     return movies.map(_moviePreviewFromMovie).toList(growable: false);
@@ -93,8 +89,8 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
     );
   }
 
-  MoviePreviewData _moviePreviewFromMovie(MovieBaseData movie) {
-    return MoviePreviewData.fromMovie(
+  MovieCardData _moviePreviewFromMovie(MovieBaseData movie) {
+    return MovieCardData.fromMovie(
       movie,
       l10n: l10n.value,
       onPressed: () => widget.onMoviePressed(movie.id),

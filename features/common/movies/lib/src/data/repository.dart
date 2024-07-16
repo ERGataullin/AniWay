@@ -25,8 +25,8 @@ class MoviesRepository {
     );
   }
 
-  Future<List<Map<String, dynamic>>> getUpNext() {
-    return _remote.getUpNext();
+  Future<List<Map<String, dynamic>>> getUpNext({required int page}) {
+    return _remote.getUpNext(page: page);
   }
 
   Future<MoviePlayerDto> getPlayerMovie(int id) {

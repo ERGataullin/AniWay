@@ -24,7 +24,7 @@ abstract interface class ISeekAreaModel implements ElementaryModel {
 }
 
 class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
-  SeekAreaModel(ErrorHandler errorHandler) : super(errorHandler: errorHandler);
+  SeekAreaModel({super.errorHandler});
 
   static const Duration _step = Duration(seconds: 10);
 

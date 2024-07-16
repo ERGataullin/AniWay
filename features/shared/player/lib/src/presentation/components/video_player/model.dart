@@ -29,8 +29,7 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 }
 
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
-  VideoPlayerModel(ErrorHandler errorHandler)
-      : super(errorHandler: errorHandler);
+  VideoPlayerModel({super.errorHandler});
 
   @override
   final ValueNotifier<VideoTranslationData?> translation = ValueNotifier(null);

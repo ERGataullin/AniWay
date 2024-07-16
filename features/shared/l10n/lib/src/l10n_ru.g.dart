@@ -64,7 +64,7 @@ class L10nRu extends L10n {
   String get passwordLabel => 'Пароль';
 
   @override
-  String get popularLabel => 'Популярное';
+  String get popularTitle => 'Популярное';
 
   @override
   String get signInSubmitLabel => 'Войти';
@@ -96,5 +96,5 @@ class L10nRu extends L10n {
   String get translationTypeLabel => 'Тип перевода';
 
   @override
-  String get upNextLabel => 'К просмотру';
+  String get upNextTitle => 'К просмотру';
 }

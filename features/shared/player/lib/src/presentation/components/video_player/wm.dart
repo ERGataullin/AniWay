@@ -12,7 +12,7 @@ import 'package:player/src/utils/pointer_device_kind_extension.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
-      VideoPlayerModel(context.read<ErrorHandler>()),
+      VideoPlayerModel(errorHandler: context.read<ErrorHandler>()),
     );
 
 abstract interface class IVideoPlayerWM implements IWidgetModel {

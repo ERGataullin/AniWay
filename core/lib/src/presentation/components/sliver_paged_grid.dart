@@ -11,10 +11,19 @@ class SliverPagedGrid<T> extends StatefulWidget {
     required this.scrollController,
     required this.spacing,
     required this.gridDelegate,
-    required this.pageSize,
+    this.pageSize,
     required this.loader,
     required this.itemBuilder,
   });
+
+  SliverPagedGrid.maxCrossAxisExtent({
+    super.key,
+    required this.scrollController,
+    required SliverGridDelegateWithMaxCrossAxisExtent this.gridDelegate,
+    this.pageSize,
+    required this.loader,
+    required this.itemBuilder,
+  }) : spacing = gridDelegate.mainAxisSpacing;
 
   final ScrollController scrollController;
 
@@ -22,7 +31,7 @@ class SliverPagedGrid<T> extends StatefulWidget {
 
   final SliverGridDelegate gridDelegate;
 
-  final int pageSize;
+  final int? pageSize;
 
   final PagedLoader<T> loader;
 
@@ -97,6 +106,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
 
   @override
   void dispose() {
+    _pageFuture = null;
     _showLoader.dispose();
     _centerLoader.dispose();
     _items.dispose();
@@ -130,7 +140,9 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     if (_pageFuture != pageFuture) return;
 
     _pageFuture = null;
-    _hasNextPage = newItems.length >= widget.pageSize;
+    _hasNextPage = widget.pageSize == null
+        ? newItems.isNotEmpty
+        : newItems.length >= widget.pageSize!;
     _items.value = List.unmodifiable([..._items.value, ...newItems]);
     _page = page;
     _showLoader.value = false;

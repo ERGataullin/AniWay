@@ -1,12 +1,10 @@
 import 'package:core/core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:movies/movies.dart';
 import 'package:movies/src/presentation/movie/model.dart';
-import 'package:movies/src/presentation/movie/widget.dart';
 
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
-      MovieModel(
-        context.read<ErrorHandler>(),
-      ),
+      MovieModel(errorHandler: context.read<ErrorHandler>()),
     );
 
 abstract interface class IMovieWM implements IWidgetModel {}

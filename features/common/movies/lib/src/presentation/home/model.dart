@@ -14,11 +14,10 @@ abstract interface class IHomeModel implements ElementaryModel {
 }
 
 class HomeModel extends ElementaryModel implements IHomeModel {
-  HomeModel(
-    ErrorHandler errorHandler, {
+  HomeModel({
+    super.errorHandler,
     required MoviesService service,
-  })  : _service = service,
-        super(errorHandler: errorHandler);
+  }) : _service = service;
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);

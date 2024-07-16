@@ -7,3 +7,4 @@ export 'src/presentation/components/movie_player/widget.dart';
 export 'src/presentation/home/widget.dart';
 export 'src/presentation/movie/widget.dart';
 export 'src/presentation/search/widget.dart';
+export 'src/presentation/up_next/widget.dart';

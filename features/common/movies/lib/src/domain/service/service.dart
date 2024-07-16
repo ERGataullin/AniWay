@@ -14,17 +14,15 @@ abstract interface class MoviesService implements Initable {
 
   Listenable get upNextChanges;
 
-  int get defaultMoviesLimit;
-
   Future<List<MovieBaseData>> getMovies({
+    int page = 1,
+    int limit,
     MovieOrder? order,
     String? query,
-    int? limit,
-    int? offset,
     List<ViewStatus> viewStatuses = const [],
   });
 
-  Future<List<UpNextData>> getUpNext();
+  Future<List<UpNextData>> getUpNext({int page = 1});
 
   Future<MoviePlayerData> getPlayerMovie(int id);
 

@@ -133,11 +133,11 @@ abstract class L10n {
   /// **'Пароль'**
   String get passwordLabel;
 
-  /// No description provided for @popularLabel.
+  /// No description provided for @popularTitle.
   ///
   /// In ru, this message translates to:
   /// **'Популярное'**
-  String get popularLabel;
+  String get popularTitle;
 
   /// No description provided for @signInSubmitLabel.
   ///
@@ -175,11 +175,11 @@ abstract class L10n {
   /// **'Тип перевода'**
   String get translationTypeLabel;
 
-  /// No description provided for @upNextLabel.
+  /// No description provided for @upNextTitle.
   ///
   /// In ru, this message translates to:
   /// **'К просмотру'**
-  String get upNextLabel;
+  String get upNextTitle;
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {
