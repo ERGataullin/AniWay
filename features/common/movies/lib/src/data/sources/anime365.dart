@@ -30,7 +30,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             uri: Uri(
               path: '/api/series',
               queryParameters: {
-                'fields': 'id,titles,posterUrl,type,myAnimeListScore',
+                'fields': 'id,titles,title,posterUrl,type,myAnimeListScore',
                 if (order != null) 'order': order,
                 if (query != null) 'query': query,
                 if (limit != null) 'limit': limit,
