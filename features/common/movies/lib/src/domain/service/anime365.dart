@@ -93,8 +93,7 @@ class Anime365MoviesService implements MoviesService {
 
   @override
   Future<List<UpNextData>> getUpNext({int page = 1}) async {
-    final List<Map<String, dynamic>> jsons =
-        await _repository.getUpNext(page: page);
+    final List<Json> jsons = await _repository.getUpNext(page: page);
     return jsons.map(
       (itemJson) {
         final Json movieJson = itemJson['movie']! as Json;
