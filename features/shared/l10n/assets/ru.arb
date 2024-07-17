@@ -27,9 +27,9 @@
     },
     "movieType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыкальное} preview{Трейлер} other{}}",
     "passwordLabel": "Пароль",
-    "popularLabel": "Популярное",
+    "popularTitle": "Популярное",
     "signInSubmitLabel": "Войти",
     "signInTitle": "Авторизация",
     "searchPageTitle": "Поиск",
-    "upNextLabel": "К просмотру"
+    "upNextTitle": "К просмотру"
 }

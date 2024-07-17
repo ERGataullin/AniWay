@@ -3,8 +3,8 @@ import 'package:l10n/l10n.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 
-class MoviePreviewData {
-  const MoviePreviewData({
+class MovieCardData {
+  const MovieCardData({
     required this.posterUri,
     required this.title,
     required this.subtitle,
@@ -12,12 +12,12 @@ class MoviePreviewData {
     required this.onPressed,
   });
 
-  factory MoviePreviewData.fromUpNext(
+  factory MovieCardData.fromUpNext(
     UpNextData upNext, {
     required L10n l10n,
     required VoidCallback onPressed,
   }) =>
-      MoviePreviewData(
+      MovieCardData(
         posterUri: upNext.movie.posterUri,
         title: upNext.movie.title,
         subtitle: upNext.episode.number == null
@@ -29,12 +29,12 @@ class MoviePreviewData {
         onPressed: onPressed,
       );
 
-  factory MoviePreviewData.fromMovie(
+  factory MovieCardData.fromMovie(
     MovieBaseData movie, {
     required L10n l10n,
     required VoidCallback onPressed,
   }) =>
-      MoviePreviewData(
+      MovieCardData(
         posterUri: movie.posterUri,
         title: movie.title,
         subtitle: l10n.movieType(movie.type.name),

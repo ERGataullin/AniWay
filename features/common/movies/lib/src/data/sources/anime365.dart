@@ -6,7 +6,7 @@ import 'package:movies/src/data/dto/movie_player.dart';
 import 'package:player/player.dart';
 
 class Anime365MoviesDataSource implements MoviesDataSource {
-  const Anime365MoviesDataSource({
+  Anime365MoviesDataSource({
     required CookieManager cookieManager,
     required Network network,
   })  : _cookieManager = cookieManager,
@@ -15,6 +15,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   final CookieManager _cookieManager;
 
   final Network _network;
+
+  int? _upNextMaxPage;
 
   @override
   Future<List<Json>> getMovies({
@@ -45,20 +47,35 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   }
 
   @override
-  Future<List<Json>> getUpNext() async {
+  Future<List<Json>> getUpNext({required int page}) async {
+    if (page != 1 && _upNextMaxPage != null && page > _upNextMaxPage!) {
+      return const [];
+    }
+
     final ResponseData<String> response = await _network.request(
       RequestData(
-        uri: Uri.parse('/?dynpage=1'),
+        uri: Uri(
+          path: '/',
+          queryParameters: {
+            'ajax': 'm-index-personal-episodes',
+            'pageP': page.toString(),
+          },
+        ),
         method: RequestMethod.get,
       ),
     );
-    final Element upNextItemsContainer = parse(response.body).querySelector(
-      // Content body
-      'content > div.body-container > '
-
-      // Up next
-      'div.container.section > div#m-index-personal-episodes > '
-
+    final Document document = parse(response.body);
+    final Element upNextCard = document.querySelector(
+      'div.body-container > '
+      'div.container.section > '
+      'div#m-index-personal-episodes',
+    )!;
+    _upNextMaxPage = upNextCard
+            .querySelector('div.pager.card > ul.pagination')!
+            .children
+            .length -
+        4;
+    final Element upNextItemsContainer = upNextCard.querySelector(
       // Items card
       // ignore: lines_longer_than_80_chars
       'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
@@ -70,7 +87,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     final RegExp tvEpisodeTitlePattern = RegExp(
       '^${episodeNumberPattern.pattern} серия\$',
     );
-    final RegExp movieEpisodeTitlePattern = RegExp(r'^Фильм$');
+    final RegExp movieEpisodeTitlePattern = RegExp(
+      '^Фильм( ${episodeNumberPattern.pattern} серия)?\$',
+    );
     final RegExp ovaEpisodeTitlePattern = RegExp(
       '^OVA( ${episodeNumberPattern.pattern} серия)?\$',
     );

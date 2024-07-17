@@ -4,12 +4,15 @@ export 'package:html/dom.dart' hide Text;
 export 'package:html/parser.dart';
 export 'package:intl/intl.dart';
 export 'package:provider/provider.dart';
+export 'package:url_launcher/link.dart';
+export 'package:url_launcher/url_launcher.dart';
 
 export 'src/domain/models/dynamic.dart';
 export 'src/domain/models/json.dart';
 export 'src/domain/models/proxied_uri.dart';
 export 'src/presentation/components/animated_visibility.dart';
 export 'src/presentation/components/menu.dart';
+export 'src/presentation/components/sliver_paged_grid.dart';
 export 'src/utils/error_handler/debug_print.dart';
 export 'src/utils/error_handler/util.dart';
 export 'src/utils/initable.dart';

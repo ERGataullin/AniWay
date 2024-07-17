@@ -1,8 +1,8 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
-import 'package:movies/src/presentation/components/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_card.dart';
+import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/home/wm.dart';
 
 extension _HomeContext on BuildContext {
@@ -12,12 +12,18 @@ extension _HomeContext on BuildContext {
 class HomeWidget extends ElementaryWidget<IHomeWM> {
   const HomeWidget({
     super.key,
+    required this.upNextUri,
     required this.onUpNextPressed,
+    required this.popularUri,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = homeWMFactory,
   }) : super(wmFactory);
 
+  final Uri upNextUri;
+
   final void Function(int movieId, int episodeId) onUpNextPressed;
+
+  final Uri popularUri;
 
   final void Function(int id) onMoviePressed;
 
@@ -66,17 +72,15 @@ class _Content extends StatelessWidget {
           children: [
             _Category(
               margin: categoriesMargin,
-              label: context.wm.upNextLabel,
+              title: context.wm.upNextTitle,
+              uri: context.wm.upNextUri,
               movies: context.wm.upNextItems,
             ),
-            Divider(
-              indent: 16 + safeAreaPadding.left,
-              endIndent: 16 + safeAreaPadding.right,
-              height: 32,
-            ),
+            const SizedBox(height: 16),
             _Category(
               margin: categoriesMargin,
-              label: context.wm.popularLabel,
+              title: context.wm.popularTitle,
+              uri: context.wm.popularUri,
               movies: context.wm.popularItems,
             ),
           ],
@@ -89,50 +93,105 @@ class _Content extends StatelessWidget {
 class _Category extends StatelessWidget {
   const _Category({
     this.margin = EdgeInsets.zero,
-    required this.label,
+    required this.title,
+    required this.uri,
     required this.movies,
   });
 
   final EdgeInsets margin;
 
-  final ValueListenable<String> label;
+  final ValueListenable<String> title;
 
-  final ValueListenable<List<MoviePreviewData>> movies;
+  final Uri uri;
+
+  final ValueListenable<List<MovieCardData>> movies;
 
   @override
   Widget build(BuildContext context) {
-    final EdgeInsets horizontalMargin = EdgeInsets.only(
-      left: margin.left,
-      right: margin.right,
-    );
-    final EdgeInsets verticalMargin = EdgeInsets.only(
-      top: margin.top,
-      bottom: margin.bottom,
-    );
-
     return Padding(
-      padding: verticalMargin,
+      padding: EdgeInsets.only(
+        top: margin.top,
+        bottom: margin.bottom,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SafeArea(
-            child: Padding(
-              padding: horizontalMargin,
-              child: ValueListenableBuilder<String>(
-                valueListenable: label,
-                builder: (context, label, ___) => Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
+          _CategoryTitle(
+            title,
+            uri: uri,
+            margin: EdgeInsets.only(
+              left: margin.left,
+              right: margin.right,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           _Movies(
             margin: margin,
             movies: movies,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CategoryTitle extends StatelessWidget {
+  const _CategoryTitle(
+    this.data, {
+    this.margin = EdgeInsets.zero,
+    required this.uri,
+  });
+
+  final EdgeInsets margin;
+
+  final ValueListenable<String> data;
+
+  final Uri uri;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle titleStyle = Theme.of(context).textTheme.titleLarge ??
+        DefaultTextStyle.of(context).style;
+    return SafeArea(
+      child: Link(
+        uri: uri,
+        builder: (context, followLink) {
+          final TextButton button = TextButton(
+            onPressed: followLink,
+            child: Row(
+              children: [
+                ValueListenableBuilder<String>(
+                  valueListenable: data,
+                  builder: (context, title, ___) => Text(
+                    title,
+                    style: titleStyle,
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  size: titleStyle.fontSize,
+                  color: titleStyle.color?.withOpacity(.6),
+                ),
+              ],
+            ),
+          );
+          final EdgeInsetsGeometry? buttonPadding = button
+              .defaultStyleOf(context)
+              .padding
+              ?.resolve(WidgetState.values.toSet())
+              ?.resolve(Directionality.of(context));
+          final EdgeInsets effectiveMargin = buttonPadding == null
+              ? margin
+              : EdgeInsets.symmetric(
+                  horizontal:
+                      (margin.horizontal - buttonPadding.horizontal) / 2,
+                );
+
+          return Padding(
+            padding: effectiveMargin,
+            child: button,
+          );
+        },
       ),
     );
   }
@@ -146,17 +205,18 @@ class _Movies extends StatelessWidget {
 
   final EdgeInsets margin;
 
-  final ValueListenable<List<MoviePreviewData>> movies;
+  final ValueListenable<List<MovieCardData>> movies;
 
   @override
   Widget build(BuildContext context) {
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
     return SizedBox(
-      height: 256,
+      height: 128 + 64 + 32,
       child: ValueListenableBuilder(
         valueListenable: movies,
         builder: (context, movies, ___) => ListView.separated(
           clipBehavior: Clip.none,
+          scrollDirection: Axis.horizontal,
           itemCount: movies.length,
           padding: margin.add(
             EdgeInsets.only(
@@ -164,9 +224,8 @@ class _Movies extends StatelessWidget {
               right: safeAreaPadding.right,
             ),
           ),
-          scrollDirection: Axis.horizontal,
           separatorBuilder: (context, __) => const SizedBox(width: 8),
-          itemBuilder: (context, index) => MoviePreview(movies[index]),
+          itemBuilder: (context, index) => MovieCard(movies[index]),
         ),
       ),
     );

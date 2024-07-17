@@ -1,40 +1,50 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/src/presentation/components/movie_preview.dart';
+import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/search/wm.dart';
 
 extension _SearchContext on BuildContext {
-  ISearchWM get wm => read<ISearchWM>();
+  IMoviesSearchWM get wm => read<IMoviesSearchWM>();
 }
 
-class SearchWidget extends ElementaryWidget<ISearchWM> {
-  const SearchWidget({
+class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
+  const MoviesSearchWidget({
     super.key,
     required this.onMoviePressed,
-    WidgetModelFactory wmFactory = searchWMFactory,
+    WidgetModelFactory wmFactory = moviesSearchWMFactory,
   }) : super(wmFactory);
 
   final void Function(int id) onMoviePressed;
 
   @override
-  Widget build(ISearchWM wm) {
-    return Provider<ISearchWM>.value(
+  Widget build(IMoviesSearchWM wm) {
+    return Provider<IMoviesSearchWM>.value(
       value: wm,
       child: Scaffold(
         body: SafeArea(
-          child: CustomScrollView(
-            controller: wm.scrollController,
-            slivers: const [
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _SearchBarDelegate(margin: EdgeInsets.all(16)),
-              ),
-              _Result(margin: EdgeInsets.symmetric(horizontal: 16)),
-              _Loader(margin: EdgeInsets.fromLTRB(16, 16, 16, 0)),
-              SliverToBoxAdapter(
-                child: SizedBox(height: 16),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: CustomScrollView(
+              controller: wm.scrollController,
+              slivers: [
+                const SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SearchBarDelegate(
+                    margin: EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+                SliverPagedGrid.maxCrossAxisExtent(
+                  key: wm.pagedGridKey,
+                  scrollController: wm.scrollController,
+                  gridDelegate: MovieCard.gridDelegate,
+                  loader: wm.onLoadPage,
+                  itemBuilder: (context, movie, ___) => MovieCard(movie),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 16),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -85,67 +95,5 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
     return true;
-  }
-}
-
-class _Result extends StatelessWidget {
-  const _Result({
-    this.margin = EdgeInsets.zero,
-  });
-
-  final EdgeInsets margin;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: margin,
-      sliver: ValueListenableBuilder(
-        valueListenable: context.wm.movies,
-        builder: (context, movies, ___) => SliverGrid.builder(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: MoviePreview.aspectRatio,
-            maxCrossAxisExtent: 200,
-          ),
-          itemCount: movies.length,
-          itemBuilder: (context, index) => MoviePreview(movies[index]),
-        ),
-      ),
-    );
-  }
-}
-
-class _Loader extends StatelessWidget {
-  const _Loader({
-    this.margin = EdgeInsets.zero,
-  });
-
-  final EdgeInsets margin;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: context.wm.centerLoader,
-      builder: (context, child) => context.wm.centerLoader.value
-          ? SliverFillRemaining(
-              hasScrollBody: false,
-              child: child,
-            )
-          : SliverToBoxAdapter(child: child),
-      child: Center(
-        child: ValueListenableBuilder(
-          valueListenable: context.wm.showLoader,
-          child: Padding(
-            padding: margin,
-            child: const CircularProgressIndicator.adaptive(),
-          ),
-          builder: (context, showLoader, child) => AnimatedVisibility.standard(
-            visible: showLoader,
-            child: child!,
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -112,17 +112,21 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }
 
   GoRoute _buildHome() {
-    final GoRoute movieRoute = _buildMovie(parent: _Routes.home);
     return GoRoute(
       name: _Routes.home,
       path: '/',
-      routes: [movieRoute],
+      routes: [
+        _buildUpNext(),
+        _buildMovie(parent: _Routes.home),
+      ],
       builder: (context, state) => HomeWidget(
+        upNextUri: Uri.parse(state.namedLocation(_Routes.upNext)),
         onUpNextPressed: (movieId, episodeId) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': movieId.toString()},
           queryParameters: {'episodeId': episodeId.toString()},
         ),
+        popularUri: Uri.parse(state.namedLocation(_Routes.search)),
         onMoviePressed: (id) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': id.toString()},
@@ -137,7 +141,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       name: _Routes.search,
       path: '/search',
       routes: [movieRoute],
-      builder: (context, state) => SearchWidget(
+      builder: (context, state) => MoviesSearchWidget(
         onMoviePressed: (id) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': id.toString()},
@@ -153,6 +157,22 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       builder: (context, state) => const MovieWidget(),
     );
   }
+
+  GoRoute _buildUpNext() {
+    final GoRoute movieRoute = _buildMovie(parent: _Routes.upNext);
+    return GoRoute(
+      name: _Routes.upNext,
+      path: 'up-next',
+      routes: [movieRoute],
+      builder: (context, state) => UpNextWidget(
+        onItemPressed: (movieId, episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': movieId.toString()},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+      ),
+    );
+  }
 }
 
 class _Routes {
@@ -165,6 +185,8 @@ class _Routes {
   static const String search = 'search';
 
   static const String moviePlayer = 'movie-player';
+
+  static const String upNext = 'up-next';
 
   static String movie({required String parent}) => '$parent/movies/:movieId';
 }

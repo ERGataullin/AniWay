@@ -26,8 +26,8 @@ class MoviesRepository {
     );
   }
 
-  Future<List<Json>> getUpNext() {
-    return _remote.getUpNext();
+  Future<List<Json>> getUpNext({required int page}) {
+    return _remote.getUpNext(page: page);
   }
 
   Future<MoviePlayerDto> getPlayerMovie(int id) {

@@ -1,47 +1,56 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_card.dart';
 
-class MoviePreview extends StatelessWidget {
-  const MoviePreview(
+class MovieCard extends StatelessWidget {
+  const MovieCard(
     this.data, {
     super.key,
   });
 
-  static const double aspectRatio = 3 / 4;
+  static const SliverGridDelegateWithMaxCrossAxisExtent gridDelegate =
+      SliverGridDelegateWithMaxCrossAxisExtent(
+    crossAxisSpacing: 8,
+    mainAxisSpacing: 8,
+    childAspectRatio: 3 / 4,
+    maxCrossAxisExtent: 128 + 64,
+  );
 
-  final MoviePreviewData data;
+  final MovieCardData data;
 
   @override
   Widget build(BuildContext context) {
+    final CardTheme cardTheme = CardTheme.of(context);
     return AspectRatio(
-      aspectRatio: aspectRatio,
+      aspectRatio: gridDelegate.childAspectRatio,
       child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Builder(
-          builder: (context) => InkWell(
-            onTap: data.onPressed,
-            customBorder: Theme.of(context).cardTheme.shape,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Ink.image(
-                    image: NetworkImage(
-                      context
-                          .read<Network>()
-                          .baseUri
-                          .resolveUri(data.posterUri)
-                          .toString(),
+        child: InkWell(
+          onTap: data.onPressed,
+          customBorder: cardTheme.shape,
+          child: Column(
+            children: [
+              Expanded(
+                child: Ink(
+                  decoration: ShapeDecoration(
+                    shape: cardTheme.shape!,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        context
+                            .read<Network>()
+                            .baseUri
+                            .resolveUri(data.posterUri)
+                            .toString(),
+                      ),
                     ),
-                    fit: BoxFit.cover,
                   ),
                 ),
-                _Footer(
-                  data,
-                  margin: const EdgeInsets.all(8),
-                ),
-              ],
-            ),
+              ),
+              _Footer(
+                data,
+                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              ),
+            ],
           ),
         ),
       ),
@@ -59,7 +68,7 @@ class _Footer extends StatelessWidget {
 
   final EdgeInsets margin;
 
-  final MoviePreviewData data;
+  final MovieCardData data;
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +87,8 @@ class _Footer extends StatelessWidget {
           children: [
             Text(
               data.title,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
-            const SizedBox(height: 2),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

@@ -1,41 +1,42 @@
+import 'dart:async';
+
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_base.dart';
+import 'package:movies/src/domain/models/movie_card.dart';
 import 'package:movies/src/presentation/search/model.dart';
 
-SearchWM searchWMFactory(BuildContext context) => SearchWM(
-      SearchModel(
+MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
+      MoviesSearchModel(
+        errorHandler: context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
       ),
     );
 
-abstract interface class ISearchWM implements IWidgetModel {
-  ValueListenable<bool> get showLoader;
-
-  ValueListenable<bool> get centerLoader;
-
+abstract interface class IMoviesSearchWM implements IWidgetModel {
   ValueListenable<String> get queryHint;
-
-  ValueListenable<List<MoviePreviewData>> get movies;
 
   SearchController get queryController;
 
   ScrollController get scrollController;
+
+  Key? get pagedGridKey;
+
+  Future<List<MovieCardData>> onLoadPage(int page);
 }
 
-class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
+class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
     with L10nWMMixin
-    implements ISearchWM {
-  SearchWM(super._model);
+    implements IMoviesSearchWM {
+  MoviesSearchWM(super._model);
+
+  static const Duration _queryDebounceInterval = Durations.medium2;
 
   @override
-  late final DynamicData<bool> centerLoader = DynamicData(
-    trigger: model.movies,
-    () => model.movies.value.isEmpty,
-  );
+  final SearchController queryController = SearchController();
 
   @override
   late final DynamicData<String> queryHint = DynamicData(
@@ -44,39 +45,55 @@ class SearchWM extends WidgetModel<SearchWidget, ISearchModel>
   );
 
   @override
-  late final DynamicData<List<MoviePreviewData>> movies = DynamicData(
-    trigger: Listenable.merge([l10n, model.movies]),
-    () => model.movies.value
-        .map(
-          (movie) => MoviePreviewData.fromMovie(
-            movie,
-            l10n: l10n.value,
-            onPressed: () => widget.onMoviePressed(movie.id),
-          ),
-        )
-        .toList(growable: false),
-  );
+  final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
+      GlobalKey();
+
+  String _query = '';
+
+  Timer? _queryDebounceTimer;
 
   @override
-  ValueListenable<bool> get showLoader => model.loading;
+  ScrollController get scrollController => PrimaryScrollController.of(context);
 
   @override
-  SearchController get queryController => model.queryController;
+  void initWidgetModel() {
+    super.initWidgetModel();
+    queryController.addListener(_onQueryChanged);
+  }
 
   @override
-  ScrollController get scrollController => model.scrollController;
-
-  @override
-  void didChangeDependencies() {
-    model.scrollController = PrimaryScrollController.of(context);
-    super.didChangeDependencies();
+  Future<List<MovieCardData>> onLoadPage(int page) async {
+    final List<MovieBaseData> movies = await model.loadPage(
+      page: page,
+      query: queryController.text,
+    );
+    return movies.map(_moviePreviewFromMovie).toList(growable: false);
   }
 
   @override
   void dispose() {
-    super.dispose();
-    centerLoader.dispose();
+    _queryDebounceTimer?.cancel();
+    queryController.dispose();
     queryHint.dispose();
-    movies.dispose();
+    super.dispose();
+  }
+
+  void _onQueryChanged() {
+    if (_query == queryController.text) return;
+
+    _query = queryController.text;
+    _queryDebounceTimer?.cancel();
+    _queryDebounceTimer = Timer(
+      _queryDebounceInterval,
+      () => pagedGridKey.currentState?.reload(),
+    );
+  }
+
+  MovieCardData _moviePreviewFromMovie(MovieBaseData movie) {
+    return MovieCardData.fromMovie(
+      movie,
+      l10n: l10n.value,
+      onPressed: () => widget.onMoviePressed(movie.id),
+    );
   }
 }

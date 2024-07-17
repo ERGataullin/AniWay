@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
-import 'package:movies/src/domain/models/movie_preview.dart';
+import 'package:movies/src/domain/models/movie_card.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/presentation/home/model.dart';
 
 HomeWM homeWMFactory(BuildContext context) => HomeWM(
       HomeModel(
-        context.read<ErrorHandler>(),
+        errorHandler: context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
       ),
     );
@@ -20,13 +20,17 @@ abstract interface class IHomeWM implements IWidgetModel {
 
   ValueListenable<bool> get showLoader;
 
-  ValueListenable<String> get upNextLabel;
+  ValueListenable<String> get upNextTitle;
 
-  ValueListenable<List<MoviePreviewData>> get upNextItems;
+  ValueListenable<List<MovieCardData>> get upNextItems;
 
-  ValueListenable<String> get popularLabel;
+  ValueListenable<String> get popularTitle;
 
-  ValueListenable<List<MoviePreviewData>> get popularItems;
+  ValueListenable<List<MovieCardData>> get popularItems;
+
+  Uri get upNextUri;
+
+  Uri get popularUri;
 }
 
 class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
@@ -41,26 +45,26 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
-  late final DynamicData<String> upNextLabel = DynamicData(
+  late final DynamicData<String> upNextTitle = DynamicData(
     trigger: l10n,
-    () => l10n.value.upNextLabel,
+    () => l10n.value.upNextTitle,
   );
 
   @override
-  late final DynamicData<String> popularLabel = DynamicData(
+  late final DynamicData<String> popularTitle = DynamicData(
     trigger: l10n,
-    () => l10n.value.popularLabel,
+    () => l10n.value.popularTitle,
   );
 
   @override
-  late final DynamicData<List<MoviePreviewData>> upNextItems = DynamicData(
+  late final DynamicData<List<MovieCardData>> upNextItems = DynamicData(
     trigger: Listenable.merge([l10n, model.upNext]),
     () =>
         model.upNext.value.map(_moviePreviewFromUpNext).toList(growable: false),
   );
 
   @override
-  late final DynamicData<List<MoviePreviewData>> popularItems = DynamicData(
+  late final DynamicData<List<MovieCardData>> popularItems = DynamicData(
     trigger: Listenable.merge([l10n, model.popular]),
     () =>
         model.popular.value.map(_moviePreviewFromMovie).toList(growable: false),
@@ -70,17 +74,23 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
+  Uri get upNextUri => widget.upNextUri;
+
+  @override
+  Uri get popularUri => widget.popularUri;
+
+  @override
   void dispose() {
     super.dispose();
     title.dispose();
-    upNextLabel.dispose();
+    upNextTitle.dispose();
     upNextItems.dispose();
-    popularLabel.dispose();
+    popularTitle.dispose();
     popularItems.dispose();
   }
 
-  MoviePreviewData _moviePreviewFromUpNext(UpNextData upNext) {
-    return MoviePreviewData.fromUpNext(
+  MovieCardData _moviePreviewFromUpNext(UpNextData upNext) {
+    return MovieCardData.fromUpNext(
       upNext,
       l10n: l10n.value,
       onPressed: () => widget.onUpNextPressed(
@@ -90,8 +100,8 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     );
   }
 
-  MoviePreviewData _moviePreviewFromMovie(MovieBaseData movie) {
-    return MoviePreviewData.fromMovie(
+  MovieCardData _moviePreviewFromMovie(MovieBaseData movie) {
+    return MovieCardData.fromMovie(
       movie,
       l10n: l10n.value,
       onPressed: () => widget.onMoviePressed(movie.id),

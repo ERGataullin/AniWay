@@ -25,7 +25,7 @@ abstract interface class ISeekAreaModel implements ElementaryModel {
 }
 
 class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
-  SeekAreaModel(ErrorHandler errorHandler) : super(errorHandler: errorHandler);
+  SeekAreaModel({super.errorHandler});
 
   @override
   final ValueNotifier<Duration> value = ValueNotifier(Duration.zero);

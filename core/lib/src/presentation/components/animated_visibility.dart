@@ -82,6 +82,12 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
     );
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _animate() {
     final double target = _animationTarget;
 

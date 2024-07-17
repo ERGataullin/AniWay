@@ -13,7 +13,7 @@ abstract interface class MoviesDataSource {
     List<String?> watchStatus = const [],
   });
 
-  Future<List<Json>> getUpNext();
+  Future<List<Json>> getUpNext({required int page});
 
   Future<MoviePlayerDto> getPlayerMovie(int id);
 
