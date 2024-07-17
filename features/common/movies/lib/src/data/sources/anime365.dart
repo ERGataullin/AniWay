@@ -70,11 +70,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       'div.container.section > '
       'div#m-index-personal-episodes',
     )!;
-    _upNextMaxPage = upNextCard
-            .querySelector('div.pager.card > ul.pagination')!
-            .children
-            .length -
-        4;
+    final Element? pagerCard =
+        upNextCard.querySelector('div.pager.card > ul.pagination');
+    _upNextMaxPage = pagerCard == null ? 1 : pagerCard.children.length - 4;
     final Element upNextItemsContainer = upNextCard.querySelector(
       // Items card
       // ignore: lines_longer_than_80_chars
