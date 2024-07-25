@@ -148,6 +148,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void didChangeDependencies() {
+    model.locale = Localizations.localeOf(context);
     maxScale.update();
     super.didChangeDependencies();
   }
@@ -222,21 +223,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     if (model.videoDataSource.value != null) await videoController.play();
   }
 
-  List<MenuItemData> _getTranslationMenuItems({
-    required Locale locale,
-  }) {
-    return model.translations.value[locale]
-            ?.map(
-              (translation) => MenuItemData.single(
-                selected: translation == model.translation.value,
-                label: translation.title,
-                onSelected: () => model.switchTranslation(translation),
-              ),
-            )
-            .toList(growable: false) ??
-        const [];
-  }
-
   void _onPositionDurationChanged() {
     if (videoController.loading.value) return;
 
@@ -282,11 +268,26 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         ),
         if (model.translation.value case final VideoTranslationData translation)
           MenuItemData.group(
-            icon: Icons.voice_chat,
+            icon: Icons.person,
             label: l10n.value.authorLabel,
             children: _getTranslationMenuItems(locale: translation.locale),
           ),
       ],
     );
+  }
+
+  List<MenuItemData> _getTranslationMenuItems({
+    required Locale locale,
+  }) {
+    return model.translations.value[locale]
+            ?.map(
+              (translation) => MenuItemData.single(
+                selected: translation == model.translation.value,
+                label: translation.author,
+                onSelected: () => model.switchTranslation(translation),
+              ),
+            )
+            .toList(growable: false) ??
+        const [];
   }
 }
