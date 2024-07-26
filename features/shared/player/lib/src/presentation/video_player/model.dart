@@ -19,6 +19,8 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 
   set videoResolver(VideoResolver value);
 
+  set locale(Locale value);
+
   double getMaxScale({
     required double surfaceAspectRatio,
     required double videoAspectRatio,
@@ -50,8 +52,17 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   late VideoResolver _videoResolver;
 
+  Locale? _locale;
+
+  Locale? _translationLocale;
+
+  String? _translationAuthor;
+
   @override
   set videoResolver(VideoResolver value) => _videoResolver = value;
+
+  @override
+  set locale(Locale value) => _locale = value;
 
   @override
   void init() {
@@ -80,12 +91,24 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
       ];
     }
     this.translations.value = Map.unmodifiable(translations);
+
     if (value.isEmpty) {
-      video.value = null;
+      translation.value = null;
       return;
     }
-
-    translation.value = translations.values.first.first;
+    List<VideoTranslationData>? translationsForLocale;
+    if (_translationLocale != null) {
+      translationsForLocale ??= this.translations.value[_translationLocale];
+    }
+    if (_locale != null) {
+      translationsForLocale ??= this.translations.value[_locale];
+    }
+    translationsForLocale ??= this.translations.value.values.first;
+    translation
+      ..value = translationsForLocale
+          .where((translation) => translation.author == _translationAuthor)
+          .singleOrNull
+      ..value ??= translationsForLocale.first;
   }
 
   @override
@@ -103,6 +126,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   Future<void> _onTranslationChanged() async {
+    _translationLocale = translation.value?.locale ?? _translationLocale;
+    _translationAuthor = translation.value?.author ?? _translationAuthor;
     video.value = null;
     if (translation.value != null) {
       video.value = await _videoResolver(translation.value!.id);

@@ -238,20 +238,14 @@ class Anime365MoviesDataSource implements MoviesDataSource {
               translationJson['type'] != 'voiceOther',
         )
         .map(
-      (translationJson) {
-        String title = translationJson['authorsSummary']! as String;
-        if (title.contains('(')) {
-          title = title.substring(0, title.indexOf('(') - 1);
-        }
-
-        return VideoTranslationDto(
-          id: translationJson['id']! as int,
-          title: title,
-          type: translationJson['typeKind']! as String,
-          language: translationJson['typeLang']! as String,
-        );
-      },
-    ).toList(growable: false);
+          (translationJson) => VideoTranslationDto(
+            id: translationJson['id']! as int,
+            author: translationJson['authorsSummary']! as String,
+            type: translationJson['typeKind']! as String,
+            language: translationJson['typeLang']! as String,
+          ),
+        )
+        .toList(growable: false);
   }
 
   @override

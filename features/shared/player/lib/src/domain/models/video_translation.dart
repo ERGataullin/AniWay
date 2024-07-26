@@ -11,7 +11,7 @@ enum VideoTranslationType {
 class VideoTranslationData {
   const VideoTranslationData({
     required this.id,
-    required this.title,
+    required this.author,
     required this.type,
     required this.locale,
   });
@@ -19,7 +19,7 @@ class VideoTranslationData {
   factory VideoTranslationData.fromDto(VideoTranslationDto dto) =>
       VideoTranslationData(
         id: dto.id,
-        title: dto.title,
+        author: dto.author,
         type: switch (dto.type) {
           'raw' => VideoTranslationType.raw,
           'sub' => VideoTranslationType.sub,
@@ -33,7 +33,7 @@ class VideoTranslationData {
 
   final int id;
 
-  final String title;
+  final String author;
 
   final VideoTranslationType type;
 
