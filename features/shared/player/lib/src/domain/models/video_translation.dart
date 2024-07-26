@@ -1,41 +1,33 @@
 import 'dart:ui';
 
 import 'package:player/player.dart';
-
-enum VideoTranslationType {
-  raw,
-  sub,
-  voice;
-}
+import 'package:player/src/domain/models/video_translation_type.dart';
 
 class VideoTranslationData {
   const VideoTranslationData({
     required this.id,
-    required this.author,
+    required this.title,
     required this.type,
     required this.locale,
+    this.authors = const [],
   });
 
   factory VideoTranslationData.fromDto(VideoTranslationDto dto) =>
       VideoTranslationData(
         id: dto.id,
-        author: dto.author,
-        type: switch (dto.type) {
-          'raw' => VideoTranslationType.raw,
-          'sub' => VideoTranslationType.sub,
-          'voice' => VideoTranslationType.voice,
-          _ => throw UnsupportedError(
-              'Unsupported video translation type: ${dto.type}',
-            ),
-        },
+        title: dto.title,
+        type: VideoTranslationType.valueOf(dto.type),
         locale: Locale.fromSubtags(languageCode: dto.language),
+        authors: dto.authors,
       );
 
   final int id;
 
-  final String author;
+  final String title;
 
   final VideoTranslationType type;
 
   final Locale locale;
+
+  final List<String> authors;
 }

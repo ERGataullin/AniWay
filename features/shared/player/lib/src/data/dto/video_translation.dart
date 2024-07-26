@@ -1,16 +1,19 @@
 class VideoTranslationDto {
   const VideoTranslationDto({
     required this.id,
-    required this.author,
+    required this.title,
     required this.type,
     required this.language,
+    this.authors = const [],
   });
 
   final int id;
 
-  final String author;
+  final String title;
 
   final String type;
 
   final String language;
+
+  final List<String> authors;
 }

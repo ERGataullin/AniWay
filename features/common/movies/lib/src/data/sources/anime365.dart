@@ -240,9 +240,12 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         .map(
           (translationJson) => VideoTranslationDto(
             id: translationJson['id']! as int,
-            author: translationJson['authorsSummary']! as String,
+            title: translationJson['authorsSummary']! as String,
             type: translationJson['typeKind']! as String,
             language: translationJson['typeLang']! as String,
+            authors: List.from(
+              translationJson['authorsList']! as List<dynamic>,
+            ),
           ),
         )
         .toList(growable: false);

@@ -283,7 +283,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
             ?.map(
               (translation) => MenuItemData.single(
                 selected: translation == model.translation.value,
-                label: translation.author,
+                label: translation.title,
                 onSelected: () => model.switchTranslation(translation),
               ),
             )
