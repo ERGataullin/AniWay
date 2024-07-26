@@ -30,10 +30,15 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
   void setTranslations(List<VideoTranslationData> value);
 
   void switchTranslation(VideoTranslationData translation);
+
+  void handleVideoWatched();
 }
 
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
-  VideoPlayerModel({super.errorHandler});
+  VideoPlayerModel({
+    super.errorHandler,
+    required PlayerService service,
+  }) : _service = service;
 
   @override
   final ValueNotifier<LocaledTranslations> translations =
@@ -50,6 +55,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     trigger: video,
     () => video.value?.stream.values.first,
   );
+
+  final PlayerService _service;
 
   late VideoResolver _videoResolver;
 
@@ -106,6 +113,17 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   @override
+  Future<void> handleVideoWatched() async {
+    final Map<String, int> authorsRates =
+        await _service.getPersonalizedTranslationAuthorsRates();
+    _service.savePersonalizedTranslationAuthorsRates({
+      ...authorsRates,
+      for (final String author in _selectedTranslationAuthors)
+        author: 1 + (authorsRates[author] ?? 0),
+    });
+  }
+
+  @override
   void dispose() {
     translations.dispose();
     translation.dispose();
@@ -125,7 +143,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     }
   }
 
-  void _autoselectTranslation() {
+  Future<void> _autoselectTranslation() async {
     late final Locale suitableLocale;
     if (translations.value[_selectedTranslationLocale] != null) {
       suitableLocale = _selectedTranslationLocale!;
@@ -137,13 +155,15 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     final List<VideoTranslationData> suitableLocaleTranslations =
         translations.value[suitableLocale]!;
 
-    final Map<String, double> authorsSuitability = {
-      for (final String author in _selectedTranslationAuthors) author: 1,
+    final Map<String, int> authorsSuitability = {
+      ...await _service.getPersonalizedTranslationAuthorsRates(),
+      for (final String author in _selectedTranslationAuthors)
+        author: double.maxFinite.toInt(),
     };
     VideoTranslationData suitableTranslation = suitableLocaleTranslations.first;
     double suitability = 0;
     for (final VideoTranslationData translation in suitableLocaleTranslations) {
-      double translationSuitabilitySum = 0;
+      int translationSuitabilitySum = 0;
       for (final String author in translation.authors) {
         translationSuitabilitySum += authorsSuitability[author] ?? 0;
       }
