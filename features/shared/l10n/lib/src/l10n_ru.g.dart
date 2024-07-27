@@ -87,6 +87,9 @@ class L10nRu extends L10n {
   String get popularTitle => 'Популярное';
 
   @override
+  String get qualityLabel => 'Качество';
+
+  @override
   String get signInSubmitLabel => 'Войти';
 
   @override
@@ -97,6 +100,11 @@ class L10nRu extends L10n {
 
   @override
   String get upNextTitle => 'К просмотру';
+
+  @override
+  String videoQuality(num quality) {
+    return '${quality}p';
+  }
 
   @override
   String videoQualityType(String type) {
