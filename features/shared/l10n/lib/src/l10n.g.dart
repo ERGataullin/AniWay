@@ -157,6 +157,12 @@ abstract class L10n {
   /// **'Популярное'**
   String get popularTitle;
 
+  /// No description provided for @qualityLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Качество'**
+  String get qualityLabel;
+
   /// No description provided for @signInSubmitLabel.
   ///
   /// In ru, this message translates to:
@@ -180,6 +186,12 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'К просмотру'**
   String get upNextTitle;
+
+  /// No description provided for @videoQuality.
+  ///
+  /// In ru, this message translates to:
+  /// **'{quality}p'**
+  String videoQuality(num quality);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

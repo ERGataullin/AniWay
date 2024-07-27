@@ -272,12 +272,31 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               )
               .toList(growable: false),
         ),
-        if (model.translation.value case final VideoTranslationData translation)
-          MenuItemData.group(
-            icon: Icons.person,
-            label: l10n.value.authorLabel,
-            children: _getTranslationMenuItems(locale: translation.locale),
-          ),
+        MenuItemData.group(
+          icon: Icons.person,
+          label: l10n.value.authorLabel,
+          children: switch (model.translation.value) {
+            final VideoTranslationData translation => _getTranslationMenuItems(
+                locale: translation.locale,
+              ),
+            _ => const [],
+          },
+        ),
+        MenuItemData.group(
+          icon: Icons.high_quality,
+          label: l10n.value.qualityLabel,
+          children: model.video.value == null
+              ? const []
+              : model.video.value!.stream.keys
+                  .map(
+                    (quality) => MenuItemData.single(
+                      selected: quality == model.quality.value,
+                      label: l10n.value.videoQuality(quality),
+                      onSelected: () => model.setQuality(quality),
+                    ),
+                  )
+                  .toList(growable: false),
+        ),
       ],
     );
   }

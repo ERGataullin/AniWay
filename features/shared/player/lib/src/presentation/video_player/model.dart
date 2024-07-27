@@ -16,6 +16,8 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 
   ValueListenable<VideoData?> get video;
 
+  ValueListenable<num?> get quality;
+
   ValueListenable<Uri?> get videoDataSource;
 
   set videoResolver(VideoResolver value);
@@ -30,6 +32,8 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
   void setTranslations(List<VideoTranslationData> value);
 
   void switchTranslation(VideoTranslationData translation);
+
+  void setQuality(num quality);
 
   void handleVideoWatched();
 }
@@ -51,14 +55,19 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   final ValueNotifier<VideoData?> video = ValueNotifier(null);
 
   @override
+  final ValueNotifier<num?> quality = ValueNotifier(null);
+
+  @override
   late final DynamicData<Uri?> videoDataSource = DynamicData(
-    trigger: video,
-    () => video.value?.stream.values.first,
+    trigger: Listenable.merge([video, quality]),
+    () => video.value?.stream[quality.value],
   );
 
   final PlayerService _service;
 
   late VideoResolver _videoResolver;
+
+  bool _autoSelectQuality = true;
 
   Locale? _locale;
 
@@ -104,12 +113,18 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
       translation.value = null;
       return;
     }
-    _autoselectTranslation();
+    _autoSelectTranslation();
   }
 
   @override
   void switchTranslation(VideoTranslationData translation) {
     this.translation.value = translation;
+  }
+
+  @override
+  void setQuality(num quality) {
+    _autoSelectQuality = false;
+    this.quality.value = quality;
   }
 
   @override
@@ -128,6 +143,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     translations.dispose();
     translation.dispose();
     video.dispose();
+    quality.dispose();
     videoDataSource.dispose();
     super.dispose();
   }
@@ -140,10 +156,15 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     video.value = null;
     if (translation.value != null) {
       video.value = await _videoResolver(translation.value!.id);
+      quality.value = _autoSelectQuality
+          ? video.value!.stream.keys.first
+          : video.value!.stream.containsKey(quality.value)
+              ? quality.value
+              : video.value!.stream.keys.first;
     }
   }
 
-  Future<void> _autoselectTranslation() async {
+  Future<void> _autoSelectTranslation() async {
     late final Locale suitableLocale;
     if (translations.value[_selectedTranslationLocale] != null) {
       suitableLocale = _selectedTranslationLocale!;
