@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
+import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
-import 'package:movies/src/domain/service/service.dart';
 
 abstract interface class IMoviesSearchModel implements ElementaryModel {
   Future<List<MovieBaseData>> loadPage({

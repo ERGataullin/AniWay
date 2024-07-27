@@ -1,3 +1,5 @@
+import 'package:movies/src/data/dto/movie_type.dart';
+
 enum MovieType {
   tv,
   movie,
@@ -9,16 +11,15 @@ enum MovieType {
   music,
   preview;
 
-  factory MovieType.valueOf(String name) => switch (name) {
-        'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
-        'movie' => MovieType.movie,
-        'ova' => MovieType.ova,
-        'ona' => MovieType.ona,
-        'special' => MovieType.special,
-        'tv_special' => MovieType.tvSpecial,
-        'cm' => MovieType.ad,
-        'music' => MovieType.music,
-        'pv' || 'preview' => MovieType.preview,
-        _ => throw UnimplementedError('Unimplemented movie type: $name'),
+  factory MovieType.fromDto(MovieTypeDto dto) => switch (dto) {
+        MovieTypeDto.tv => MovieType.tv,
+        MovieTypeDto.movie => MovieType.movie,
+        MovieTypeDto.ova => MovieType.ova,
+        MovieTypeDto.ona => MovieType.ona,
+        MovieTypeDto.special => MovieType.special,
+        MovieTypeDto.tvSpecial => MovieType.tvSpecial,
+        MovieTypeDto.ad => MovieType.ad,
+        MovieTypeDto.music => MovieType.music,
+        MovieTypeDto.preview => MovieType.preview,
       };
 }
