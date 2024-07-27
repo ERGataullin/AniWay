@@ -87,6 +87,18 @@ class L10nRu extends L10n {
   String get popularTitle => 'Популярное';
 
   @override
+  String get signInSubmitLabel => 'Войти';
+
+  @override
+  String get signInTitle => 'Авторизация';
+
+  @override
+  String get searchPageTitle => 'Поиск';
+
+  @override
+  String get upNextTitle => 'К просмотру';
+
+  @override
   String videoQualityType(String type) {
     String _temp0 = intl.Intl.selectLogic(
       type,
@@ -99,16 +111,4 @@ class L10nRu extends L10n {
     );
     return '$_temp0';
   }
-
-  @override
-  String get signInSubmitLabel => 'Войти';
-
-  @override
-  String get signInTitle => 'Авторизация';
-
-  @override
-  String get searchPageTitle => 'Поиск';
-
-  @override
-  String get upNextTitle => 'К просмотру';
 }
