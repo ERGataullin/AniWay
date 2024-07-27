@@ -6,7 +6,6 @@ import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_details.dart';
-import 'package:movies/src/domain/models/movie_order.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/domain/models/view_status.dart';
