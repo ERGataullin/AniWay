@@ -42,7 +42,7 @@ class HttpNetwork implements Network {
   Future<RequestData> _interceptRequest(RequestData data) {
     return _interceptors.fold<Future<RequestData>>(
       Future.value(data),
-      (data, interceptor) => data.then(interceptor.onRequest),
+      (data, interceptor) => data.then(interceptor.handleRequest),
     );
   }
 
@@ -73,7 +73,7 @@ class HttpNetwork implements Network {
   Future<ResponseData<T>> _interceptResponse<T>(ResponseData<T> data) {
     return _interceptors.fold<Future<ResponseData<T>>>(
       Future.value(data),
-      (data, interceptor) => data.then(interceptor.onResponse),
+      (data, interceptor) => data.then(interceptor.handleResponse),
     );
   }
 }

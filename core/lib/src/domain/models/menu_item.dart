@@ -6,6 +6,7 @@ class MenuItemData {
     this.selected = false,
     this.icon,
     required this.label,
+    this.trailing,
     this.onSelected,
   }) : children = const [];
 
@@ -15,13 +16,15 @@ class MenuItemData {
     required this.label,
     required this.children,
     this.onSelected,
-  }) : enabled = children.length > 0;
+  })  : enabled = children.length > 0,
+        trailing = null;
 
   const MenuItemData.raw({
     this.enabled = true,
     this.selected = false,
     this.icon,
     required this.label,
+    this.trailing,
     this.onSelected,
     this.children = const [],
   });
@@ -34,6 +37,8 @@ class MenuItemData {
 
   final String label;
 
+  final String? trailing;
+
   final VoidCallback? onSelected;
 
   final List<MenuItemData> children;
@@ -45,6 +50,7 @@ class MenuItemData {
     bool? selected,
     IconData? icon,
     String? label,
+    String? trailing,
     VoidCallback? onSelected,
     List<MenuItemData>? children,
   }) =>
@@ -53,6 +59,7 @@ class MenuItemData {
         selected: selected ?? this.selected,
         icon: icon ?? this.icon,
         label: label ?? this.label,
+        trailing: trailing ?? this.trailing,
         onSelected: onSelected ?? this.onSelected,
         children: children ?? this.children,
       );

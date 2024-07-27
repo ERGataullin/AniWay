@@ -31,9 +31,9 @@ abstract interface class Network implements Initable {
 abstract class NetworkInterceptor {
   const NetworkInterceptor();
 
-  FutureOr<RequestData> onRequest(RequestData data) => data;
+  FutureOr<RequestData> handleRequest(RequestData data) => data;
 
-  FutureOr<ResponseData<T>> onResponse<T>(ResponseData<T> data) => data;
+  FutureOr<ResponseData<T>> handleResponse<T>(ResponseData<T> data) => data;
 }
 
 class RequestData {

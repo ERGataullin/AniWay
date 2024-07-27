@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l10n/l10n.dart';
 import 'package:player/player.dart';
+import 'package:player/src/domain/models/video_quality_type.dart';
 import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/video_player/components/show_on_mouse_hover.dart';
 import 'package:player/src/presentation/video_player/const.dart';
@@ -28,7 +29,7 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
-  ValueListenable<VoidCallback?> get menuCallback;
+  ValueListenable<VoidCallback?> get onMenuPressed;
 
   ValueListenable<VoidCallback?> get previousCallback;
 
@@ -42,17 +43,17 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   Map<ShortcutActivator, VoidCallback> get shortcuts;
 
-  void onAccurateTap();
+  void handleAccurateTap();
 
-  void onAccurateDoubleTap();
+  void handleAccurateDoubleTap();
 
-  void onInaccurateTap();
+  void handleInaccurateTap();
 
-  void onPositionChangeStart(double position);
+  void handlePositionChangeStart(double position);
 
-  void onPositionChangeEnd(double position);
+  void handlePositionChangeEnd(double position);
 
-  void onPopInvoked(bool didPop);
+  void handlePopInvoked(bool didPop);
 }
 
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
@@ -92,8 +93,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   late final DynamicData<String> subtitle = DynamicData(() => widget.subtitle);
 
   @override
-  late final DynamicData<VoidCallback?> menuCallback = DynamicData(
-    () => widget.translations.isEmpty ? null : _openMenu,
+  late final DynamicData<VoidCallback?> onMenuPressed = DynamicData(
+    () => widget.translations.isEmpty ? null : _handleMenuPressed,
   );
 
   @override
@@ -133,8 +134,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     model
       ..videoResolver = widget.videoResolver
       ..setTranslations(widget.translations)
-      ..video.addListener(_onVideoChanged)
-      ..videoDataSource.addListener(_onVideoDataSourceChanged);
+      ..video.addListener(_handleVideoChanged)
+      ..videoDataSource.addListener(_handleVideoDataSourceChanged);
     if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
       videoController.webElementQuery
           .addListener(_updateFullscreenWebElementQuery);
@@ -142,8 +143,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     videoController
       ..loading.addListener(_updateControlsVisibility)
       ..playing.addListener(_updateControlsVisibility)
-      ..position.addListener(_onPositionDurationChanged)
-      ..duration.addListener(_onPositionDurationChanged);
+      ..position.addListener(_handlePositionDurationChanged)
+      ..duration.addListener(_handlePositionDurationChanged);
     title.update();
     subtitle.update();
     _updateControlsVisibility();
@@ -163,38 +164,38 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       ..setTranslations(widget.translations);
     title.update();
     subtitle.update();
-    menuCallback.update();
+    onMenuPressed.update();
     previousCallback.update();
     nextCallback.update();
   }
 
   @override
-  Future<void> onAccurateTap() async {
+  Future<void> handleAccurateTap() async {
     await videoController.playPause();
   }
 
   @override
-  Future<void> onAccurateDoubleTap() async {
+  Future<void> handleAccurateDoubleTap() async {
     await fullscreenController.toggle();
   }
 
   @override
-  void onInaccurateTap() {
+  void handleInaccurateTap() {
     controlsVisibilityController.toggle(immediately: true);
   }
 
   @override
-  void onPositionChangeStart(double position) {
+  void handlePositionChangeStart(double position) {
     controlsVisibilityController.show(autohide: false);
   }
 
   @override
-  void onPositionChangeEnd(double position) {
+  void handlePositionChangeEnd(double position) {
     controlsVisibilityController.hide();
   }
 
   @override
-  void onPopInvoked(bool didPop) {
+  void handlePopInvoked(bool didPop) {
     if (didPop) fullscreenController.exit();
   }
 
@@ -204,7 +205,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
-    menuCallback.dispose();
+    onMenuPressed.dispose();
     previousCallback.dispose();
     nextCallback.dispose();
     videoController.dispose();
@@ -213,12 +214,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     super.dispose();
   }
 
-  void _onVideoChanged() {
+  void _handleVideoChanged() {
     videoController.setDataSource(model.videoDataSource.value);
     _watched = false;
   }
 
-  Future<void> _onVideoDataSourceChanged() async {
+  Future<void> _handleVideoDataSourceChanged() async {
     await videoController.setDataSource(
       model.videoDataSource.value,
       saveState: true,
@@ -226,7 +227,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     if (model.videoDataSource.value != null) await videoController.play();
   }
 
-  void _onPositionDurationChanged() {
+  void _handlePositionDurationChanged() {
     if (videoController.loading.value) return;
 
     if (!_watched) {
@@ -243,18 +244,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     if (finished) widget.onFinished();
   }
 
-  void _updateControlsVisibility() {
-    videoController.loading.value || !videoController.playing.value
-        ? controlsVisibilityController.show(autohide: false)
-        : controlsVisibilityController.hide();
-  }
-
-  void _updateFullscreenWebElementQuery() {
-    fullscreenController.webElementQuery =
-        videoController.webElementQuery.value;
-  }
-
-  void _openMenu() {
+  void _handleMenuPressed() {
     controlsVisibilityController.show();
     showModalMenuBottomSheet(
       context: context,
@@ -301,6 +291,17 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     );
   }
 
+  void _updateControlsVisibility() {
+    videoController.loading.value || !videoController.playing.value
+        ? controlsVisibilityController.show(autohide: false)
+        : controlsVisibilityController.hide();
+  }
+
+  void _updateFullscreenWebElementQuery() {
+    fullscreenController.webElementQuery =
+        videoController.webElementQuery.value;
+  }
+
   List<MenuItemData> _getTranslationMenuItems({
     required Locale locale,
   }) {
@@ -309,7 +310,13 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               (translation) => MenuItemData.single(
                 selected: translation == model.translation.value,
                 label: translation.title,
-                onSelected: () => model.switchTranslation(translation),
+                trailing: switch (translation.qualityType) {
+                  VideoQualityType.bd ||
+                  VideoQualityType.dvd =>
+                    l10n.value.videoQualityType(translation.qualityType.name),
+                  VideoQualityType.tv => null,
+                },
+                onSelected: () => model.setTranslation(translation),
               ),
             )
             .toList(growable: false) ??

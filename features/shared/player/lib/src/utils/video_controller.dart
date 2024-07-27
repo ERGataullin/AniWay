@@ -68,7 +68,7 @@ class VideoPlayerController extends VideoController {
   }) async {
     await _inner.value?.pause();
     _inner.value
-      ?..removeListener(_onInnerValueChanged)
+      ?..removeListener(_handleInnerValueChanged)
       ..dispose();
     _inner.value = null;
     loading.value = true;
@@ -90,7 +90,7 @@ class VideoPlayerController extends VideoController {
     webElementQuery.value = 'video#videoElement-${_inner.value!.textureId}';
     await _inner.value!.seekTo(position.value);
     if (playing.value) await play();
-    _inner.value!.addListener(_onInnerValueChanged);
+    _inner.value!.addListener(_handleInnerValueChanged);
   }
 
   @override
@@ -133,7 +133,7 @@ class VideoPlayerController extends VideoController {
     assert(_inner.value != null);
   }
 
-  void _onInnerValueChanged() {
+  void _handleInnerValueChanged() {
     final video_player.VideoPlayerValue value = _inner.value?.value ??
         const video_player.VideoPlayerValue(duration: Duration.zero);
 

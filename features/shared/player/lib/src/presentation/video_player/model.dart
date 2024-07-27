@@ -31,7 +31,7 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 
   void setTranslations(List<VideoTranslationData> value);
 
-  void switchTranslation(VideoTranslationData translation);
+  void setTranslation(VideoTranslationData translation);
 
   void setQuality(num quality);
 
@@ -83,7 +83,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   void init() {
-    translation.addListener(_onTranslationChanged);
+    translation.addListener(_handleTranslationChanged);
   }
 
   @override
@@ -117,7 +117,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   @override
-  void switchTranslation(VideoTranslationData translation) {
+  void setTranslation(VideoTranslationData translation) {
     this.translation.value = translation;
   }
 
@@ -148,7 +148,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     super.dispose();
   }
 
-  Future<void> _onTranslationChanged() async {
+  Future<void> _handleTranslationChanged() async {
     _selectedTranslationLocale =
         translation.value?.locale ?? _selectedTranslationLocale;
     _selectedTranslationAuthors =

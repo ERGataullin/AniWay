@@ -4,12 +4,12 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
-import 'package:movies/src/domain/models/movie_player.dart';
+import 'package:movies/src/domain/models/movie_details.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
 import 'package:player/player.dart';
 
 abstract interface class IMoviePlayerModel implements ElementaryModel {
-  ValueListenable<MoviePlayerData?> get movie;
+  ValueListenable<MovieDetailsData?> get movie;
 
   ValueListenable<EpisodeData?> get episode;
 
@@ -41,7 +41,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
         super(errorHandler: errorHandler);
 
   @override
-  final ValueNotifier<MoviePlayerData?> movie = ValueNotifier(null);
+  final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
   @override
   final ValueNotifier<EpisodeData?> episode = ValueNotifier(null);
@@ -65,7 +65,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
     required int movieId,
     int? episodeId,
   }) async {
-    movie.value = await _service.getPlayerMovie(movieId);
+    movie.value = await _service.getMovie(movieId);
     _episodeIndex = movie.value!.episodes.indexWhere(
       (episode) => episodeId == null
           ? episode.type != MovieType.preview

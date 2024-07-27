@@ -42,7 +42,7 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
   Widget build(BuildContext context) {
     return IconButton.filledTonal(
       iconSize: 48,
-      onPressed: _loading ? null : _onPressed,
+      onPressed: _loading ? null : _handlePressed,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(
           Theme.of(context).colorScheme.secondaryContainer,
@@ -80,7 +80,7 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
       ..playing.removeListener(_update);
   }
 
-  void _onPressed() {
+  void _handlePressed() {
     widget.videoController.playPause();
   }
 

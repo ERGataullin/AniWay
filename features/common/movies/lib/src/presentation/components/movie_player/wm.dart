@@ -23,15 +23,15 @@ abstract interface class IMoviePlayerWM implements IWidgetModel {
 
   ValueListenable<List<VideoTranslationData>> get translations;
 
-  ValueListenable<VoidCallback?> get previousCallback;
+  ValueListenable<VoidCallback?> get onPreviousPressed;
 
-  ValueListenable<VoidCallback?> get nextCallback;
+  ValueListenable<VoidCallback?> get onNextPressed;
 
-  Future<VideoData> onResolveVideo(int translationId);
+  Future<VideoData> handleResolveVideo(int translationId);
 
-  void onWatched(int translationId);
+  void handleWatched(int translationId);
 
-  void onFinished();
+  void handleFinished();
 }
 
 class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
@@ -57,13 +57,13 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   );
 
   @override
-  late final DynamicData<VoidCallback?> previousCallback = DynamicData(
+  late final DynamicData<VoidCallback?> onPreviousPressed = DynamicData(
     trigger: model.hasPreviousEpisode,
     () => model.hasPreviousEpisode.value ? model.loadPreviousEpisode : null,
   );
 
   @override
-  late final DynamicData<VoidCallback?> nextCallback = DynamicData(
+  late final DynamicData<VoidCallback?> onNextPressed = DynamicData(
     trigger: model.hasNextEpisode,
     () => model.hasNextEpisode.value ? model.loadNextEpisode : null,
   );
@@ -85,17 +85,17 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   }
 
   @override
-  Future<VideoData> onResolveVideo(int translationId) {
+  Future<VideoData> handleResolveVideo(int translationId) {
     return model.getVideo(translationId);
   }
 
   @override
-  void onWatched(int translationId) {
+  void handleWatched(int translationId) {
     model.saveTranslationWatched(translationId);
   }
 
   @override
-  void onFinished() {
+  void handleFinished() {
     model.hasNextEpisode.value
         ? model.loadNextEpisode()
         : Navigator.pop(context);
@@ -106,8 +106,8 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
     super.dispose();
     title.dispose();
     subtitle.dispose();
-    previousCallback.dispose();
-    nextCallback.dispose();
+    onPreviousPressed.dispose();
+    onNextPressed.dispose();
     if (!kIsWeb) {
       await _unlockOrientation();
     }

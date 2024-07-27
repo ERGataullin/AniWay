@@ -40,8 +40,8 @@ class _ScalableState extends State<Scalable> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onScaleUpdate: _onScaleUpdate,
-      onScaleEnd: _onScaleEnd,
+      onScaleUpdate: _handleScaleUpdate,
+      onScaleEnd: _handleScaleEnd,
       child: ListenableBuilder(
         listenable: _scale,
         builder: (context, __) => Transform.scale(
@@ -58,14 +58,14 @@ class _ScalableState extends State<Scalable> {
     super.dispose();
   }
 
-  void _onScaleUpdate(ScaleUpdateDetails details) {
+  void _handleScaleUpdate(ScaleUpdateDetails details) {
     _scale.value = math.max(
       widget.minScale,
       math.min(widget.maxScale, _submittedScale * details.scale),
     );
   }
 
-  void _onScaleEnd(ScaleEndDetails details) {
+  void _handleScaleEnd(ScaleEndDetails details) {
     double? closestAnchor;
     num? closestAnchorDistance;
     for (final double anchor in widget.anchors) {

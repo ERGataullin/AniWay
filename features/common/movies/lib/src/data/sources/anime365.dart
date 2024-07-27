@@ -2,7 +2,7 @@ import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/data/dto/episode.dart';
-import 'package:movies/src/data/dto/movie_player.dart';
+import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:player/player.dart';
 
 class Anime365MoviesDataSource implements MoviesDataSource {
@@ -185,7 +185,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   }
 
   @override
-  Future<MoviePlayerDto> getPlayerMovie(int id) async {
+  Future<MovieDetailsDto> getMovie(int id) async {
     final ResponseData<Json> response = await _network.request(
       RequestData(
         uri: Uri(
@@ -199,7 +199,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     );
     final Json data = response.body['data']! as Json;
 
-    return MoviePlayerDto(
+    return MovieDetailsDto(
       id: id,
       title: (data['titles']! as Json)['ru']! as String,
       episodes: (data['episodes']! as List<dynamic>)
@@ -243,6 +243,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             title: translationJson['authorsSummary']! as String,
             type: translationJson['typeKind']! as String,
             language: translationJson['typeLang']! as String,
+            qualityType: translationJson['qualityType']! as String,
             authors: List.from(
               translationJson['authorsList']! as List<dynamic>,
             ),

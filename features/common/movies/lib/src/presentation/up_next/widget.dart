@@ -34,7 +34,7 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
                 key: wm.pagedGridKey,
                 scrollController: wm.scrollController,
                 gridDelegate: MovieCard.gridDelegate,
-                loader: wm.onLoadPage,
+                loader: wm.handleLoadPage,
                 itemBuilder: (context, movie, ___) => MovieCard(movie),
               ),
               const SliverToBoxAdapter(

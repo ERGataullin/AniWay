@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
+import 'package:movies/src/domain/models/movie_details.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
-import 'package:movies/src/domain/models/movie_player.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/domain/models/view_status.dart';
@@ -29,7 +29,7 @@ class Anime365MoviesService implements MoviesService {
   Future<List<MovieBaseData>> getMovies({
     int page = 1,
     int limit = 50,
-    MovieOrder? order,
+    MoviesOrder order = MoviesOrder.byPopularity,
     String? query,
     List<ViewStatus> viewStatuses = const [],
   }) {
@@ -39,12 +39,11 @@ class Anime365MoviesService implements MoviesService {
           limit: limit,
           offset: (page - 1) * limit,
           order: switch (order) {
-            MovieOrder.byScore => 'ranked',
-            MovieOrder.byPopularity => 'popularity',
-            MovieOrder.byName => 'name',
-            MovieOrder.byReleaseDate => 'aired_on',
-            MovieOrder.random => 'random',
-            null => null,
+            MoviesOrder.byScore => 'ranked',
+            MoviesOrder.byPopularity => 'popularity',
+            MoviesOrder.byName => 'name',
+            MoviesOrder.byReleaseDate => 'aired_on',
+            MoviesOrder.random => 'random',
           },
           watchStatus: viewStatuses
               .map(
@@ -131,8 +130,8 @@ class Anime365MoviesService implements MoviesService {
   }
 
   @override
-  Future<MoviePlayerData> getPlayerMovie(int id) {
-    return _repository.getPlayerMovie(id).then(MoviePlayerData.fromDto);
+  Future<MovieDetailsData> getMovie(int id) {
+    return _repository.getMovie(id).then(MovieDetailsData.fromDto);
   }
 
   @override

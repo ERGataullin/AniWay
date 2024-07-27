@@ -40,5 +40,6 @@
                 "type": "num"
             }
         }
-    }
+    },
+    "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}"
 }

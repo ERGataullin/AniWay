@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:movies/movies.dart';
-import 'package:movies/src/data/dto/movie_player.dart';
+import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:player/player.dart';
 
 class MoviesRepository {
@@ -30,8 +30,8 @@ class MoviesRepository {
     return _remote.getUpNext(page: page);
   }
 
-  Future<MoviePlayerDto> getPlayerMovie(int id) {
-    return _remote.getPlayerMovie(id);
+  Future<MovieDetailsDto> getMovie(int id) {
+    return _remote.getMovie(id);
   }
 
   Future<List<VideoTranslationDto>> getTranslations(int episodeId) {
