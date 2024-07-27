@@ -1,4 +1,4 @@
-enum MoviesOrder {
+enum MoviesOrderDto {
   byScore,
   byPopularity,
   byName,

@@ -10,7 +10,7 @@ class EpisodeData {
 
   factory EpisodeData.fromDto(EpisodeDto dto) => EpisodeData(
         id: dto.id,
-        type: MovieType.valueOf(dto.type),
+        type: MovieType.fromDto(dto.type),
         number: dto.number,
       );
 
