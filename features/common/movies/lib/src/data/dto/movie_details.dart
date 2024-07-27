@@ -1,7 +1,7 @@
 import 'package:movies/src/data/dto/episode.dart';
 
-class MoviePlayerDto {
-  const MoviePlayerDto({
+class MovieDetailsDto {
+  const MovieDetailsDto({
     required this.id,
     required this.title,
     required this.episodes,

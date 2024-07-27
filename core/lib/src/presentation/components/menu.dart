@@ -114,7 +114,7 @@ class _SelectionWidgetState extends State<MenuWidget> {
       enabled: item.enabled,
       selected: item.selected,
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      onTap: () => _onItemSelected(item),
+      onTap: () => _handleItemSelected(item),
       leading: item.icon == null
           ? item.selected
               ? const Icon(Icons.done)
@@ -147,7 +147,7 @@ class _SelectionWidgetState extends State<MenuWidget> {
     );
   }
 
-  void _onItemSelected(MenuItemData item) {
+  void _handleItemSelected(MenuItemData item) {
     item.onSelected?.call();
     if (item.hasChildren) {
       setState(() {

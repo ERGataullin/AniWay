@@ -1,5 +1,5 @@
 import 'package:core/core.dart';
-import 'package:movies/src/data/dto/movie_player.dart';
+import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:player/player.dart';
 
 abstract interface class MoviesDataSource {
@@ -15,7 +15,7 @@ abstract interface class MoviesDataSource {
 
   Future<List<Json>> getUpNext({required int page});
 
-  Future<MoviePlayerDto> getPlayerMovie(int id);
+  Future<MovieDetailsDto> getMovie(int id);
 
   Future<List<VideoTranslationDto>> getTranslations(int episodeId);
 

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
+import 'package:movies/src/domain/models/movie_details.dart';
 import 'package:movies/src/domain/models/movie_order.dart';
-import 'package:movies/src/domain/models/movie_player.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/domain/models/view_status.dart';
 import 'package:player/player.dart';
@@ -24,7 +24,7 @@ abstract interface class MoviesService implements Initable {
 
   Future<List<UpNextData>> getUpNext({int page = 1});
 
-  Future<MoviePlayerData> getPlayerMovie(int id);
+  Future<MovieDetailsData> getMovie(int id);
 
   Future<List<VideoTranslationData>> getTranslations(int episodeId);
 

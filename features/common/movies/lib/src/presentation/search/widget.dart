@@ -38,7 +38,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                   key: wm.pagedGridKey,
                   scrollController: wm.scrollController,
                   gridDelegate: MovieCard.gridDelegate,
-                  loader: wm.onLoadPage,
+                  loader: wm.handleLoadPage,
                   itemBuilder: (context, movie, ___) => MovieCard(movie),
                 ),
               ),
@@ -59,6 +59,17 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   });
 
   final EdgeInsets margin;
+
+  @override
+  double get maxExtent => 80;
+
+  @override
+  double get minExtent => 80;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
 
   @override
   Widget build(
@@ -85,16 +96,5 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         ),
       ),
     );
-  }
-
-  @override
-  double get maxExtent => 80;
-
-  @override
-  double get minExtent => 80;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
   }
 }
