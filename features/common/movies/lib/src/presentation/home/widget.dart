@@ -159,6 +159,7 @@ class _CategoryTitle extends StatelessWidget {
           final TextButton button = TextButton(
             onPressed: followLink,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 ValueListenableBuilder<String>(
                   valueListenable: data,
