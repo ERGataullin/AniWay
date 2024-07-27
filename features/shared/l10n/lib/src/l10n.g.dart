@@ -157,6 +157,12 @@ abstract class L10n {
   /// **'Популярное'**
   String get popularTitle;
 
+  /// No description provided for @videoQualityType.
+  ///
+  /// In ru, this message translates to:
+  /// **'{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}'**
+  String videoQualityType(String type);
+
   /// No description provided for @signInSubmitLabel.
   ///
   /// In ru, this message translates to:

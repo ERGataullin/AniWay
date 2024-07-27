@@ -75,34 +75,24 @@ class _SelectionWidgetState extends State<MenuWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      thumbVisibility: true,
-      child: CustomScrollView(
-        primary: true,
-        shrinkWrap: true,
-        slivers: [
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           if (_title != null)
-            SliverAppBar(
-              pinned: true,
+            AppBar(
+              forceMaterialTransparency: true,
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
               leading: _icon == null ? null : Icon(_icon),
               title: Text(_title!),
             ),
-          SliverList.separated(
-            itemCount: _items.length,
-            separatorBuilder: (context, __) {
-              return const SizedBox(height: 8);
-            },
-            itemBuilder: _buildItem,
-          ),
+          ..._items.map((item) => _buildItem(context, item)),
         ],
       ),
     );
   }
 
-  Widget _buildItem(BuildContext context, int index) {
-    final MenuItemData item = _items[index];
+  Widget _buildItem(BuildContext context, MenuItemData item) {
     final MenuItemData? selectedChild =
         item.children.cast<MenuItemData?>().singleWhere(
               (item) => item!.selected,
@@ -143,7 +133,9 @@ class _SelectionWidgetState extends State<MenuWidget> {
                 const Icon(Icons.chevron_right),
               ],
             )
-          : null,
+          : item.trailing == null
+              ? null
+              : Text(item.trailing!),
     );
   }
 

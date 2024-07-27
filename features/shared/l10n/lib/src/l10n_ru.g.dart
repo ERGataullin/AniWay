@@ -87,6 +87,20 @@ class L10nRu extends L10n {
   String get popularTitle => 'Популярное';
 
   @override
+  String videoQualityType(String type) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'tv': 'ТВ',
+        'dvd': 'DVD',
+        'bd': 'BD',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get signInSubmitLabel => 'Войти';
 
   @override

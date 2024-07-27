@@ -15,11 +15,11 @@ class LocalPlayerDataSource implements PlayerDataSource {
 
   @override
   Future<Map<String, int>> getPersonalizedTranslationAuthorsRates() async {
-    return await _storage.get<Map<String, int>>(
-          collection: _collection,
-          key: _personalizedTranslationAuthorsRatesKey,
-        ) ??
-        const {};
+    final Map<Object?, Object?>? stored = await _storage.get(
+      collection: _collection,
+      key: _personalizedTranslationAuthorsRatesKey,
+    );
+    return Map.from(stored ?? const {});
   }
 
   @override

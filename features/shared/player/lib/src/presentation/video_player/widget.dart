@@ -309,10 +309,10 @@ class _MenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: context.wm.menuCallback,
+      listenable: context.wm.onMenuPressed,
       builder: (context, __) => IconButton(
         icon: const Icon(Icons.settings_outlined),
-        onPressed: context.wm.menuCallback.value,
+        onPressed: context.wm.onMenuPressed.value,
       ),
     );
   }
