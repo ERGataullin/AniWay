@@ -18,16 +18,18 @@ class MoviesService implements Initable {
     required MoviesRepository repository,
   }) : _repository = repository;
 
-  final ValueNotifier<int> upNextChanges = ValueNotifier(0);
+  final ValueNotifier<int> _upNextChanges = ValueNotifier(0);
 
   final MoviesRepository _repository;
+
+  Listenable get upNextChanges => _upNextChanges;
 
   @override
   void init() {}
 
   @override
   void dispose() {
-    upNextChanges.dispose();
+    _upNextChanges.dispose();
   }
 
   Future<List<MovieBaseData>> getMovies({
@@ -74,6 +76,6 @@ class MoviesService implements Initable {
 
   Future<void> saveTranslationWatched(int translationId) async {
     await _repository.saveTranslationWatched(translationId);
-    upNextChanges.value++;
+    _upNextChanges.value++;
   }
 }
