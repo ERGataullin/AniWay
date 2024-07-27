@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/src/domain/models/movie_order.dart';
 import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/search/wm.dart';
 
@@ -10,9 +11,12 @@ extension _SearchContext on BuildContext {
 class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   const MoviesSearchWidget({
     super.key,
+    this.order = MoviesOrder.byPopularity,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = moviesSearchWMFactory,
   }) : super(wmFactory);
+
+  final MoviesOrder order;
 
   final void Function(int id) onMoviePressed;
 
@@ -61,10 +65,10 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   final EdgeInsets margin;
 
   @override
-  double get maxExtent => 80;
+  double get maxExtent => minExtent;
 
   @override
-  double get minExtent => 80;
+  double get minExtent => 56 + margin.vertical;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
@@ -87,10 +91,12 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
           valueListenable: context.wm.queryHint,
           builder: (context, hintText, ___) => SearchBar(
             controller: context.wm.queryController,
-            padding: const WidgetStatePropertyAll<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 16),
-            ),
-            leading: const Icon(Icons.search),
+            leading: context.wm.showBackButton
+                ? const BackButton()
+                : IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.search),
+                  ),
             hintText: hintText,
           ),
         ),

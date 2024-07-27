@@ -28,7 +28,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       _buildMoviePlayer(),
     ],
     redirect: (context, state) {
-      return _signedIn.value && state.topRoute!.name == _Routes.signIn
+      return _signedIn.value && state.topRoute?.name == _Routes.signIn
           ? state.namedLocation(_Routes.home)
           : !_signedIn.value
               ? state.namedLocation(_Routes.signIn)
@@ -112,21 +112,31 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }
 
   GoRoute _buildHome() {
+    final GoRoute upNext = _buildUpNext();
+    final GoRoute search = _buildSearch(
+      path: 'movies',
+      parent: _Routes.home,
+    );
+    final GoRoute movie = _buildMovie(parent: _Routes.home);
     return GoRoute(
       name: _Routes.home,
       path: '/',
-      routes: [
-        _buildUpNext(),
-        _buildMovie(parent: _Routes.home),
-      ],
+      routes: [upNext, search, movie],
       builder: (context, state) => HomeWidget(
-        upNextUri: Uri.parse(state.namedLocation(_Routes.upNext)),
+        upNextUri: Uri.parse(state.namedLocation(upNext.name!)),
         onUpNextPressed: (movieId, episodeId) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': movieId.toString()},
           queryParameters: {'episodeId': episodeId.toString()},
         ),
-        popularUri: Uri.parse(state.namedLocation(_Routes.search)),
+        popularUri: Uri.parse(
+          state.namedLocation(
+            search.name!,
+            queryParameters: {
+              'order': MoviesOrder.byPopularity.name,
+            },
+          ),
+        ),
         onMoviePressed: (id) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': id.toString()},
@@ -135,13 +145,21 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  GoRoute _buildSearch() {
-    final GoRoute movieRoute = _buildMovie(parent: _Routes.search);
+  GoRoute _buildSearch({
+    String path = '/search',
+    String? parent,
+  }) {
+    final String name = _Routes.search(parent: parent);
+    final GoRoute movieRoute = _buildMovie(parent: name);
     return GoRoute(
-      name: _Routes.search,
-      path: '/search',
+      name: name,
+      path: path,
       routes: [movieRoute],
       builder: (context, state) => MoviesSearchWidget(
+        order: switch (state.uri.queryParameters['order']) {
+          final String order => MoviesOrder.valueOf(order),
+          _ => MoviesOrder.byPopularity,
+        },
         onMoviePressed: (id) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': id.toString()},
@@ -182,11 +200,12 @@ class _Routes {
 
   static const String home = 'home';
 
-  static const String search = 'search';
-
   static const String moviePlayer = 'movie-player';
 
   static const String upNext = 'up-next';
+
+  static String search({String? parent}) =>
+      parent == null ? 'search' : '$parent/search';
 
   static String movie({required String parent}) => '$parent/movies/:movieId';
 }

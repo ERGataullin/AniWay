@@ -25,6 +25,8 @@ abstract interface class IMoviesSearchWM implements IWidgetModel {
 
   Key? get pagedGridKey;
 
+  bool get showBackButton;
+
   Future<List<MovieCardData>> handleLoadPage(int page);
 }
 
@@ -54,6 +56,9 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
 
   @override
   ScrollController get scrollController => PrimaryScrollController.of(context);
+
+  @override
+  bool get showBackButton => Navigator.canPop(context);
 
   @override
   void initWidgetModel() {
