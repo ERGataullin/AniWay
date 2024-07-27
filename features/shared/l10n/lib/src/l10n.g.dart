@@ -180,6 +180,12 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'К просмотру'**
   String get upNextTitle;
+
+  /// No description provided for @videoQualityType.
+  ///
+  /// In ru, this message translates to:
+  /// **'{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}'**
+  String videoQualityType(String type);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

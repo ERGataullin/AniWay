@@ -2,7 +2,6 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
-import 'package:movies/src/domain/models/movie_order.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 
 abstract interface class IHomeModel implements ElementaryModel {
@@ -51,8 +50,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     loading.value = true;
 
     final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
-    final Future<List<MovieBaseData>> newPopularFuture =
-        _service.getMovies(order: MovieOrder.byPopularity);
+    final Future<List<MovieBaseData>> newPopularFuture = _service.getMovies();
 
     final List<UpNextData> upNext = await newUpNextFuture;
     final List<MovieBaseData> popular = await newPopularFuture;

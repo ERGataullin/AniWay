@@ -31,5 +31,6 @@
     "signInSubmitLabel": "Войти",
     "signInTitle": "Авторизация",
     "searchPageTitle": "Поиск",
-    "upNextTitle": "К просмотру"
+    "upNextTitle": "К просмотру",
+    "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}"
 }

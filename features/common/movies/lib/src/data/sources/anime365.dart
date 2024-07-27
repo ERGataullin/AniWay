@@ -243,6 +243,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             title: translationJson['authorsSummary']! as String,
             type: translationJson['typeKind']! as String,
             language: translationJson['typeLang']! as String,
+            qualityType: translationJson['qualityType']! as String,
             authors: List.from(
               translationJson['authorsList']! as List<dynamic>,
             ),

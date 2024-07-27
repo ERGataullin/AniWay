@@ -29,7 +29,7 @@ class Anime365MoviesService implements MoviesService {
   Future<List<MovieBaseData>> getMovies({
     int page = 1,
     int limit = 50,
-    MovieOrder? order,
+    MoviesOrder order = MoviesOrder.byPopularity,
     String? query,
     List<ViewStatus> viewStatuses = const [],
   }) {
@@ -39,12 +39,11 @@ class Anime365MoviesService implements MoviesService {
           limit: limit,
           offset: (page - 1) * limit,
           order: switch (order) {
-            MovieOrder.byScore => 'ranked',
-            MovieOrder.byPopularity => 'popularity',
-            MovieOrder.byName => 'name',
-            MovieOrder.byReleaseDate => 'aired_on',
-            MovieOrder.random => 'random',
-            null => null,
+            MoviesOrder.byScore => 'ranked',
+            MoviesOrder.byPopularity => 'popularity',
+            MoviesOrder.byName => 'name',
+            MoviesOrder.byReleaseDate => 'aired_on',
+            MoviesOrder.random => 'random',
           },
           watchStatus: viewStatuses
               .map(

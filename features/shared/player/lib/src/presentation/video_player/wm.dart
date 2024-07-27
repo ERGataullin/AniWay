@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l10n/l10n.dart';
 import 'package:player/player.dart';
+import 'package:player/src/domain/models/video_quality_type.dart';
 import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/video_player/components/show_on_mouse_hover.dart';
 import 'package:player/src/presentation/video_player/const.dart';
@@ -28,7 +29,7 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
-  ValueListenable<VoidCallback?> get menuCallback;
+  ValueListenable<VoidCallback?> get onMenuPressed;
 
   ValueListenable<VoidCallback?> get previousCallback;
 
@@ -92,8 +93,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   late final DynamicData<String> subtitle = DynamicData(() => widget.subtitle);
 
   @override
-  late final DynamicData<VoidCallback?> menuCallback = DynamicData(
-    () => widget.translations.isEmpty ? null : _openMenu,
+  late final DynamicData<VoidCallback?> onMenuPressed = DynamicData(
+    () => widget.translations.isEmpty ? null : _handleMenuPressed,
   );
 
   @override
@@ -163,7 +164,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       ..setTranslations(widget.translations);
     title.update();
     subtitle.update();
-    menuCallback.update();
+    onMenuPressed.update();
     previousCallback.update();
     nextCallback.update();
   }
@@ -204,7 +205,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
-    menuCallback.dispose();
+    onMenuPressed.dispose();
     previousCallback.dispose();
     nextCallback.dispose();
     videoController.dispose();
@@ -243,18 +244,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     if (finished) widget.onFinished();
   }
 
-  void _updateControlsVisibility() {
-    videoController.loading.value || !videoController.playing.value
-        ? controlsVisibilityController.show(autohide: false)
-        : controlsVisibilityController.hide();
-  }
-
-  void _updateFullscreenWebElementQuery() {
-    fullscreenController.webElementQuery =
-        videoController.webElementQuery.value;
-  }
-
-  void _openMenu() {
+  void _handleMenuPressed() {
     controlsVisibilityController.show();
     showModalMenuBottomSheet(
       context: context,
@@ -282,6 +272,17 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     );
   }
 
+  void _updateControlsVisibility() {
+    videoController.loading.value || !videoController.playing.value
+        ? controlsVisibilityController.show(autohide: false)
+        : controlsVisibilityController.hide();
+  }
+
+  void _updateFullscreenWebElementQuery() {
+    fullscreenController.webElementQuery =
+        videoController.webElementQuery.value;
+  }
+
   List<MenuItemData> _getTranslationMenuItems({
     required Locale locale,
   }) {
@@ -290,6 +291,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               (translation) => MenuItemData.single(
                 selected: translation == model.translation.value,
                 label: translation.title,
+                trailing: switch (translation.qualityType) {
+                  VideoQualityType.bd ||
+                  VideoQualityType.dvd =>
+                    l10n.value.videoQualityType(translation.qualityType.name),
+                  VideoQualityType.tv => null,
+                },
                 onSelected: () => model.setTranslation(translation),
               ),
             )

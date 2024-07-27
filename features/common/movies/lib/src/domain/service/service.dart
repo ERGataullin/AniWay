@@ -17,7 +17,7 @@ abstract interface class MoviesService implements Initable {
   Future<List<MovieBaseData>> getMovies({
     int page = 1,
     int limit,
-    MovieOrder? order,
+    MoviesOrder order = MoviesOrder.byPopularity,
     String? query,
     List<ViewStatus> viewStatuses = const [],
   });
