@@ -1,6 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:movies/src/domain/models/movie_order.dart';
+import 'package:movies/movies.dart';
 import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/search/wm.dart';
 

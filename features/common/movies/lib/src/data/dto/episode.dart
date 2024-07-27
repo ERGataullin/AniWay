@@ -1,3 +1,5 @@
+import 'package:movies/src/data/dto/movie_type.dart';
+
 class EpisodeDto {
   const EpisodeDto({
     required this.id,
@@ -7,7 +9,7 @@ class EpisodeDto {
 
   final int id;
 
-  final String type;
+  final MovieTypeDto type;
 
-  final num number;
+  final num? number;
 }

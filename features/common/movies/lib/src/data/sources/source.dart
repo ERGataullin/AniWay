@@ -1,19 +1,22 @@
-import 'package:core/core.dart';
+import 'package:movies/src/data/dto/movie_base.dart';
 import 'package:movies/src/data/dto/movie_details.dart';
+import 'package:movies/src/data/dto/movies_order.dart';
+import 'package:movies/src/data/dto/up_next.dart';
+import 'package:movies/src/data/dto/watch_status.dart';
 import 'package:player/player.dart';
 
 abstract interface class MoviesDataSource {
   const MoviesDataSource();
 
-  Future<List<Json>> getMovies({
-    String? order,
+  Future<List<MovieBaseDto>> getMovies({
+    MoviesOrderDto order = MoviesOrderDto.byPopularity,
     String? query,
     int? limit,
     int? offset,
-    List<String?> watchStatus = const [],
+    List<WatchStatusDto> watchStatuses = const [],
   });
 
-  Future<List<Json>> getUpNext({required int page});
+  Future<List<UpNextDto>> getUpNext({required int page});
 
   Future<MovieDetailsDto> getMovie(int id);
 
