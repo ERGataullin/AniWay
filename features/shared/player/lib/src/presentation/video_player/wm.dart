@@ -42,17 +42,17 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   Map<ShortcutActivator, VoidCallback> get shortcuts;
 
-  void onAccurateTap();
+  void handleAccurateTap();
 
-  void onAccurateDoubleTap();
+  void handleAccurateDoubleTap();
 
-  void onInaccurateTap();
+  void handleInaccurateTap();
 
-  void onPositionChangeStart(double position);
+  void handlePositionChangeStart(double position);
 
-  void onPositionChangeEnd(double position);
+  void handlePositionChangeEnd(double position);
 
-  void onPopInvoked(bool didPop);
+  void handlePopInvoked(bool didPop);
 }
 
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
@@ -133,8 +133,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     model
       ..videoResolver = widget.videoResolver
       ..setTranslations(widget.translations)
-      ..video.addListener(_onVideoChanged)
-      ..videoDataSource.addListener(_onVideoDataSourceChanged);
+      ..video.addListener(_handleVideoChanged)
+      ..videoDataSource.addListener(_handleVideoDataSourceChanged);
     if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
       videoController.webElementQuery
           .addListener(_updateFullscreenWebElementQuery);
@@ -142,8 +142,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     videoController
       ..loading.addListener(_updateControlsVisibility)
       ..playing.addListener(_updateControlsVisibility)
-      ..position.addListener(_onPositionDurationChanged)
-      ..duration.addListener(_onPositionDurationChanged);
+      ..position.addListener(_handlePositionDurationChanged)
+      ..duration.addListener(_handlePositionDurationChanged);
     title.update();
     subtitle.update();
     _updateControlsVisibility();
@@ -169,32 +169,32 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
-  Future<void> onAccurateTap() async {
+  Future<void> handleAccurateTap() async {
     await videoController.playPause();
   }
 
   @override
-  Future<void> onAccurateDoubleTap() async {
+  Future<void> handleAccurateDoubleTap() async {
     await fullscreenController.toggle();
   }
 
   @override
-  void onInaccurateTap() {
+  void handleInaccurateTap() {
     controlsVisibilityController.toggle(immediately: true);
   }
 
   @override
-  void onPositionChangeStart(double position) {
+  void handlePositionChangeStart(double position) {
     controlsVisibilityController.show(autohide: false);
   }
 
   @override
-  void onPositionChangeEnd(double position) {
+  void handlePositionChangeEnd(double position) {
     controlsVisibilityController.hide();
   }
 
   @override
-  void onPopInvoked(bool didPop) {
+  void handlePopInvoked(bool didPop) {
     if (didPop) fullscreenController.exit();
   }
 
@@ -213,12 +213,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     super.dispose();
   }
 
-  void _onVideoChanged() {
+  void _handleVideoChanged() {
     videoController.setDataSource(model.videoDataSource.value);
     _watched = false;
   }
 
-  Future<void> _onVideoDataSourceChanged() async {
+  Future<void> _handleVideoDataSourceChanged() async {
     await videoController.setDataSource(
       model.videoDataSource.value,
       saveState: true,
@@ -226,7 +226,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     if (model.videoDataSource.value != null) await videoController.play();
   }
 
-  void _onPositionDurationChanged() {
+  void _handlePositionDurationChanged() {
     if (videoController.loading.value) return;
 
     if (!_watched) {
@@ -290,7 +290,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               (translation) => MenuItemData.single(
                 selected: translation == model.translation.value,
                 label: translation.title,
-                onSelected: () => model.switchTranslation(translation),
+                onSelected: () => model.setTranslation(translation),
               ),
             )
             .toList(growable: false) ??

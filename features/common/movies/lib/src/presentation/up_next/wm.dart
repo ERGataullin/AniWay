@@ -21,7 +21,7 @@ abstract interface class IUpNextWM implements IWidgetModel {
 
   Key? get pagedGridKey;
 
-  Future<List<MovieCardData>> onLoadPage(int page);
+  Future<List<MovieCardData>> handleLoadPage(int page);
 }
 
 class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
@@ -43,7 +43,7 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
   ScrollController get scrollController => PrimaryScrollController.of(context);
 
   @override
-  Future<List<MovieCardData>> onLoadPage(int page) async {
+  Future<List<MovieCardData>> handleLoadPage(int page) async {
     final List<UpNextData> movies = await model.loadPage(page: page);
     return movies.map(_moviePreviewFromUpNext).toList(growable: false);
   }
@@ -51,17 +51,17 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    model.addListener(_onChanged);
+    model.addListener(_handleChanged);
   }
 
   @override
   void dispose() {
-    model.removeListener(_onChanged);
+    model.removeListener(_handleChanged);
     title.dispose();
     super.dispose();
   }
 
-  void _onChanged() {
+  void _handleChanged() {
     pagedGridKey.currentState?.reload();
   }
 

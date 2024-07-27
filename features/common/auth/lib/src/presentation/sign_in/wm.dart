@@ -7,7 +7,7 @@ import 'package:l10n/l10n.dart';
 
 SignInWM signInWMFactory(BuildContext context) => SignInWM(
       SignInModel(
-        context.read<ErrorHandler>(),
+        errorHandler: context.read<ErrorHandler>(),
         service: context.read<AuthService>(),
       ),
     );
@@ -31,13 +31,13 @@ abstract interface class ISignInWM implements IWidgetModel {
 
   ImageProvider get logo;
 
-  String? onValidateEmail(String? value);
+  String? handleValidateEmail(String? value);
 
-  void onPasswordVisibilityPressed();
+  void handlePasswordVisibilityPressed();
 
-  void onPasswordSubmitted(String password);
+  void handlePasswordSubmitted(String password);
 
-  void onSubmitPressed();
+  void handleSubmitPressed();
 }
 
 class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
@@ -88,32 +88,23 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   );
 
   @override
-  String? onValidateEmail(String? value) {
+  String? handleValidateEmail(String? value) {
     return model.isEmailValid(value) ? null : l10n.value.emailValidationError;
   }
 
   @override
-  void onPasswordVisibilityPressed() {
+  void handlePasswordVisibilityPressed() {
     obscurePassword.value = !obscurePassword.value;
   }
 
   @override
-  void onPasswordSubmitted(String password) {
-    _onSubmit();
+  void handlePasswordSubmitted(String password) {
+    _submit();
   }
 
   @override
-  void onSubmitPressed() {
-    _onSubmit();
-  }
-
-  Future<void> _onSubmit() async {
-    showLoader.value = true;
-    await model.signIn(
-      email: emailController.text,
-      password: passwordController.text,
-    );
-    showLoader.value = false;
+  void handleSubmitPressed() {
+    _submit();
   }
 
   @override
@@ -127,5 +118,14 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
     submitLabel.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  Future<void> _submit() async {
+    showLoader.value = true;
+    await model.signIn(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+    showLoader.value = false;
   }
 }

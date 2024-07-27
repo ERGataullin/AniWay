@@ -13,11 +13,10 @@ abstract interface class ISignInModel implements ElementaryModel {
 }
 
 class SignInModel extends ElementaryModel implements ISignInModel {
-  SignInModel(
-    ErrorHandler errorHandler, {
+  SignInModel({
+    super.errorHandler,
     required AuthService service,
-  })  : _service = service,
-        super(errorHandler: errorHandler);
+  }) : _service = service;
 
   final AuthService _service;
 

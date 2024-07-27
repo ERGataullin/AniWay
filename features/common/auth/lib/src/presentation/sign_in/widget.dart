@@ -89,7 +89,7 @@ class _EmailField extends StatelessWidget {
           AutofillHints.username,
           AutofillHints.email,
         ],
-        validator: context.wm.onValidateEmail,
+        validator: context.wm.handleValidateEmail,
         decoration: InputDecoration(
           label: Text(label),
         ),
@@ -115,11 +115,11 @@ class _PasswordField extends StatelessWidget {
         textInputAction: TextInputAction.done,
         keyboardType: TextInputType.visiblePassword,
         autofillHints: const [AutofillHints.password],
-        onFieldSubmitted: context.wm.onPasswordSubmitted,
+        onFieldSubmitted: context.wm.handlePasswordSubmitted,
         decoration: InputDecoration(
           label: Text(context.wm.passwordLabel.value),
           suffixIcon: IconButton(
-            onPressed: context.wm.onPasswordVisibilityPressed,
+            onPressed: context.wm.handlePasswordVisibilityPressed,
             isSelected: !context.wm.obscurePassword.value,
             icon: const Icon(Icons.visibility_off_outlined),
             selectedIcon: const Icon(Icons.visibility_outlined),
@@ -136,7 +136,7 @@ class _SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilledButton(
-      onPressed: context.wm.onSubmitPressed,
+      onPressed: context.wm.handleSubmitPressed,
       child: ListenableBuilder(
         listenable: context.wm.showLoader,
         builder: (context, __) => AnimatedSwitcher(
