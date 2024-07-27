@@ -51,11 +51,11 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
       ..value = await _storage
           .get<String>(collection: 'cookie_manager', key: 'cookie')
           .then(_parseCookie)
-      ..addListener(_onCookieChanged);
+      ..addListener(_handleCookieChanged);
   }
 
   @override
-  FutureOr<RequestData> onRequest(RequestData data) {
+  FutureOr<RequestData> handleRequest(RequestData data) {
     return data.copyWith(
       headers: {
         ...data.headers,
@@ -67,7 +67,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   }
 
   @override
-  FutureOr<ResponseData<T>> onResponse<T>(ResponseData<T> data) {
+  FutureOr<ResponseData<T>> handleResponse<T>(ResponseData<T> data) {
     if (data.headers[_effectiveSetCookieHeaderName]?.isNotEmpty != true) {
       return data;
     }
@@ -100,7 +100,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
     };
   }
 
-  void _onCookieChanged() {
+  void _handleCookieChanged() {
     _storage.put(
       collection: 'cookie_manager',
       key: 'cookie',

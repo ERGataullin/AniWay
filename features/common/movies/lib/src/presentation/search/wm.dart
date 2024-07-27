@@ -25,7 +25,7 @@ abstract interface class IMoviesSearchWM implements IWidgetModel {
 
   Key? get pagedGridKey;
 
-  Future<List<MovieCardData>> onLoadPage(int page);
+  Future<List<MovieCardData>> handleLoadPage(int page);
 }
 
 class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
@@ -62,7 +62,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   }
 
   @override
-  Future<List<MovieCardData>> onLoadPage(int page) async {
+  Future<List<MovieCardData>> handleLoadPage(int page) async {
     final List<MovieBaseData> movies = await model.loadPage(
       page: page,
       query: queryController.text,

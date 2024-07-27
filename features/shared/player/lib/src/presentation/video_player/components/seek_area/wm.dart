@@ -57,8 +57,8 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
               SeekGestureRecognizer.new,
               (instance) => instance
                 ..supportedDevices = PointerDevicesAccuracy.inaccurateDevices
-                ..onSeekTapUp = _onSeekTapUp
-                ..onSeekTapCancel = _onSeekTapCancel
+                ..onSeekTapUp = _handleSeekTapUp
+                ..onSeekTapCancel = _handleSeekTapCancel
                 ..gestureSettings = _gestureSettings,
             ),
           }
@@ -119,7 +119,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    model.value.addListener(_onValueChaged);
+    model.value.addListener(_handleValueChaged);
     shape.update();
     iconsRotation.update();
   }
@@ -146,7 +146,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     super.dispose();
   }
 
-  Future<void> _onSeekTapUp(TapUpDetails details) async {
+  Future<void> _handleSeekTapUp(TapUpDetails details) async {
     model.incrementValue();
     _videoController.seekTo(
       model.getSeekPosition(
@@ -171,11 +171,11 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
         .confirm();
   }
 
-  Future<void> _onSeekTapCancel() async {
+  Future<void> _handleSeekTapCancel() async {
     model.resetValue();
   }
 
-  Future<void> _onValueChaged() async {
+  Future<void> _handleValueChaged() async {
     final bool visible = model.value.value != Duration.zero;
     if (visible) {
       for (final AnimationController iconController in _iconsControllers) {

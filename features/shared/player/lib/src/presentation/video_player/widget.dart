@@ -59,7 +59,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
       child: Theme(
         data: Themes.videoPlayer,
         child: PopScope(
-          onPopInvoked: wm.onPopInvoked,
+          onPopInvoked: wm.handlePopInvoked,
           child: const Scaffold(
             body: Stack(
               clipBehavior: Clip.none,
@@ -106,12 +106,12 @@ class _Gestures extends StatelessWidget {
             ),
             GestureDetector(
               supportedDevices: PointerDevicesAccuracy.accurateDevices,
-              onTap: context.wm.onAccurateTap,
-              onDoubleTap: context.wm.onAccurateDoubleTap,
+              onTap: context.wm.handleAccurateTap,
+              onDoubleTap: context.wm.handleAccurateDoubleTap,
             ),
             GestureDetector(
               supportedDevices: PointerDevicesAccuracy.inaccurateDevices,
-              onTap: context.wm.onInaccurateTap,
+              onTap: context.wm.handleInaccurateTap,
             ),
             Row(
               children: [
@@ -261,8 +261,9 @@ class _Controls extends StatelessWidget {
                     ),
                     VideoSeekBar(
                       videoController: context.wm.videoController,
-                      onPositionChangeStart: context.wm.onPositionChangeStart,
-                      onPositionChangeEnd: context.wm.onPositionChangeEnd,
+                      onPositionChangeStart:
+                          context.wm.handlePositionChangeStart,
+                      onPositionChangeEnd: context.wm.handlePositionChangeEnd,
                     ),
                   ],
                 ),
