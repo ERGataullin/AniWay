@@ -7,6 +7,9 @@ enum MoviesOrder {
   byReleaseDate,
   random;
 
+  factory MoviesOrder.valueOf(String name) =>
+      values.singleWhere((value) => name == value.name);
+
   MoviesOrderDto toDto() => switch (this) {
         MoviesOrder.byScore => MoviesOrderDto.byScore,
         MoviesOrder.byPopularity => MoviesOrderDto.byPopularity,

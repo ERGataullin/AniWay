@@ -8,7 +8,6 @@ import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:movies/src/data/dto/up_next.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_details.dart';
-import 'package:movies/src/domain/models/movies_order.dart';
 import 'package:movies/src/domain/models/up_next.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:player/player.dart';

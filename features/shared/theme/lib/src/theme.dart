@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 extension _AppOverrides on ThemeData {
   ThemeData get appOverrides => copyWith(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
         cardTheme: const CardTheme(
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
@@ -39,6 +40,7 @@ class Themes {
       surfaceContainerHighest: Colors.white24,
     ),
   ).copyWith(
+    visualDensity: VisualDensity.adaptivePlatformDensity,
     appBarTheme: const AppBarTheme(centerTitle: false),
     sliderTheme: SliderThemeData(
       trackHeight: 4,
