@@ -13,7 +13,10 @@ import 'package:player/src/presentation/video_player/model.dart';
 import 'package:player/src/utils/video_controller.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
-      VideoPlayerModel(errorHandler: context.read<ErrorHandler>()),
+      VideoPlayerModel(
+        errorHandler: context.read<ErrorHandler>(),
+        service: context.read<PlayerService>(),
+      ),
     );
 
 abstract interface class IVideoPlayerWM implements IWidgetModel {
@@ -229,7 +232,10 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     if (!_watched) {
       _watched = videoController.position.value >=
           videoController.duration.value - const Duration(minutes: 4);
-      if (_watched) widget.onWatched(model.translation.value!.id);
+      if (_watched) {
+        widget.onWatched(model.translation.value!.id);
+        model.handleVideoWatched();
+      }
     }
 
     final bool finished =
@@ -283,7 +289,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
             ?.map(
               (translation) => MenuItemData.single(
                 selected: translation == model.translation.value,
-                label: translation.author,
+                label: translation.title,
                 onSelected: () => model.switchTranslation(translation),
               ),
             )

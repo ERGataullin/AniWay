@@ -1,7 +1,6 @@
 {
   "dart.debugExternalPackageLibraries": true,
   "dart.debugSdkLibraries": true,
-  "dart.flutterSdkPath": ".fvm/versions/3.22.0",
   "editor.bracketPairColorization.enabled": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "always",

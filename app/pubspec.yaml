@@ -23,6 +23,8 @@ dependencies:
     path: ../features/shared/l10n
   movies: 
     path: ../features/common/movies
+  player:
+    path: ../features/shared/player
   root_menu:
     path: ../features/common/root_menu
   theme:

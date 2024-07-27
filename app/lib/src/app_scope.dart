@@ -4,6 +4,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:movies/movies.dart';
+import 'package:player/player.dart';
 
 class AppScope extends InheritedWidget {
   AppScope({
@@ -14,6 +15,7 @@ class AppScope extends InheritedWidget {
     CookieManager? cookieManager,
     AuthService? authService,
     MoviesService? moviesService,
+    PlayerService? playerService,
     required super.child,
   }) {
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
@@ -36,10 +38,8 @@ class AppScope extends InheritedWidget {
                 ),
         );
     this.storage = storage ?? const HiveStorage();
-    this.cookieManager = cookieManager ??
-        CookieManagerImpl(
-          storage: this.storage,
-        );
+    this.cookieManager =
+        cookieManager ?? CookieManagerImpl(storage: this.storage);
     this.authService = authService ??
         Anime365AuthService(
           cookieManager: this.cookieManager,
@@ -52,6 +52,12 @@ class AppScope extends InheritedWidget {
               cookieManager: this.cookieManager,
               network: this.network,
             ),
+          ),
+        );
+    this.playerService = playerService ??
+        PlayerService(
+          repository: PlayerRepository(
+            local: LocalPlayerDataSource(storage: this.storage),
           ),
         );
   }
@@ -68,6 +74,8 @@ class AppScope extends InheritedWidget {
 
   late final MoviesService moviesService;
 
+  late final PlayerService playerService;
+
   late final List<Initable> dependencies = [
     errorHandler,
     network,
@@ -75,6 +83,7 @@ class AppScope extends InheritedWidget {
     cookieManager,
     authService,
     moviesService,
+    playerService,
   ];
 
   @override
@@ -86,6 +95,7 @@ class AppScope extends InheritedWidget {
           Provider<CookieManager>.value(value: cookieManager),
           Provider<AuthService>.value(value: authService),
           Provider<MoviesService>.value(value: moviesService),
+          Provider<PlayerService>.value(value: playerService),
         ],
         child: super.child,
       );
