@@ -32,10 +32,6 @@ class HomeModel extends ElementaryModel implements IHomeModel {
 
   final MoviesService _service;
 
-  final List<UpNextData> _upNext = [];
-
-  final List<MovieBaseData> _popular = [];
-
   @override
   void init() {
     _load();
@@ -58,17 +54,11 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     final Future<List<MovieBaseData>> newPopularFuture =
         _service.getMovies(order: MovieOrder.byPopularity);
 
-    final List<UpNextData> newUpNext = await newUpNextFuture;
-    final List<MovieBaseData> newPopular = await newPopularFuture;
+    final List<UpNextData> upNext = await newUpNextFuture;
+    final List<MovieBaseData> popular = await newPopularFuture;
 
-    _upNext
-      ..clear()
-      ..addAll(newUpNext);
-    _popular
-      ..clear()
-      ..addAll(newPopular);
     loading.value = false;
-    upNext.value = List.unmodifiable(_upNext);
-    popular.value = List.unmodifiable(_popular);
+    this.upNext.value = List.unmodifiable(upNext.take(10));
+    this.popular.value = List.unmodifiable(popular.take(10));
   }
 }
