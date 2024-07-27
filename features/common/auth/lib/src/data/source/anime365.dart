@@ -1,35 +1,19 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:auth/auth.dart';
 import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 
-class Anime365AuthService implements AuthService {
-  Anime365AuthService({
-    required CookieManager cookieManager,
+class Anime365AuthDataSource implements AuthDataSource {
+  Anime365AuthDataSource({
     required Network network,
-  })  : _cookieManager = cookieManager,
-        _network = network;
-
-  @override
-  late final DynamicData<bool> signedIn = DynamicData(
-    trigger: _cookieManager.cookie,
-    () {
-      final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];
-      return session != null &&
-          _cookieManager.cookie.value['aaaa8ed0da05b797653c4bd51877d861'] !=
-              null &&
-          (session.expires == null || session.expires!.isAfter(DateTime.now()));
-    },
-  );
-
-  final CookieManager _cookieManager;
+    required CookieManager cookieManager,
+  })  : _network = network,
+        _cookieManager = cookieManager;
 
   final Network _network;
 
-  @override
-  void init() {}
+  final CookieManager _cookieManager;
 
   @override
   Future<void> signIn({
@@ -57,15 +41,5 @@ class Anime365AuthService implements AuthService {
         },
       ),
     );
-  }
-
-  @override
-  Future<void> signUp() {
-    throw UnimplementedError();
-  }
-
-  @override
-  void dispose() {
-    signedIn.dispose();
   }
 }
