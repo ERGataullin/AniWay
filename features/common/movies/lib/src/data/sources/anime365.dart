@@ -209,7 +209,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields': 'titles,episodes',
+            'fields': 'titles,posterUrl,episodes',
           },
         ),
         method: RequestMethod.get,
@@ -220,6 +220,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     return MovieDetailsDto(
       id: id,
       title: (data['titles']! as Json)['ru']! as String,
+      posterUrl: data['posterUrl']! as String,
       episodes: (data['episodes']! as List<dynamic>)
           .cast<Json>()
           .map(
