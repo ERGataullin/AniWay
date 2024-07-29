@@ -172,7 +172,9 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       name: _Routes.movie(parent: parent),
       path: 'movies/:movieId',
-      builder: (context, state) => const MovieWidget(),
+      builder: (context, state) => MovieWidget(
+        movieId: int.parse(state.pathParameters['movieId']!),
+      ),
     );
   }
 

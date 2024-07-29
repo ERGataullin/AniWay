@@ -5,6 +5,10 @@ import 'package:movies/src/domain/models/movie_details.dart';
 
 abstract interface class IMovieModel implements ElementaryModel {
   ValueListenable<MovieDetailsData?> get movie;
+
+  void loadData({
+    required int movieId,
+  });
 }
 
 class MovieModel extends ElementaryModel implements IMovieModel {
@@ -19,7 +23,9 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   final MoviesService _service;
 
   @override
-  void dispose() {
-    movie.dispose();
+  Future<void> loadData({
+    required int movieId,
+  }) async {
+    movie.value = await _service.getMovie(movieId);
   }
 }
