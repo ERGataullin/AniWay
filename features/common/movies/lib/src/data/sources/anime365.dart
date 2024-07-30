@@ -324,7 +324,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       'tv_special' => MovieTypeDto.tvSpecial,
       'cm' => MovieTypeDto.ad,
       'music' => MovieTypeDto.music,
-      'pv' => MovieTypeDto.preview,
+      'preview' || 'pv' => MovieTypeDto.preview,
       final Object? unsupported => throw UnsupportedError(
           'Unsupported movie type: $unsupported',
         ),
