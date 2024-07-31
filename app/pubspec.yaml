@@ -29,7 +29,7 @@ dependencies:
     path: ../features/common/root_menu
   theme:
     path: ../features/shared/theme
-  web: ^0.5.1
+  web: ^1.0.0
 
 dev_dependencies:
   flutter_lints:
