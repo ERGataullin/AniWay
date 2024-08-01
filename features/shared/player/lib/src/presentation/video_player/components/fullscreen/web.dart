@@ -4,16 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:web/web.dart';
 
-extension _DocumentFullscreen on Document {
-  external Element? get fullscreenElement;
-
-  external void exitFullscreen();
-}
-
 extension _ElementFullscreen on Element {
   external bool get webkitDisplayingFullscreen;
-
-  external void requestFullscreen();
 
   external void webkitEnterFullscreen();
 
