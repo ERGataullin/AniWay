@@ -5,14 +5,14 @@ class MovieDetailsData {
   const MovieDetailsData({
     required this.id,
     required this.title,
-    required this.posterUrl,
+    required this.posterUri,
     required this.episodes,
   });
 
   factory MovieDetailsData.fromDto(MovieDetailsDto dto) => MovieDetailsData(
         id: dto.id,
         title: dto.title,
-        posterUrl: Uri.parse(dto.posterUrl),
+        posterUri: Uri.parse(dto.posterUri),
         episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),
       );
 
@@ -20,7 +20,7 @@ class MovieDetailsData {
 
   final String title;
 
-  final Uri posterUrl;
+  final Uri posterUri;
 
   final List<EpisodeData> episodes;
 }

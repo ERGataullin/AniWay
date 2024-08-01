@@ -220,7 +220,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     return MovieDetailsDto(
       id: id,
       title: (data['titles']! as Json)['ru']! as String,
-      posterUrl: data['posterUrl']! as String,
+      posterUri: data['posterUrl']! as String,
       episodes: (data['episodes']! as List<dynamic>)
           .cast<Json>()
           .map(

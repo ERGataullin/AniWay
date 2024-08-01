@@ -4,7 +4,7 @@ class MovieDetailsDto {
   const MovieDetailsDto({
     required this.id,
     required this.title,
-    required this.posterUrl,
+    required this.posterUri,
     required this.episodes,
   });
 
@@ -12,7 +12,7 @@ class MovieDetailsDto {
 
   final String title;
 
-  final String posterUrl;
+  final String posterUri;
 
   final List<EpisodeDto> episodes;
 }

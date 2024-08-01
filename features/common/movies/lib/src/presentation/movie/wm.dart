@@ -8,11 +8,14 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
       MovieModel(
         errorHandler: context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
+        network: context.read<Network>(),
       ),
     );
 
 abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<String> get title;
+
+  ValueListenable<String> get posterUri;
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
@@ -26,10 +29,16 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final DynamicData<String> posterUri = DynamicData(
+    trigger: model.poster,
+    () => model.poster.value ?? '',
+  );
+
+  @override
   void initWidgetModel() {
     super.initWidgetModel();
     model.loadData(
-      movieId: widget.movieId,
+        movieId: widget.movieId,
     );
   }
 }
