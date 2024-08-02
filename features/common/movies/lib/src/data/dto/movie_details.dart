@@ -6,6 +6,7 @@ class MovieDetailsDto {
     required this.title,
     required this.posterUri,
     required this.episodes,
+    required this.description,
   });
 
   final int id;
@@ -15,4 +16,6 @@ class MovieDetailsDto {
   final String posterUri;
 
   final List<EpisodeDto> episodes;
+
+  final String description;
 }

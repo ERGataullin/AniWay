@@ -16,6 +16,8 @@ abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<String> get posterUri;
+
+  ValueListenable<String> get description;
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
@@ -27,6 +29,14 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     trigger: model.movie,
     () => model.movie.value?.title ?? '',
   );
+
+  @override
+  late final DynamicData<String> description = DynamicData(
+    trigger: model.movie,
+        () => model.movie.value?.description ?? '',
+  );
+
+
 
   @override
   late final DynamicData<String> posterUri = DynamicData(
