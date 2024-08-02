@@ -24,6 +24,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
           body: CustomScrollView(
             slivers: [
               _AppBar(
+                title: wm.title.value,
                 poster: wm.posterUri.value,
               ),
             ],
@@ -36,9 +37,11 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
 class _AppBar extends StatelessWidget {
   const _AppBar({
+    required this.title,
     required this.poster,
   });
 
+  final String title;
   final String poster;
 
   @override
@@ -57,11 +60,12 @@ class _AppBar extends StatelessWidget {
           ),
         ),
       ),
-      expandedHeight: MediaQuery.of(context).size.height / 5 * 2,
+      expandedHeight: MediaQuery.of(context).size.height / 9 * 4,
       flexibleSpace: Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
           Container(
+            height: MediaQuery.of(context).size.height / 5 * 2,
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
@@ -82,6 +86,9 @@ class _AppBar extends StatelessWidget {
               icon: const Icon(Icons.play_arrow_sharp),
               label: const Text('Смотреть'),
             ),
+          ),
+          FlexibleSpaceBar(
+            title: Text(title),
           ),
         ],
       ),
