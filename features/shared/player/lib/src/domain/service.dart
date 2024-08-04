@@ -21,6 +21,13 @@ class PlayerService implements Initable {
   Future<void> savePersonalizedTranslationAuthorsRates(
     Map<String, int> rates,
   ) async {
-    await _repository.savePersonalizedTranslationAuthorsRates(rates);
+    await _repository.savePersonalizedTranslationAuthorsRates(
+      rates.map(
+        (author, rate) => MapEntry(
+          author.trim().toLowerCase(),
+          rate,
+        ),
+      ),
+    );
   }
 }

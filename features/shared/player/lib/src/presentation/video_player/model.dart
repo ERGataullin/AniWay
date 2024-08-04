@@ -186,7 +186,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     for (final VideoTranslationData translation in suitableLocaleTranslations) {
       int translationSuitabilitySum = 0;
       for (final String author in translation.authors) {
-        translationSuitabilitySum += authorsSuitability[author] ?? 0;
+        translationSuitabilitySum +=
+            authorsSuitability[author.trim().toLowerCase()] ?? 0;
       }
       final double translationSuitability =
           translationSuitabilitySum / translation.authors.length;
