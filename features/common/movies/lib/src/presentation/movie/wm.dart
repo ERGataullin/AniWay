@@ -33,11 +33,10 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   late final DynamicData<String> description = DynamicData(
     trigger: model.movie,
-        () => model.movie.value?.description ?? '',
+    () => model.movie.value?.description ?? '',
   );
 
-
-
+  //TODO переделать DynamicData<ImageProvider>(см на примере SignInWM)
   @override
   late final DynamicData<String> posterUri = DynamicData(
     trigger: model.poster,
@@ -48,7 +47,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   void initWidgetModel() {
     super.initWidgetModel();
     model.loadData(
-        movieId: widget.movieId,
+      movieId: widget.movieId,
     );
   }
+
+  //TODO добавить dispose
 }

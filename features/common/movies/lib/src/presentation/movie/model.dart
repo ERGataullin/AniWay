@@ -18,7 +18,8 @@ class MovieModel extends ElementaryModel implements IMovieModel {
     super.errorHandler,
     required MoviesService service,
     required Network network,
-  })  : _service = service, _network = network;
+  })  : _service = service,
+        _network = network;
 
   @override
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
@@ -30,6 +31,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
 
   final Network _network;
 
+  //poster убрать в wm сделать
   @override
   Future<void> loadData({
     required int movieId,

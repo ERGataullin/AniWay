@@ -24,19 +24,27 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
           body: CustomScrollView(
             slivers: [
               _AppBar(
-                title: wm.title.value,
                 poster: wm.posterUri.value,
               ),
               SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    _Description(
-                      description: wm.description.value,
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      //TODO Рейтинг выше тайтла
+                      Text(
+                        wm.title.value,
+                        style: Theme.of(context).primaryTextTheme.headlineLarge,
+                      ),
+                      const SizedBox(height: 16),
+                      _Description(
+                        description: wm.description.value,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -50,16 +58,15 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
 class _AppBar extends StatelessWidget {
   const _AppBar({
-    required this.title,
     required this.poster,
   });
 
-  final String title;
   final String poster;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
+      expandedHeight: 450,
       leading: Padding(
         padding: const EdgeInsets.all(8),
         child: IconButton.filledTonal(
@@ -67,55 +74,27 @@ class _AppBar extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
         ),
       ),
-      expandedHeight: 450,
-      flexibleSpace: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Stack(
-            alignment: AlignmentDirectional.bottomCenter,
-            children: [
-              Container(
-                height: 350,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(poster),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(64, 16, 64, 16),
-                  child: FilledButton.icon(
-                    onPressed: () {},
-                    style: IconButton.styleFrom(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(32, 16, 32, 16),
-                    ),
-                    icon: const Icon(Icons.play_arrow_sharp),
-                    label: const Text('Смотреть'),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
-                title,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              poster,
+              fit: BoxFit.cover,
+            ),
+            Center(
+              child: FilledButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.play_arrow_sharp),
+                label: const Text('Смотреть'),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
-
 
 class _Description extends StatelessWidget {
   const _Description({
@@ -128,21 +107,15 @@ class _Description extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(description);
   }
-
 }
 
 class _FAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: FloatingActionButton.extended(
-        elevation: 1,
-        onPressed: () {},
-        label: const Text('Добавить в список'),
-        icon: const Icon(Icons.add),
-        extendedPadding: const EdgeInsets.symmetric(horizontal: 8),
-      ),
+    return FloatingActionButton.extended(
+      onPressed: () {},
+      label: const Text('В список'),
+      icon: const Icon(Icons.add),
     );
   }
 }
