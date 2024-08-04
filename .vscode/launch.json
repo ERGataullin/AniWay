@@ -13,7 +13,6 @@
             "args": [
                 "--web-renderer=canvaskit",
                 "--web-port=8008",
-                "--web-hostname=192.168.31.7",
             ]
         },
         {
@@ -36,7 +35,6 @@
             "args": [
                 "--web-renderer=canvaskit",
                 "--web-port=8008",
-                "--web-hostname=192.168.31.7",
             ]
         }
     ]
