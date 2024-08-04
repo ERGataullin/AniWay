@@ -60,7 +60,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }
 
   ShellRouteBase _buildRootMenu() {
-    return StatefulShellRoute.indexedStack(
+    return StatefulShellRoute(
       branches: [
         StatefulShellBranch(
           routes: [
@@ -73,6 +73,11 @@ class AppRouter implements RouterConfig<RouteMatchList> {
           ],
         ),
       ],
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          RootMenuContainer(
+        currentIndex: navigationShell.currentIndex,
+        children: children,
+      ),
       builder: (context, state, navigationShell) => RootMenu(
         currentIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) => navigationShell.goBranch(
