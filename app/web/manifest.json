@@ -2,15 +2,15 @@
     "name": "AniWay",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
+    "background_color": "#FEF7FF",
+    "theme_color": "#FEF7FF",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "favicon.ico",
+            "src": "icons/favicon.ico",
             "type": "image/x-icon",
-            "sizes": "16x16 32x32"
+            "sizes": "any"
         },
         {
             "src": "icons/icon-192.png",
@@ -33,6 +33,12 @@
             "type": "image/png",
             "sizes": "512x512",
             "purpose": "maskable"
+        },
+        {
+            "src": "icons/icon-432-monochrome.png",
+            "type": "image/png",
+            "sizes": "432x432",
+            "purpose": "monochrome"
         }
     ]
 }
