@@ -209,7 +209,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields': 'titles,posterUrl,episodes,descriptions',
+            'fields': 'titles,posterUrl,episodes,descriptions,myAnimeListScore',
           },
         ),
         method: RequestMethod.get,
@@ -236,6 +236,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       description: (data['descriptions']! as List<dynamic>)
           .cast<Json>()
           .first['value']! as String,
+      score: data['myAnimeListScore'] == '-1'
+          ? null
+          : double.parse(data['myAnimeListScore']! as String),
     );
   }
 

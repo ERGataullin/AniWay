@@ -9,6 +9,8 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
     WidgetModelFactory wmFactory = movieWMFactory,
   }) : super(wmFactory);
 
+  static final NumberFormat _scoreFormat = NumberFormat('#0.0');
+
   final int movieId;
 
   @override
@@ -33,7 +35,12 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 16),
-                      //TODO Рейтинг выше тайтла
+                      if (wm.score.value != null)
+                        Text(
+                          _scoreFormat.format(wm.score.value),
+                          style:
+                              Theme.of(context).primaryTextTheme.headlineLarge,
+                        ),
                       Text(
                         wm.title.value,
                         style: Theme.of(context).primaryTextTheme.headlineLarge,

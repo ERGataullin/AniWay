@@ -7,6 +7,7 @@ class MovieDetailsDto {
     required this.posterUri,
     required this.episodes,
     required this.description,
+    this.score,
   });
 
   final int id;
@@ -18,4 +19,6 @@ class MovieDetailsDto {
   final List<EpisodeDto> episodes;
 
   final String description;
+
+  final double? score;
 }

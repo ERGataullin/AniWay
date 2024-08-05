@@ -8,6 +8,7 @@ class MovieDetailsData {
     required this.posterUri,
     required this.episodes,
     required this.description,
+    this.score,
   });
 
   factory MovieDetailsData.fromDto(MovieDetailsDto dto) => MovieDetailsData(
@@ -16,6 +17,7 @@ class MovieDetailsData {
         posterUri: Uri.parse(dto.posterUri),
         episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),
         description: dto.description,
+        score: dto.score,
       );
 
   final int id;
@@ -27,4 +29,6 @@ class MovieDetailsData {
   final List<EpisodeData> episodes;
 
   final String description;
+
+  final double? score;
 }
