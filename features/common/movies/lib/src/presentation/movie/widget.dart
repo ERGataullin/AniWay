@@ -20,7 +20,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
       child: ListenableBuilder(
         listenable: Listenable.merge([
           wm.title,
-          wm.posterUri,
+          wm.poster,
           wm.showLoader,
           wm.score,
         ]),
@@ -29,9 +29,10 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
             : Scaffold(
                 body: CustomScrollView(
                   slivers: [
-                    _AppBar(
-                      poster: wm.posterUri.value,
-                    ),
+                    if (wm.poster.value != null)
+                      _AppBar(
+                        poster: wm.poster.value!,
+                      ),
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -40,10 +41,33 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                           children: [
                             const SizedBox(height: 16),
                             if (wm.score.value != null)
-                              Text(
-                                _scoreFormat.format(wm.score.value),
-                                style:
-                                    Theme.of(context).textTheme.headlineLarge,
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    applyTextScaling: true,
+                                    size: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.fontSize,
+                                    weight: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.fontWeight
+                                        ?.value
+                                        .toDouble(),
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.color,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    _scoreFormat.format(wm.score.value),
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                ],
                               ),
                             Text(
                               wm.title.value,
@@ -72,7 +96,7 @@ class _AppBar extends StatelessWidget {
     required this.poster,
   });
 
-  final String poster;
+  final ImageProvider poster;
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +113,8 @@ class _AppBar extends StatelessWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
-              poster,
+            Image(
+              image: poster,
               fit: BoxFit.cover,
             ),
             Center(

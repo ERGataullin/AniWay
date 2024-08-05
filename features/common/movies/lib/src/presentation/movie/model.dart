@@ -8,8 +8,6 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<MovieDetailsData?> get movie;
 
-  ValueListenable<String?> get poster;
-
   void loadData({
     required int movieId,
   });
@@ -19,9 +17,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   MovieModel({
     super.errorHandler,
     required MoviesService service,
-    required Network network,
-  })  : _service = service,
-        _network = network;
+  }) : _service = service;
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
@@ -29,22 +25,14 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   @override
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
-  @override
-  final ValueNotifier<String?> poster = ValueNotifier('');
-
   final MoviesService _service;
 
-  final Network _network;
-
-  //poster убрать в wm сделать
   @override
   Future<void> loadData({
     required int movieId,
   }) async {
     loading.value = true;
     movie.value = await _service.getMovie(movieId);
-    poster.value =
-        _network.baseUri.resolveUri(movie.value!.posterUri).toString();
     loading.value = false;
   }
 }

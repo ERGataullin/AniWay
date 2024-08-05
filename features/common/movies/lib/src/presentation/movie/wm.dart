@@ -8,8 +8,8 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
       MovieModel(
         errorHandler: context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
-        network: context.read<Network>(),
       ),
+      posterBaseUri: context.read<Network>().baseUri,
     );
 
 abstract interface class IMovieWM implements IWidgetModel {
@@ -17,7 +17,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<bool> get showLoader;
 
-  ValueListenable<String> get posterUri;
+  ValueListenable<ImageProvider?> get poster;
 
   ValueListenable<String> get description;
 
@@ -26,7 +26,12 @@ abstract interface class IMovieWM implements IWidgetModel {
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     implements IMovieWM {
-  MovieWM(super._model);
+  MovieWM(
+    super._model, {
+    required Uri posterBaseUri,
+  }) : _posterBaseUri = posterBaseUri;
+
+  final Uri _posterBaseUri;
 
   @override
   late final DynamicData<String> title = DynamicData(
@@ -40,11 +45,14 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     () => model.movie.value?.description ?? '',
   );
 
-  //TODO переделать DynamicData<ImageProvider>(см на примере SignInWM)
   @override
-  late final DynamicData<String> posterUri = DynamicData(
-    trigger: model.poster,
-    () => model.poster.value ?? '',
+  late final DynamicData<ImageProvider?> poster = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value == null
+        ? null
+        : NetworkImage(
+            _posterBaseUri.resolveUri(model.movie.value!.posterUri).toString(),
+          ),
   );
 
   @override
