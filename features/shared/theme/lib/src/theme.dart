@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 
 extension _AppOverrides on ThemeData {
   ThemeData get appOverrides => copyWith(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        cardTheme: const CardTheme(
+        cardTheme: cardTheme.copyWith(
           margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
+        inputDecorationTheme: inputDecorationTheme.copyWith(
+          border: const OutlineInputBorder(),
         ),
       );
 }
@@ -18,18 +17,18 @@ extension _AppOverrides on ThemeData {
 class Themes {
   Themes._();
 
-  static final ThemeData light =
-      ThemeData.light(useMaterial3: true).appOverrides;
+  static final ThemeData light = ThemeData().appOverrides;
 
-  static final ThemeData dark = ThemeData.dark(useMaterial3: true).appOverrides;
+  static final ThemeData dark = ThemeData(
+    brightness: Brightness.dark,
+  ).appOverrides;
 
   static final ThemeData videoPlayer = ThemeData.from(
-    useMaterial3: true,
     colorScheme: ColorScheme(
       brightness: Brightness.dark,
       primary: dark.colorScheme.primary,
       onPrimary: Colors.white,
-      secondary: Colors.grey[400]!,
+      secondary: Colors.grey.shade400,
       secondaryContainer: Colors.black26,
       onSecondary: Colors.white,
       error: const Color(0xFFF2B8B5),
@@ -40,7 +39,6 @@ class Themes {
       surfaceContainerHighest: Colors.white24,
     ),
   ).copyWith(
-    visualDensity: VisualDensity.adaptivePlatformDensity,
     appBarTheme: const AppBarTheme(centerTitle: false),
     sliderTheme: SliderThemeData(
       trackHeight: 4,

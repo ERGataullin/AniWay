@@ -4,6 +4,8 @@ import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_details.dart';
 
 abstract interface class IMovieModel implements ElementaryModel {
+  ValueListenable<bool> get loading;
+
   ValueListenable<MovieDetailsData?> get movie;
 
   ValueListenable<String?> get poster;
@@ -22,6 +24,9 @@ class MovieModel extends ElementaryModel implements IMovieModel {
         _network = network;
 
   @override
+  final ValueNotifier<bool> loading = ValueNotifier(false);
+
+  @override
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
   @override
@@ -36,8 +41,10 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   Future<void> loadData({
     required int movieId,
   }) async {
+    loading.value = true;
     movie.value = await _service.getMovie(movieId);
     poster.value =
         _network.baseUri.resolveUri(movie.value!.posterUri).toString();
+    loading.value = false;
   }
 }

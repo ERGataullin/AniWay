@@ -77,7 +77,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           path: '/',
           queryParameters: {
             'ajax': 'm-index-personal-episodes',
-            'pageP': page.toString(),
+            if (page != 1) 'pageP': page.toString(),
           },
         ),
         method: RequestMethod.get,
@@ -232,10 +232,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
               number: num.parse(episodeJson['episodeInt']! as String),
             ),
           )
-          .toList(growable: false),
-      description: (data['descriptions']! as List<dynamic>)
-          .cast<Json>()
-          .first['value']! as String,
+          .toList(growable: false), : [],
+      description: data['descriptions'] != null ? (data['descriptions']! as List<dynamic>)
+              .cast<Json>()
+              .first['value']! as String : '',
       score: data['myAnimeListScore'] == '-1'
           ? null
           : double.parse(data['myAnimeListScore']! as String),
