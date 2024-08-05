@@ -22,6 +22,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
           wm.title,
           wm.posterUri,
           wm.showLoader,
+          wm.score,
         ]),
         builder: (context, __) => wm.showLoader.value
             ? const Center(child: CircularProgressIndicator.adaptive())
@@ -38,7 +39,12 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 16),
-                            //TODO Рейтинг выше тайтла
+                            if (wm.score.value != null)
+                              Text(
+                                _scoreFormat.format(wm.score.value),
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge,
+                              ),
                             Text(
                               wm.title.value,
                               style: Theme.of(context).textTheme.headlineLarge,
