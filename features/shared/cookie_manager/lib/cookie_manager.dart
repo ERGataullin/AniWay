@@ -49,7 +49,11 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   Future<void> init() async {
     cookie
       ..value = await _storage
-          .get<String>(collection: 'cookie_manager', key: 'cookie')
+          .get<String?>(
+            collection: 'cookie_manager',
+            key: 'cookie',
+            defaultValue: null,
+          )
           .then(_parseCookie)
       ..addListener(_handleCookieChanged);
   }
@@ -101,7 +105,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   }
 
   void _handleCookieChanged() {
-    _storage.put(
+    _storage.put<String?>(
       collection: 'cookie_manager',
       key: 'cookie',
       value: cookie.value.values.map((cookie) => cookie.toString()).join(','),

@@ -77,7 +77,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           path: '/',
           queryParameters: {
             'ajax': 'm-index-personal-episodes',
-            'pageP': page.toString(),
+            if (page != 1) 'pageP': page.toString(),
           },
         ),
         method: RequestMethod.get,

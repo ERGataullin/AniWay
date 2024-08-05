@@ -1,3 +1,4 @@
+export 'package:animations/animations.dart';
 export 'package:elementary/elementary.dart' hide ErrorHandler;
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:html/dom.dart' hide Text;

@@ -21,13 +21,13 @@ class HiveStorage implements Storage {
   }
 
   @override
-  Future<T?> get<T>({
+  Future<T> get<T>({
     required String collection,
     required Object key,
-    T? defaultValue,
-  }) {
-    return Hive.openBox<T>(collection)
-        .then((box) => box.get(key, defaultValue: defaultValue));
+    required T defaultValue,
+  }) async {
+    final Box<T> box = await Hive.openBox(collection);
+    return box.get(key, defaultValue: defaultValue) as T;
   }
 
   @override
