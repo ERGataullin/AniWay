@@ -19,38 +19,41 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
         listenable: Listenable.merge([
           wm.title,
           wm.posterUri,
+          wm.showLoader,
         ]),
-        builder: (context, __) => Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              _AppBar(
-                poster: wm.posterUri.value,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 16),
-                      //TODO Рейтинг выше тайтла
-                      Text(
-                        wm.title.value,
-                        style: Theme.of(context).primaryTextTheme.headlineLarge,
+        builder: (context, __) => wm.showLoader.value
+            ? const Center(child: CircularProgressIndicator.adaptive())
+            : Scaffold(
+                body: CustomScrollView(
+                  slivers: [
+                    _AppBar(
+                      poster: wm.posterUri.value,
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+                            //TODO Рейтинг выше тайтла
+                            Text(
+                              wm.title.value,
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                            const SizedBox(height: 16),
+                            _Description(
+                              description: wm.description.value,
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                      _Description(
-                        description: wm.description.value,
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                floatingActionButton: _FAB(),
               ),
-            ],
-          ),
-          floatingActionButton: _FAB(),
-        ),
       ),
     );
   }

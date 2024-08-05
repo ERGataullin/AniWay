@@ -221,7 +221,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       id: id,
       title: (data['titles']! as Json)['ru']! as String,
       posterUri: data['posterUrl']! as String,
-      episodes: (data['episodes']! as List<dynamic>)
+      episodes: data['episodes'] != null ? (data['episodes']! as List<dynamic>)
           .cast<Json>()
           .map(
             (episodeJson) => EpisodeDto(
@@ -232,10 +232,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
               number: num.parse(episodeJson['episodeInt']! as String),
             ),
           )
-          .toList(growable: false),
-      description: (data['descriptions']! as List<dynamic>)
-          .cast<Json>()
-          .first['value']! as String,
+          .toList(growable: false) : [],
+      description: data['descriptions'] != null ? (data['descriptions']! as List<dynamic>)
+              .cast<Json>()
+              .first['value']! as String : '',
     );
   }
 

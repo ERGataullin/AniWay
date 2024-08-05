@@ -15,6 +15,8 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
 abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<String> get title;
 
+  ValueListenable<bool> get showLoader;
+
   ValueListenable<String> get posterUri;
 
   ValueListenable<String> get description;
@@ -42,6 +44,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     trigger: model.poster,
     () => model.poster.value ?? '',
   );
+
+  @override
+  ValueListenable<bool> get showLoader => model.loading;
 
   @override
   void initWidgetModel() {
