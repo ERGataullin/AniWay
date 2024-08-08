@@ -21,10 +21,6 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
     curve: Curves.easeInOutCubicEmphasized,
   );
 
-  final CurveTween _secondaryAnimationCurveTween = CurveTween(
-    curve: Curves.easeInOutCubicEmphasized.flipped,
-  );
-
   final Map<Key, KeyedSubtree> _subtrees = {};
 
   @override
@@ -36,9 +32,7 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
       transitionBuilder: (child, animation, secondaryAnimation) =>
           FadeThroughTransition(
         animation: animation.drive(_animationCurveTween),
-        secondaryAnimation: secondaryAnimation.drive(
-          _secondaryAnimationCurveTween,
-        ),
+        secondaryAnimation: secondaryAnimation.drive(_animationCurveTween),
         child: child,
       ),
     );
