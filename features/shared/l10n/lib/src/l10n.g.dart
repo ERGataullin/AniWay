@@ -151,6 +151,12 @@ abstract class L10n {
   /// **'Пароль'**
   String get passwordLabel;
 
+  /// No description provided for @playButtonLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смотреть'**
+  String get playButtonLabel;
+
   /// No description provided for @popularTitle.
   ///
   /// In ru, this message translates to:

@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/presentation/movie/model.dart';
 
@@ -13,18 +14,21 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
     );
 
 abstract interface class IMovieWM implements IWidgetModel {
-  ValueListenable<String> get title;
-
   ValueListenable<bool> get showLoader;
 
   ValueListenable<ImageProvider?> get poster;
 
-  ValueListenable<String> get description;
+  ValueListenable<String> get playButtonLabel;
 
-  ValueListenable<double?> get score;
+  ValueListenable<String> get score;
+
+  ValueListenable<String> get title;
+
+  ValueListenable<String> get description;
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
+    with L10nWMMixin
     implements IMovieWM {
   MovieWM(
     super._model, {
@@ -32,6 +36,27 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }) : _posterBaseUri = posterBaseUri;
 
   final Uri _posterBaseUri;
+
+  final NumberFormat _scoreFormat = NumberFormat('#0.0');
+
+  @override
+  ValueListenable<bool> get showLoader => model.loading;
+
+  @override
+  late final DynamicData<ImageProvider?> poster = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value == null
+        ? null
+        : NetworkImage(
+            _posterBaseUri.resolveUri(model.movie.value!.posterUri).toString(),
+          ),
+  );
+
+  @override
+  late final DynamicData<String> playButtonLabel = DynamicData(
+    trigger: l10n,
+    () => l10n.value.playButtonLabel,
+  );
 
   @override
   late final DynamicData<String> title = DynamicData(
@@ -46,22 +71,10 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<ImageProvider?> poster = DynamicData(
+  late final DynamicData<String> score = DynamicData(
     trigger: model.movie,
-    () => model.movie.value == null
-        ? null
-        : NetworkImage(
-            _posterBaseUri.resolveUri(model.movie.value!.posterUri).toString(),
-          ),
+    () => _scoreFormat.format(model.movie.value?.score),
   );
-
-  @override
-  late final DynamicData<double?> score = DynamicData(
-    trigger: model.movie,
-    () => model.movie.value?.score,
-  );
-  @override
-  ValueListenable<bool> get showLoader => model.loading;
 
   @override
   void initWidgetModel() {

@@ -1,7 +1,10 @@
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
+
+extension _MovieContext on BuildContext {
+  IMovieWM get wm => read<IMovieWM>();
+}
 
 class MovieWidget extends ElementaryWidget<IMovieWM> {
   const MovieWidget({
@@ -18,17 +21,10 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
   Widget build(IMovieWM wm) {
     return Provider<IMovieWM>.value(
       value: wm,
-      child: ListenableBuilder(
-        listenable: wm.showLoader,
-        builder: (context, __) => wm.showLoader.value
-            ? const Center(child: CircularProgressIndicator.adaptive())
-            : Scaffold(
+      child: Scaffold(
                 body: CustomScrollView(
                   slivers: [
-                    if (wm.poster.value != null)
-                      _AppBar(
-                        poster: wm.poster,
-                      ),
+                    const _AppBar(),
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -36,43 +32,40 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 16),
-                            if (wm.score.value != null)
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    applyTextScaling: true,
-                                    size: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.fontSize,
-                                    weight: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.fontWeight
-                                        ?.value
-                                        .toDouble(),
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.color,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _scoreFormat.format(wm.score.value),
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                ],
-                              ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  applyTextScaling: true,
+                                  size: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.fontSize,
+                                  weight: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.fontWeight
+                                      ?.value
+                                      .toDouble(),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.color,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  _scoreFormat.format(wm.score.value),
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                              ],
+                            ),
                             Text(
                               wm.title.value,
                               style: Theme.of(context).textTheme.headlineLarge,
                             ),
                             const SizedBox(height: 16),
-                            _Description(
-                              description: wm.description.value,
-                            ),
+                            const _Description(),
                             const SizedBox(height: 16),
                           ],
                         ),
@@ -81,67 +74,66 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                   ],
                 ),
                 floatingActionButton: _FAB(),
-              ),
-      ),
+              ),,,,;
     );
   }
 }
 
 class _AppBar extends StatelessWidget {
-  const _AppBar({
-    required this.poster,
-  });
-
-  final ValueListenable<ImageProvider?> poster;
+  const _AppBar();
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      expandedHeight: 450,
-      leading: Padding(
-        padding: const EdgeInsets.all(8),
-        child: IconButton.filledTonal(
+    return ListenableBuilder(
+      listenable: context.wm.showLoader,
+      builder: (context, __) => SliverAppBar(
+        expandedHeight: 450,
+        leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
           icon: const Icon(Icons.arrow_back),
         ),
-      ),
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            ValueListenableBuilder<ImageProvider?>(
-              valueListenable: poster,
-              builder: (context, poster, ___) {
-                return Image(
-                  image: poster!,
-                  fit: BoxFit.cover,
-                );
-              },
-            ),
-            Center(
-              child: FilledButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.play_arrow_sharp),
-                label: const Text('Смотреть'),
+        flexibleSpace: context.wm.showLoader.value
+            ? null
+            : FlexibleSpaceBar(
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    ListenableBuilder(
+                      listenable: context.wm.poster,
+                      builder: (context, __) => Image(
+                        image: context.wm.poster.value!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Center(
+                      child: FilledButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.play_arrow_sharp),
+                        label: ValueListenableBuilder<String>(
+                          valueListenable: context.wm.playButtonLabel,
+                          builder: (context, playButtonLabel, ___) {
+                            return Text(context.wm.playButtonLabel.value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
 }
 
 class _Description extends StatelessWidget {
-  const _Description({
-    required this.description,
-  });
-
-  final String description;
+  const _Description();
 
   @override
   Widget build(BuildContext context) {
-    return Text(description);
+    return ListenableBuilder(
+      listenable: context.wm.description,
+      builder: (context, __) => Text(context.wm.description.value),
+    );
   }
 }
 
