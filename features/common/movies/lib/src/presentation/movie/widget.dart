@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
 
@@ -18,12 +19,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
     return Provider<IMovieWM>.value(
       value: wm,
       child: ListenableBuilder(
-        listenable: Listenable.merge([
-          wm.title,
-          wm.poster,
-          wm.showLoader,
-          wm.score,
-        ]),
+        listenable: wm.showLoader,
         builder: (context, __) => wm.showLoader.value
             ? const Center(child: CircularProgressIndicator.adaptive())
             : Scaffold(
@@ -31,7 +27,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                   slivers: [
                     if (wm.poster.value != null)
                       _AppBar(
-                        poster: wm.poster.value!,
+                        poster: wm.poster,
                       ),
                     SliverToBoxAdapter(
                       child: Padding(
@@ -96,7 +92,7 @@ class _AppBar extends StatelessWidget {
     required this.poster,
   });
 
-  final ImageProvider poster;
+  final ValueListenable<ImageProvider?> poster;
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +109,14 @@ class _AppBar extends StatelessWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            Image(
-              image: poster,
-              fit: BoxFit.cover,
+            ValueListenableBuilder<ImageProvider?>(
+              valueListenable: poster,
+              builder: (context, poster, ___) {
+                return Image(
+                  image: poster!,
+                  fit: BoxFit.cover,
+                );
+              },
             ),
             Center(
               child: FilledButton.icon(
