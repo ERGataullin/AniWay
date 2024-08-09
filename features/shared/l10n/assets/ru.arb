@@ -1,6 +1,7 @@
 {
     "@@locale": "ru",
     "authorLabel": "Автор",
+    "detailsFABLabel": "В список",
     "durationSeconds": "{seconds} секунд",
     "@durationSeconds": {
         "placeholders": {

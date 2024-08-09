@@ -10,71 +10,89 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
   const MovieWidget({
     super.key,
     required this.movieId,
+    required this.onPlayPressed,
     WidgetModelFactory wmFactory = movieWMFactory,
   }) : super(wmFactory);
 
-  static final NumberFormat _scoreFormat = NumberFormat('#0.0');
-
   final int movieId;
+
+  final void Function(int movieId) onPlayPressed;
 
   @override
   Widget build(IMovieWM wm) {
     return Provider<IMovieWM>.value(
       value: wm,
       child: Scaffold(
-                body: CustomScrollView(
-                  slivers: [
-                    const _AppBar(),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  applyTextScaling: true,
-                                  size: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.fontSize,
-                                  weight: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.fontWeight
-                                      ?.value
-                                      .toDouble(),
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.color,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  _scoreFormat.format(wm.score.value),
+        body: CustomScrollView(
+          slivers: [
+            const _AppBar(),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ListenableBuilder(
+                  listenable: wm.showLoader,
+                  builder: (context, __) {
+                    return wm.showLoader.value
+                        ? const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    applyTextScaling: true,
+                                    size: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.fontSize,
+                                    weight: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.fontWeight
+                                        ?.value
+                                        .toDouble(),
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.color,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  ListenableBuilder(
+                                    listenable: wm.score,
+                                    builder: (context, __) => Text(
+                                      wm.score.value,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ListenableBuilder(
+                                listenable: wm.title,
+                                builder: (context, __) => Text(
+                                  wm.title.value,
                                   style:
-                                      Theme.of(context).textTheme.titleMedium,
+                                      Theme.of(context).textTheme.headlineLarge,
                                 ),
-                              ],
-                            ),
-                            Text(
-                              wm.title.value,
-                              style: Theme.of(context).textTheme.headlineLarge,
-                            ),
-                            const SizedBox(height: 16),
-                            const _Description(),
-                            const SizedBox(height: 16),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                              ),
+                              const SizedBox(height: 16),
+                              const _Description(),
+                              const SizedBox(height: 16),
+                            ],
+                          );
+                  },
                 ),
-                floatingActionButton: _FAB(),
-              ),,,,;
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: _FAB(),
+      ),
     );
   }
 }
@@ -107,13 +125,12 @@ class _AppBar extends StatelessWidget {
                     ),
                     Center(
                       child: FilledButton.icon(
-                        onPressed: () {},
+                        onPressed: context.wm.onPlayPressed,
                         icon: const Icon(Icons.play_arrow_sharp),
-                        label: ValueListenableBuilder<String>(
-                          valueListenable: context.wm.playButtonLabel,
-                          builder: (context, playButtonLabel, ___) {
-                            return Text(context.wm.playButtonLabel.value);
-                          },
+                        label: ListenableBuilder(
+                          listenable: context.wm.playButtonLabel,
+                          builder: (context, __) =>
+                              Text(context.wm.playButtonLabel.value),
                         ),
                       ),
                     ),
@@ -142,7 +159,10 @@ class _FAB extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () {},
-      label: const Text('В список'),
+      label: ListenableBuilder(
+        listenable: context.wm.detailsFABLabel,
+        builder: (context, __) => Text(context.wm.detailsFABLabel.value),
+      ),
       icon: const Icon(Icons.add),
     );
   }

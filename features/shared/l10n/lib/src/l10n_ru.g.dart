@@ -10,6 +10,9 @@ class L10nRu extends L10n {
   String get authorLabel => 'Автор';
 
   @override
+  String get detailsFABLabel => 'В список';
+
+  @override
   String durationSeconds(int seconds) {
     return '$seconds секунд';
   }

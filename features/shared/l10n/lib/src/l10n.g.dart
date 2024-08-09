@@ -97,6 +97,12 @@ abstract class L10n {
   /// **'Автор'**
   String get authorLabel;
 
+  /// No description provided for @detailsFABLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'В список'**
+  String get detailsFABLabel;
+
   /// No description provided for @durationSeconds.
   ///
   /// In ru, this message translates to:
