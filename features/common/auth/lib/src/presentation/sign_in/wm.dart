@@ -13,8 +13,6 @@ SignInWM signInWMFactory(BuildContext context) => SignInWM(
     );
 
 abstract interface class ISignInWM implements IWidgetModel {
-  ValueListenable<String> get title;
-
   ValueListenable<String> get emailLabel;
 
   ValueListenable<String> get passwordLabel;
@@ -44,12 +42,6 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
     with L10nWMMixin
     implements ISignInWM {
   SignInWM(super._model);
-
-  @override
-  late final DynamicData<String> title = DynamicData(
-    trigger: l10n,
-    () => l10n.value.signInTitle,
-  );
 
   @override
   late final DynamicData<String> emailLabel = DynamicData(
@@ -110,7 +102,6 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   @override
   void dispose() {
     super.dispose();
-    title.dispose();
     emailLabel.dispose();
     passwordLabel.dispose();
     obscurePassword.dispose();

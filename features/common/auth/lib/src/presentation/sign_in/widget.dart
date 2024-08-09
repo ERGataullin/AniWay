@@ -17,29 +17,34 @@ class SignInWidget extends ElementaryWidget<ISignInWM> {
     return Provider<ISignInWM>.value(
       value: wm,
       child: Scaffold(
-        appBar: AppBar(
-          title: const _Title(),
-        ),
-        body: const Form(
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Padding(
-            padding: EdgeInsets.all(16),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: AutofillGroup(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: _Logo(),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 720,
                   ),
-                  SizedBox(height: 16),
-                  _EmailField(),
-                  SizedBox(height: 16),
-                  _PasswordField(),
-                  SizedBox(height: 16),
-                  _SubmitButton(),
-                  Spacer(),
-                ],
+                  child: const SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: 16),
+                        _Logo(),
+                        SizedBox(height: 32),
+                        _EmailField(),
+                        SizedBox(height: 16),
+                        _PasswordField(),
+                        SizedBox(height: 32),
+                        _SubmitButton(),
+                        SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -49,26 +54,14 @@ class SignInWidget extends ElementaryWidget<ISignInWM> {
   }
 }
 
-class _Title extends StatelessWidget {
-  const _Title();
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.title,
-      builder: (context, title, ___) => Text(title),
-    );
-  }
-}
-
 class _Logo extends StatelessWidget {
   const _Logo();
 
   @override
   Widget build(BuildContext context) {
-    return Image(
+    return const SizedBox(
       height: 256,
-      image: context.wm.logo,
+      child: Logo(),
     );
   }
 }
