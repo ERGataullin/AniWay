@@ -2,6 +2,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'l10n.g.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Russian (`ru`).
 class L10nRu extends L10n {
   L10nRu([String locale = 'ru']) : super(locale);
@@ -90,10 +92,7 @@ class L10nRu extends L10n {
   String get qualityLabel => 'Качество';
 
   @override
-  String get signInSubmitLabel => 'Войти';
-
-  @override
-  String get signInTitle => 'Авторизация';
+  String get signInSubmitLabel => 'Войти через Anime365';
 
   @override
   String get searchPageTitle => 'Поиск';

@@ -7,6 +7,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'l10n_ru.g.dart';
 
+// ignore_for_file: type=lint
+
 /// Callers can lookup localized strings with an instance of L10n
 /// returned by `L10n.of(context)`.
 ///
@@ -166,14 +168,8 @@ abstract class L10n {
   /// No description provided for @signInSubmitLabel.
   ///
   /// In ru, this message translates to:
-  /// **'Войти'**
+  /// **'Войти через Anime365'**
   String get signInSubmitLabel;
-
-  /// No description provided for @signInTitle.
-  ///
-  /// In ru, this message translates to:
-  /// **'Авторизация'**
-  String get signInTitle;
 
   /// No description provided for @searchPageTitle.
   ///
