@@ -39,6 +39,7 @@ class Themes {
       surfaceContainerHighest: Colors.white24,
     ),
   ).copyWith(
+    splashColor: const Color(0x66C8C8C8),
     appBarTheme: const AppBarTheme(centerTitle: false),
     sliderTheme: SliderThemeData(
       trackHeight: 4,
