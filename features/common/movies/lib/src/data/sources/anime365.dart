@@ -324,6 +324,29 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     );
   }
 
+  @override
+  Future<int> episodesWatched(int movieId) async {
+    final ResponseData<String> response = await _network.request(
+      RequestData(
+        uri: Uri(path: '/catalog/$movieId'),
+        method: RequestMethod.get,
+      ),
+    );
+    final Document document = parse(response.body);
+    //TODO form first time after columns with important information
+    final Element seriesCard = document.querySelector(
+      'div.body-container > '
+      'div.animelist-one-series',
+    )!;
+    final Element watchedCount = seriesCard.querySelector(
+      'form#yw0 > '
+      'input#UsersRates_episodes',
+    )!;
+
+    //TODO WatchListNode model
+    return int.parse(watchedCount.attributes['value']!);
+  }
+
   MovieTypeDto _convertJsonToMovieType(String json) {
     return switch (json) {
       'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieTypeDto.tv,

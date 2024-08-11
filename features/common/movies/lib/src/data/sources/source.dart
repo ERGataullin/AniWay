@@ -25,4 +25,6 @@ abstract interface class MoviesDataSource {
   Future<VideoDto> getTranslationVideo(int translationId);
 
   Future<void> saveTranslationWatched(int translationId);
+
+  Future<int> episodesWatched(int movieId);
 }

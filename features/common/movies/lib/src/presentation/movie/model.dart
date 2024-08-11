@@ -8,6 +8,8 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<MovieDetailsData?> get movie;
 
+  ValueListenable<int> get episodesWatched;
+
   void loadData({
     required int movieId,
   });
@@ -25,6 +27,9 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   @override
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
+  @override
+  final ValueNotifier<int> episodesWatched = ValueNotifier(0);
+
   final MoviesService _service;
 
   @override
@@ -33,6 +38,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   }) async {
     loading.value = true;
     movie.value = await _service.getMovie(movieId);
+    _service.episodesWatched(movieId);
     loading.value = false;
   }
 }

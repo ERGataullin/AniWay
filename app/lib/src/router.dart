@@ -179,9 +179,10 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       path: 'movies/:movieId',
       builder: (context, state) => MovieWidget(
         movieId: int.parse(state.pathParameters['movieId']!),
-        onPlayPressed: (movieId) => context.pushNamed(
+        onPlayPressed: (movieId, episodeId) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': movieId.toString()},
+          queryParameters: {'episodeId': episodeId.toString()},
         ),
       ),
     );

@@ -48,4 +48,8 @@ class MoviesRepository {
   Future<void> saveTranslationWatched(int translationId) {
     return _remote.saveTranslationWatched(translationId);
   }
+
+  Future<int> episodesWatched(int movieId) {
+    return _remote.episodesWatched(movieId);
+  }
 }

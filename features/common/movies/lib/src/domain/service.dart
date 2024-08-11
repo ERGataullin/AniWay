@@ -77,4 +77,9 @@ class MoviesService implements Initable {
     await _repository.saveTranslationWatched(translationId);
     _upNextChanges.value++;
   }
+
+  Future<int> episodesWatched(int movieId) async {
+    final int countWatchedEpisodes = await _repository.episodesWatched(movieId);
+    return countWatchedEpisodes;
+  }
 }

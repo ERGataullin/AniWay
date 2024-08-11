@@ -16,7 +16,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   final int movieId;
 
-  final void Function(int movieId) onPlayPressed;
+  final void Function(int movieId, int episodeId) onPlayPressed;
 
   @override
   Widget build(IMovieWM wm) {
@@ -32,6 +32,9 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                 child: ListenableBuilder(
                   listenable: wm.showLoader,
                   builder: (context, __) {
+                    final TextStyle textStyle =
+                        Theme.of(context).textTheme.titleMedium ??
+                            DefaultTextStyle.of(context).style;
                     return wm.showLoader.value
                         ? const Center(
                             child: CircularProgressIndicator.adaptive(),
@@ -45,29 +48,17 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                                   Icon(
                                     Icons.star,
                                     applyTextScaling: true,
-                                    size: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.fontSize,
-                                    weight: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.fontWeight
-                                        ?.value
-                                        .toDouble(),
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.color,
+                                    size: textStyle.fontSize,
+                                    weight:
+                                        textStyle.fontWeight?.value.toDouble(),
+                                    color: textStyle.color,
                                   ),
                                   const SizedBox(width: 4),
                                   ListenableBuilder(
                                     listenable: wm.score,
                                     builder: (context, __) => Text(
                                       wm.score.value,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
+                                      style: textStyle,
                                     ),
                                   ),
                                 ],
@@ -91,7 +82,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
             ),
           ],
         ),
-        floatingActionButton: _FAB(),
+        floatingActionButton: _WatchStatusButton(),
       ),
     );
   }
@@ -154,7 +145,7 @@ class _Description extends StatelessWidget {
   }
 }
 
-class _FAB extends StatelessWidget {
+class _WatchStatusButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
