@@ -37,13 +37,13 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                             DefaultTextStyle.of(context).style;
                     return wm.showLoader.value
                         ? const Column(
-                          children: [
-                            SizedBox(height: 16),
-                            Center(
+                            children: [
+                              SizedBox(height: 16),
+                              Center(
                                 child: CircularProgressIndicator.adaptive(),
                               ),
-                          ],
-                        )
+                            ],
+                          )
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -119,14 +119,21 @@ class _AppBar extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    Center(
-                      child: FilledButton.icon(
-                        onPressed: context.wm.onPlayPressed,
-                        icon: const Icon(Icons.play_arrow_sharp),
-                        label: ListenableBuilder(
-                          listenable: context.wm.playButtonLabel,
-                          builder: (context, __) =>
-                              Text(context.wm.playButtonLabel.value),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 64,
+                        ),
+                        child: FilledButton.icon(
+                          onPressed: context.wm.onPlayPressed,
+                          icon: const Icon(Icons.play_arrow_sharp),
+                          label: ListenableBuilder(
+                            listenable: context.wm.playButtonLabel,
+                            builder: (context, __) =>
+                                Text(context.wm.playButtonLabel.value),
+                          ),
                         ),
                       ),
                     ),

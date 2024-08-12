@@ -5,23 +5,23 @@ class WatchListElementData {
   const WatchListElementData({
     required this.status,
     this.score,
-    this.countWatchedEpisodes,
-    this.countEpisodes,
+    this.watchedEpisodesCount,
+    this.episodesCount,
   });
 
   factory WatchListElementData.fromDto(WatchListElementDto dto) =>
       WatchListElementData(
         status: WatchStatus.fromDto(dto.status),
         score: dto.score,
-        countWatchedEpisodes: dto.countWatchedEpisodes,
-        countEpisodes: dto.countEpisodes,
+        watchedEpisodesCount: dto.watchedEpisodesCount,
+        episodesCount: dto.episodesCount,
       );
 
   final WatchStatus status;
 
   final int? score;
 
-  final int? countWatchedEpisodes;
+  final int? watchedEpisodesCount;
 
-  final int? countEpisodes;
+  final int? episodesCount;
 }

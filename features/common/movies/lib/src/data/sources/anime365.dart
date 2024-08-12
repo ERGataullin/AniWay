@@ -15,8 +15,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   Anime365MoviesDataSource({
     required CookieManager cookieManager,
     required Network network,
-  })
-      : _cookieManager = cookieManager,
+  })  : _cookieManager = cookieManager,
         _network = network;
 
   final CookieManager _cookieManager;
@@ -53,8 +52,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
     return List<Json>.from(response.body['data']! as List<dynamic>)
         .map(
-          (movieJson) =>
-          MovieBaseDto(
+          (movieJson) => MovieBaseDto(
             id: movieJson['id']! as int,
             title: (movieJson['titles'] as Json?)?['ru'] as String? ??
                 movieJson['title']! as String,
@@ -64,7 +62,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
                 ? null
                 : double.parse(movieJson['myAnimeListScore']! as String),
           ),
-    )
+        )
         .toList(growable: false);
   }
 
@@ -89,11 +87,11 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     final Document document = parse(response.body);
     final Element upNextCard = document.querySelector(
       'div.body-container > '
-          'div.container.section > '
-          'div#m-index-personal-episodes',
+      'div.container.section > '
+      'div#m-index-personal-episodes',
     )!;
     final Element? pagerCard =
-    upNextCard.querySelector('div.pager.card > ul.pagination');
+        upNextCard.querySelector('div.pager.card > ul.pagination');
     _upNextMaxPage = pagerCard == null ? 1 : pagerCard.children.length - 4;
     final Element upNextItemsContainer = upNextCard.querySelector(
       // Items card
@@ -101,7 +99,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
 
       // Up next items
-          'div.row > div.items', // up next items
+      'div.row > div.items', // up next items
     )!;
     final RegExp episodeNumberPattern = RegExp(r'\d+(\.\d)?');
     final RegExp tvEpisodeTitlePattern = RegExp(
@@ -126,7 +124,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     final RegExp pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
 
     return upNextItemsContainer.children.map(
-          (itemElement) {
+      (itemElement) {
         final Element a = itemElement.querySelector('a[href]')!;
         final Uri hrefUri = Uri.parse(a.attributes['href']!);
 
@@ -178,15 +176,15 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           type = MovieTypeDto.preview;
         }
         final Iterable<RegExpMatch> episodeNumberMatches =
-        episodeNumberPattern.allMatches(episodeTitle);
+            episodeNumberPattern.allMatches(episodeTitle);
         final num? episodeNumber = episodeNumberMatches.isEmpty
             ? null
             : num.parse(
-          episodeTitle.substring(
-            episodeNumberMatches.single.start,
-            episodeNumberMatches.single.end,
-          ),
-        );
+                episodeTitle.substring(
+                  episodeNumberMatches.single.start,
+                  episodeNumberMatches.single.end,
+                ),
+              );
 
         return UpNextDto(
           movie: MovieBaseDto(
@@ -212,37 +210,45 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields': 'titles,posterUrl,episodes,descriptions,myAnimeListScore',
+            'fields':
+                'url,titles,posterUrl,episodes,descriptions,myAnimeListScore',
           },
         ),
         method: RequestMethod.get,
       ),
     );
     final Json data = response.body['data']! as Json;
+    final Uri movieUri = Uri.parse(data['url']! as String);
+    final List<EpisodeDto> previewsAndEpisodes = data['episodes'] != null
+        ? (data['episodes']! as List<dynamic>)
+            .cast<Json>()
+            .map(
+              (episodeJson) => EpisodeDto(
+                id: episodeJson['id']! as int,
+                type: _convertJsonToMovieType(
+                  episodeJson['episodeType']! as String,
+                ),
+                number: num.parse(episodeJson['episodeInt']! as String),
+              ),
+            )
+            .toList(growable: false)
+        : const [];
 
     return MovieDetailsDto(
       id: id,
+      url: movieUri.path,
       title: (data['titles']! as Json)['ru']! as String,
       posterUri: data['posterUrl']! as String,
-      episodes: data['episodes'] != null
-          ? (data['episodes']! as List<dynamic>)
-          .cast<Json>()
-          .map(
-            (episodeJson) =>
-            EpisodeDto(
-              id: episodeJson['id']! as int,
-              type: _convertJsonToMovieType(
-                episodeJson['episodeType']! as String,
-              ),
-              number: num.parse(episodeJson['episodeInt']! as String),
-            ),
-      )
-          .toList(growable: false)
-          : [],
+      previews: previewsAndEpisodes
+          .where((episode) => episode.type == MovieTypeDto.preview)
+          .toList(growable: false),
+      episodes: previewsAndEpisodes
+          .where((episode) => episode.type != MovieTypeDto.preview)
+          .toList(growable: false),
       description: data['descriptions'] != null
           ? (data['descriptions']! as List<dynamic>)
-          .cast<Json>()
-          .first['value']! as String
+              .cast<Json>()
+              .first['value']! as String
           : '',
       score: data['myAnimeListScore'] == '-1'
           ? null
@@ -269,12 +275,11 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         .cast<Json>()
         .where(
           (translationJson) =>
-      translationJson['isActive'] == 1 &&
-          translationJson['type'] != 'voiceOther',
-    )
+              translationJson['isActive'] == 1 &&
+              translationJson['type'] != 'voiceOther',
+        )
         .map(
-          (translationJson) =>
-          VideoTranslationDto(
+          (translationJson) => VideoTranslationDto(
             id: translationJson['id']! as int,
             title: translationJson['authorsSummary']! as String,
             type: translationJson['typeKind']! as String,
@@ -284,7 +289,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
               translationJson['authorsList']! as List<dynamic>,
             ),
           ),
-    )
+        )
         .toList(growable: false);
   }
 
@@ -301,9 +306,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     final Json data = response.body['data']! as Json;
 
     final List<Json> downloadSourcesJsons =
-    (data['download']! as List<dynamic>).cast();
+        (data['download']! as List<dynamic>).cast();
     final List<Json> streamSourcesJsons =
-    (data['stream']! as List<dynamic>).cast();
+        (data['stream']! as List<dynamic>).cast();
     return VideoDto(
       download: {
         for (final Json sourceJson in downloadSourcesJsons)
@@ -312,7 +317,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       stream: {
         for (final Json sourceJson in streamSourcesJsons)
           sourceJson['height']! as num:
-          (sourceJson['urls']! as List<dynamic>).first as String,
+              (sourceJson['urls']! as List<dynamic>).first as String,
       },
       subtitlesUrl: data['subtitlesUrl'] as String?,
     );
@@ -330,69 +335,59 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   }
 
   @override
-  Future<WatchListElementDto> getWatchListElement(int movieId) async {
+  Future<WatchListElementDto> getWatchListElement(Uri movieUri) async {
     final ResponseData<String> response = await _network.request(
       RequestData(
-        uri: Uri(path: '/catalog/$movieId'),
+        uri: Uri(path: '$movieUri'),
         method: RequestMethod.get,
       ),
     );
     final Document document = parse(response.body);
-    final Element animeList = document.querySelector(
-      'div.body-container > '
-          'div.animelist-one-series > '
-          'form#yw2',
-    )!;
-    final String button = animeList
-        .querySelector(
-      'button[name="yt1"]',
-    )!
-        .text;
+    final Element bodyContainer = document.querySelector('div.body-container')!;
+    final Element animeListForm =
+        bodyContainer.querySelector('div.animelist_one_series > form#yw2')!;
 
-    final String status = animeList
+    final String? status = animeListForm
         .querySelector('select#UsersRates_status > '
-        'option[selected="selected"]')!
-        .text;
-    final int score = int.parse(
-      animeList
-          .querySelector('select#UsersRates_score > '
-          'option[selected="selected"]')!
-          .attributes['value']!,
-    );
-    final int countWatchedEpisodes = int.parse(
-      animeList
-          .querySelector('input#UsersRates_episodes')!
-          .attributes['value']!,
-    );
-    final int countEpisodes = int.parse(
-      animeList
-          .querySelector('input#UsersRates_episodes')!
-          .attributes['max']!,
+            'option[selected="selected"]')
+        ?.text;
+    final int? score = int.tryParse(
+      animeListForm
+              .querySelector('select#UsersRates_score > '
+                  'option[selected="selected"]')
+              ?.attributes['value'] ??
+          '',
     );
 
-    return switch (button) {
-      'Добавить в список' => WatchListElementDto(status: WatchStatusDto.none),
-      'Сохранить' =>
-          WatchListElementDto(
-              status: switch (status) {
-                'Смотрю' => WatchStatusDto.watching,
-                'Просмотрено' => WatchStatusDto.completed,
-                'Отложено' => WatchStatusDto.onHold,
-                'Брошено' => WatchStatusDto.dropped,
-                final Object? unsupported =>
-                throw UnsupportedError(
+    final int? watchedEpisodesCount = int.tryParse(
+      animeListForm
+              .querySelector('input#UsersRates_episodes')
+              ?.attributes['value'] ??
+          '',
+    );
+    final int? episodesCount = int.tryParse(
+      animeListForm
+              .querySelector('input#UsersRates_episodes')
+              ?.attributes['max'] ??
+          '',
+    );
+
+    return status == null
+        ? const WatchListElementDto(status: WatchStatusDto.none)
+        : WatchListElementDto(
+            status: switch (status) {
+              'Смотрю' => WatchStatusDto.watching,
+              'Просмотрено' => WatchStatusDto.completed,
+              'Отложено' => WatchStatusDto.onHold,
+              'Брошено' => WatchStatusDto.dropped,
+              final Object? unsupported => throw UnsupportedError(
                   'Unsupported movie status: $unsupported',
                 ),
-              },
-              score: score,
-              countWatchedEpisodes: countWatchedEpisodes,
-              countEpisodes: countEpisodes,
-          ),
-      final Object unsupported =>
-      throw UnimplementedError(
-        'Unsupported watch list element: $unsupported',
-      ),
-    };
+            },
+            score: score,
+            watchedEpisodesCount: watchedEpisodesCount,
+            episodesCount: episodesCount,
+          );
   }
 
   MovieTypeDto _convertJsonToMovieType(String json) {
@@ -406,10 +401,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       'cm' => MovieTypeDto.ad,
       'music' => MovieTypeDto.music,
       'preview' || 'pv' => MovieTypeDto.preview,
-      final Object? unsupported =>
-      throw UnsupportedError(
-        'Unsupported movie type: $unsupported',
-      ),
+      final Object? unsupported => throw UnsupportedError(
+          'Unsupported movie type: $unsupported',
+        ),
     };
   }
 

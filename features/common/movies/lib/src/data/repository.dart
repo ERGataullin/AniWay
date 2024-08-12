@@ -50,7 +50,7 @@ class MoviesRepository {
     return _remote.saveTranslationWatched(translationId);
   }
 
-  Future<WatchListElementDto> getWatchListElement(int movieId) {
-    return _remote.getWatchListElement(movieId);
+  Future<WatchListElementDto> getWatchListElement(Uri movieUri) {
+    return _remote.getWatchListElement(movieUri);
   }
 }

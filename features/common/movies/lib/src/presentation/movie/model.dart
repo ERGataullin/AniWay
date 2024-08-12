@@ -2,7 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_details.dart';
-import 'package:movies/src/domain/models/watch_list.dart';
+import 'package:movies/src/domain/models/watch_list_element.dart';
 
 abstract interface class IMovieModel implements ElementaryModel {
   ValueListenable<bool> get loading;
@@ -11,7 +11,7 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<WatchListElementData?> get watchListElement;
 
-  ValueListenable<int?> get currentEpisode;
+  ValueListenable<int?> get currentEpisodeId;
 
   void loadData({
     required int movieId,
@@ -35,7 +35,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
       ValueNotifier(null);
 
   @override
-  final ValueNotifier<int?> currentEpisode = ValueNotifier(null);
+  final ValueNotifier<int?> currentEpisodeId = ValueNotifier(null);
 
   final MoviesService _service;
 
@@ -45,14 +45,19 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   }) async {
     loading.value = true;
     movie.value = await _service.getMovie(movieId);
-    watchListElement.value = await _service.getWatchListElement(movieId);
+    watchListElement.value =
+        await _service.getWatchListElement(movie.value!.uri);
 
-    currentEpisode.value =
-        (watchListElement.value?.countWatchedEpisodes == null)
+    currentEpisodeId.value =
+        (watchListElement.value?.watchedEpisodesCount == null)
             ? null
-            : movie
-                .value
-                ?.episodes[watchListElement.value!.countWatchedEpisodes! + 1]
+            : movie.value?.episodes
+                .firstWhere(
+                  (episode) =>
+                      episode.number ==
+                      watchListElement.value!.watchedEpisodesCount! + 1,
+                  orElse: () => movie.value!.episodes.first,
+                )
                 .id;
     loading.value = false;
   }

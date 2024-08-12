@@ -142,7 +142,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
             },
           ),
         ),
-        onMoviePressed: (id) => context.pushNamed(
+        onMoviePressed: (id) => context.goNamed(
           _Routes.movie(parent: _Routes.home),
           pathParameters: {'movieId': id.toString()},
         ),
@@ -165,7 +165,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
           final String order => MoviesOrder.valueOf(order),
           _ => MoviesOrder.byPopularity,
         },
-        onMoviePressed: (id) => context.pushNamed(
+        onMoviePressed: (id) => context.goNamed(
           _Routes.movie(parent: _Routes.home),
           pathParameters: {'movieId': id.toString()},
         ),

@@ -20,8 +20,6 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get playButtonLabel;
 
-  void onPlayPressed();
-
   ValueListenable<String> get score;
 
   ValueListenable<String> get title;
@@ -29,6 +27,8 @@ abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<String> get description;
 
   ValueListenable<String> get detailsFABLabel;
+
+  void onPlayPressed();
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
@@ -63,14 +63,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  void onPlayPressed() {
-    widget.onPlayPressed(
-      model.movie.value!.id,
-      model.currentEpisode.value,
-    );
-  }
-
-  @override
   late final DynamicData<String> score = DynamicData(
     trigger: model.movie,
     () => _scoreFormat.format(model.movie.value?.score),
@@ -103,12 +95,20 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
+  void onPlayPressed() {
+    widget.onPlayPressed(
+      model.movie.value!.id,
+      model.currentEpisodeId.value,
+    );
+  }
+
+  @override
   void dispose() {
-    super.dispose();
     poster.dispose();
-    // playButtonLabel.dispose();
+    playButtonLabel.dispose();
     score.dispose();
     title.dispose();
     description.dispose();
+    super.dispose();
   }
 }
