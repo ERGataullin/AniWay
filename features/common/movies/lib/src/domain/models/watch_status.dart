@@ -5,7 +5,8 @@ enum WatchStatus {
   watching,
   completed,
   onHold,
-  dropped;
+  dropped,
+  none;
 
   factory WatchStatus.fromDto(WatchStatusDto dto) => switch (dto) {
         WatchStatusDto.planned => WatchStatus.planned,
@@ -13,6 +14,7 @@ enum WatchStatus {
         WatchStatusDto.completed => WatchStatus.completed,
         WatchStatusDto.onHold => WatchStatus.onHold,
         WatchStatusDto.dropped => WatchStatus.dropped,
+        WatchStatusDto.none => WatchStatus.none,
       };
 
   WatchStatusDto toDto() => switch (this) {
@@ -21,5 +23,6 @@ enum WatchStatus {
         WatchStatus.completed => WatchStatusDto.completed,
         WatchStatus.onHold => WatchStatusDto.onHold,
         WatchStatus.dropped => WatchStatusDto.dropped,
+        WatchStatus.none => WatchStatusDto.none,
       };
 }

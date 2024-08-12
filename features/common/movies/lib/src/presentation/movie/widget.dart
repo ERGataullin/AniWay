@@ -16,7 +16,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   final int movieId;
 
-  final void Function(int movieId, int episodeId) onPlayPressed;
+  final void Function(int movieId, int? episodeId) onPlayPressed;
 
   @override
   Widget build(IMovieWM wm) {
@@ -36,9 +36,14 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                         Theme.of(context).textTheme.titleMedium ??
                             DefaultTextStyle.of(context).style;
                     return wm.showLoader.value
-                        ? const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          )
+                        ? const Column(
+                          children: [
+                            SizedBox(height: 16),
+                            Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              ),
+                          ],
+                        )
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

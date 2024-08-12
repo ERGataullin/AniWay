@@ -6,9 +6,11 @@ import 'package:movies/movies.dart';
 import 'package:movies/src/data/dto/movie_base.dart';
 import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:movies/src/data/dto/up_next.dart';
+import 'package:movies/src/data/dto/watch_list_element.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_details.dart';
 import 'package:movies/src/domain/models/up_next.dart';
+import 'package:movies/src/domain/models/watch_list.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:player/player.dart';
 
@@ -78,8 +80,9 @@ class MoviesService implements Initable {
     _upNextChanges.value++;
   }
 
-  Future<int> episodesWatched(int movieId) async {
-    final int countWatchedEpisodes = await _repository.episodesWatched(movieId);
-    return countWatchedEpisodes;
+  Future<WatchListElementData?> getWatchListElement(int movieId) async {
+    final WatchListElementDto dto =
+        await _repository.getWatchListElement(movieId);
+    return WatchListElementData.fromDto(dto);
   }
 }

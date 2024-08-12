@@ -2,13 +2,16 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/movie_details.dart';
+import 'package:movies/src/domain/models/watch_list.dart';
 
 abstract interface class IMovieModel implements ElementaryModel {
   ValueListenable<bool> get loading;
 
   ValueListenable<MovieDetailsData?> get movie;
 
-  ValueListenable<int> get episodesWatched;
+  ValueListenable<WatchListElementData?> get watchListElement;
+
+  ValueListenable<int?> get currentEpisode;
 
   void loadData({
     required int movieId,
@@ -28,7 +31,11 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
   @override
-  final ValueNotifier<int> episodesWatched = ValueNotifier(0);
+  final ValueNotifier<WatchListElementData?> watchListElement =
+      ValueNotifier(null);
+
+  @override
+  final ValueNotifier<int?> currentEpisode = ValueNotifier(null);
 
   final MoviesService _service;
 
@@ -38,7 +45,15 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   }) async {
     loading.value = true;
     movie.value = await _service.getMovie(movieId);
-    _service.episodesWatched(movieId);
+    watchListElement.value = await _service.getWatchListElement(movieId);
+
+    currentEpisode.value =
+        (watchListElement.value?.countWatchedEpisodes == null)
+            ? null
+            : movie
+                .value
+                ?.episodes[watchListElement.value!.countWatchedEpisodes! + 1]
+                .id;
     loading.value = false;
   }
 }

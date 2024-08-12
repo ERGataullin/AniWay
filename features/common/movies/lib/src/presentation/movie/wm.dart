@@ -66,7 +66,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   void onPlayPressed() {
     widget.onPlayPressed(
       model.movie.value!.id,
-      model.episodesWatched.value,
+      model.currentEpisode.value,
     );
   }
 
@@ -106,7 +106,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   void dispose() {
     super.dispose();
     poster.dispose();
-    playButtonLabel.dispose();
+    // playButtonLabel.dispose();
     score.dispose();
     title.dispose();
     description.dispose();

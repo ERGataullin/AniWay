@@ -3,6 +3,7 @@ import 'package:movies/src/data/dto/movie_base.dart';
 import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:movies/src/data/dto/movies_order.dart';
 import 'package:movies/src/data/dto/up_next.dart';
+import 'package:movies/src/data/dto/watch_list_element.dart';
 import 'package:movies/src/data/dto/watch_status.dart';
 import 'package:player/player.dart';
 
@@ -49,7 +50,7 @@ class MoviesRepository {
     return _remote.saveTranslationWatched(translationId);
   }
 
-  Future<int> episodesWatched(int movieId) {
-    return _remote.episodesWatched(movieId);
+  Future<WatchListElementDto> getWatchListElement(int movieId) {
+    return _remote.getWatchListElement(movieId);
   }
 }

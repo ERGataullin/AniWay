@@ -1,3 +1,4 @@
+import 'package:movies/src/data/dto/watch_list_element.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 
 class WatchListElementData {
@@ -8,9 +9,9 @@ class WatchListElementData {
     this.countEpisodes,
   });
 
-  factory WatchListElementData.fromDto(WatchListElementData dto) =>
+  factory WatchListElementData.fromDto(WatchListElementDto dto) =>
       WatchListElementData(
-        status: dto.status,
+        status: WatchStatus.fromDto(dto.status),
         score: dto.score,
         countWatchedEpisodes: dto.countWatchedEpisodes,
         countEpisodes: dto.countEpisodes,
