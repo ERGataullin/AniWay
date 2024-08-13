@@ -109,35 +109,56 @@ class _AppBar extends StatelessWidget {
         flexibleSpace: context.wm.showLoader.value
             ? null
             : FlexibleSpaceBar(
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    ListenableBuilder(
-                      listenable: context.wm.poster,
-                      builder: (context, __) => Image(
-                        image: context.wm.poster.value!,
-                        fit: BoxFit.cover,
-                      ),
+                background: DecoratedBox(
+                  position: DecorationPosition.foreground,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context).colorScheme.surface.withOpacity(0),
+                        Theme.of(context).colorScheme.surface.withOpacity(0.3),
+                        Theme.of(context).colorScheme.surface.withOpacity(0.8),
+                        Theme.of(context).colorScheme.surface.withOpacity(1),
+                      ],
+                      stops: const [
+                        0.85,
+                        0.90,
+                        0.95,
+                        1,
+                      ],
                     ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 64,
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      ListenableBuilder(
+                        listenable: context.wm.poster,
+                        builder: (context, __) => Image(
+                          image: context.wm.poster.value!,
+                          fit: BoxFit.cover,
                         ),
-                        child: FilledButton.icon(
-                          onPressed: context.wm.onPlayPressed,
-                          icon: const Icon(Icons.play_arrow_sharp),
-                          label: ListenableBuilder(
-                            listenable: context.wm.playButtonLabel,
-                            builder: (context, __) =>
-                                Text(context.wm.playButtonLabel.value),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 64,
+                          ),
+                          child: FilledButton.icon(
+                            onPressed: context.wm.onPlayPressed,
+                            icon: const Icon(Icons.play_arrow_sharp),
+                            label: ListenableBuilder(
+                              listenable: context.wm.playButtonLabel,
+                              builder: (context, __) =>
+                                  Text(context.wm.playButtonLabel.value),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
       ),
