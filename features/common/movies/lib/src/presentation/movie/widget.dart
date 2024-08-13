@@ -137,9 +137,9 @@ class _AppBar extends StatelessWidget {
                                 .withOpacity(1),
                           ],
                           stops: const [
+                            0.40,
                             0.70,
                             0.80,
-                            0.90,
                             1,
                           ],
                         ),
@@ -155,10 +155,7 @@ class _AppBar extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 64,
-                        ),
+                        padding: const EdgeInsets.all(64),
                         child: FilledButton.icon(
                           onPressed: context.wm.onPlayPressed,
                           icon: const Icon(Icons.play_arrow_sharp),
