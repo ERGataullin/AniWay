@@ -142,8 +142,8 @@ class AppRouter implements RouterConfig<RouteMatchList> {
             },
           ),
         ),
-        onMoviePressed: (id) => context.pushNamed(
-          _Routes.moviePlayer,
+        onMoviePressed: (id) => context.goNamed(
+          movie.name!,
           pathParameters: {'movieId': id.toString()},
         ),
       ),
@@ -165,8 +165,8 @@ class AppRouter implements RouterConfig<RouteMatchList> {
           final String order => MoviesOrder.valueOf(order),
           _ => MoviesOrder.byPopularity,
         },
-        onMoviePressed: (id) => context.pushNamed(
-          _Routes.moviePlayer,
+        onMoviePressed: (id) => context.goNamed(
+          movieRoute.name!,
           pathParameters: {'movieId': id.toString()},
         ),
       ),
@@ -177,7 +177,14 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       name: _Routes.movie(parent: parent),
       path: 'movies/:movieId',
-      builder: (context, state) => const MovieWidget(),
+      builder: (context, state) => MovieWidget(
+        movieId: int.parse(state.pathParameters['movieId']!),
+        onPlayPressed: (movieId, episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': movieId.toString()},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+      ),
     );
   }
 

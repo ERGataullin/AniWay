@@ -7,6 +7,7 @@ import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:movies/src/data/dto/movie_type.dart';
 import 'package:movies/src/data/dto/movies_order.dart';
 import 'package:movies/src/data/dto/up_next.dart';
+import 'package:movies/src/data/dto/watch_list_element.dart';
 import 'package:movies/src/data/dto/watch_status.dart';
 import 'package:player/player.dart';
 
@@ -209,29 +210,48 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields': 'titles,episodes',
+            'fields':
+                'url,titles,posterUrl,episodes,descriptions,myAnimeListScore',
           },
         ),
         method: RequestMethod.get,
       ),
     );
     final Json data = response.body['data']! as Json;
+    final Uri movieUri = Uri.parse(data['url']! as String);
+    final List<EpisodeDto> previewsAndEpisodes = data['episodes'] != null
+        ? (data['episodes']! as List<dynamic>)
+            .cast<Json>()
+            .map(
+              (episodeJson) => EpisodeDto(
+                id: episodeJson['id']! as int,
+                type: _convertJsonToMovieType(
+                  episodeJson['episodeType']! as String,
+                ),
+                number: num.parse(episodeJson['episodeInt']! as String),
+              ),
+            )
+            .toList(growable: false)
+        : const [];
 
     return MovieDetailsDto(
       id: id,
+      url: movieUri.path,
       title: (data['titles']! as Json)['ru']! as String,
-      episodes: (data['episodes']! as List<dynamic>)
-          .cast<Json>()
-          .map(
-            (episodeJson) => EpisodeDto(
-              id: episodeJson['id']! as int,
-              type: _convertJsonToMovieType(
-                episodeJson['episodeType']! as String,
-              ),
-              number: num.parse(episodeJson['episodeInt']! as String),
-            ),
-          )
+      posterUrl: data['posterUrl']! as String,
+      previews: previewsAndEpisodes
+          .where((episode) => episode.type == MovieTypeDto.preview)
           .toList(growable: false),
+      episodes: previewsAndEpisodes
+          .where((episode) => episode.type != MovieTypeDto.preview)
+          .toList(growable: false),
+      description: switch (data['descriptions']) {
+        final List<dynamic> jsons => (jsons.first as Json)['value']! as String,
+        _ => null,
+      },
+      score: data['myAnimeListScore'] == '-1'
+          ? null
+          : double.parse(data['myAnimeListScore']! as String),
     );
   }
 
@@ -313,6 +333,66 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     );
   }
 
+  @override
+  Future<WatchListElementDto> getWatchListElement(Uri movieUri) async {
+    final ResponseData<String> response = await _network.request(
+      RequestData(
+        uri: Uri(path: '$movieUri'),
+        method: RequestMethod.get,
+      ),
+    );
+    final Document document = parse(response.body);
+    final Element bodyContainer = document.querySelector('div.body-container')!;
+    final Element animeListForm = bodyContainer.querySelector(
+      'div.animelist_one_series > form#yw2',
+    )!;
+
+    final String? status = animeListForm
+        .querySelector('select#UsersRates_status > option[selected="selected"]')
+        ?.text;
+
+    final String? scoreValue = animeListForm
+        .querySelector(
+          'select#UsersRates_score > option[selected="selected"]',
+        )
+        ?.attributes['value'];
+    final int? score = scoreValue == null ? null : int.parse(scoreValue);
+
+    final String? watchedEpisodesCountValue = animeListForm
+        .querySelector(
+          'input#UsersRates_episodes',
+        )
+        ?.attributes['value'];
+    final int? watchedEpisodesCount = watchedEpisodesCountValue == null
+        ? null
+        : int.parse(watchedEpisodesCountValue);
+
+    final String? episodesCountValue = animeListForm
+        .querySelector(
+          'input#UsersRates_episodes',
+        )
+        ?.attributes['max'];
+    final int? episodesCount =
+        episodesCountValue == null ? null : int.parse(episodesCountValue);
+
+    return status == null
+        ? const WatchListElementDto(status: WatchStatusDto.none)
+        : WatchListElementDto(
+            status: switch (status) {
+              'Смотрю' => WatchStatusDto.watching,
+              'Просмотрено' => WatchStatusDto.completed,
+              'Отложено' => WatchStatusDto.onHold,
+              'Брошено' => WatchStatusDto.dropped,
+              final Object? unsupported => throw UnsupportedError(
+                  'Unsupported movie status: $unsupported',
+                ),
+            },
+            score: score,
+            watchedEpisodesCount: watchedEpisodesCount,
+            episodesCount: episodesCount,
+          );
+  }
+
   MovieTypeDto _convertJsonToMovieType(String json) {
     return switch (json) {
       'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieTypeDto.tv,
@@ -347,6 +427,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       WatchStatusDto.completed => 2,
       WatchStatusDto.onHold => 3,
       WatchStatusDto.dropped => 4,
+      WatchStatusDto.none => -1,
     };
   }
 }

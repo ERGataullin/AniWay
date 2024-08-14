@@ -1,6 +1,7 @@
 {
     "@@locale": "ru",
     "authorLabel": "Автор",
+    "watchStatusToPlanned": "В запланировано",
     "durationSeconds": "{seconds} секунд",
     "@durationSeconds": {
         "placeholders": {
@@ -27,6 +28,7 @@
     },
     "movieType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыкальное} preview{Трейлер} other{}}",
     "passwordLabel": "Пароль",
+    "playLabel": "Смотреть",
     "popularTitle": "Популярное",
     "qualityLabel": "Качество",
     "signInSubmitLabel": "Войти через Anime365",

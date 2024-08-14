@@ -99,6 +99,12 @@ abstract class L10n {
   /// **'Автор'**
   String get authorLabel;
 
+  /// No description provided for @watchStatusToPlanned.
+  ///
+  /// In ru, this message translates to:
+  /// **'В запланировано'**
+  String get watchStatusToPlanned;
+
   /// No description provided for @durationSeconds.
   ///
   /// In ru, this message translates to:
@@ -152,6 +158,12 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'Пароль'**
   String get passwordLabel;
+
+  /// No description provided for @playLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смотреть'**
+  String get playLabel;
 
   /// No description provided for @popularTitle.
   ///

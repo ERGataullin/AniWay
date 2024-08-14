@@ -12,6 +12,9 @@ class L10nRu extends L10n {
   String get authorLabel => 'Автор';
 
   @override
+  String get watchStatusToPlanned => 'В запланировано';
+
+  @override
   String durationSeconds(int seconds) {
     return '$seconds секунд';
   }
@@ -84,6 +87,9 @@ class L10nRu extends L10n {
 
   @override
   String get passwordLabel => 'Пароль';
+
+  @override
+  String get playLabel => 'Смотреть';
 
   @override
   String get popularTitle => 'Популярное';

@@ -3,5 +3,6 @@ enum WatchStatusDto {
   watching,
   completed,
   onHold,
-  dropped;
+  dropped,
+  none;
 }
