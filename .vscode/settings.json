@@ -4,19 +4,19 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "always",
-    "source.organizeImports": "always"
+    "source.organizeImports": "always",
   },
   "editor.formatOnSave": true,
   "editor.formatOnType": true,
   "editor.rulers": [
-    80
+    80,
   ],
   "editor.tabCompletion": "off",
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "pubspec.yaml": "pubspec.lock,pubspec_overrides.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,.metadata",
-    "*.dart": "${capture}.g.dart"
+    "*.dart": "${capture}.g.dart",
   },
   "files.exclude": {
     "**/.git": true,
@@ -26,14 +26,14 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "**/.dart_tool": true,
-    "**/build": true
+    "**/build": true,
   },
   "files.insertFinalNewline": true,
   "files.watcherExclude": {
-    "**/.fvm": true
+    "**/.fvm": true,
   },
   "search.exclude": {
-    "**/.fvm": true
+    "**/.fvm": true,
   },
   "dart.flutterSdkPath": ".fvm/versions/3.22.3"
 }

@@ -238,18 +238,17 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       id: id,
       url: movieUri.path,
       title: (data['titles']! as Json)['ru']! as String,
-      posterUri: data['posterUrl']! as String,
+      posterUrl: data['posterUrl']! as String,
       previews: previewsAndEpisodes
           .where((episode) => episode.type == MovieTypeDto.preview)
           .toList(growable: false),
       episodes: previewsAndEpisodes
           .where((episode) => episode.type != MovieTypeDto.preview)
           .toList(growable: false),
-      description: data['descriptions'] != null
-          ? (data['descriptions']! as List<dynamic>)
-              .cast<Json>()
-              .first['value']! as String
-          : '',
+      description: switch (data['descriptions']) {
+        final List<dynamic> jsons => (jsons.first as Json)['value']! as String,
+        _ => null,
+      },
       score: data['myAnimeListScore'] == '-1'
           ? null
           : double.parse(data['myAnimeListScore']! as String),
@@ -344,33 +343,37 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     );
     final Document document = parse(response.body);
     final Element bodyContainer = document.querySelector('div.body-container')!;
-    final Element animeListForm =
-        bodyContainer.querySelector('div.animelist_one_series > form#yw2')!;
+    final Element animeListForm = bodyContainer.querySelector(
+      'div.animelist_one_series > form#yw2',
+    )!;
 
     final String? status = animeListForm
-        .querySelector('select#UsersRates_status > '
-            'option[selected="selected"]')
+        .querySelector('select#UsersRates_status > option[selected="selected"]')
         ?.text;
-    final int? score = int.tryParse(
-      animeListForm
-              .querySelector('select#UsersRates_score > '
-                  'option[selected="selected"]')
-              ?.attributes['value'] ??
-          '',
-    );
 
-    final int? watchedEpisodesCount = int.tryParse(
-      animeListForm
-              .querySelector('input#UsersRates_episodes')
-              ?.attributes['value'] ??
-          '',
-    );
-    final int? episodesCount = int.tryParse(
-      animeListForm
-              .querySelector('input#UsersRates_episodes')
-              ?.attributes['max'] ??
-          '',
-    );
+    final String? scoreValue = animeListForm
+        .querySelector(
+          'select#UsersRates_score > option[selected="selected"]',
+        )
+        ?.attributes['value'];
+    final int? score = scoreValue == null ? null : int.parse(scoreValue);
+
+    final String? watchedEpisodesCountValue = animeListForm
+        .querySelector(
+          'input#UsersRates_episodes',
+        )
+        ?.attributes['value'];
+    final int? watchedEpisodesCount = watchedEpisodesCountValue == null
+        ? null
+        : int.parse(watchedEpisodesCountValue);
+
+    final String? episodesCountValue = animeListForm
+        .querySelector(
+          'input#UsersRates_episodes',
+        )
+        ?.attributes['max'];
+    final int? episodesCount =
+        episodesCountValue == null ? null : int.parse(episodesCountValue);
 
     return status == null
         ? const WatchListElementDto(status: WatchStatusDto.none)

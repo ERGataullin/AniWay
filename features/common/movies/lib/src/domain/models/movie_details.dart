@@ -9,7 +9,7 @@ class MovieDetailsData {
     required this.posterUri,
     required this.previews,
     required this.episodes,
-    required this.description,
+    this.description,
     this.score,
   });
 
@@ -17,7 +17,7 @@ class MovieDetailsData {
         id: dto.id,
         uri: Uri.parse(dto.url),
         title: dto.title,
-        posterUri: Uri.parse(dto.posterUri),
+        posterUri: Uri.parse(dto.posterUrl),
         previews: List.unmodifiable(dto.previews.map(EpisodeData.fromDto)),
         episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),
         description: dto.description,
@@ -36,7 +36,7 @@ class MovieDetailsData {
 
   final List<EpisodeData> episodes;
 
-  final String description;
+  final String? description;
 
   final double? score;
 }

@@ -5,7 +5,7 @@ class WatchListElementData {
   const WatchListElementData({
     required this.status,
     this.score,
-    this.watchedEpisodesCount,
+    required this.watchedEpisodesCount,
     this.episodesCount,
   });
 
@@ -13,7 +13,7 @@ class WatchListElementData {
       WatchListElementData(
         status: WatchStatus.fromDto(dto.status),
         score: dto.score,
-        watchedEpisodesCount: dto.watchedEpisodesCount,
+        watchedEpisodesCount: dto.watchedEpisodesCount ?? 0,
         episodesCount: dto.episodesCount,
       );
 
@@ -21,7 +21,7 @@ class WatchListElementData {
 
   final int? score;
 
-  final int? watchedEpisodesCount;
+  final int watchedEpisodesCount;
 
   final int? episodesCount;
 }

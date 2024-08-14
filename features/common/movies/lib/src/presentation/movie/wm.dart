@@ -26,7 +26,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get description;
 
-  ValueListenable<String> get detailsFABLabel;
+  ValueListenable<String> get watchStatusButtonLabel;
 
   void onPlayPressed();
 }
@@ -39,9 +39,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     required Uri posterBaseUri,
   }) : _posterBaseUri = posterBaseUri;
 
-  final Uri _posterBaseUri;
-
   final NumberFormat _scoreFormat = NumberFormat('#0.0');
+
+  final Uri _posterBaseUri;
 
   @override
   ValueListenable<bool> get showLoader => model.loading;
@@ -59,7 +59,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   late final DynamicData<String> playButtonLabel = DynamicData(
     trigger: l10n,
-    () => l10n.value.playButtonLabel,
+    () => l10n.value.playLabel,
   );
 
   @override
@@ -81,9 +81,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<String> detailsFABLabel = DynamicData(
+  late final DynamicData<String> watchStatusButtonLabel = DynamicData(
     trigger: l10n,
-    () => l10n.value.detailsFABLabel,
+    () => l10n.value.watchStatusToPlanned,
   );
 
   @override
@@ -98,7 +98,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   void onPlayPressed() {
     widget.onPlayPressed(
       model.movie.value!.id,
-      model.currentEpisodeId.value,
+      model.nextEpisodeId,
     );
   }
 
@@ -109,6 +109,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     score.dispose();
     title.dispose();
     description.dispose();
+    watchStatusButtonLabel.dispose();
     super.dispose();
   }
 }

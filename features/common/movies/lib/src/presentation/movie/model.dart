@@ -11,7 +11,7 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<WatchListElementData?> get watchListElement;
 
-  ValueListenable<int?> get currentEpisodeId;
+  int? get nextEpisodeId;
 
   void loadData({
     required int movieId,
@@ -35,7 +35,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
       ValueNotifier(null);
 
   @override
-  final ValueNotifier<int?> currentEpisodeId = ValueNotifier(null);
+  late final int? nextEpisodeId;
 
   final MoviesService _service;
 
@@ -45,20 +45,23 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   }) async {
     loading.value = true;
     movie.value = await _service.getMovie(movieId);
-    watchListElement.value =
-        await _service.getWatchListElement(movie.value!.uri);
-
-    currentEpisodeId.value =
-        (watchListElement.value?.watchedEpisodesCount == null)
-            ? null
-            : movie.value?.episodes
-                .firstWhere(
-                  (episode) =>
-                      episode.number ==
-                      watchListElement.value!.watchedEpisodesCount! + 1,
-                  orElse: () => movie.value!.episodes.first,
-                )
-                .id;
+    watchListElement.value = await _service.getWatchListElement(
+      movie.value!.uri,
+    );
+    final int watchedEpisodesCount =
+        watchListElement.value!.watchedEpisodesCount;
+    nextEpisodeId = watchedEpisodesCount >= movie.value!.episodes.length
+        ? null
+        : movie.value?.episodes
+            .getRange(
+              watchedEpisodesCount == 0 ? 0 : watchedEpisodesCount - 1,
+              movie.value!.episodes.length,
+            )
+            .firstWhere(
+              (episode) => episode.number! > watchedEpisodesCount,
+              orElse: () => movie.value!.episodes.first,
+            )
+            .id;
     loading.value = false;
   }
 }

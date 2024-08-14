@@ -5,10 +5,10 @@ class MovieDetailsDto {
     required this.id,
     required this.url,
     required this.title,
-    required this.posterUri,
+    required this.posterUrl,
     required this.previews,
     required this.episodes,
-    required this.description,
+    this.description,
     this.score,
   });
 
@@ -18,13 +18,13 @@ class MovieDetailsDto {
 
   final String title;
 
-  final String posterUri;
+  final String posterUrl;
 
   final List<EpisodeDto> previews;
 
   final List<EpisodeDto> episodes;
 
-  final String description;
+  final String? description;
 
   final double? score;
 }

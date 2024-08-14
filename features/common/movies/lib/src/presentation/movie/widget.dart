@@ -193,8 +193,8 @@ class _WatchStatusButton extends StatelessWidget {
     return FloatingActionButton.extended(
       onPressed: () {},
       label: ListenableBuilder(
-        listenable: context.wm.detailsFABLabel,
-        builder: (context, __) => Text(context.wm.detailsFABLabel.value),
+        listenable: context.wm.watchStatusButtonLabel,
+        builder: (context, __) => Text(context.wm.watchStatusButtonLabel.value),
       ),
       icon: const Icon(Icons.add),
     );
