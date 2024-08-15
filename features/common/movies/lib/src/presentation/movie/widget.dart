@@ -22,20 +22,19 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
   Widget build(IMovieWM wm) {
     return Provider<IMovieWM>.value(
       value: wm,
-      child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            const _AppBar(),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ListenableBuilder(
-                  listenable: wm.showLoader,
-                  builder: (context, __) {
-                    final TextStyle textStyle =
-                        Theme.of(context).textTheme.titleMedium ??
-                            DefaultTextStyle.of(context).style;
-                    return wm.showLoader.value
+      child: ListenableBuilder(
+        listenable: wm.showLoader,
+        builder: (context, __) {
+          final TextStyle textStyle = Theme.of(context).textTheme.titleMedium ??
+              DefaultTextStyle.of(context).style;
+          return Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                const _AppBar(),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: wm.showLoader.value
                         ? const Column(
                             children: [
                               SizedBox(height: 16),
@@ -80,18 +79,15 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               const _Description(),
                               const SizedBox(height: 16),
                             ],
-                          );
-                  },
+                          ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        floatingActionButton: ListenableBuilder(
-          listenable: wm.showLoader,
-          builder: (context, __) =>
-              wm.showLoader.value ? Container() : _WatchStatusButton(),
-        ),
+            floatingActionButton:
+                wm.showLoader.value ? null : _WatchStatusButton(),
+          );
+        },
       ),
     );
   }
