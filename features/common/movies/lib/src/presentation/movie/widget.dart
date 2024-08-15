@@ -25,25 +25,20 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
       child: ListenableBuilder(
         listenable: wm.showLoader,
         builder: (context, __) {
-          final TextStyle textStyle = Theme.of(context).textTheme.titleMedium ??
-              DefaultTextStyle.of(context).style;
-          return Scaffold(
-            body: CustomScrollView(
-              slivers: [
-                const _AppBar(),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: wm.showLoader.value
-                        ? const Column(
-                            children: [
-                              SizedBox(height: 16),
-                              Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              ),
-                            ],
-                          )
-                        : Column(
+      final TextStyle textStyle = Theme.of(context).textTheme.titleMedium ??
+          DefaultTextStyle.of(context).style;
+      return Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            const _AppBar(),
+            wm.showLoader.value ? const SliverFillRemaining(
+              child: Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ) : SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 16),
@@ -88,8 +83,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                 wm.showLoader.value ? null : _WatchStatusButton(),
           );
         },
-      ),
-    );
+    )
   }
 }
 
@@ -101,7 +95,7 @@ class _AppBar extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.showLoader,
       builder: (context, __) => SliverAppBar(
-        expandedHeight: 450,
+        expandedHeight: context.wm.showLoader.value ? null : 450,
         leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
           icon: const Icon(Icons.arrow_back),
