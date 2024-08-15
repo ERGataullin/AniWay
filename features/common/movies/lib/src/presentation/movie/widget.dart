@@ -22,17 +22,16 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
   Widget build(IMovieWM wm) {
     return Provider<IMovieWM>.value(
       value: wm,
-      child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            const _AppBar(),
-            ListenableBuilder(
-              listenable: wm.showLoader,
-              builder: (context, __) {
-                final TextStyle textStyle =
-                    Theme.of(context).textTheme.titleMedium ??
-                        DefaultTextStyle.of(context).style;
-                return wm.showLoader.value
+      child: ListenableBuilder(
+        listenable: wm.showLoader,
+        builder: (context, __) {
+          final TextStyle textStyle = Theme.of(context).textTheme.titleMedium ??
+              DefaultTextStyle.of(context).style;
+          return Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                const _AppBar(),
+                wm.showLoader.value
                     ? const SliverFillRemaining(
                         child: Center(
                           child: CircularProgressIndicator.adaptive(),
@@ -79,12 +78,13 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                             ],
                           ),
                         ),
-                      );
-              },
+                      ),
+              ],
             ),
-          ],
-        ),
-        floatingActionButton: _WatchStatusButton(),
+            floatingActionButton:
+                wm.showLoader.value ? null : _WatchStatusButton(),
+          );
+        },
       ),
     );
   }
