@@ -74,7 +74,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               ),
                               const SizedBox(height: 16),
                               const _Description(),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 80),
                             ],
                           ),
                         ),
