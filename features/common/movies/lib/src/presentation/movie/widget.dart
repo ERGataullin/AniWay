@@ -33,7 +33,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                     Theme.of(context).textTheme.titleMedium ??
                         DefaultTextStyle.of(context).style;
                 return wm.showLoader.value
-                    ? SliverFillRemaining(
+                    ? const SliverFillRemaining(
                         child: Center(
                           child: CircularProgressIndicator.adaptive(),
                         ),
@@ -98,7 +98,7 @@ class _AppBar extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.showLoader,
       builder: (context, __) => SliverAppBar(
-        expandedHeight: context.wm.showLoader.value ? 0 : 450,
+        expandedHeight: context.wm.showLoader.value ? null : 450,
         leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
           icon: const Icon(Icons.arrow_back),
