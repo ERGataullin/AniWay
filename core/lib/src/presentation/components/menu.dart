@@ -76,18 +76,23 @@ class _SelectionWidgetState extends State<MenuWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_title != null)
-            AppBar(
-              forceMaterialTransparency: true,
-              automaticallyImplyLeading: false,
-              leading: _icon == null ? null : Icon(_icon),
-              title: Text(_title!),
-            ),
-          ..._items.map((item) => _buildItem(context, item)),
-        ],
+      child: AnimatedSize(
+        curve: Easing.standard,
+        duration: Durations.medium2,
+        child: Column(
+          key: ValueKey(_items),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_title != null)
+              AppBar(
+                forceMaterialTransparency: true,
+                automaticallyImplyLeading: false,
+                leading: _icon == null ? null : Icon(_icon),
+                title: Text(_title!),
+              ),
+            ..._items.map((item) => _buildItem(context, item)),
+          ],
+        ),
       ),
     );
   }
