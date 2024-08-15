@@ -25,20 +25,22 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
       child: ListenableBuilder(
         listenable: wm.showLoader,
         builder: (context, __) {
-      final TextStyle textStyle = Theme.of(context).textTheme.titleMedium ??
-          DefaultTextStyle.of(context).style;
-      return Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            const _AppBar(),
-            wm.showLoader.value ? const SliverFillRemaining(
-              child: Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
-            ) : SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
+          final TextStyle textStyle = Theme.of(context).textTheme.titleMedium ??
+              DefaultTextStyle.of(context).style;
+          return Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                const _AppBar(),
+                wm.showLoader.value
+                    ? const SliverFillRemaining(
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      )
+                    : SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 16),
@@ -75,15 +77,16 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               const SizedBox(height: 16),
                             ],
                           ),
-                  ),
-                ),
+                        ),
+                      ),
               ],
             ),
             floatingActionButton:
                 wm.showLoader.value ? null : _WatchStatusButton(),
           );
         },
-    )
+      ),
+    );
   }
 }
 
