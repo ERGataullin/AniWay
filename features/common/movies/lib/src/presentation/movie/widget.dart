@@ -87,7 +87,11 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
             ),
           ],
         ),
-        floatingActionButton: _WatchStatusButton(),
+        floatingActionButton: ListenableBuilder(
+          listenable: wm.showLoader,
+          builder: (context, __) =>
+              wm.showLoader.value ? Container() : _WatchStatusButton(),
+        ),
       ),
     );
   }
