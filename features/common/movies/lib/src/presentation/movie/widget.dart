@@ -26,25 +26,22 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
         body: CustomScrollView(
           slivers: [
             const _AppBar(),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ListenableBuilder(
-                  listenable: wm.showLoader,
-                  builder: (context, __) {
-                    final TextStyle textStyle =
-                        Theme.of(context).textTheme.titleMedium ??
-                            DefaultTextStyle.of(context).style;
-                    return wm.showLoader.value
-                        ? const Column(
-                            children: [
-                              SizedBox(height: 16),
-                              Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              ),
-                            ],
-                          )
-                        : Column(
+            ListenableBuilder(
+              listenable: wm.showLoader,
+              builder: (context, __) {
+                final TextStyle textStyle =
+                    Theme.of(context).textTheme.titleMedium ??
+                        DefaultTextStyle.of(context).style;
+                return wm.showLoader.value
+                    ? SliverFillRemaining(
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      )
+                    : SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 16),
@@ -80,10 +77,10 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               const _Description(),
                               const SizedBox(height: 16),
                             ],
-                          );
-                  },
-                ),
-              ),
+                          ),
+                        ),
+                      );
+              },
             ),
           ],
         ),
@@ -101,7 +98,7 @@ class _AppBar extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.showLoader,
       builder: (context, __) => SliverAppBar(
-        expandedHeight: 450,
+        expandedHeight: context.wm.showLoader.value ? 0 : 450,
         leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
           icon: const Icon(Icons.arrow_back),
