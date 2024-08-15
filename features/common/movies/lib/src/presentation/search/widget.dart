@@ -100,7 +100,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
             hintText: hintText,
             trailing: [
               IconButton(
-                onPressed: context.wm.removeText,
+                onPressed: context.wm.handleClearPress,
                 icon: const Icon(Icons.clear),
               )
             ],

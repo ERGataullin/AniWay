@@ -29,7 +29,7 @@ abstract interface class IMoviesSearchWM implements IWidgetModel {
 
   Future<List<MovieCardData>> handleLoadPage(int page);
 
-  void removeText();
+  void handleClearPress();
 }
 
 class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
@@ -77,7 +77,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
     return movies.map(_moviePreviewFromMovie).toList(growable: false);
   }
 
-  void removeText() {
+  void handleClearPress() {
     queryController.clear();
   }
 
