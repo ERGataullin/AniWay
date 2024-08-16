@@ -65,8 +65,6 @@ class _Footer extends StatelessWidget {
     this.margin = EdgeInsets.zero,
   });
 
-  static final NumberFormat _scoreFormat = NumberFormat('#0.0');
-
   final EdgeInsets margin;
 
   final MovieCardData data;
