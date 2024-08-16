@@ -9,9 +9,9 @@ abstract interface class IHomeModel implements ElementaryModel {
 
   ValueListenable<List<UpNextData>> get upNext;
 
-  ValueListenable<List<MovieBaseData>> get ongoing;
+  ValueListenable<List<MovieBaseData>> get ongoings;
 
-  ValueListenable<List<MovieBaseData>> get popular;
+  ValueListenable<List<MovieBaseData>> get populars;
 }
 
 class HomeModel extends ElementaryModel implements IHomeModel {
@@ -27,10 +27,10 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   final ValueNotifier<List<UpNextData>> upNext = ValueNotifier(const []);
 
   @override
-  final ValueNotifier<List<MovieBaseData>> ongoing = ValueNotifier(const []);
+  final ValueNotifier<List<MovieBaseData>> ongoings = ValueNotifier(const []);
 
   @override
-  final ValueNotifier<List<MovieBaseData>> popular = ValueNotifier(
+  final ValueNotifier<List<MovieBaseData>> populars = ValueNotifier(
     const [],
   );
 
@@ -47,8 +47,8 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     _service.upNextChanges.removeListener(_load);
     loading.dispose();
     upNext.dispose();
-    ongoing.dispose();
-    popular.dispose();
+    ongoings.dispose();
+    populars.dispose();
     super.dispose();
   }
 
@@ -61,12 +61,12 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     final Future<List<MovieBaseData>> newPopularFuture = _service.getMovies();
 
     final List<UpNextData> upNext = await newUpNextFuture;
-    final List<MovieBaseData> ongoing = await newOngoingFuture;
-    final List<MovieBaseData> popular = await newPopularFuture;
+    final List<MovieBaseData> ongoings = await newOngoingFuture;
+    final List<MovieBaseData> populars = await newPopularFuture;
 
-    loading.value = false;
     this.upNext.value = List.unmodifiable(upNext.take(10));
-    this.ongoing.value = List.unmodifiable(ongoing.take(10));
-    this.popular.value = List.unmodifiable(popular.take(10));
+    this.ongoings.value = List.unmodifiable(ongoings.take(10));
+    this.populars.value = List.unmodifiable(populars.take(10));
+    loading.value = false;
   }
 }

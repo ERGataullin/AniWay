@@ -142,7 +142,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
             },
           ),
         ),
-        popularUri: Uri.parse(
+        popularsUri: Uri.parse(
           state.namedLocation(
             search.name!,
             queryParameters: {
