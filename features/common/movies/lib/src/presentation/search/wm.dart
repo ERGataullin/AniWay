@@ -19,6 +19,8 @@ MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
 abstract interface class IMoviesSearchWM implements IWidgetModel {
   ValueListenable<String> get queryHint;
 
+  ValueListenable<bool> get showClearButton;
+
   SearchController get queryController;
 
   ScrollController get scrollController;
@@ -49,6 +51,12 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   );
 
   @override
+  late final DynamicData<bool> showClearButton = DynamicData(
+    trigger: queryController,
+    () => queryController.text.isEmpty,
+  );
+
+  @override
   final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
       GlobalKey();
 
@@ -65,7 +73,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    queryController.addListener(_onQueryChanged);
+    queryController.addListener(_handleQueryChanged);
   }
 
   @override
@@ -89,9 +97,8 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
     super.dispose();
   }
 
-  void _onQueryChanged() {
+  void _handleQueryChanged() {
     if (_query == queryController.text) return;
-
     _query = queryController.text;
     _queryDebounceTimer?.cancel();
     _queryDebounceTimer = Timer(

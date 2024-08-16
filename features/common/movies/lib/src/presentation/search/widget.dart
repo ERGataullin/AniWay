@@ -87,9 +87,9 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
         suggestionsBuilder: (context, controller) => [
           const SizedBox.shrink(),
         ],
-        builder: (context, controller) => ValueListenableBuilder(
-          valueListenable: context.wm.queryHint,
-          builder: (context, hintText, ___) => SearchBar(
+        builder: (context, controller) => ListenableBuilder(
+          listenable: context.wm.queryHint,
+          builder: (context, __) => SearchBar(
             controller: context.wm.queryController,
             leading: context.wm.showBackButton
                 ? const BackButton()
@@ -97,12 +97,23 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                     onPressed: () {},
                     icon: const Icon(Icons.search),
                   ),
-            hintText: hintText,
+            hintText: context.wm.queryHint.value,
             trailing: [
-              IconButton(
-                onPressed: context.wm.handleClearPress,
-                icon: const Icon(Icons.clear),
-              )
+              ListenableBuilder(
+                listenable: context.wm.showClearButton,
+                builder: (context, __) => AnimatedSwitcher(
+                  duration: Durations.medium1,
+                  reverseDuration: Durations.short4,
+                  switchInCurve: Easing.standardDecelerate,
+                  switchOutCurve: Easing.standardAccelerate,
+                  child: context.wm.showClearButton.value
+                      ? SizedBox.shrink()
+                      : IconButton(
+                          onPressed: context.wm.handleClearPress,
+                          icon: const Icon(Icons.clear),
+                        ),
+                ),
+              ),
             ],
           ),
         ),
