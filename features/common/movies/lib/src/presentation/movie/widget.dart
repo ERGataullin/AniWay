@@ -50,7 +50,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                                 builder: (context, __) => wm.score.value == null
                                     ? SizedBox.shrink()
                                     : MovieScore(
-                                        score: wm.score.value!,
+                                        wm.score.value!,
                                         textStyle: textStyle,
                                       ),
                               ),

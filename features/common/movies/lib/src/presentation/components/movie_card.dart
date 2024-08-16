@@ -71,8 +71,6 @@ class _Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle textStyle = Theme.of(context).textTheme.labelSmall ??
-        DefaultTextStyle.of(context).style;
     return Padding(
       padding: margin,
       child: DefaultTextStyle(
@@ -80,7 +78,7 @@ class _Footer extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.fade,
         textAlign: TextAlign.start,
-        style: textStyle,
+        style: Theme.of(context).textTheme.labelSmall!,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -89,16 +87,18 @@ class _Footer extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(data.subtitle),
+                Expanded(
+                  child: Text(data.subtitle),
+                ),
                 if (data.score != null) ...[
+                  SizedBox(width: 16),
                   MovieScore(
-                    score: data.score!,
-                    textStyle: textStyle,
+                    data.score!,
+                    textStyle: Theme.of(context).textTheme.labelSmall!,
                   ),
-                ]
+                ],
               ],
             ),
           ],

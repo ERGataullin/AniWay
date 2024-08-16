@@ -2,11 +2,10 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
 class MovieScore extends StatelessWidget {
-  MovieScore({
+  MovieScore(
+    this.score, {
     super.key,
-    required this.score,
     required this.textStyle,
-    this.subtitle,
   });
 
   static final NumberFormat _scoreFormat = NumberFormat('#0.0');
@@ -14,8 +13,6 @@ class MovieScore extends StatelessWidget {
   final double score;
 
   final TextStyle textStyle;
-
-  final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
