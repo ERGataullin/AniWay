@@ -16,6 +16,7 @@ class MoviesRepository {
 
   Future<List<MovieBaseDto>> getMovies({
     MoviesOrderDto order = MoviesOrderDto.byPopularity,
+    bool? isOngoing,
     String? query,
     int? limit,
     int? offset,
@@ -23,6 +24,7 @@ class MoviesRepository {
   }) {
     return _remote.getMovies(
       order: order,
+      isOngoing: isOngoing,
       query: query,
       limit: limit,
       offset: offset,

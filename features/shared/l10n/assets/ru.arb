@@ -27,9 +27,10 @@
         }
     },
     "movieType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыкальное} preview{Трейлер} other{}}",
+    "ongoingsTitle": "Cейчас выходят",
     "passwordLabel": "Пароль",
     "playLabel": "Смотреть",
-    "popularTitle": "Популярное",
+    "popularsTitle": "Популярное",
     "qualityLabel": "Качество",
     "signInSubmitLabel": "Войти через Anime365",
     "searchPageTitle": "Поиск",

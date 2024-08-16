@@ -14,7 +14,8 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
     super.key,
     required this.upNextUri,
     required this.onUpNextPressed,
-    required this.popularUri,
+    required this.ongoingsUri,
+    required this.popularsUri,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = homeWMFactory,
   }) : super(wmFactory);
@@ -23,7 +24,9 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
 
   final void Function(int movieId, int episodeId) onUpNextPressed;
 
-  final Uri popularUri;
+  final Uri ongoingsUri;
+
+  final Uri popularsUri;
 
   final void Function(int id) onMoviePressed;
 
@@ -79,8 +82,15 @@ class _Content extends StatelessWidget {
             const SizedBox(height: 16),
             _Category(
               margin: categoriesMargin,
-              title: context.wm.popularTitle,
-              uri: context.wm.popularUri,
+              title: context.wm.ongoingsTitle,
+              uri: context.wm.ongoingsUri,
+              movies: context.wm.ongoingItems,
+            ),
+            const SizedBox(height: 16),
+            _Category(
+              margin: categoriesMargin,
+              title: context.wm.popularsTitle,
+              uri: context.wm.popularsUri,
               movies: context.wm.popularItems,
             ),
           ],

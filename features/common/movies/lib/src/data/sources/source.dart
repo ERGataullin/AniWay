@@ -11,6 +11,7 @@ abstract interface class MoviesDataSource {
 
   Future<List<MovieBaseDto>> getMovies({
     MoviesOrderDto order = MoviesOrderDto.byPopularity,
+    bool? isOngoing,
     String? query,
     int? limit,
     int? offset,

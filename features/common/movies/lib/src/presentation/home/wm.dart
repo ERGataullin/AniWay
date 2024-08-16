@@ -24,13 +24,19 @@ abstract interface class IHomeWM implements IWidgetModel {
 
   ValueListenable<List<MovieCardData>> get upNextItems;
 
-  ValueListenable<String> get popularTitle;
+  ValueListenable<String> get ongoingsTitle;
+
+  ValueListenable<List<MovieCardData>> get ongoingItems;
+
+  ValueListenable<String> get popularsTitle;
 
   ValueListenable<List<MovieCardData>> get popularItems;
 
   Uri get upNextUri;
 
-  Uri get popularUri;
+  Uri get ongoingsUri;
+
+  Uri get popularsUri;
 }
 
 class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
@@ -51,9 +57,15 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
-  late final DynamicData<String> popularTitle = DynamicData(
+  late final DynamicData<String> ongoingsTitle = DynamicData(
     trigger: l10n,
-    () => l10n.value.popularTitle,
+    () => l10n.value.ongoingsTitle,
+  );
+
+  @override
+  late final DynamicData<String> popularsTitle = DynamicData(
+    trigger: l10n,
+    () => l10n.value.popularsTitle,
   );
 
   @override
@@ -64,10 +76,19 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
+  late final DynamicData<List<MovieCardData>> ongoingItems = DynamicData(
+    trigger: Listenable.merge([l10n, model.ongoings]),
+    () => model.ongoings.value
+        .map(_moviePreviewFromMovie)
+        .toList(growable: false),
+  );
+
+  @override
   late final DynamicData<List<MovieCardData>> popularItems = DynamicData(
-    trigger: Listenable.merge([l10n, model.popular]),
-    () =>
-        model.popular.value.map(_moviePreviewFromMovie).toList(growable: false),
+    trigger: Listenable.merge([l10n, model.populars]),
+    () => model.populars.value
+        .map(_moviePreviewFromMovie)
+        .toList(growable: false),
   );
 
   @override
@@ -77,16 +98,19 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   Uri get upNextUri => widget.upNextUri;
 
   @override
-  Uri get popularUri => widget.popularUri;
+  Uri get ongoingsUri => widget.ongoingsUri;
+
+  @override
+  Uri get popularsUri => widget.popularsUri;
 
   @override
   void dispose() {
-    super.dispose();
     title.dispose();
     upNextTitle.dispose();
     upNextItems.dispose();
-    popularTitle.dispose();
+    popularsTitle.dispose();
     popularItems.dispose();
+    super.dispose();
   }
 
   MovieCardData _moviePreviewFromUpNext(UpNextData upNext) {

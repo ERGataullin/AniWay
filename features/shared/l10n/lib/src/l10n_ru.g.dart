@@ -86,13 +86,16 @@ class L10nRu extends L10n {
   }
 
   @override
+  String get ongoingsTitle => 'Cейчас выходят';
+
+  @override
   String get passwordLabel => 'Пароль';
 
   @override
   String get playLabel => 'Смотреть';
 
   @override
-  String get popularTitle => 'Популярное';
+  String get popularsTitle => 'Популярное';
 
   @override
   String get qualityLabel => 'Качество';
