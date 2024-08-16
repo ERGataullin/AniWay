@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/movie_card.dart';
+import 'package:movies/src/presentation/components/movie_score.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard(
@@ -90,23 +91,16 @@ class _Footer extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(data.subtitle),
                 if (data.score != null) ...[
-                  const Expanded(
-                    child: SizedBox(width: 16),
+                  MovieScore(
+                    score: data.score!,
+                    textStyle: textStyle,
                   ),
-                  Icon(
-                    Icons.star,
-                    applyTextScaling: true,
-                    size: textStyle.fontSize,
-                    weight: textStyle.fontWeight?.value.toDouble(),
-                    color: textStyle.color,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(_scoreFormat.format(data.score)),
-                ],
+                ]
               ],
             ),
           ],
