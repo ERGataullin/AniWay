@@ -2,7 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
 class MovieScore extends StatelessWidget {
-  MovieScore(
+  const MovieScore(
     this.score, {
     super.key,
     required this.textStyle,
