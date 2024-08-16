@@ -57,7 +57,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
 
     final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
     final Future<List<MovieBaseData>> newOngoingFuture =
-        _service.getMovies(isAiring: 1);
+        _service.getMovies(isOngoing: true);
     final Future<List<MovieBaseData>> newPopularFuture = _service.getMovies();
 
     final List<UpNextData> upNext = await newUpNextFuture;

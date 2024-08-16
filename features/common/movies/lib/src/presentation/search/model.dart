@@ -8,7 +8,7 @@ abstract interface class IMoviesSearchModel implements ElementaryModel {
   Future<List<MovieBaseData>> loadPage({
     required int page,
     String? query,
-    int? isAiring,
+    bool? isOngoing,
   });
 }
 
@@ -24,12 +24,12 @@ class MoviesSearchModel extends ElementaryModel implements IMoviesSearchModel {
   Future<List<MovieBaseData>> loadPage({
     required int page,
     String? query,
-    int? isAiring,
+    bool? isOngoing,
   }) {
     return _service.getMovies(
       page: page,
       query: query,
-      isAiring: isAiring,
+      isOngoing: isOngoing,
     );
   }
 }
