@@ -381,6 +381,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         ? const WatchListElementDto(status: WatchStatusDto.none)
         : WatchListElementDto(
             status: switch (status) {
+              'Запланировано' => WatchStatusDto.planned,
               'Смотрю' => WatchStatusDto.watching,
               'Просмотрено' => WatchStatusDto.completed,
               'Отложено' => WatchStatusDto.onHold,
