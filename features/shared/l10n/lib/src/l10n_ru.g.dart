@@ -86,6 +86,9 @@ class L10nRu extends L10n {
   }
 
   @override
+  String get ongoingTitle => 'Cейчас выходят';
+
+  @override
   String get passwordLabel => 'Пароль';
 
   @override

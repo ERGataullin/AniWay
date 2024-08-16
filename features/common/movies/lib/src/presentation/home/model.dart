@@ -9,6 +9,8 @@ abstract interface class IHomeModel implements ElementaryModel {
 
   ValueListenable<List<UpNextData>> get upNext;
 
+  ValueListenable<List<MovieBaseData>> get ongoing;
+
   ValueListenable<List<MovieBaseData>> get popular;
 }
 
@@ -23,6 +25,9 @@ class HomeModel extends ElementaryModel implements IHomeModel {
 
   @override
   final ValueNotifier<List<UpNextData>> upNext = ValueNotifier(const []);
+
+  @override
+  final ValueNotifier<List<MovieBaseData>> ongoing = ValueNotifier(const []);
 
   @override
   final ValueNotifier<List<MovieBaseData>> popular = ValueNotifier(
@@ -42,6 +47,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     _service.upNextChanges.removeListener(_load);
     loading.dispose();
     upNext.dispose();
+    ongoing.dispose();
     popular.dispose();
     super.dispose();
   }
@@ -50,13 +56,17 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     loading.value = true;
 
     final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
+    final Future<List<MovieBaseData>> newOngoingFuture =
+        _service.getMovies(isAiring: 1);
     final Future<List<MovieBaseData>> newPopularFuture = _service.getMovies();
 
     final List<UpNextData> upNext = await newUpNextFuture;
+    final List<MovieBaseData> ongoing = await newOngoingFuture;
     final List<MovieBaseData> popular = await newPopularFuture;
 
     loading.value = false;
     this.upNext.value = List.unmodifiable(upNext.take(10));
+    this.ongoing.value = List.unmodifiable(ongoing.take(10));
     this.popular.value = List.unmodifiable(popular.take(10));
   }
 }

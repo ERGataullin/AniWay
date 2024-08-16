@@ -24,11 +24,17 @@ abstract interface class IHomeWM implements IWidgetModel {
 
   ValueListenable<List<MovieCardData>> get upNextItems;
 
+  ValueListenable<String> get ongoingTitle;
+
+  ValueListenable<List<MovieCardData>> get ongoingItems;
+
   ValueListenable<String> get popularTitle;
 
   ValueListenable<List<MovieCardData>> get popularItems;
 
   Uri get upNextUri;
+
+  Uri get ongoingUri;
 
   Uri get popularUri;
 }
@@ -51,6 +57,12 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
+  late final DynamicData<String> ongoingTitle = DynamicData(
+    trigger: l10n,
+    () => l10n.value.ongoingTitle,
+  );
+
+  @override
   late final DynamicData<String> popularTitle = DynamicData(
     trigger: l10n,
     () => l10n.value.popularTitle,
@@ -61,6 +73,14 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     trigger: Listenable.merge([l10n, model.upNext]),
     () =>
         model.upNext.value.map(_moviePreviewFromUpNext).toList(growable: false),
+  );
+
+  @override
+  late final DynamicData<List<MovieCardData>> ongoingItems = DynamicData(
+    trigger: Listenable.merge([l10n, model.ongoing]),
+    () => model.ongoing.value
+        .map(_moviePreviewFromMovie)
+        .toList(growable: false),
   );
 
   @override
@@ -75,6 +95,9 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
 
   @override
   Uri get upNextUri => widget.upNextUri;
+
+  @override
+  Uri get ongoingUri => widget.ongoingUri;
 
   @override
   Uri get popularUri => widget.popularUri;

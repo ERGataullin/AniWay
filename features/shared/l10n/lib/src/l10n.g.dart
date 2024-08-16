@@ -153,6 +153,12 @@ abstract class L10n {
   /// **'{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыкальное} preview{Трейлер} other{}}'**
   String movieType(String type);
 
+  /// No description provided for @ongoingTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Cейчас выходят'**
+  String get ongoingTitle;
+
   /// No description provided for @passwordLabel.
   ///
   /// In ru, this message translates to:

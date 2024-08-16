@@ -27,6 +27,7 @@
         }
     },
     "movieType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыкальное} preview{Трейлер} other{}}",
+    "ongoingTitle": "Cейчас выходят",
     "passwordLabel": "Пароль",
     "playLabel": "Смотреть",
     "popularTitle": "Популярное",

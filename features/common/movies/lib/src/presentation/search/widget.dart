@@ -12,11 +12,14 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   const MoviesSearchWidget({
     super.key,
     this.order = MoviesOrder.byPopularity,
+    this.isAiring,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = moviesSearchWMFactory,
   }) : super(wmFactory);
 
   final MoviesOrder order;
+
+  final int? isAiring;
 
   final void Function(int id) onMoviePressed;
 

@@ -27,6 +27,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   @override
   Future<List<MovieBaseDto>> getMovies({
     MoviesOrderDto order = MoviesOrderDto.byPopularity,
+    int? isAiring,
     String? query,
     int? limit,
     int? offset,
@@ -39,6 +40,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           queryParameters: {
             'fields': 'id,titles,title,posterUrl,type,myAnimeListScore',
             'order': _convertMoviesOrderToJson(order),
+            if(isAiring != null) 'isAiring': isAiring,
             if (query != null) 'query': query,
             if (limit != null) 'limit': limit,
             if (offset != null) 'offset': offset,

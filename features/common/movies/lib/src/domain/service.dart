@@ -37,6 +37,7 @@ class MoviesService implements Initable {
     int page = 1,
     int limit = 50,
     MoviesOrder order = MoviesOrder.byPopularity,
+    int? isAiring,
     String? query,
     List<WatchStatus> watchStatuses = const [],
   }) async {
@@ -45,6 +46,7 @@ class MoviesService implements Initable {
       limit: limit,
       offset: (page - 1) * limit,
       order: order.toDto(),
+      isAiring: isAiring,
       watchStatus: watchStatuses
           .map((watchStatus) => watchStatus.toDto())
           .toList(growable: false),

@@ -81,6 +81,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
     final List<MovieBaseData> movies = await model.loadPage(
       page: page,
       query: queryController.text,
+      isAiring: widget.isAiring,
     );
     return movies.map(_moviePreviewFromMovie).toList(growable: false);
   }

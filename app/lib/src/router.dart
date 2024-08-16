@@ -134,6 +134,14 @@ class AppRouter implements RouterConfig<RouteMatchList> {
           pathParameters: {'movieId': movieId.toString()},
           queryParameters: {'episodeId': episodeId.toString()},
         ),
+        ongoingUri: Uri.parse(
+          state.namedLocation(
+            search.name!,
+            queryParameters: {
+              'isAiring': '1',
+            },
+          ),
+        ),
         popularUri: Uri.parse(
           state.namedLocation(
             search.name!,
@@ -165,6 +173,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
           final String order => MoviesOrder.valueOf(order),
           _ => MoviesOrder.byPopularity,
         },
+        isAiring: int.tryParse(state.uri.queryParameters['isAiring'] ?? '0'),
         onMoviePressed: (id) => context.goNamed(
           movieRoute.name!,
           pathParameters: {'movieId': id.toString()},
