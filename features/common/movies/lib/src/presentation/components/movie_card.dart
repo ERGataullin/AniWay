@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/movie_card.dart';
+import 'package:movies/src/presentation/components/movie_score.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard(
@@ -64,16 +65,12 @@ class _Footer extends StatelessWidget {
     this.margin = EdgeInsets.zero,
   });
 
-  static final NumberFormat _scoreFormat = NumberFormat('#0.0');
-
   final EdgeInsets margin;
 
   final MovieCardData data;
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle textStyle = Theme.of(context).textTheme.labelSmall ??
-        DefaultTextStyle.of(context).style;
     return Padding(
       padding: margin,
       child: DefaultTextStyle(
@@ -81,7 +78,7 @@ class _Footer extends StatelessWidget {
         softWrap: false,
         overflow: TextOverflow.fade,
         textAlign: TextAlign.start,
-        style: textStyle,
+        style: Theme.of(context).textTheme.labelSmall!,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -92,20 +89,15 @@ class _Footer extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(data.subtitle),
+                Expanded(
+                  child: Text(data.subtitle),
+                ),
                 if (data.score != null) ...[
-                  const Expanded(
-                    child: SizedBox(width: 16),
+                  SizedBox(width: 16),
+                  MovieScore(
+                    data.score!,
+                    textStyle: Theme.of(context).textTheme.labelSmall!,
                   ),
-                  Icon(
-                    Icons.star,
-                    applyTextScaling: true,
-                    size: textStyle.fontSize,
-                    weight: textStyle.fontWeight?.value.toDouble(),
-                    color: textStyle.color,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(_scoreFormat.format(data.score)),
                 ],
               ],
             ),

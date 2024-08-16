@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/src/presentation/components/movie_score.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
 
 extension _MovieContext on BuildContext {
@@ -44,25 +45,14 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    applyTextScaling: true,
-                                    size: textStyle.fontSize,
-                                    weight:
-                                        textStyle.fontWeight?.value.toDouble(),
-                                    color: textStyle.color,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  ListenableBuilder(
-                                    listenable: wm.score,
-                                    builder: (context, __) => Text(
-                                      wm.score.value,
-                                      style: textStyle,
-                                    ),
-                                  ),
-                                ],
+                              ListenableBuilder(
+                                listenable: wm.score,
+                                builder: (context, __) => wm.score.value == null
+                                    ? SizedBox.shrink()
+                                    : MovieScore(
+                                        wm.score.value!,
+                                        textStyle: textStyle,
+                                      ),
                               ),
                               ListenableBuilder(
                                 listenable: wm.title,

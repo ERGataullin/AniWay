@@ -20,7 +20,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get playButtonLabel;
 
-  ValueListenable<String> get score;
+  ValueListenable<double?> get score;
 
   ValueListenable<String> get title;
 
@@ -38,8 +38,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     super._model, {
     required Uri posterBaseUri,
   }) : _posterBaseUri = posterBaseUri;
-
-  final NumberFormat _scoreFormat = NumberFormat('#0.0');
 
   final Uri _posterBaseUri;
 
@@ -63,9 +61,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<String> score = DynamicData(
+  late final DynamicData<double?> score = DynamicData(
     trigger: model.movie,
-    () => _scoreFormat.format(model.movie.value?.score),
+    () => model.movie.value?.score,
   );
 
   @override
