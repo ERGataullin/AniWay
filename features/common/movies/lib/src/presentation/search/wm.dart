@@ -29,7 +29,6 @@ abstract interface class IMoviesSearchWM implements IWidgetModel {
 
   bool get showBackButton;
 
-
   Future<List<MovieCardData>> handleLoadPage(int page);
 
   void handleClearPress();
@@ -54,7 +53,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   @override
   late final DynamicData<bool> showClearButton = DynamicData(
     trigger: queryController,
-        () => queryController.text.isEmpty,
+    () => queryController.text.isEmpty,
   );
 
   @override
@@ -70,9 +69,6 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
 
   @override
   bool get showBackButton => Navigator.canPop(context);
-
-
-
 
   @override
   void initWidgetModel() {
