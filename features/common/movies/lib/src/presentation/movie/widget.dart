@@ -32,43 +32,43 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
             body: CustomScrollView(
               slivers: [
                 const _AppBar(),
-                wm.showLoader.value
-                    ? const SliverFillRemaining(
-                        child: Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        ),
-                      )
-                    : SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 16),
-                              ListenableBuilder(
-                                listenable: wm.score,
-                                builder: (context, __) => wm.score.value == null
-                                    ? SizedBox.shrink()
-                                    : MovieScore(
-                                        wm.score.value!,
-                                        textStyle: textStyle,
-                                      ),
-                              ),
-                              ListenableBuilder(
-                                listenable: wm.title,
-                                builder: (context, __) => Text(
-                                  wm.title.value,
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              const _Description(),
-                              const SizedBox(height: 16),
-                            ],
+                if (wm.showLoader.value)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  )
+                else
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          ListenableBuilder(
+                            listenable: wm.score,
+                            builder: (context, __) => wm.score.value == null
+                                ? const SizedBox.shrink()
+                                : MovieScore(
+                                    wm.score.value!,
+                                    textStyle: textStyle,
+                                  ),
                           ),
-                        ),
+                          ListenableBuilder(
+                            listenable: wm.title,
+                            builder: (context, __) => Text(
+                              wm.title.value,
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          const _Description(),
+                          const SizedBox(height: 16),
+                        ],
                       ),
+                    ),
+                  ),
               ],
             ),
             floatingActionButton:

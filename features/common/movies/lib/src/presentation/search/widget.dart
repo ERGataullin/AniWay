@@ -110,9 +110,9 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
                   switchInCurve: Easing.standardDecelerate,
                   switchOutCurve: Easing.standardAccelerate,
                   child: context.wm.showClearButton.value
-                      ? SizedBox.shrink()
+                      ? const SizedBox.shrink()
                       : IconButton(
-                          onPressed: context.wm.handleClearPress,
+                          onPressed: context.wm.handleClearPressed,
                           icon: const Icon(Icons.clear),
                         ),
                 ),

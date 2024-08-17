@@ -93,7 +93,7 @@ class _Footer extends StatelessWidget {
                   child: Text(data.subtitle),
                 ),
                 if (data.score != null) ...[
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   MovieScore(
                     data.score!,
                     textStyle: Theme.of(context).textTheme.labelSmall!,

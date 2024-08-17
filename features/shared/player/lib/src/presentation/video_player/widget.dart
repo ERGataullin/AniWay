@@ -59,7 +59,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
       child: Theme(
         data: Themes.videoPlayer,
         child: PopScope(
-          onPopInvokedWithResult: wm.handlePopInvoked,
+          onPopInvoked: wm.handlePopInvoked,
           child: const Scaffold(
             body: Stack(
               clipBehavior: Clip.none,
