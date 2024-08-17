@@ -2,17 +2,12 @@ import 'package:intl/intl.dart' as intl;
 
 import 'l10n.g.dart';
 
-// ignore_for_file: type=lint
-
 /// The translations for Russian (`ru`).
 class L10nRu extends L10n {
   L10nRu([String locale = 'ru']) : super(locale);
 
   @override
   String get authorLabel => 'Автор';
-
-  @override
-  String get watchStatusToPlanned => 'В запланировано';
 
   @override
   String durationSeconds(int seconds) {
@@ -123,6 +118,26 @@ class L10nRu extends L10n {
         'dvd': 'DVD',
         'bd': 'BD',
         'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get watchStatusAdd => 'Добавить в список';
+
+  @override
+  String watchStatus(String type) {
+    String _temp0 = intl.Intl.selectLogic(
+      type,
+      {
+        'planned': 'Запланировано',
+        'watching': 'Смотрю',
+        'completed': 'Просмотрено',
+        'onHold': 'Отложено',
+        'dropped': 'Заброшено',
+        'none': 'В библиотеке отсутствует',
+        'other': 'Неизвестный статус',
       },
     );
     return '$_temp0';

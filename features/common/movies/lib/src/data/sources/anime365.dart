@@ -336,7 +336,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   }
 
   @override
-  Future<WatchListElementDto> getWatchListElement(Uri movieUri) async {
+  Future<WatchListElementDto> getWatchStatusDetails(Uri movieUri) async {
     final ResponseData<String> response = await _network.request(
       RequestData(
         uri: Uri(path: '$movieUri'),

@@ -28,5 +28,5 @@ abstract interface class MoviesDataSource {
 
   Future<void> saveTranslationWatched(int translationId);
 
-  Future<WatchListElementDto> getWatchListElement(Uri movieUri);
+  Future<WatchListElementDto> getWatchStatusDetails(Uri movieUri);
 }

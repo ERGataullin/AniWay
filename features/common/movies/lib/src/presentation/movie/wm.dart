@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
+import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:movies/src/presentation/movie/model.dart';
 
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
@@ -16,6 +17,10 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
 abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<bool> get showLoader;
 
+  ValueListenable<bool> get watchStatusSelected;
+
+  ValueListenable<String> get watchStatusButtonTooltip;
+
   ValueListenable<ImageProvider?> get poster;
 
   ValueListenable<String> get playButtonLabel;
@@ -26,9 +31,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get description;
 
-  ValueListenable<String> get watchStatusButtonLabel;
-
-  void onPlayPressed();
+  void handlePlayPressed();
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
@@ -42,7 +45,26 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   final Uri _posterBaseUri;
 
   @override
-  ValueListenable<bool> get showLoader => model.loading;
+  late final DynamicData<bool> watchStatusSelected = DynamicData(
+    trigger: model.watchStatusDetails,
+    () => switch (model.watchStatusDetails.value?.status) {
+      null || WatchStatus.none => false,
+      _ => true,
+    },
+  );
+
+  @override
+  late final DynamicData<String> watchStatusButtonTooltip = DynamicData(
+    trigger: Listenable.merge([
+      l10n,
+      model.watchStatusDetails,
+    ]),
+    () => switch (model.watchStatusDetails.value?.status) {
+      null => '',
+      WatchStatus.none => l10n.value.watchStatusAdd,
+      final WatchStatus other => l10n.value.watchStatus(other.name),
+    },
+  );
 
   @override
   late final DynamicData<ImageProvider?> poster = DynamicData(
@@ -79,10 +101,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<String> watchStatusButtonLabel = DynamicData(
-    trigger: l10n,
-    () => l10n.value.watchStatusToPlanned,
-  );
+  ValueListenable<bool> get showLoader => model.loading;
 
   @override
   void initWidgetModel() {
@@ -93,7 +112,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
-  void onPlayPressed() {
+  void handlePlayPressed() {
     widget.onPlayPressed(
       model.movie.value!.id,
       model.nextEpisodeId,
@@ -102,12 +121,13 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   void dispose() {
+    watchStatusSelected.dispose();
+    watchStatusButtonTooltip.dispose();
     poster.dispose();
     playButtonLabel.dispose();
     score.dispose();
     title.dispose();
     description.dispose();
-    watchStatusButtonLabel.dispose();
     super.dispose();
   }
 }
