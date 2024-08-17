@@ -27,6 +27,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           text: TextSpan(text: widget.data),
         )..layout(maxWidth: constraints.maxWidth);
         final bool exceedsMaxLinesCollapsed = textPainter.didExceedMaxLines;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
