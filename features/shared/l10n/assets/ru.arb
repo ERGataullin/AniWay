@@ -1,7 +1,6 @@
 {
     "@@locale": "ru",
     "authorLabel": "Автор",
-    "watchStatusToPlanned": "В запланировано",
     "durationSeconds": "{seconds} секунд",
     "@durationSeconds": {
         "placeholders": {
@@ -43,5 +42,7 @@
             }
         }
     },
-    "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}"
+    "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}",
+    "watchStatusAdd": "Добавить в список",
+    "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{В библиотеке отсутствует} other{Неизвестный статус}}"
 }

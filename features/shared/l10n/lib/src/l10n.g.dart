@@ -7,8 +7,6 @@ import 'package:intl/intl.dart' as intl;
 
 import 'l10n_ru.g.dart';
 
-// ignore_for_file: type=lint
-
 /// Callers can lookup localized strings with an instance of L10n
 /// returned by `L10n.of(context)`.
 ///
@@ -98,12 +96,6 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'Автор'**
   String get authorLabel;
-
-  /// No description provided for @watchStatusToPlanned.
-  ///
-  /// In ru, this message translates to:
-  /// **'В запланировано'**
-  String get watchStatusToPlanned;
 
   /// No description provided for @durationSeconds.
   ///
@@ -212,6 +204,18 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}'**
   String videoQualityType(String type);
+
+  /// No description provided for @watchStatusAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить в список'**
+  String get watchStatusAdd;
+
+  /// No description provided for @watchStatus.
+  ///
+  /// In ru, this message translates to:
+  /// **'{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{В библиотеке отсутствует} other{Неизвестный статус}}'**
+  String watchStatus(String type);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

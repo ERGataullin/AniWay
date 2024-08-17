@@ -82,9 +82,9 @@ class MoviesService implements Initable {
     _upNextChanges.value++;
   }
 
-  Future<WatchListElementData?> getWatchListElement(Uri movieUri) async {
+  Future<WatchListElementData?> getWatchStatusDetails(Uri movieUri) async {
     final WatchListElementDto dto =
-        await _repository.getWatchListElement(movieUri);
+        await _repository.getWatchStatusDetails(movieUri);
     return WatchListElementData.fromDto(dto);
   }
 }
