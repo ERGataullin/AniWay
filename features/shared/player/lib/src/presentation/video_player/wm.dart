@@ -53,7 +53,7 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   void handlePositionChangeEnd(double position);
 
-  void handlePopInvoked(bool didPop, Object? result);
+  void handlePopInvoked(bool didPop, [Object? result]);
 }
 
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
@@ -195,7 +195,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
-  void handlePopInvoked(bool didPop, Object? result) {
+  void handlePopInvoked(bool didPop, [Object? result]) {
     if (didPop) fullscreenController.exit();
   }
 

@@ -160,8 +160,7 @@ class _CategoryTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle titleStyle = Theme.of(context).textTheme.titleLarge ??
-        DefaultTextStyle.of(context).style;
+    final TextStyle titleStyle = Theme.of(context).textTheme.titleLarge!;
     return SafeArea(
       child: Link(
         uri: uri,
