@@ -169,7 +169,7 @@ class _Description extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.description,
-      builder: (context, __) => Text(context.wm.description.value),
+      builder: (context, __) => ExpandableText(context.wm.description.value),
     );
   }
 }
