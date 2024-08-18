@@ -77,6 +77,7 @@ class _SelectionWidgetState extends State<MenuWidget> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: AnimatedSize(
+        alignment: Alignment.topCenter,
         curve: Easing.standard,
         duration: Durations.medium2,
         child: Column(
