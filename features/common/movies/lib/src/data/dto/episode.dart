@@ -5,6 +5,7 @@ class EpisodeDto {
     required this.id,
     required this.type,
     required this.number,
+    this.previewUrl,
   });
 
   final int id;
@@ -12,4 +13,6 @@ class EpisodeDto {
   final MovieTypeDto type;
 
   final num? number;
+
+  final String? previewUrl;
 }
