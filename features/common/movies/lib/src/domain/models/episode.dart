@@ -6,14 +6,14 @@ class EpisodeData {
     required this.id,
     required this.type,
     this.number,
-    required this.previewUri,
+    this.previewUri,
   });
 
   factory EpisodeData.fromDto(EpisodeDto dto) => EpisodeData(
         id: dto.id,
         type: MovieType.fromDto(dto.type),
         number: dto.number,
-        previewUri: Uri.parse(dto.previewUrl ?? ''),
+        previewUri: dto.previewUrl == null ? null : Uri.parse(dto.previewUrl!),
       );
 
   final int id;
@@ -22,5 +22,5 @@ class EpisodeData {
 
   final num? number;
 
-  final Uri previewUri;
+  final Uri? previewUri;
 }

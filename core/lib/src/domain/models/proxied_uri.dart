@@ -139,7 +139,8 @@ class ProxiedUri implements Uri {
       ].where((query) => query.isNotEmpty).join('&'),
     );
 
-    return proxy.resolveUri(proxiedReference);
+    final result = proxy.resolveUri(proxiedReference);
+    return result;
   }
 
   @override

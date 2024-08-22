@@ -4,7 +4,7 @@ class EpisodeDto {
   const EpisodeDto({
     required this.id,
     required this.type,
-    required this.number,
+    this.number,
     this.previewUrl,
   });
 

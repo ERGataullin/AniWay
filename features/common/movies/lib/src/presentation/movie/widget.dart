@@ -65,6 +65,10 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                           ),
                           const SizedBox(height: 16),
                           const _Description(),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          const _EpisodeList(),
                           // Padding for Extended FAB
                           const SizedBox(height: 16 + 56 + 16),
                         ],
@@ -133,7 +137,6 @@ class _AppBar extends StatelessWidget {
                     builder: (context, __) => Image(
                       image: context.wm.poster.value!,
                       fit: BoxFit.cover,
-                      filterQuality: FilterQuality.high,
                     ),
                   ),
                 ),
@@ -151,6 +154,22 @@ class _Description extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.description,
       builder: (context, __) => ExpandableText(context.wm.description.value),
+    );
+  }
+}
+
+class _EpisodeList extends StatelessWidget {
+  const _EpisodeList();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Список серий',
+          style: Theme.of(context).textTheme.titleLarge!,
+        )
+      ],
     );
   }
 }
