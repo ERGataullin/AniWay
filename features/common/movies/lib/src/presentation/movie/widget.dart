@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/presentation/components/movie_score.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
 
@@ -17,7 +18,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   final int movieId;
 
-  final void Function(int movieId, int? episodeId) onPlayPressed;
+  final void Function(int? episodeId) onPlayPressed;
 
   @override
   Widget build(IMovieWM wm) {
@@ -65,10 +66,14 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                           ),
                           const SizedBox(height: 16),
                           const _Description(),
-                          const SizedBox(
-                            height: 16,
+                          const SizedBox(height: 16),
+                          ListenableBuilder(
+                            listenable: context.wm.showEpisodes,
+                            builder: (context, __) =>
+                                context.wm.showEpisodes.value
+                                    ? const _EpisodeList()
+                                    : const SizedBox.shrink(),
                           ),
-                          const _EpisodeList(),
                           // Padding for Extended FAB
                           const SizedBox(height: 16 + 56 + 16),
                         ],
@@ -163,12 +168,45 @@ class _EpisodeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle textStyle = Theme.of(context).textTheme.titleLarge!;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Список серий',
-          style: Theme.of(context).textTheme.titleLarge!,
-        )
+        TextButton(
+          onPressed: () {},
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Список серий',
+                style: Theme.of(context).textTheme.titleLarge!,
+              ),
+              Icon(
+                Icons.chevron_right,
+                size: textStyle.fontSize,
+                color: textStyle.color?.withOpacity(.6),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        SizedBox(
+          height: 128,
+          child: ListenableBuilder(
+            listenable: context.wm.episodes,
+            builder: (context, __) => ListView.separated(
+              clipBehavior: Clip.none,
+              scrollDirection: Axis.horizontal,
+              itemCount: context.wm.episodes.value.length,
+              separatorBuilder: (context, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) => _Episode(
+                context.wm.episodes.value[index],
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -184,6 +222,57 @@ class _PlayButton extends StatelessWidget {
         builder: (context, __) => Text(context.wm.playButtonLabel.value),
       ),
       icon: const Icon(Icons.play_arrow),
+    );
+  }
+}
+
+class _Episode extends StatelessWidget {
+  const _Episode(this.data);
+
+  final EpisodeData data;
+
+  @override
+  Widget build(BuildContext context) {
+    final CardTheme cardTheme = CardTheme.of(context);
+    return GestureDetector(
+      onTap: () {},
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Card(
+                  clipBehavior: Clip.hardEdge,
+                  child: InkWell(
+                    onTap: () {},
+                    customBorder: cardTheme.shape!,
+                    child: data.previewUri == null
+                        ? null
+                        : Image(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                              context
+                                  .read<Network>()
+                                  .baseUri
+                                  .resolveUri(data.previewUri!)
+                                  .toString(),
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Серия ${data.number}',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

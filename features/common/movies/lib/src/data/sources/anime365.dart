@@ -225,33 +225,55 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
         method: RequestMethod.post,
         body: {
-          'query': '''{ 
-                        animes(ids: "${anime365Data['myAnimeListId']}" ) {
-                          poster { originalUrl }
-                          videos { name kind imageUrl }
-                        }
-                      }''',
+          'query': '''
+            { 
+              animes(ids: "${anime365Data['myAnimeListId']}" ) {
+                poster { originalUrl }
+                videos { name kind imageUrl }
+              }
+            }''',
         },
       ),
     );
     final Json shikimoriData =
         ((shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>)
             .first as Json;
+    final Map<num, Json> shikimoriEpisodePreviews =
+        switch (shikimoriData['videos']) {
+      final List<dynamic> videosJsons => {
+          for (final Json videoJson in videosJsons
+              .where(
+                (videoJson) => (videoJson as Json)['kind'] == 'episode_preview',
+              )
+              .cast())
+            num.tryParse(videoJson['name']! as String) ?? -1: videoJson,
+        },
+      _ => const {},
+    };
+
     final Uri movieUri = Uri.parse(anime365Data['url']! as String);
     final List<EpisodeDto> previewsAndEpisodes =
         anime365Data['episodes'] != null
-            ? (anime365Data['episodes']! as List<dynamic>)
-                .cast<Json>()
-                .map(
-                  (episodeJson) => EpisodeDto(
+            ? (anime365Data['episodes']! as List<dynamic>).cast<Json>().map(
+                (episodeJson) {
+                  final num number = num.parse(
+                    episodeJson['episodeInt']! as String,
+                  );
+                  String? previewUrl =
+                      shikimoriEpisodePreviews[number]?['imageUrl'] as String?;
+                  if (previewUrl?.startsWith('//') ?? false) {
+                    previewUrl = 'https:$previewUrl';
+                  }
+                  return EpisodeDto(
                     id: episodeJson['id']! as int,
                     type: _convertJsonToMovieType(
                       episodeJson['episodeType']! as String,
                     ),
-                    number: num.parse(episodeJson['episodeInt']! as String),
-                  ),
-                )
-                .toList(growable: false)
+                    number: number,
+                    previewUrl: previewUrl,
+                  );
+                },
+              ).toList(growable: false)
             : const [];
 
     return MovieDetailsDto(

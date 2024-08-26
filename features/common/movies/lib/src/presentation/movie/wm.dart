@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
+import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:movies/src/presentation/movie/model.dart';
 
@@ -30,6 +31,10 @@ abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<String> get description;
+
+  ValueListenable<List<EpisodeData>> get episodes;
+
+  ValueListenable<bool> get showEpisodes;
 
   void handlePlayPressed();
 }
@@ -101,6 +106,20 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final DynamicData<List<EpisodeData>> episodes = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value?.episodes ?? const [],
+  );
+
+  @override
+  late final DynamicData<bool> showEpisodes = DynamicData(
+    trigger: model.movie,
+    () =>
+        model.movie.value?.episodes != null &&
+        model.movie.value!.episodes.length > 1,
+  );
+
+  @override
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
@@ -113,10 +132,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   void handlePlayPressed() {
-    widget.onPlayPressed(
-      model.movie.value!.id,
-      model.nextEpisodeId,
-    );
+    widget.onPlayPressed(model.nextEpisodeId);
   }
 
   @override
@@ -128,6 +144,8 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     score.dispose();
     title.dispose();
     description.dispose();
+    episodes.dispose();
+    showEpisodes.dispose();
     super.dispose();
   }
 }
