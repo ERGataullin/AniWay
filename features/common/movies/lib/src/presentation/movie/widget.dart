@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/presentation/components/movie_score.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
@@ -13,6 +14,8 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
     super.key,
     required this.movieId,
     required this.onPlayPressed,
+    required this.onEpisodePressed,
+    required this.onEpisodesPressed,
     WidgetModelFactory wmFactory = movieWMFactory,
   }) : super(wmFactory);
 
@@ -20,8 +23,13 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   final void Function(int? episodeId) onPlayPressed;
 
+  final void Function(int? episodeId) onEpisodePressed;
+
+  final void Function() onEpisodesPressed;
+
   @override
   Widget build(IMovieWM wm) {
+    const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 16);
     return Provider<IMovieWM>.value(
       value: wm,
       child: ListenableBuilder(
@@ -40,13 +48,13 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
               else
                 SliverSafeArea(
                   sliver: SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 16),
-                          ListenableBuilder(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        Padding(
+                          padding: padding,
+                          child: ListenableBuilder(
                             listenable: wm.score,
                             builder: (context, __) => wm.score.value == null
                                 ? const SizedBox.shrink()
@@ -57,27 +65,33 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                                         .titleMedium!,
                                   ),
                           ),
-                          ListenableBuilder(
+                        ),
+                        Padding(
+                          padding: padding,
+                          child: ListenableBuilder(
                             listenable: wm.title,
                             builder: (context, __) => Text(
                               wm.title.value,
                               style: Theme.of(context).textTheme.headlineLarge,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          const _Description(),
-                          const SizedBox(height: 16),
-                          ListenableBuilder(
-                            listenable: context.wm.showEpisodes,
-                            builder: (context, __) =>
-                                context.wm.showEpisodes.value
-                                    ? const _EpisodeList()
-                                    : const SizedBox.shrink(),
-                          ),
-                          // Padding for Extended FAB
-                          const SizedBox(height: 16 + 56 + 16),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Padding(
+                          padding: padding,
+                          child: _Description(),
+                        ),
+                        const SizedBox(height: 16),
+                        ListenableBuilder(
+                          listenable: context.wm.showEpisodes,
+                          builder: (context, __) =>
+                              context.wm.showEpisodes.value
+                                  ? const _Episodes()
+                                  : const SizedBox.shrink(),
+                        ),
+                        // Padding for Extended FAB
+                        const SizedBox(height: 16 + 56 + 16),
+                      ],
                     ),
                   ),
                 ),
@@ -163,31 +177,49 @@ class _Description extends StatelessWidget {
   }
 }
 
-class _EpisodeList extends StatelessWidget {
-  const _EpisodeList();
+class _Episodes extends StatelessWidget {
+  const _Episodes();
 
   @override
   Widget build(BuildContext context) {
+    const EdgeInsets margin = EdgeInsets.symmetric(horizontal: 16);
     final TextStyle textStyle = Theme.of(context).textTheme.titleLarge!;
+    final TextButton button = TextButton(
+      onPressed: context.wm.handleEpisodesPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListenableBuilder(
+            listenable: context.wm.episodesLabel,
+            builder: (context, __) => Text(
+              context.wm.episodesLabel.value,
+              style: Theme.of(context).textTheme.titleLarge!,
+            ),
+          ),
+          Icon(
+            Icons.chevron_right,
+            size: textStyle.fontSize,
+            color: textStyle.color?.withOpacity(.6),
+          ),
+        ],
+      ),
+    );
+    final EdgeInsetsGeometry? buttonPadding = button
+        .defaultStyleOf(context)
+        .padding
+        ?.resolve(WidgetState.values.toSet())
+        ?.resolve(Directionality.of(context));
+    final EdgeInsets effectiveMargin = buttonPadding == null
+        ? margin
+        : EdgeInsets.symmetric(
+            horizontal: (margin.horizontal - buttonPadding.horizontal) / 2,
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextButton(
-          onPressed: () {},
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Список серий',
-                style: Theme.of(context).textTheme.titleLarge!,
-              ),
-              Icon(
-                Icons.chevron_right,
-                size: textStyle.fontSize,
-                color: textStyle.color?.withOpacity(.6),
-              ),
-            ],
-          ),
+        Padding(
+          padding: effectiveMargin,
+          child: button,
         ),
         const SizedBox(
           height: 16,
@@ -197,6 +229,7 @@ class _EpisodeList extends StatelessWidget {
           child: ListenableBuilder(
             listenable: context.wm.episodes,
             builder: (context, __) => ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
               itemCount: context.wm.episodes.value.length,
@@ -235,7 +268,7 @@ class _Episode extends StatelessWidget {
   Widget build(BuildContext context) {
     final CardTheme cardTheme = CardTheme.of(context);
     return GestureDetector(
-      onTap: () {},
+      onTap: () => context.wm.handleEpisodePressed(data.id),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: Column(
@@ -247,7 +280,7 @@ class _Episode extends StatelessWidget {
                 child: Card(
                   clipBehavior: Clip.hardEdge,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () => context.wm.handleEpisodePressed(data.id),
                     customBorder: cardTheme.shape!,
                     child: data.previewUri == null
                         ? null
@@ -267,7 +300,7 @@ class _Episode extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Серия ${data.number}',
+              context.l10n.movieEpisode(data.type.name, data.number ?? 0),
               style: Theme.of(context).textTheme.labelLarge,
             ),
           ],

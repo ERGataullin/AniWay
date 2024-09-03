@@ -9,6 +9,7 @@
             }
         }
     },
+    "episodesLabel": "Cписок серий",
     "emailLabel": "Электронная почта",
     "emailValidationError": "Неверный адрес электронной почты",
     "homePageTitle": "Главная",

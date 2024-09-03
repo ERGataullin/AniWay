@@ -2,6 +2,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'l10n.g.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Russian (`ru`).
 class L10nRu extends L10n {
   L10nRu([String locale = 'ru']) : super(locale);
@@ -13,6 +15,9 @@ class L10nRu extends L10n {
   String durationSeconds(int seconds) {
     return '$seconds секунд';
   }
+
+  @override
+  String get episodesLabel => 'Cписок серий';
 
   @override
   String get emailLabel => 'Электронная почта';

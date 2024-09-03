@@ -185,15 +185,26 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }
 
   GoRoute _buildMovie({required String parent}) {
+    final GoRoute episodesRoute = _buildEpisodes(parent: parent);
     return GoRoute(
       name: _Routes.movie(parent: parent),
       path: 'movies/:movieId',
+      routes: [episodesRoute],
       builder: (context, state) => MovieWidget(
         movieId: int.parse(state.pathParameters['movieId']!),
         onPlayPressed: (episodeId) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': state.pathParameters['movieId']!},
           queryParameters: {'episodeId': episodeId.toString()},
+        ),
+        onEpisodePressed: (episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+        onEpisodesPressed: () => context.goNamed(
+          episodesRoute.name!,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
         ),
       ),
     );
@@ -214,6 +225,14 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       ),
     );
   }
+
+  GoRoute _buildEpisodes({required String parent}) {
+    return GoRoute(
+      name: _Routes.episodes(parent: parent),
+      path: 'episodes',
+      builder: (context, state) => const EpisodesWidget(),
+    );
+  }
 }
 
 class _Routes {
@@ -231,4 +250,6 @@ class _Routes {
       parent == null ? 'search' : '$parent/search';
 
   static String movie({required String parent}) => '$parent/movies/:movieId';
+
+  static String episodes({String? parent}) => '$parent/episodes';
 }

@@ -212,8 +212,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields':
-                'url,titles,posterUrl,episodes,descriptions,myAnimeListId,myAnimeListScore',
+            'fields': 'url,titles,posterUrl,episodes,'
+                'descriptions,myAnimeListId,myAnimeListScore',
           },
         ),
         method: RequestMethod.get,
