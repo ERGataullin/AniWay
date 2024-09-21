@@ -230,7 +230,16 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       name: _Routes.episodes(parent: parent),
       path: 'episodes',
-      builder: (context, state) => const EpisodesWidget(),
+      builder: (context, state) => EpisodesWidget(
+        movieId: int.parse(
+          state.pathParameters['movieId']!,
+        ),
+        onEpisodePressed: (episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+      ),
     );
   }
 }
