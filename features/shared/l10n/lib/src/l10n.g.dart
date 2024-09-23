@@ -195,6 +195,12 @@ abstract class L10n {
   /// **'Поиск'**
   String get searchPageTitle;
 
+  /// No description provided for @tabEpisodesText.
+  ///
+  /// In ru, this message translates to:
+  /// **'{firstEpisode}-{lastEpisode}'**
+  String tabEpisodesText(num firstEpisode, num lastEpisode);
+
   /// No description provided for @upNextTitle.
   ///
   /// In ru, this message translates to:

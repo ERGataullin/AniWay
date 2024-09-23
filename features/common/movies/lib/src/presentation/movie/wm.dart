@@ -32,11 +32,13 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get description;
 
+  ValueListenable<bool> get showEpisodes;
+
   ValueListenable<String> get episodesLabel;
 
   ValueListenable<List<EpisodeData>> get episodes;
 
-  ValueListenable<bool> get showEpisodes;
+  String getEpisodeTitle(EpisodeData episode);
 
   void handlePlayPressed();
 
@@ -112,6 +114,12 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final DynamicData<bool> showEpisodes = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value?.episodes.isNotEmpty ?? false,
+  );
+
+  @override
   late final DynamicData<String> episodesLabel = DynamicData(
     trigger: l10n,
     () => l10n.value.episodesLabel,
@@ -124,14 +132,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<bool> showEpisodes = DynamicData(
-    trigger: model.movie,
-    () =>
-        model.movie.value?.episodes != null &&
-        model.movie.value!.episodes.length > 1,
-  );
-
-  @override
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
@@ -140,6 +140,12 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     model.loadData(
       movieId: widget.movieId,
     );
+  }
+
+  @override
+  String getEpisodeTitle(EpisodeData episodeData) {
+    return context.l10n
+        .movieEpisode(episodeData.type.name, episodeData.number ?? 0);
   }
 
   @override

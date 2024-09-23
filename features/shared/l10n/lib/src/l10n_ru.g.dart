@@ -107,6 +107,11 @@ class L10nRu extends L10n {
   String get searchPageTitle => 'Поиск';
 
   @override
+  String tabEpisodesText(num firstEpisode, num lastEpisode) {
+    return '$firstEpisode-$lastEpisode';
+  }
+
+  @override
   String get upNextTitle => 'К просмотру';
 
   @override

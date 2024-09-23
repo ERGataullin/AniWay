@@ -253,8 +253,9 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
     final Uri movieUri = Uri.parse(anime365Data['url']! as String);
     final List<EpisodeDto> previewsAndEpisodes =
-        anime365Data['episodes'] != null
-            ? (anime365Data['episodes']! as List<dynamic>).cast<Json>().map(
+        anime365Data['episodes'] == null
+            ? const []
+            : (anime365Data['episodes']! as List<dynamic>).cast<Json>().map(
                 (episodeJson) {
                   final num number = num.parse(
                     episodeJson['episodeInt']! as String,
@@ -273,8 +274,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
                     previewUrl: previewUrl,
                   );
                 },
-              ).toList(growable: false)
-            : const [];
+              ).toList(growable: false);
 
     return MovieDetailsDto(
       id: id,

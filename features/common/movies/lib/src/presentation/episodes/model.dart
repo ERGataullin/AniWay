@@ -38,6 +38,7 @@ class EpisodesModel extends ElementaryModel implements IEpisodesModel {
 
   @override
   void dispose() {
+    loading.dispose();
     movie.dispose();
     super.dispose();
   }

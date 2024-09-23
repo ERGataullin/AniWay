@@ -1,6 +1,5 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:l10n/l10n.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/presentation/components/movie_score.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
@@ -25,7 +24,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   final void Function(int? episodeId) onEpisodePressed;
 
-  final void Function() onEpisodesPressed;
+  final VoidCallback onEpisodesPressed;
 
   @override
   Widget build(IMovieWM wm) {
@@ -89,7 +88,6 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                                   ? const _Episodes()
                                   : const SizedBox.shrink(),
                         ),
-                        // Padding for Extended FAB
                         const SizedBox(height: 16 + 56 + 16),
                       ],
                     ),
@@ -300,7 +298,7 @@ class _Episode extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              context.l10n.movieEpisode(data.type.name, data.number ?? 0),
+              context.wm.getEpisodeTitle(data),
               style: Theme.of(context).textTheme.labelLarge,
             ),
           ],
