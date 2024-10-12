@@ -34,13 +34,13 @@
     "qualityLabel": "Качество",
     "signInSubmitLabel": "Войти через Anime365",
     "searchPageTitle": "Поиск",
-    "tabEpisodesText": "{firstEpisode}-{lastEpisode}",
-    "@tabEpisodesText": {
+    "range": "{start}-{end}",
+    "@range": {
         "placeholders": {
-            "firstEpisode": {
+            "start": {
                 "type": "num"
             },
-            "lastEpisode": {
+            "end": {
                 "type": "num"
             }
         }

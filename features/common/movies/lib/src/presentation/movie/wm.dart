@@ -172,8 +172,8 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     score.dispose();
     title.dispose();
     description.dispose();
-    episodes.dispose();
     showEpisodes.dispose();
+    episodes.dispose();
     super.dispose();
   }
 }

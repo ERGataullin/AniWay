@@ -58,7 +58,7 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
       (_episodes.value.length / _groupSize).ceil(),
       (index) {
         final List<EpisodeData> tabEpisodes = tabsEpisodes.value[index];
-        return context.l10n.tabEpisodesText(
+        return context.l10n.range(
           tabEpisodes.first.number ?? 0,
           tabEpisodes.last.number ?? 0,
         );
@@ -83,8 +83,8 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
     () => List.generate(
       (_episodes.value.length / _groupSize).ceil(),
       (index) {
-        final startIndex = index * _groupSize;
-        final endIndex = math.min(
+        final int startIndex = index * _groupSize;
+        final int endIndex = math.min(
           _episodes.value.length - 1,
           index * _groupSize + _groupSize - 1,
         );
@@ -97,8 +97,10 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
 
   @override
   String getEpisodeTitle(EpisodeData episodeData) {
-    return context.l10n
-        .movieEpisode(episodeData.type.name, episodeData.number ?? 0);
+    return context.l10n.movieEpisode(
+      episodeData.type.name,
+      episodeData.number ?? 0,
+    );
   }
 
   @override
@@ -117,12 +119,12 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
 
   @override
   void dispose() {
+    _episodes.dispose();
     episodesLabel.dispose();
     tabController
       ..value?.dispose()
       ..dispose();
     tabsTexts.dispose();
-    _episodes.dispose();
     tabsEpisodes.dispose();
     super.dispose();
   }

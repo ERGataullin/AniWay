@@ -19,14 +19,6 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
 
   final void Function(int? episodeId) onEpisodePressed;
 
-  static const SliverGridDelegateWithMaxCrossAxisExtent gridDelegate =
-      SliverGridDelegateWithMaxCrossAxisExtent(
-    childAspectRatio: 13 / 9,
-    crossAxisSpacing: 8,
-    mainAxisSpacing: 8,
-    maxCrossAxisExtent: 128 + 64,
-  );
-
   @override
   Widget build(IEpisodesWM wm) {
     return Provider<IEpisodesWM>.value(
@@ -35,13 +27,12 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
         listenable: Listenable.merge([
           wm.tabController,
           wm.tabsTexts,
-          wm.showLoader,
           wm.episodesLabel,
         ]),
         builder: (context, __) => Scaffold(
           appBar: AppBar(
             title: Text(wm.episodesLabel.value),
-            bottom: wm.showLoader.value
+            bottom: wm.tabController.value == null
                 ? null
                 : TabBar(
                     controller: wm.tabController.value,
@@ -51,7 +42,7 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
                         .toList(growable: false),
                   ),
           ),
-          body: wm.showLoader.value
+          body: wm.tabController.value == null
               ? const Center(
                   child: CircularProgressIndicator.adaptive(),
                 )
@@ -64,7 +55,13 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
                           (episodes) => GridView.builder(
                             padding: const EdgeInsets.all(16),
                             clipBehavior: Clip.none,
-                            gridDelegate: EpisodesWidget.gridDelegate,
+                            gridDelegate:
+                                const SliverGridDelegateWithMaxCrossAxisExtent(
+                              childAspectRatio: 13 / 9,
+                              crossAxisSpacing: 8,
+                              mainAxisSpacing: 8,
+                              maxCrossAxisExtent: 128 + 64,
+                            ),
                             itemCount: episodes.length,
                             itemBuilder: (context, index) => _Episode(
                               episodes[index],
