@@ -95,7 +95,11 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                 ),
             ],
           ),
-          floatingActionButton: wm.showLoader.value ? null : _PlayButton(),
+          floatingActionButton: wm.showLoader.value
+              ? null
+              : wm.episodes.value.isEmpty
+                  ? null
+                  : _PlayButton(),
         ),
       ),
     );
