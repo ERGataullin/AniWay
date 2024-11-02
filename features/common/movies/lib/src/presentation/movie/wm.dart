@@ -94,7 +94,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   late final DynamicData<bool> showPlayButton = DynamicData(
     trigger: Listenable.merge([showLoader, showEpisodes]),
-    () => showLoader.value || !showEpisodes.value,
+    () => !showLoader.value || showEpisodes.value,
   );
 
   @override

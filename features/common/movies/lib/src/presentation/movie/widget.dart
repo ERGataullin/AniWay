@@ -95,7 +95,8 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                 ),
             ],
           ),
-          floatingActionButton: wm.showPlayButton.value ? null : _PlayButton(),
+          floatingActionButton:
+              wm.showPlayButton.value ? const _PlayButton() : null,
         ),
       ),
     );
@@ -244,6 +245,7 @@ class _Episodes extends StatelessWidget {
 }
 
 class _PlayButton extends StatelessWidget {
+  const _PlayButton();
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
