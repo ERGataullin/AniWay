@@ -139,10 +139,15 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
-  ValueListenable<bool> get showPlayButton {
-    _showPlayButton.value = showLoader.value || !showEpisodes.value;
-    return _showPlayButton;
-  }
+  late final DynamicData<bool> showPlayButton = DynamicData(
+    trigger: Listenable.merge([showLoader, showEpisodes]),
+    () => showLoader.value || !showEpisodes.value,
+  );
+
+  //  {
+  //   _showPlayButton.value = showLoader.value || !showEpisodes.value;
+  //   return _showPlayButton;
+  // }
 
   @override
   void initWidgetModel() {
