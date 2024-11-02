@@ -94,6 +94,12 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final DynamicData<bool> showPlayButton = DynamicData(
+    trigger: Listenable.merge([showLoader, showEpisodes]),
+    () => showLoader.value || !showEpisodes.value,
+  );
+
+  @override
   late final DynamicData<String> playButtonLabel = DynamicData(
     trigger: l10n,
     () => l10n.value.playLabel,
@@ -139,17 +145,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
-  late final DynamicData<bool> showPlayButton = DynamicData(
-    trigger: Listenable.merge([showLoader, showEpisodes]),
-    () => showLoader.value || !showEpisodes.value,
-  );
-
-  //  {
-  //   _showPlayButton.value = showLoader.value || !showEpisodes.value;
-  //   return _showPlayButton;
-  // }
-
-  @override
   void initWidgetModel() {
     super.initWidgetModel();
     model.loadData(
@@ -183,6 +178,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     watchStatusSelected.dispose();
     watchStatusButtonTooltip.dispose();
     poster.dispose();
+    showPlayButton.dispose();
     playButtonLabel.dispose();
     score.dispose();
     title.dispose();
