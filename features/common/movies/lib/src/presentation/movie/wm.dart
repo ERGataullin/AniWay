@@ -18,6 +18,8 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
 abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<bool> get showLoader;
 
+  ValueListenable<bool> get showPlayButton;
+
   ValueListenable<bool> get watchStatusSelected;
 
   ValueListenable<String> get watchStatusButtonTooltip;
@@ -87,6 +89,12 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
         : NetworkImage(
             _posterBaseUri.resolveUri(model.movie.value!.posterUri).toString(),
           ),
+  );
+
+  @override
+  late final DynamicData<bool> showPlayButton = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value?.episodes.isNotEmpty ?? false,
   );
 
   @override
@@ -168,6 +176,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     watchStatusSelected.dispose();
     watchStatusButtonTooltip.dispose();
     poster.dispose();
+    showPlayButton.dispose();
     playButtonLabel.dispose();
     score.dispose();
     title.dispose();
