@@ -59,8 +59,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   final Uri _posterBaseUri;
 
-  final ValueNotifier<bool> _showPlayButton = ValueNotifier(false);
-
   @override
   late final DynamicData<bool> watchStatusSelected = DynamicData(
     trigger: model.watchStatusDetails,
