@@ -219,16 +219,16 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 class _Routes {
   const _Routes._();
 
-  static const String signIn = 'sign-in';
+  static const String signIn = '/sign-in';
 
-  static const String home = 'home';
+  static const String home = '/home';
 
-  static const String moviePlayer = 'movie-player';
+  static const String moviePlayer = '/movie-player';
 
-  static const String upNext = 'up-next';
+  static const String upNext = '/up-next';
 
   static String search({String? parent}) =>
-      parent == null ? 'search' : '$parent/search';
+      parent == null ? '/search' : '$parent/search';
 
   static String movie({required String parent}) => '$parent/movies/:movieId';
 }

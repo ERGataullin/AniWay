@@ -44,12 +44,23 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
         body: ListenableBuilder(
           listenable: wm.showLoader,
           builder: (context, __) => AnimatedSwitcher(
-            switchInCurve: Curves.easeInOutCubicEmphasized,
-            switchOutCurve: Curves.easeInOutCubicEmphasized.flipped,
-            duration: Durations.long2,
+            switchInCurve: Easing.emphasizedDecelerate,
+            switchOutCurve: Easing.emphasizedAccelerate.flipped,
+            duration: Durations.medium4,
+            reverseDuration: Durations.short4,
+            layoutBuilder: (currentChild, previousChildren) => Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                ...previousChildren,
+                if (currentChild != null) currentChild,
+              ],
+            ),
             child: wm.showLoader.value
-                ? const Center(child: CircularProgressIndicator.adaptive())
-                : const _Content(),
+                ? const Center(
+                    key: ValueKey('Loader'),
+                    child: CircularProgressIndicator.adaptive(),
+                  )
+                : const _Content(key: ValueKey('Content')),
           ),
         ),
       ),
@@ -58,7 +69,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
 }
 
 class _Content extends StatelessWidget {
-  const _Content();
+  const _Content({super.key});
 
   @override
   Widget build(BuildContext context) {
