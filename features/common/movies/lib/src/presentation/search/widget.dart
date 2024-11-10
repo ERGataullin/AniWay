@@ -27,34 +27,37 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   Widget build(IMoviesSearchWM wm) {
     return Provider<IMoviesSearchWM>.value(
       value: wm,
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: const _SearchBar(),
-        body: SafeArea(
-          top: false,
-          child: CustomScrollView(
-            controller: wm.scrollController,
-            slivers: [
-              Builder(
-                builder: (context) => SliverPagedGrid(
-                  key: wm.pagedGridKey,
-                  scrollController: wm.scrollController,
-                  padding: EdgeInsets.fromLTRB(
-                    16,
-                    MediaQuery.paddingOf(context).top,
-                    16,
-                    16,
-                  ),
-                  gridDelegate: MovieCard.gridDelegate,
-                  loader: wm.handleLoadPage,
-                  itemBuilder: (context, movie, animation) =>
-                      MovieCard.animated(
-                    movie,
-                    opacity: animation,
+      child: ShimmerScope(
+        linearGradient: shimmerGradient,
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: const _SearchBar(),
+          body: SafeArea(
+            top: false,
+            child: CustomScrollView(
+              controller: wm.scrollController,
+              slivers: [
+                Builder(
+                  builder: (context) => SliverPagedGrid(
+                    key: wm.pagedGridKey,
+                    scrollController: wm.scrollController,
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      MediaQuery.paddingOf(context).top,
+                      16,
+                      16,
+                    ),
+                    gridDelegate: MovieCard.gridDelegate,
+                    loader: wm.handleLoadPage,
+                    itemBuilder: (context, movie, animation) =>
+                        MovieCard.animated(
+                      movie,
+                      opacity: animation,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -177,11 +177,12 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
             item.value,
             _animationOutTween.animate(animation),
           ),
+          duration: widget.animationOutDuration,
         );
         item.dispose();
       }
-      for (int i = 0; i < _items.length; i++) {
-        _items[i].value = null;
+      for (int index = 0; index < _items.length; index++) {
+        _items[index].value = null;
       }
       _finishedItemsCount = 0;
     }
@@ -205,7 +206,10 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
         _items[itemsIndex].value = item;
       } else {
         _items.add(ValueNotifier(item));
-        _gridKey.currentState?.insertItem(itemsIndex);
+        _gridKey.currentState?.insertItem(
+          itemsIndex,
+          duration: widget.animationInDuration,
+        );
       }
     }
 

@@ -34,33 +34,36 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   Widget build(IHomeWM wm) {
     return Provider<IHomeWM>.value(
       value: wm,
-      child: Scaffold(
-        appBar: AppBar(
-          title: ValueListenableBuilder(
-            valueListenable: wm.title,
-            builder: (context, title, ___) => Text(title),
-          ),
-        ),
-        body: ListenableBuilder(
-          listenable: wm.showLoader,
-          builder: (context, __) => AnimatedSwitcher(
-            switchInCurve: Easing.emphasizedDecelerate,
-            switchOutCurve: Easing.emphasizedAccelerate.flipped,
-            duration: Durations.medium4,
-            reverseDuration: Durations.short4,
-            layoutBuilder: (currentChild, previousChildren) => Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                ...previousChildren,
-                if (currentChild != null) currentChild,
-              ],
+      child: ShimmerScope(
+        linearGradient: shimmerGradient,
+        child: Scaffold(
+          appBar: AppBar(
+            title: ValueListenableBuilder(
+              valueListenable: wm.title,
+              builder: (context, title, ___) => Text(title),
             ),
-            child: wm.showLoader.value
-                ? const Center(
-                    key: ValueKey('Loader'),
-                    child: CircularProgressIndicator.adaptive(),
-                  )
-                : const _Content(key: ValueKey('Content')),
+          ),
+          body: ListenableBuilder(
+            listenable: wm.showLoader,
+            builder: (context, __) => AnimatedSwitcher(
+              switchInCurve: Easing.emphasizedDecelerate,
+              switchOutCurve: Easing.emphasizedAccelerate.flipped,
+              duration: Durations.medium4,
+              reverseDuration: Durations.short4,
+              layoutBuilder: (currentChild, previousChildren) => Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  ...previousChildren,
+                  if (currentChild != null) currentChild,
+                ],
+              ),
+              child: wm.showLoader.value
+                  ? const Center(
+                      key: ValueKey('Loader'),
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                  : const _Content(key: ValueKey('Content')),
+            ),
           ),
         ),
       ),
