@@ -180,10 +180,17 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
+  void didChangeDependencies() {
+    posterHeight.update();
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     watchStatusSelected.dispose();
     watchStatusButtonTooltip.dispose();
     poster.dispose();
+    posterHeight.dispose();
     showPlayButton.dispose();
     playButtonLabel.dispose();
     score.dispose();
