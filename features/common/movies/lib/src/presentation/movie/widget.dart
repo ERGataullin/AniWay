@@ -110,9 +110,9 @@ class _AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color surfaceColor = Theme.of(context).colorScheme.surface;
     return ListenableBuilder(
-      listenable: context.wm.showLoader,
+      listenable: context.wm.posterHeight,
       builder: (context, __) => SliverAppBar(
-        expandedHeight: context.wm.showLoader.value ? null : 400,
+        expandedHeight: context.wm.posterHeight.value,
         leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
           icon: const Icon(Icons.arrow_back),
