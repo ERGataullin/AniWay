@@ -112,9 +112,7 @@ class _AppBar extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.showLoader,
       builder: (context, __) => SliverAppBar(
-        expandedHeight: context.wm.showLoader.value
-            ? null
-            : MediaQuery.of(context).size.width * .95,
+        expandedHeight: context.wm.posterHeight.value,
         leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
           icon: const Icon(Icons.arrow_back),

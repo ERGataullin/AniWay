@@ -26,6 +26,8 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<ImageProvider?> get poster;
 
+  ValueListenable<double?> get posterHeight;
+
   ValueListenable<String> get playButtonLabel;
 
   ValueListenable<double?> get score;
@@ -89,6 +91,12 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
         : NetworkImage(
             _posterBaseUri.resolveUri(model.movie.value!.posterUri).toString(),
           ),
+  );
+
+  @override
+  late final DynamicData<double?> posterHeight = DynamicData(
+    trigger: showLoader,
+    () => showLoader.value ? null : MediaQuery.of(context).size.width * 1.25,
   );
 
   @override
