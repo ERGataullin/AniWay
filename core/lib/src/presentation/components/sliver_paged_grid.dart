@@ -15,7 +15,6 @@ class SliverPagedGrid<T> extends StatefulWidget {
   const SliverPagedGrid({
     super.key,
     required this.scrollController,
-    this.padding = EdgeInsets.zero,
     this.animationInCurve = defaultAnimationInCurve,
     this.animationInDuration = defaultAnimationInDuration,
     this.animationOutCurve = defaultAnimationOutCurve,
@@ -36,8 +35,6 @@ class SliverPagedGrid<T> extends StatefulWidget {
   static const Duration defaultAnimationOutDuration = Durations.short4;
 
   final ScrollController scrollController;
-
-  final EdgeInsets padding;
 
   final Curve animationInCurve;
 
@@ -70,9 +67,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     curve: widget.animationOutCurve,
   );
 
-  late int _itemsLengthForScrollReserve;
-
-  late SliverGridLayout _gridLayout;
+  late int _scrollReserveItemsLength;
 
   int _finishedItemsCount = 0;
 
@@ -84,34 +79,34 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
 
   bool get _hasUnfinishedItems => _finishedItemsCount < _items.length;
 
-  @override
-  void initState() {
-    super.initState();
-    widget.scrollController.addListener(_handleScrollReserveChanged);
+  bool get _loading => _pageFuture != null;
+
+  Future<void> reload() {
+    return _load(reload: true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: widget.padding,
-      sliver: SliverLayoutBuilder(
-        builder: (context, constraints) {
-          _handleConstraintsChanged(constraints);
-          return SliverAnimatedGrid(
-            key: _gridKey,
-            gridDelegate: widget.gridDelegate,
-            initialItemCount: _items.length,
-            itemBuilder: (context, index, animation) => ListenableBuilder(
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        _handleConstraintsChanged(constraints);
+        return SliverAnimatedGrid(
+          key: _gridKey,
+          gridDelegate: widget.gridDelegate,
+          initialItemCount: _items.length,
+          itemBuilder: (context, index, animation) {
+            _handleItemBuildCalled(context, index);
+            return ListenableBuilder(
               listenable: _items[index],
               builder: (context, __) => widget.itemBuilder(
                 context,
                 _items[index].value,
                 _animationInTween.animate(animation),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -124,28 +119,29 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     super.dispose();
   }
 
-  Future<void> reload() {
-    return _load(reload: true);
-  }
-
   void _handleConstraintsChanged(SliverConstraints constraints) {
-    _gridLayout = widget.gridDelegate.getLayout(constraints);
-    _handleScrollReserveChanged();
-  }
-
-  void _handleScrollReserveChanged() {
-    _itemsLengthForScrollReserve = _gridLayout.getMaxChildIndexForScrollOffset(
-          widget.scrollController.offset +
-              widget.scrollController.position.viewportDimension * 2,
-        ) +
-        1;
-    if (_hasNextPage) _createItemsForScrollReserve();
+    final SliverGridLayout gridLayout =
+        widget.gridDelegate.getLayout(constraints);
+    _scrollReserveItemsLength = gridLayout.getMaxChildIndexForScrollOffset(
+      widget.scrollController.position.viewportDimension,
+    );
+    if (_hasNextPage) _createScrollReserveItems();
     if (_hasUnfinishedItems) _load();
   }
 
-  void _createItemsForScrollReserve() {
-    if (_items.length >= _itemsLengthForScrollReserve) return;
-    final int itemsToAddCount = _itemsLengthForScrollReserve - _items.length;
+  void _createScrollReserveItems() {
+    assert(_hasNextPage);
+    final double filledViewportsCount =
+        _items.length / _scrollReserveItemsLength;
+    final double positionInViewports = widget.scrollController.offset /
+            widget.scrollController.position.viewportDimension +
+        1;
+    final double viewportsToFillCount =
+        positionInViewports - filledViewportsCount + 1;
+    if (viewportsToFillCount <= 0) return;
+
+    final int itemsToAddCount =
+        (_scrollReserveItemsLength * viewportsToFillCount).ceil();
     _gridKey.currentState?.insertAllItems(
       _items.length,
       itemsToAddCount,
@@ -159,33 +155,22 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     );
   }
 
+  void _handleItemBuildCalled(BuildContext context, int index) {
+    if (!widget.scrollController.position.hasContentDimensions) return;
+    final bool hasScrollReserve = widget.scrollController.position.extentAfter >
+        widget.scrollController.position.viewportDimension;
+    if (!hasScrollReserve && _hasNextPage) _createScrollReserveItems();
+    if (_hasUnfinishedItems) _load();
+  }
+
   Future<void> _load({
     bool reload = false,
   }) async {
     final bool loading = _pageFuture != null;
     if (!reload && (loading || !_hasNextPage)) return;
 
-    if (reload) {
-      for (int index = _items.length - 1;
-          index > _itemsLengthForScrollReserve;
-          index--) {
-        final ValueNotifier<T?> item = _items.removeAt(index);
-        _gridKey.currentState?.removeItem(
-          index,
-          (context, animation) => widget.itemBuilder(
-            context,
-            item.value,
-            _animationOutTween.animate(animation),
-          ),
-          duration: widget.animationOutDuration,
-        );
-        item.dispose();
-      }
-      for (int index = 0; index < _items.length; index++) {
-        _items[index].value = null;
-      }
-      _finishedItemsCount = 0;
-    }
+    if (reload) _removeLastItems();
+    _createScrollReserveItems();
 
     final int page = reload ? 1 : _page + 1;
     final Future<List<T>> pageFuture = widget.loader(page);
@@ -197,11 +182,9 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     _pageFuture = null;
     _hasNextPage = newItems.isNotEmpty;
     _page = page;
-    for (int newItemsIndex = 0;
-        newItemsIndex < newItems.length;
-        newItemsIndex++) {
-      final int itemsIndex = _finishedItemsCount + newItemsIndex;
-      final T item = newItems[newItemsIndex];
+    for (int i = 0; i < newItems.length; i++) {
+      final int itemsIndex = _finishedItemsCount + i;
+      final T item = newItems[i];
       if (_items.length > itemsIndex) {
         _items[itemsIndex].value = item;
       } else {
@@ -214,6 +197,29 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     }
 
     _finishedItemsCount += newItems.length;
-    if (_hasUnfinishedItems) _load();
+    if (!_hasNextPage) _removeLastItems(lastToKeep: _finishedItemsCount - 1);
+    if (_hasNextPage && _hasUnfinishedItems) _load();
+  }
+
+  Future<void> _removeLastItems({int lastToKeep = -1}) async {
+    for (int i = _items.length - 1; i > lastToKeep; i--) {
+      final ValueNotifier<T?> item = _items.removeAt(i);
+      _gridKey.currentState?.removeItem(
+        i,
+        (context, animation) => widget.itemBuilder(
+          context,
+          item.value,
+          _animationOutTween.animate(animation),
+        ),
+        duration: widget.animationOutDuration,
+      );
+      item.dispose();
+    }
+    for (int i = 0; i < _items.length; i++) {
+      _items[i].value = null;
+    }
+    if (lastToKeep < _finishedItemsCount) _finishedItemsCount = lastToKeep;
+
+    await Future<void>.delayed(widget.animationOutDuration);
   }
 }

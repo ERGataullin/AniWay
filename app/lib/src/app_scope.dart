@@ -29,12 +29,12 @@ class AppScope extends InheritedWidget {
                   ),
                   original: Uri(
                     scheme: 'https',
-                    host: 'smotret-anime.net',
+                    host: 'anime365.ru',
                   ),
                 )
               : Uri(
                   scheme: 'https',
-                  host: 'smotret-anime.net',
+                  host: 'anime365.ru',
                 ),
         );
     this.storage = storage ?? const HiveStorage();

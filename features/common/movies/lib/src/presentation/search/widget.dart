@@ -28,7 +28,6 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
     return Provider<IMoviesSearchWM>.value(
       value: wm,
       child: ShimmerScope(
-        linearGradient: shimmerGradient,
         child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: const _SearchBar(),
@@ -38,23 +37,23 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
               controller: wm.scrollController,
               slivers: [
                 Builder(
-                  builder: (context) => SliverPagedGrid(
-                    key: wm.pagedGridKey,
-                    scrollController: wm.scrollController,
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      MediaQuery.paddingOf(context).top,
-                      16,
-                      16,
-                    ),
-                    gridDelegate: MovieCard.gridDelegate,
-                    loader: wm.handleLoadPage,
-                    itemBuilder: (context, movie, animation) =>
-                        MovieCard.animated(
-                      movie,
-                      opacity: animation,
-                    ),
-                  ),
+                  builder: (context) {
+                    return SliverPadding(
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        MediaQuery.paddingOf(context).top,
+                        16,
+                        16,
+                      ),
+                      sliver: SliverPagedGrid(
+                        key: wm.pagedGridKey,
+                        controller: wm.scrollController,
+                        gridDelegate: MovieCard.gridDelegate,
+                        onLoadPage: wm.handleLoadPage,
+                        itemBuilder: (context, movie) => MovieCard(movie),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

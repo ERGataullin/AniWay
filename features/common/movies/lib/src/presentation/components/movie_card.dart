@@ -7,12 +7,7 @@ class MovieCard extends StatelessWidget {
   const MovieCard(
     this.data, {
     super.key,
-  }) : opacity = null;
-
-  const MovieCard.animated(
-    this.data, {
-    super.key,
-    required Animation<double> this.opacity,
+    this.opacity,
   });
 
   static const SliverGridDelegateWithMaxCrossAxisExtent gridDelegate =
@@ -31,41 +26,47 @@ class MovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final CardTheme cardTheme = CardTheme.of(context);
-    final ThemeDataTween themeTween = ThemeDataTween(
-      begin: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(
-          surfaceContainerLow:
-              theme.colorScheme.surfaceContainerLow.withOpacity(0),
-        ),
-        textTheme: theme.textTheme.copyWith(
-          titleSmall: theme.textTheme.titleSmall?.copyWith(
-            color: theme.textTheme.titleSmall?.color?.withOpacity(0),
-          ),
-          labelSmall: theme.textTheme.labelSmall?.copyWith(
-            color: theme.textTheme.labelSmall?.color?.withOpacity(0),
-          ),
-        ),
-        cardTheme: theme.cardTheme.copyWith(
-          color: cardTheme.color?.withOpacity(0),
-          shadowColor: cardTheme.shadowColor?.withOpacity(0),
-          surfaceTintColor: cardTheme.surfaceTintColor?.withOpacity(0),
-          elevation: 0,
-        ),
-      ),
-      end: theme,
-    );
 
     return AspectRatio(
       aspectRatio: gridDelegate.childAspectRatio,
       child: ConditionalWrapper(
         condition: opacity != null,
-        wrapper: (context, child) => AnimatedBuilder(
-          animation: opacity!,
-          builder: (context, __) => Theme(
-            data: themeTween.evaluate(opacity!),
-            child: child,
-          ),
-        ),
+        wrapper: (context, child) {
+          final ThemeDataTween themeTween = ThemeDataTween(
+            begin: theme.copyWith(
+              colorScheme: theme.colorScheme.copyWith(
+                surfaceContainerLow:
+                    theme.colorScheme.surfaceContainerLow.withOpacity(0),
+                surfaceContainerHighest:
+                    theme.colorScheme.surfaceContainerHighest.withOpacity(0),
+              ),
+              textTheme: theme.textTheme.copyWith(
+                titleSmall: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.textTheme.titleSmall?.color?.withOpacity(0),
+                ),
+                labelSmall: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.textTheme.labelSmall?.color?.withOpacity(0),
+                ),
+              ),
+              cardColor: theme.cardColor.withOpacity(0),
+              cardTheme: theme.cardTheme.copyWith(
+                color: cardTheme.color?.withOpacity(0),
+                shadowColor: cardTheme.shadowColor?.withOpacity(0),
+                surfaceTintColor: cardTheme.surfaceTintColor?.withOpacity(0),
+                elevation: 0,
+              ),
+            ),
+            end: theme,
+          );
+
+          return AnimatedBuilder(
+            animation: opacity!,
+            builder: (context, __) => Theme(
+              data: themeTween.evaluate(opacity!),
+              child: child,
+            ),
+          );
+        },
         child: Card(
           child: InkWell(
             onTap: data?.onPressed,
@@ -110,53 +111,36 @@ class _Poster extends StatefulWidget {
 }
 
 class _PosterState extends State<_Poster> {
-  late ShapeBorder _shape;
-  ImageProvider<Object>? _imageProvider;
-  String? _url;
-
-  @override
-  void didChangeDependencies() {
-    _shape = CardTheme.of(context).shape!;
-
-    if (widget.uri != null) {
-      final String url = context
-          .read<Network>()
-          .baseUri
-          .resolveUri(widget.uri ?? Uri())
-          .toString();
-      if (url != _url) {
-        _imageProvider = NetworkImage(url);
-        _url = url;
-      }
-    }
-
-    super.didChangeDependencies();
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_imageProvider == null) return const SizedBox.shrink();
-    return widget.opacity == null
-        ? _buildFadeInImage(context)
-        : AnimatedBuilder(
-            animation: widget.opacity!,
-            builder: (context, __) => _buildFadeInImage(context),
+    final NetworkImage? image = widget.uri == null
+        ? null
+        : NetworkImage(
+            context.read<Network>().baseUri.resolveUri(widget.uri!).toString(),
           );
-  }
-
-  Widget _buildFadeInImage(BuildContext context) {
-    return FadeInImageBuilder(
-      duration: Durations.medium1,
-      curve: Easing.standardDecelerate,
-      image: _imageProvider!,
-      builder: (context, fadeInOpacity, ___) => Ink(
-        decoration: ShapeDecoration(
-          shape: _shape,
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.low,
-            opacity: fadeInOpacity * (widget.opacity?.value ?? 1),
-            image: _imageProvider!,
+          
+    return ListenableBuilder(
+      listenable: Listenable.merge([widget.opacity]),
+      builder: (context, __) => FadeInImageBuilder(
+        image: image,
+        builder: (context, fadeInOpacity, image, ____) => Shimmer(
+          enabled: fadeInOpacity != 1,
+          delegate: CustomShimmerDelegate(
+            (context, color, gradient, ___) => Ink(
+              decoration: ShapeDecoration(
+                shape: CardTheme.of(context).shape!,
+                color: color,
+                gradient: gradient,
+                image: image == null
+                    ? null
+                    : DecorationImage(
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.low,
+                        opacity: fadeInOpacity * (widget.opacity?.value ?? 1),
+                        image: image,
+                      ),
+              ),
+            ),
           ),
         ),
       ),
@@ -176,6 +160,11 @@ class _Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const ShimmerDelegate shimmerDelegate = DecoratedBoxShimmerDelegate(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(4)),
+      ),
+    );
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: margin,
@@ -183,23 +172,36 @@ class _Footer extends StatelessWidget {
         maxLines: 1,
         softWrap: false,
         overflow: TextOverflow.fade,
-        textAlign: TextAlign.start,
         style: textTheme.labelSmall!,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              data?.title ?? '',
-              style: textTheme.titleSmall,
+            Shimmer(
+              enabled: data?.title == null,
+              constraints: const BoxConstraints(minWidth: 128),
+              delegate: shimmerDelegate,
+              child: Text(
+                data?.title ?? '',
+                style: textTheme.titleSmall,
+              ),
             ),
+            const SizedBox(height: 2),
             Row(
               children: [
                 Expanded(
-                  child: Text(data?.subtitle ?? ''),
+                  child: Shimmer(
+                    enabled: data?.subtitle == null,
+                    delegate: shimmerDelegate,
+                    child: Text(data?.subtitle ?? ''),
+                  ),
                 ),
-                if (data?.score != null) ...[
+                if (data == null || data?.score != null) ...[
                   const SizedBox(width: 16),
-                  MovieScore(data?.score ?? 0),
+                  Shimmer(
+                    enabled: data == null,
+                    delegate: shimmerDelegate,
+                    child: MovieScore(data?.score ?? 0),
+                  ),
                 ],
               ],
             ),

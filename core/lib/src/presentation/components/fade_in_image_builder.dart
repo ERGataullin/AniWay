@@ -1,17 +1,19 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 
 typedef FadeInImageBuilderDelegate = Widget Function(
   BuildContext context,
   double opacity,
+  ImageProvider<Object>? image,
   Widget? child,
 );
 
 class FadeInImageBuilder extends StatefulWidget {
   const FadeInImageBuilder({
     super.key,
-    required this.duration,
-    required this.curve,
-    required this.image,
+    this.duration = Durations.medium1,
+    this.curve = Easing.standardDecelerate,
+    this.image,
     required this.builder,
     this.child,
   });
@@ -20,7 +22,7 @@ class FadeInImageBuilder extends StatefulWidget {
 
   final Curve curve;
 
-  final ImageProvider<Object> image;
+  final ImageProvider<Object>? image;
 
   final FadeInImageBuilderDelegate builder;
 
@@ -40,11 +42,33 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   late final AnimationController _opacityController =
       AnimationController(vsync: this);
 
-  late ImageProvider<Object> _imageProvider;
+  late final DynamicData<ImageProvider<Object>?> _imageProvider = DynamicData(
+    () {
+      return widget.image == null
+          ? null
+          : ScrollAwareImageProvider(
+              context: _scrollAwareContext,
+              imageProvider: widget.image!,
+            );
+    },
+  );
 
-  ImageConfiguration? _imageConfiguration;
+  late final DynamicData<ImageStream?> _imageStream = DynamicData.initialValue(
+    initialValue: null,
+    trigger: _imageProvider,
+    () {
+      final ImageConfiguration configuration =
+          createLocalImageConfiguration(context);
+      final ImageStream? stream = _imageProvider.value?.resolve(configuration);
 
-  ImageStream? _imageStream;
+      if (stream?.key == _imageStream.value?.key) return _imageStream.value;
+
+      _imageStream.value?.removeListener(_imageStreamListener);
+      return stream?..addListener(_imageStreamListener);
+    },
+  );
+
+  bool _animateSyncLoad = false;
 
   ImageInfo? _imageInfo;
 
@@ -52,33 +76,35 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   void initState() {
     super.initState();
     _scrollAwareContext = DisposableBuildContext(this);
-    _imageProvider = ScrollAwareImageProvider(
-      context: _scrollAwareContext,
-      imageProvider: widget.image,
-    );
     _imageStreamListener = ImageStreamListener(_handleImage);
   }
 
   @override
   void didChangeDependencies() {
-    final ImageConfiguration imageConfiguration =
-        createLocalImageConfiguration(context);
-    if (_imageConfiguration != imageConfiguration) {
-      _imageStream?.removeListener(_imageStreamListener);
-      _imageConfiguration = imageConfiguration;
-      _imageStream = _imageProvider.resolve(_imageConfiguration!)
-        ..addListener(_imageStreamListener);
-    }
+    _imageStream.update();
     super.didChangeDependencies();
   }
 
   @override
+  void didUpdateWidget(FadeInImageBuilder oldWidget) {
+    if (widget.image != oldWidget.image) {
+      _animateSyncLoad = true;
+      _imageProvider.update();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _opacityController,
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        _opacityController,
+        _imageProvider,
+      ]),
       builder: (context, __) => widget.builder(
         context,
         _opacityController.value,
+        _imageProvider.value,
         widget.child,
       ),
     );
@@ -86,19 +112,26 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
 
   @override
   void dispose() {
-    _imageStream?.removeListener(_imageStreamListener);
-    _scrollAwareContext.dispose();
-    _opacityController.dispose();
     _imageInfo?.dispose();
+    _imageStream
+      ..value?.removeListener(_imageStreamListener)
+      ..dispose();
+    _imageProvider.dispose();
+    _opacityController.dispose();
+    _scrollAwareContext.dispose();
     super.dispose();
   }
 
   void _handleImage(ImageInfo image, bool synchronousCall) {
     _imageInfo = image;
-    _opacityController.animateTo(
-      _opacityController.upperBound,
-      duration: widget.duration,
-      curve: widget.curve,
-    );
+    _opacityController
+      ..reset()
+      ..animateTo(
+        _opacityController.upperBound,
+        duration: synchronousCall && !_animateSyncLoad
+            ? Duration.zero
+            : widget.duration,
+        curve: widget.curve,
+      );
   }
 }

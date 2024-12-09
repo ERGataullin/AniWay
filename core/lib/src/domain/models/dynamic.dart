@@ -1,11 +1,23 @@
 import 'package:flutter/foundation.dart';
 
 class DynamicData<T> with ChangeNotifier implements ValueListenable<T> {
-  DynamicData(
+  factory DynamicData(
+    T Function() valueResolver, {
+    Listenable? trigger,
+  }) {
+    return DynamicData.initialValue(
+      valueResolver,
+      initialValue: valueResolver(),
+      trigger: trigger,
+    );
+  }
+
+  DynamicData.initialValue(
     this._valueResolver, {
+    required T initialValue,
     Listenable? trigger,
   })  : _trigger = trigger,
-        _value = _valueResolver() {
+        _value = initialValue {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }

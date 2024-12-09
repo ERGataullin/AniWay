@@ -35,7 +35,6 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
     return Provider<IHomeWM>.value(
       value: wm,
       child: ShimmerScope(
-        linearGradient: shimmerGradient,
         child: Scaffold(
           appBar: AppBar(
             title: ValueListenableBuilder(

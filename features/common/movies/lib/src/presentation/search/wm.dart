@@ -105,7 +105,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
     _queryDebounceTimer?.cancel();
     _queryDebounceTimer = Timer(
       _queryDebounceInterval,
-      () => pagedGridKey.currentState?.reload(),
+      () => pagedGridKey.currentState?.reset(),
     );
   }
 

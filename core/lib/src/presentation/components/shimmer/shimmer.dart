@@ -1,69 +1,57 @@
-import 'package:core/src/presentation/components/shimmer/shimmer_scope.dart';
-import 'package:flutter/widgets.dart';
+import 'package:core/core.dart';
+import 'package:flutter/material.dart';
 
-const shimmerGradient = LinearGradient(
-  colors: [
-    Color(0xFFEBEBF4),
-    Color(0xFFF4F4F4),
-    Color(0xFFEBEBF4),
-  ],
-  stops: [
-    0.1,
-    0.3,
-    0.4,
-  ],
-  begin: Alignment(-1, -0.3),
-  end: Alignment(1, 0.3),
-  tileMode: TileMode.clamp,
+typedef ShimmerBuilder = Widget Function(
+  BuildContext context,
+  Gradient? gradient,
+  Widget? child,
 );
 
 class Shimmer extends StatelessWidget {
   const Shimmer({
     super.key,
-    required this.isLoading,
-    required this.child,
+    this.enabled = true,
+    this.constraints,
+    this.delegate = const DecoratedBoxShimmerDelegate(),
+    this.child,
   });
 
-  final bool isLoading;
+  final bool enabled;
 
-  final Widget child;
+  final BoxConstraints? constraints;
+
+  final ShimmerDelegate delegate;
+
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    if (!isLoading) {
-      return child;
-    }
-
-    // Collect ancestor shimmer information.
-    final ShimmerScopeState shimmer = ShimmerScope.of(context)!;
-    return AnimatedBuilder(
-      animation: shimmer.gradient,
-      builder: (context, __) {
-        if (!shimmer.isSized) {
-          // The ancestor Shimmer widget isn't laid
-          // out yet. Return an empty box.
-          return const SizedBox();
-        }
-
-        final Size shimmerSize = shimmer.size;
-        final Gradient gradient = shimmer.gradient.value;
-        final Offset offsetWithinShimmer = shimmer.getDescendantOffset(
-          descendant: context.findRenderObject()! as RenderBox,
-        );
-
-        return ShaderMask(
-          blendMode: BlendMode.srcATop,
-          shaderCallback: (bounds) => gradient.createShader(
-            Rect.fromLTWH(
-              -offsetWithinShimmer.dx,
-              -offsetWithinShimmer.dy,
-              shimmerSize.width,
-              shimmerSize.height,
-            ),
-          ),
-          child: child,
-        );
-      },
+    if (!enabled) return delegate.build(context, null, null, child);
+    final ShimmerScopeState shimmerScope = ShimmerScope.of(context);
+    return ConditionalWrapper(
+      condition: enabled && constraints != null,
+      wrapper: (context, child) => ConstrainedBox(
+        constraints: constraints!,
+        child: child,
+      ),
+      child: AnimatedBuilder(
+        animation: shimmerScope.animation,
+        builder: (_, __) {
+          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+          final (Color? color, Gradient? gradient) = switch (enabled) {
+            true when renderBox?.attached ?? false => (
+                null,
+                shimmerScope.createGradient(renderBox!),
+              ),
+            true => (
+                shimmerScope.backgroundColor,
+                null,
+              ),
+            false => (null, null),
+          };
+          return delegate.build(context, color, gradient, child);
+        },
+      ),
     );
   }
 }

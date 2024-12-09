@@ -41,7 +41,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             'fields': 'id,titles,title,posterUrl,type,myAnimeListScore',
             'order': _convertMoviesOrderToJson(order),
             if (isOngoing != null) 'isAiring': isOngoing ? 1 : 0,
-            if (query != null) 'query': query,
+            if (query?.isNotEmpty ?? false) 'query': query,
             if (limit != null) 'limit': limit,
             if (offset != null) 'offset': offset,
             if (watchStatuses.isNotEmpty)
