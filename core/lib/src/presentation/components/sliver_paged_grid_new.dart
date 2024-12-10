@@ -29,6 +29,12 @@ class SliverPagedGrid<T> extends StatefulWidget {
 }
 
 class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
+  /// Ключ [SliverAnimatedGrid].
+  ///
+  /// Используется для информирования состояния [SliverAnimatedGridState]
+  /// о добавлении/удалении элементов.
+  final GlobalKey<SliverAnimatedGridState> _gridKey = GlobalKey();
+
   /// Элементы страниц.
   final List<ValueNotifier<T?>> _items = [];
 
@@ -63,12 +69,24 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
   ///
   /// Очищает все данные и незамедлительно запрашивает 1-ю страницу.
   Future<void> reset() async {
-    // Очистка состояния.
-    setState(() {
-      _removeItems();
-      _page = 0;
-      _hasNextPage = true;
-    });
+    // Скроллим в начало списка.
+    widget.controller.animateTo(
+      0,
+      duration: Durations.long2,
+      curve: Curves.easeInOutCubicEmphasized,
+    );
+    // Удаляем лишние элементы, оставляя лишь необходимые для сохранения
+    // резерва скролла, и заменяем оставшиеся плэйсхолдерами.
+    final int placeholdersToKeep =
+        math.min(_viewportCapacity * 2, _items.length);
+    _removeItems(from: placeholdersToKeep);
+    for (int i = 0; i < placeholdersToKeep; i++) {
+      _items[i].value = null;
+    }
+    _finishedItemsCount = 0;
+    _page = 0;
+    _hasNextPage = true;
+    _ensureHasScrollReserve();
 
     // Игнорирование предыдущей запрошенной страницы, если она ещё не получена.
     _pendingPageRequest?.ignore();
@@ -101,21 +119,20 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
         // поиске не происходит скролл в начало списка. Убедиться, что переход
         // на SliverAnimatedGrid решает проблему.
         _handleConstraintsChanged(constraints);
-        return SliverGrid(
+        return SliverAnimatedGrid(
+          key: _gridKey,
           gridDelegate: widget.gridDelegate,
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              _handleItemBuildCalled(index);
-              return ListenableBuilder(
-                listenable: _items[index],
-                builder: (context, __) => widget.itemBuilder(
-                  context,
-                  _items[index].value,
-                ),
-              );
-            },
-            childCount: _items.length,
-          ),
+          initialItemCount: _items.length,
+          itemBuilder: (context, index, animation) {
+            _handleItemBuildCalled(index);
+            return ListenableBuilder(
+              listenable: _items[index],
+              builder: (context, __) => widget.itemBuilder(
+                context,
+                _items[index].value,
+              ),
+            );
+          },
         );
       },
     );
@@ -142,31 +159,30 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     _pendingPageRequest = null;
     // Установление несуществования страницы и выход, если страница пустая.
     if (pageItems.isEmpty) {
-      setState(() {
-        _hasNextPage = false;
-        _removeItems(from: _finishedItemsCount);
-      });
+      _hasNextPage = false;
+      _removeItems(from: _finishedItemsCount);
       return;
     }
 
-    setState(() {
-      // Кол-во плэйсхолдеров, которые нужно заменить элементами данной
-      // страницы.
-      final int placeholdersToReplace = math.min(
-        pageItems.length,
-        _items.length - _finishedItemsCount,
-      );
-      // Замена плэйсхолдеров.
-      for (int i = 0; i < placeholdersToReplace; i++) {
-        _items[i + _finishedItemsCount].value = pageItems[i];
-      }
-      // Добавление остальных элементов страницы.
-      _items.addAll(
-        pageItems.sublist(placeholdersToReplace).map(ValueNotifier.new),
-      );
-      _finishedItemsCount += pageItems.length;
-      _page++;
-    });
+    // Кол-во плэйсхолдеров, которые нужно заменить элементами данной
+    // страницы.
+    final int placeholdersToReplace = math.min(
+      pageItems.length,
+      _items.length - _finishedItemsCount,
+    );
+    // Замена плэйсхолдеров.
+    for (int i = 0; i < placeholdersToReplace; i++) {
+      _items[i + _finishedItemsCount].value = pageItems[i];
+    }
+    // Добавление остальных элементов страницы.
+    _addItems(
+      pageItems
+          .sublist(placeholdersToReplace)
+          .map(ValueNotifier.new)
+          .toList(growable: false),
+    );
+    _finishedItemsCount += pageItems.length;
+    _page++;
 
     if (_hasPlaceholders) _loadNextPage();
   }
@@ -222,21 +238,34 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     if (reserveViewports >= 1) return;
 
     // Добавление плэйсхолдеров для обеспечения резерва скролла.
-    _items.addAll(
-      Iterable.generate(
-        ((1 - reserveViewports) * _viewportCapacity).ceil(),
-        (_) => ValueNotifier(null),
-      ),
+    final List<ValueNotifier<T?>> placeholdersToAdd = List.generate(
+      ((1 - reserveViewports) * _viewportCapacity).ceil(),
+      (_) => ValueNotifier(null),
     );
-    Future(() => setState(() {}));
+    _addItems(placeholdersToAdd);
 
     if (!_isPending) _loadNextPage();
   }
 
+  /// Добавляет элементы [itemsToAdd] в конец списка.
+  void _addItems(List<ValueNotifier<T?>> itemsToAdd) {
+    _gridKey.currentState?.insertAllItems(
+      _items.length,
+      itemsToAdd.length,
+      duration: Durations.medium1,
+    );
+    _items.addAll(itemsToAdd);
+  }
+
   /// Удаляет элементы, начиная с индекса [from].
   void _removeItems({int from = 0}) {
-    while (_items.length > from) {
-      _items.removeAt(from).dispose();
+    for (int i = _items.length - 1; i >= from; i--) {
+      final ValueNotifier<T?> item = _items.removeAt(i)..dispose();
+      _gridKey.currentState?.removeItem(
+        i,
+        (context, animation) => widget.itemBuilder(context, item.value),
+        duration: Durations.short4,
+      );
     }
     _finishedItemsCount = math.min(_finishedItemsCount, _items.length);
   }

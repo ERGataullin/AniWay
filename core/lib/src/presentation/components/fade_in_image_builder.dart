@@ -11,16 +11,10 @@ typedef FadeInImageBuilderDelegate = Widget Function(
 class FadeInImageBuilder extends StatefulWidget {
   const FadeInImageBuilder({
     super.key,
-    this.duration = Durations.medium1,
-    this.curve = Easing.standardDecelerate,
     this.image,
     required this.builder,
     this.child,
   });
-
-  final Duration duration;
-
-  final Curve curve;
 
   final ImageProvider<Object>? image;
 
@@ -91,12 +85,11 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
       _animateSyncLoad = true;
       _imageProvider.update();
       if (widget.image == null) {
-        _opacityController
-          ..stop()
-          ..animateTo(
-            _opacityController.lowerBound,
-            duration: Duration.zero,
-          );
+        _opacityController.animateTo(
+          _opacityController.lowerBound,
+          duration: Durations.short4,
+          curve: Easing.standardAccelerate,
+        );
       }
     }
     super.didUpdateWidget(oldWidget);
@@ -138,8 +131,8 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
         _opacityController.upperBound,
         duration: synchronousCall && !_animateSyncLoad
             ? Duration.zero
-            : widget.duration,
-        curve: widget.curve,
+            : Durations.medium1,
+        curve: Easing.standardDecelerate,
       );
   }
 }
