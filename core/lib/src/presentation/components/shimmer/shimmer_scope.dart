@@ -80,9 +80,12 @@ class ShimmerScopeState extends State<ShimmerScope>
         period: Durations.extralong4,
       );
     } else {
-      _animationController
-        ..stop()
-        ..reset();
+      _animationController.stop();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_animationController.hasClients.value) {
+          _animationController.reset();
+        }
+      });
     }
   }
 }

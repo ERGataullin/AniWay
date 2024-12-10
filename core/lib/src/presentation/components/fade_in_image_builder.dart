@@ -90,6 +90,14 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
     if (widget.image != oldWidget.image) {
       _animateSyncLoad = true;
       _imageProvider.update();
+      if (widget.image == null) {
+        _opacityController
+          ..stop()
+          ..animateTo(
+            _opacityController.lowerBound,
+            duration: Duration.zero,
+          );
+      }
     }
     super.didUpdateWidget(oldWidget);
   }
