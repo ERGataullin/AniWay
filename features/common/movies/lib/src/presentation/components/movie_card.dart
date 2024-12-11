@@ -118,7 +118,7 @@ class _PosterState extends State<_Poster> {
         : NetworkImage(
             context.read<Network>().baseUri.resolveUri(widget.uri!).toString(),
           );
-          
+
     return ListenableBuilder(
       listenable: Listenable.merge([widget.opacity]),
       builder: (context, __) => FadeInImageBuilder(
@@ -197,11 +197,7 @@ class _Footer extends StatelessWidget {
                 ),
                 if (data == null || data?.score != null) ...[
                   const SizedBox(width: 16),
-                  Shimmer(
-                    enabled: data == null,
-                    delegate: shimmerDelegate,
-                    child: MovieScore(data?.score ?? 0),
-                  ),
+                  MovieScore(data?.score),
                 ],
               ],
             ),

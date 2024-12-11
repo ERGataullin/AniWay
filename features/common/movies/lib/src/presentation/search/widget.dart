@@ -37,23 +37,24 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
               controller: wm.scrollController,
               slivers: [
                 Builder(
-                  builder: (context) {
-                    return SliverPadding(
-                      padding: EdgeInsets.fromLTRB(
-                        16,
-                        MediaQuery.paddingOf(context).top,
-                        16,
-                        16,
+                  builder: (context) => SliverPadding(
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      MediaQuery.paddingOf(context).top,
+                      16,
+                      16,
+                    ),
+                    sliver: SliverPagedGrid(
+                      key: wm.pagedGridKey,
+                      controller: wm.scrollController,
+                      gridDelegate: MovieCard.gridDelegate,
+                      onLoadPage: wm.handleLoadPage,
+                      itemBuilder: (context, movie, animation) => MovieCard(
+                        movie,
+                        opacity: animation,
                       ),
-                      sliver: SliverPagedGrid(
-                        key: wm.pagedGridKey,
-                        controller: wm.scrollController,
-                        gridDelegate: MovieCard.gridDelegate,
-                        onLoadPage: wm.handleLoadPage,
-                        itemBuilder: (context, movie) => MovieCard(movie),
-                      ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ],
             ),

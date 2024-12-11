@@ -20,7 +20,7 @@ export 'src/presentation/components/menu.dart';
 export 'src/presentation/components/shimmer/shimmer.dart';
 export 'src/presentation/components/shimmer/shimmer_delegate.dart';
 export 'src/presentation/components/shimmer/shimmer_scope.dart';
-export 'src/presentation/components/sliver_paged_grid_new.dart';
+export 'src/presentation/components/sliver_paged_grid.dart';
 export 'src/utils/error_handler/debug_print.dart';
 export 'src/utils/error_handler/util.dart';
 export 'src/utils/initable.dart';

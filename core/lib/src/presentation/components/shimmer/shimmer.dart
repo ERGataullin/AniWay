@@ -41,10 +41,13 @@ class Shimmer extends StatelessWidget {
           final (Color? color, Gradient? gradient) = switch (enabled) {
             true when renderBox?.attached ?? false => (
                 null,
-                shimmerScope.createGradient(renderBox!),
+                shimmerScope.createGradient(
+                  shimmer: renderBox!,
+                  theme: Theme.of(context),
+                ),
               ),
             true => (
-                shimmerScope.backgroundColor,
+                Theme.of(context).colorScheme.surfaceContainerLow,
                 null,
               ),
             false => (null, null),

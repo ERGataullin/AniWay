@@ -28,21 +28,21 @@ class ShimmerScopeState extends State<ShimmerScope>
     vsync: this,
   );
 
-  Color get backgroundColor =>
-      Theme.of(context).colorScheme.surfaceContainerLow;
-
   Animation<double> get animation => _animationController;
 
-  LinearGradient? createGradient(RenderBox shimmer) {
+  LinearGradient? createGradient({
+    required RenderBox shimmer,
+    required ThemeData theme,
+  }) {
     final RenderBox scope = context.findRenderObject()! as RenderBox;
     return LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
       stops: const [0.1, 0.3, 0.4],
       colors: [
-        backgroundColor,
-        Theme.of(context).colorScheme.surfaceContainerHighest,
-        backgroundColor,
+        theme.colorScheme.surfaceContainerLow,
+        theme.colorScheme.surfaceContainerHighest,
+        theme.colorScheme.surfaceContainerLow,
       ],
       transform: _SlidingGradientTransform(
         slidePercent: _animationController.value,
