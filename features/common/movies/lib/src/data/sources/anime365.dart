@@ -38,7 +38,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series',
           queryParameters: {
-            'fields': 'id,titles,title,posterUrl,type,myAnimeListScore',
+            'fields': 'id,titles,title,posterUrl,type,myAnimeListId,'
+                'myAnimeListScore',
             'order': _convertMoviesOrderToJson(order),
             if (isOngoing != null) 'isAiring': isOngoing ? 1 : 0,
             if (query != null) 'query': query,
@@ -52,13 +53,41 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       ),
     );
 
-    return List<Json>.from(response.body['data']! as List<dynamic>)
+    final List<Json> anime365Data =
+        List<Json>.from(response.body['data']! as List<dynamic>);
+    final List<int> ids = anime365Data
+        .map((movieJson) => movieJson['myAnimeListId']! as int)
+        .toList(growable: false);
+    final ResponseData<Json> shikimoriResponse = await _network.request(
+      RequestData(
+        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
+        method: RequestMethod.post,
+        body: {
+          'query': '''
+            { 
+              animes(ids: "${ids.join(',')}", limit: 50 ) {
+                id
+                poster { mainUrl }
+              }
+            }''',
+        },
+      ),
+    );
+
+    final shikimoriData = List<Json>.from(
+      (shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>,
+    );
+
+    return anime365Data
         .map(
           (movieJson) => MovieBaseDto(
             id: movieJson['id']! as int,
             title: (movieJson['titles'] as Json?)?['ru'] as String? ??
                 movieJson['title']! as String,
-            posterUrl: movieJson['posterUrl']! as String,
+            posterUrl: (shikimoriData.singleWhere(
+              (json) =>
+                  json['id'] == (movieJson['myAnimeListId']! as int).toString(),
+            )['poster']! as Json)['mainUrl']! as String,
             type: _convertJsonToMovieType(movieJson['type']! as String),
             score: movieJson['myAnimeListScore'] == '-1'
                 ? null
