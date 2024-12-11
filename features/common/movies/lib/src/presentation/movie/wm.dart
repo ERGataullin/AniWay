@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
+import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:movies/src/presentation/movie/model.dart';
 
@@ -17,11 +18,15 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
 abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<bool> get showLoader;
 
+  ValueListenable<bool> get showPlayButton;
+
   ValueListenable<bool> get watchStatusSelected;
 
   ValueListenable<String> get watchStatusButtonTooltip;
 
   ValueListenable<ImageProvider?> get poster;
+
+  ValueListenable<double?> get posterHeight;
 
   ValueListenable<String> get playButtonLabel;
 
@@ -31,7 +36,19 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get description;
 
+  ValueListenable<bool> get showEpisodes;
+
+  ValueListenable<String> get episodesLabel;
+
+  ValueListenable<List<EpisodeData>> get episodes;
+
+  String getEpisodeTitle(EpisodeData episode);
+
   void handlePlayPressed();
+
+  void handleEpisodePressed(int episodeId);
+
+  void handleEpisodesPressed();
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
@@ -77,6 +94,18 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final DynamicData<double?> posterHeight = DynamicData(
+    trigger: showLoader,
+    () => showLoader.value ? null : MediaQuery.of(context).size.width * 1.25,
+  );
+
+  @override
+  late final DynamicData<bool> showPlayButton = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value?.episodes.isNotEmpty ?? false,
+  );
+
+  @override
   late final DynamicData<String> playButtonLabel = DynamicData(
     trigger: l10n,
     () => l10n.value.playLabel,
@@ -101,6 +130,24 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final DynamicData<bool> showEpisodes = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value?.episodes.isNotEmpty ?? false,
+  );
+
+  @override
+  late final DynamicData<String> episodesLabel = DynamicData(
+    trigger: l10n,
+    () => l10n.value.episodesLabel,
+  );
+
+  @override
+  late final DynamicData<List<EpisodeData>> episodes = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value?.episodes ?? const [],
+  );
+
+  @override
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
@@ -112,11 +159,30 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
+  String getEpisodeTitle(EpisodeData episodeData) {
+    return context.l10n
+        .movieEpisode(episodeData.type.name, episodeData.number ?? 0);
+  }
+
+  @override
   void handlePlayPressed() {
-    widget.onPlayPressed(
-      model.movie.value!.id,
-      model.nextEpisodeId,
-    );
+    widget.onPlayPressed(model.nextEpisodeId);
+  }
+
+  @override
+  void handleEpisodePressed(int episodeId) {
+    widget.onEpisodePressed(episodeId);
+  }
+
+  @override
+  void handleEpisodesPressed() {
+    widget.onEpisodesPressed();
+  }
+
+  @override
+  void didChangeDependencies() {
+    posterHeight.update();
+    super.didChangeDependencies();
   }
 
   @override
@@ -124,10 +190,14 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     watchStatusSelected.dispose();
     watchStatusButtonTooltip.dispose();
     poster.dispose();
+    posterHeight.dispose();
+    showPlayButton.dispose();
     playButtonLabel.dispose();
     score.dispose();
     title.dispose();
     description.dispose();
+    showEpisodes.dispose();
+    episodes.dispose();
     super.dispose();
   }
 }

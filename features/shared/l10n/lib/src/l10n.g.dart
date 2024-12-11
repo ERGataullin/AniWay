@@ -7,6 +7,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'l10n_ru.g.dart';
 
+// ignore_for_file: type=lint
+
 /// Callers can lookup localized strings with an instance of L10n
 /// returned by `L10n.of(context)`.
 ///
@@ -103,6 +105,12 @@ abstract class L10n {
   /// **'{seconds} секунд'**
   String durationSeconds(int seconds);
 
+  /// No description provided for @episodesLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Cписок серий'**
+  String get episodesLabel;
+
   /// No description provided for @emailLabel.
   ///
   /// In ru, this message translates to:
@@ -186,6 +194,12 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'Поиск'**
   String get searchPageTitle;
+
+  /// No description provided for @range.
+  ///
+  /// In ru, this message translates to:
+  /// **'{start}-{end}'**
+  String range(num start, num end);
 
   /// No description provided for @upNextTitle.
   ///

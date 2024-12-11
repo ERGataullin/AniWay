@@ -185,15 +185,26 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }
 
   GoRoute _buildMovie({required String parent}) {
+    final GoRoute episodesRoute = _buildEpisodes(parent: parent);
     return GoRoute(
       name: _Routes.movie(parent: parent),
       path: 'movies/:movieId',
+      routes: [episodesRoute],
       builder: (context, state) => MovieWidget(
         movieId: int.parse(state.pathParameters['movieId']!),
-        onPlayPressed: (movieId, episodeId) => context.pushNamed(
+        onPlayPressed: (episodeId) => context.pushNamed(
           _Routes.moviePlayer,
-          pathParameters: {'movieId': movieId.toString()},
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
           queryParameters: {'episodeId': episodeId.toString()},
+        ),
+        onEpisodePressed: (episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+        onEpisodesPressed: () => context.goNamed(
+          episodesRoute.name!,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
         ),
       ),
     );
@@ -209,6 +220,23 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         onItemPressed: (movieId, episodeId) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': movieId.toString()},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+      ),
+    );
+  }
+
+  GoRoute _buildEpisodes({required String parent}) {
+    return GoRoute(
+      name: _Routes.episodes(parent: parent),
+      path: 'episodes',
+      builder: (context, state) => EpisodesWidget(
+        movieId: int.parse(
+          state.pathParameters['movieId']!,
+        ),
+        onEpisodePressed: (episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
           queryParameters: {'episodeId': episodeId.toString()},
         ),
       ),
@@ -231,4 +259,6 @@ class _Routes {
       parent == null ? '/search' : '$parent/search';
 
   static String movie({required String parent}) => '$parent/movies/:movieId';
+
+  static String episodes({String? parent}) => '$parent/episodes';
 }

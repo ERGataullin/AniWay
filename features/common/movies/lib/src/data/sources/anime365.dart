@@ -207,53 +207,93 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
   @override
   Future<MovieDetailsDto> getMovie(int id) async {
-    final ResponseData<Json> response = await _network.request(
+    final ResponseData<Json> anime365Response = await _network.request(
       RequestData(
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields':
-                'url,titles,posterUrl,episodes,descriptions,myAnimeListScore',
+            'fields': 'url,titles,posterUrl,episodes,'
+                'descriptions,myAnimeListId,myAnimeListScore',
           },
         ),
         method: RequestMethod.get,
       ),
     );
-    final Json data = response.body['data']! as Json;
-    final Uri movieUri = Uri.parse(data['url']! as String);
-    final List<EpisodeDto> previewsAndEpisodes = data['episodes'] != null
-        ? (data['episodes']! as List<dynamic>)
-            .cast<Json>()
-            .map(
-              (episodeJson) => EpisodeDto(
-                id: episodeJson['id']! as int,
-                type: _convertJsonToMovieType(
-                  episodeJson['episodeType']! as String,
-                ),
-                number: num.parse(episodeJson['episodeInt']! as String),
-              ),
-            )
-            .toList(growable: false)
-        : const [];
+    final Json anime365Data = anime365Response.body['data']! as Json;
+    final ResponseData<Json> shikimoriResponse = await _network.request(
+      RequestData(
+        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
+        method: RequestMethod.post,
+        body: {
+          'query': '''
+            { 
+              animes(ids: "${anime365Data['myAnimeListId']}" ) {
+                poster { originalUrl }
+                videos { name kind imageUrl }
+              }
+            }''',
+        },
+      ),
+    );
+    final Json shikimoriData =
+        ((shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>)
+            .first as Json;
+    final Map<num, Json> shikimoriEpisodePreviews =
+        switch (shikimoriData['videos']) {
+      final List<dynamic> videosJsons => {
+          for (final Json videoJson in videosJsons
+              .where(
+                (videoJson) => (videoJson as Json)['kind'] == 'episode_preview',
+              )
+              .cast())
+            num.tryParse(videoJson['name']! as String) ?? -1: videoJson,
+        },
+      _ => const {},
+    };
+
+    final Uri movieUri = Uri.parse(anime365Data['url']! as String);
+    final List<EpisodeDto> previewsAndEpisodes =
+        anime365Data['episodes'] == null
+            ? const []
+            : (anime365Data['episodes']! as List<dynamic>).cast<Json>().map(
+                (episodeJson) {
+                  final num number = num.parse(
+                    episodeJson['episodeInt']! as String,
+                  );
+                  String? previewUrl =
+                      shikimoriEpisodePreviews[number]?['imageUrl'] as String?;
+                  if (previewUrl?.startsWith('//') ?? false) {
+                    previewUrl = 'https:$previewUrl';
+                  }
+                  return EpisodeDto(
+                    id: episodeJson['id']! as int,
+                    type: _convertJsonToMovieType(
+                      episodeJson['episodeType']! as String,
+                    ),
+                    number: number,
+                    previewUrl: previewUrl,
+                  );
+                },
+              ).toList(growable: false);
 
     return MovieDetailsDto(
       id: id,
       url: movieUri.path,
-      title: (data['titles']! as Json)['ru']! as String,
-      posterUrl: data['posterUrl']! as String,
+      title: (anime365Data['titles']! as Json)['ru']! as String,
+      posterUrl: (shikimoriData['poster']! as Json)['originalUrl']! as String,
       previews: previewsAndEpisodes
           .where((episode) => episode.type == MovieTypeDto.preview)
           .toList(growable: false),
       episodes: previewsAndEpisodes
           .where((episode) => episode.type != MovieTypeDto.preview)
           .toList(growable: false),
-      description: switch (data['descriptions']) {
+      description: switch (anime365Data['descriptions']) {
         final List<dynamic> jsons => (jsons.first as Json)['value']! as String,
         _ => null,
       },
-      score: data['myAnimeListScore'] == '-1'
+      score: anime365Data['myAnimeListScore'] == '-1'
           ? null
-          : double.parse(data['myAnimeListScore']! as String),
+          : double.parse(anime365Data['myAnimeListScore']! as String),
     );
   }
 
