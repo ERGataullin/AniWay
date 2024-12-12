@@ -84,7 +84,7 @@ class _Episode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardTheme cardTheme = CardTheme.of(context);
+    final CardThemeData cardTheme = CardTheme.of(context);
     return InkWell(
       onTap: () => context.wm.handleEpisodePressed(data.id),
       customBorder: cardTheme.shape!,
