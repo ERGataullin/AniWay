@@ -1,11 +1,11 @@
 name: player
 
 environment:
-  sdk: '>=3.1.5 <4.0.0'
+  sdk: ">=3.1.5 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
-  core: 
+  core:
     path: ../../../core
   flutter:
     sdk: flutter
@@ -13,8 +13,8 @@ dependencies:
     path: ../../shared/l10n
   theme:
     path: ../../shared/theme
-  video_player: ^2.9.1
-  web: ^1.0.0
+  video_player: ^2.9.2
+  web: ^1.1.0
 
 dev_dependencies:
   flutter_lints:
