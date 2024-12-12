@@ -1,5 +1,5 @@
 import 'package:core/core.dart' show Shimmer;
-import 'package:core/src/presentation/components/shimmer/shimmer_scope_animation_controller.dart';
+import 'package:core/src/presentation/components/shimmer/scope_animation_controller.dart';
 import 'package:flutter/material.dart';
 
 class ShimmerScope extends StatefulWidget {
@@ -30,12 +30,18 @@ class ShimmerScopeState extends State<ShimmerScope>
 
   Animation<double> get animation => _animationController;
 
-  LinearGradient? createGradient({
-    required RenderBox shimmer,
+  (Color?, LinearGradient?) createBackground({
     required ThemeData theme,
+    RenderBox? shimmer,
   }) {
-    final RenderBox scope = context.findRenderObject()! as RenderBox;
-    return LinearGradient(
+    final RenderBox? scope = context.findRenderObject() as RenderBox?;
+    final Color backgroundColor = theme.colorScheme.surfaceContainerLow;
+
+    final bool attachedShimmer = shimmer?.attached ?? false;
+    final bool attachedScope = scope?.attached ?? false;
+    if (!attachedShimmer || !attachedScope) return (backgroundColor, null);
+
+    final LinearGradient gradient = LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
       stops: const [0.1, 0.3, 0.4],
@@ -46,10 +52,11 @@ class ShimmerScopeState extends State<ShimmerScope>
       ],
       transform: _SlidingGradientTransform(
         slidePercent: _animationController.value,
-        scopeSize: scope.size,
-        shimmerOffset: shimmer.localToGlobal(Offset.zero, ancestor: scope),
+        scopeSize: scope!.size,
+        shimmerOffset: shimmer!.localToGlobal(Offset.zero, ancestor: scope),
       ),
     );
+    return (null, gradient);
   }
 
   @override
@@ -130,24 +137,24 @@ class _SlidingGradientTransform extends GradientTransform {
 
   @override
   Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
-    final double widthMultiplyer = scopeSize.width / bounds.width;
-    final double heightMultiplyer = scopeSize.height / bounds.bottom;
+    final double widthMultiplier = scopeSize.width / bounds.width;
+    final double heightMultiplier = scopeSize.height / bounds.bottom;
     return Matrix4.zero()
       ..setIdentity()
       // Увеличиваем градиент с размеров шиммера
       // до размеров скоупа, чтобы иметь единый градиент на весь скоуп.
       ..scale(
-        widthMultiplyer,
-        heightMultiplyer,
+        widthMultiplier,
+        heightMultiplier,
         0,
       )
       // Смещаем начало координат так, чтобы им стала позиция шиммера с учётом
       // прогресса слайда.
       ..setTranslationRaw(
         -shimmerOffset.dx -
-            bounds.left * (widthMultiplyer - 1) +
+            bounds.left * (widthMultiplier - 1) +
             slidePercent * scopeSize.width,
-        -shimmerOffset.dy - bounds.top * (heightMultiplyer - 1),
+        -shimmerOffset.dy - bounds.top * (heightMultiplier - 1),
         0,
       );
   }
