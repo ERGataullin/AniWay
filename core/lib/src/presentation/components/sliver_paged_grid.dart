@@ -119,10 +119,6 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     final CurveTween curveTween = CurveTween(curve: Easing.standardDecelerate);
     return SliverLayoutBuilder(
       builder: (context, constraints) {
-        // TODO(Edgar): После reset'а в данном месте оффсет скролла ещё не успел
-        // сброситься, в результате чего сразу же создаются плэйсхолдеры и при
-        // поиске не происходит скролл в начало списка. Убедиться, что переход
-        // на SliverAnimatedGrid решает проблему.
         _handleConstraintsChanged(constraints);
         return SliverAnimatedGrid(
           key: _gridKey,

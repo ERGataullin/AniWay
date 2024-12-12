@@ -193,7 +193,7 @@ class _CategoryTitle extends StatelessWidget {
                 Icon(
                   Icons.chevron_right,
                   size: titleStyle.fontSize,
-                  color: titleStyle.color?.withOpacity(.6),
+                  color: titleStyle.color?.withValues(alpha: .6),
                 ),
               ],
             ),

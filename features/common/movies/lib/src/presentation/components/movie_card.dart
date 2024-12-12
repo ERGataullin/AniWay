@@ -25,7 +25,7 @@ class MovieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final CardTheme cardTheme = CardTheme.of(context);
+    final CardThemeData cardTheme = CardTheme.of(context);
 
     return AspectRatio(
       aspectRatio: gridDelegate.childAspectRatio,
@@ -36,23 +36,27 @@ class MovieCard extends StatelessWidget {
             begin: theme.copyWith(
               colorScheme: theme.colorScheme.copyWith(
                 surfaceContainerLow:
-                    theme.colorScheme.surfaceContainerLow.withOpacity(0),
-                surfaceContainerHighest:
-                    theme.colorScheme.surfaceContainerHighest.withOpacity(0),
+                    theme.colorScheme.surfaceContainerLow.withValues(alpha: 0),
+                surfaceContainerHighest: theme
+                    .colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0),
               ),
               textTheme: theme.textTheme.copyWith(
                 titleSmall: theme.textTheme.titleSmall?.copyWith(
-                  color: theme.textTheme.titleSmall?.color?.withOpacity(0),
+                  color:
+                      theme.textTheme.titleSmall?.color?.withValues(alpha: 0),
                 ),
                 labelSmall: theme.textTheme.labelSmall?.copyWith(
-                  color: theme.textTheme.labelSmall?.color?.withOpacity(0),
+                  color:
+                      theme.textTheme.labelSmall?.color?.withValues(alpha: 0),
                 ),
               ),
-              cardColor: theme.cardColor.withOpacity(0),
+              cardColor: theme.cardColor.withValues(alpha: 0),
               cardTheme: theme.cardTheme.copyWith(
-                color: cardTheme.color?.withOpacity(0),
-                shadowColor: cardTheme.shadowColor?.withOpacity(0),
-                surfaceTintColor: cardTheme.surfaceTintColor?.withOpacity(0),
+                color: cardTheme.color?.withValues(alpha: 0),
+                shadowColor: cardTheme.shadowColor?.withValues(alpha: 0),
+                surfaceTintColor:
+                    cardTheme.surfaceTintColor?.withValues(alpha: 0),
                 elevation: 0,
               ),
             ),
