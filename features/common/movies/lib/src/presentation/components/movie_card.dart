@@ -21,7 +21,7 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardTheme cardTheme = CardTheme.of(context);
+    final CardThemeData cardTheme = CardTheme.of(context);
     return AspectRatio(
       aspectRatio: gridDelegate.childAspectRatio,
       child: Card(
