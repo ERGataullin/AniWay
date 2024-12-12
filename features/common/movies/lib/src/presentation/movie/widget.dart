@@ -145,7 +145,7 @@ class _AppBar extends StatelessWidget {
                       begin: const Alignment(0, .8),
                       end: Alignment.bottomCenter,
                       colors: [
-                        surfaceColor.withOpacity(0),
+                        surfaceColor.withValues(alpha: 0),
                         surfaceColor,
                       ],
                     ),
@@ -198,7 +198,7 @@ class _Episodes extends StatelessWidget {
           Icon(
             Icons.chevron_right,
             size: textStyle.fontSize,
-            color: textStyle.color?.withOpacity(.6),
+            color: textStyle.color?.withValues(alpha: .6),
           ),
         ],
       ),
