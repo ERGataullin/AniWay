@@ -34,22 +34,35 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   Widget build(IHomeWM wm) {
     return Provider<IHomeWM>.value(
       value: wm,
-      child: Scaffold(
-        appBar: AppBar(
-          title: ValueListenableBuilder(
-            valueListenable: wm.title,
-            builder: (context, title, ___) => Text(title),
+      child: ShimmerScope(
+        child: Scaffold(
+          appBar: AppBar(
+            title: ValueListenableBuilder(
+              valueListenable: wm.title,
+              builder: (context, title, ___) => Text(title),
+            ),
           ),
-        ),
-        body: ListenableBuilder(
-          listenable: wm.showLoader,
-          builder: (context, __) => AnimatedSwitcher(
-            switchInCurve: Curves.easeInOutCubicEmphasized,
-            switchOutCurve: Curves.easeInOutCubicEmphasized.flipped,
-            duration: Durations.long2,
-            child: wm.showLoader.value
-                ? const Center(child: CircularProgressIndicator.adaptive())
-                : const _Content(),
+          body: ListenableBuilder(
+            listenable: wm.showLoader,
+            builder: (context, __) => AnimatedSwitcher(
+              switchInCurve: Easing.emphasizedDecelerate,
+              switchOutCurve: Easing.emphasizedAccelerate.flipped,
+              duration: Durations.medium4,
+              reverseDuration: Durations.short4,
+              layoutBuilder: (currentChild, previousChildren) => Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  ...previousChildren,
+                  if (currentChild != null) currentChild,
+                ],
+              ),
+              child: wm.showLoader.value
+                  ? const Center(
+                      key: ValueKey('Loader'),
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                  : const _Content(key: ValueKey('Content')),
+            ),
           ),
         ),
       ),
@@ -58,7 +71,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
 }
 
 class _Content extends StatelessWidget {
-  const _Content();
+  const _Content({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -62,7 +62,7 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
   }
 
   void _handleChanged() {
-    pagedGridKey.currentState?.reload();
+    pagedGridKey.currentState?.reset();
   }
 
   MovieCardData _moviePreviewFromUpNext(UpNextData upNext) {

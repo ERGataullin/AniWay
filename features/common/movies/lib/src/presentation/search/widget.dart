@@ -11,15 +11,15 @@ extension _SearchContext on BuildContext {
 class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   const MoviesSearchWidget({
     super.key,
-    this.order = MoviesOrder.byPopularity,
     this.isOngoing,
+    this.order = MoviesOrder.byPopularity,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = moviesSearchWMFactory,
   }) : super(wmFactory);
 
-  final MoviesOrder order;
-
   final bool? isOngoing;
+
+  final MoviesOrder order;
 
   final void Function(int id) onMoviePressed;
 
@@ -27,32 +27,37 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   Widget build(IMoviesSearchWM wm) {
     return Provider<IMoviesSearchWM>.value(
       value: wm,
-      child: Scaffold(
-        body: SafeArea(
-          child: CustomScrollView(
-            clipBehavior: Clip.none,
-            controller: wm.scrollController,
-            slivers: [
-              const SliverPersistentHeader(
-                pinned: true,
-                delegate: _SearchBarDelegate(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: ShimmerScope(
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: const _SearchBar(),
+          body: SafeArea(
+            top: false,
+            child: CustomScrollView(
+              controller: wm.scrollController,
+              slivers: [
+                Builder(
+                  builder: (context) => SliverPadding(
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      MediaQuery.paddingOf(context).top,
+                      16,
+                      16,
+                    ),
+                    sliver: SliverPagedGrid(
+                      key: wm.pagedGridKey,
+                      controller: wm.scrollController,
+                      gridDelegate: MovieCard.gridDelegate,
+                      onLoadPage: wm.handleLoadPage,
+                      itemBuilder: (context, movie, animation) => MovieCard(
+                        movie,
+                        opacity: animation,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverPagedGrid.maxCrossAxisExtent(
-                  key: wm.pagedGridKey,
-                  scrollController: wm.scrollController,
-                  gridDelegate: MovieCard.gridDelegate,
-                  loader: wm.handleLoadPage,
-                  itemBuilder: (context, movie, ___) => MovieCard(movie),
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 16),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -60,65 +65,46 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   }
 }
 
-class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
-  const _SearchBarDelegate({
-    this.margin = EdgeInsets.zero,
-  });
+class _SearchBar extends StatelessWidget implements PreferredSizeWidget {
+  const _SearchBar();
 
-  final EdgeInsets margin;
+  static const double _margin = 16;
 
   @override
-  double get maxExtent => minExtent;
+  Size get preferredSize => const Size.fromHeight(_margin + 56 + _margin);
 
   @override
-  double get minExtent => 56 + margin.vertical;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+  Widget build(BuildContext context) {
     return Padding(
-      padding: margin,
-      child: SearchAnchor(
-        suggestionsBuilder: (context, controller) => [
-          const SizedBox.shrink(),
-        ],
-        builder: (context, controller) => ListenableBuilder(
-          listenable: context.wm.queryHint,
-          builder: (context, __) => SearchBar(
-            controller: context.wm.queryController,
-            leading: context.wm.showBackButton
-                ? const BackButton()
-                : IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search),
-                  ),
-            hintText: context.wm.queryHint.value,
-            trailing: [
-              ListenableBuilder(
-                listenable: context.wm.showClearButton,
-                builder: (context, __) => AnimatedSwitcher(
-                  duration: Durations.medium1,
-                  reverseDuration: Durations.short4,
-                  switchInCurve: Easing.standardDecelerate,
-                  switchOutCurve: Easing.standardAccelerate,
-                  child: context.wm.showClearButton.value
-                      ? const SizedBox.shrink()
-                      : IconButton(
-                          onPressed: context.wm.handleClearPressed,
-                          icon: const Icon(Icons.clear),
-                        ),
+      padding: const EdgeInsets.all(_margin),
+      child: ListenableBuilder(
+        listenable: context.wm.queryHint,
+        builder: (context, __) => SearchBar(
+          controller: context.wm.queryController,
+          leading: context.wm.showBackButton
+              ? const BackButton()
+              : IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.search),
                 ),
+          hintText: context.wm.queryHint.value,
+          trailing: [
+            ListenableBuilder(
+              listenable: context.wm.showClearButton,
+              builder: (context, __) => AnimatedSwitcher(
+                duration: Durations.medium1,
+                reverseDuration: Durations.short4,
+                switchInCurve: Easing.standardDecelerate,
+                switchOutCurve: Easing.standardAccelerate.flipped,
+                child: context.wm.showClearButton.value
+                    ? const SizedBox.shrink()
+                    : IconButton(
+                        onPressed: context.wm.handleClearPressed,
+                        icon: const Icon(Icons.clear),
+                      ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
