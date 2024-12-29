@@ -67,34 +67,38 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             { 
               animes(ids: "${ids.join(',')}", limit: 50 ) {
                 id
-                poster { mainUrl }
+                poster { mainAltUrl }
               }
             }''',
         },
       ),
     );
 
-    final shikimoriData = List<Json>.from(
+    final List<Map<String, Object?>> shikimoriData = List<Json>.from(
       (shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>,
     );
+    final Map<String, Json> shikimoriMovies = {
+      for (final Json movie in shikimoriData) movie['id']! as String: movie,
+    };
 
-    return anime365Data
-        .map(
-          (movieJson) => MovieBaseDto(
-            id: movieJson['id']! as int,
-            title: (movieJson['titles'] as Json?)?['ru'] as String? ??
-                movieJson['title']! as String,
-            posterUrl: (shikimoriData.singleWhere(
-              (json) =>
-                  json['id'] == (movieJson['myAnimeListId']! as int).toString(),
-            )['poster']! as Json)['mainUrl']! as String,
-            type: _convertJsonToMovieType(movieJson['type']! as String),
-            score: movieJson['myAnimeListScore'] == '-1'
-                ? null
-                : double.parse(movieJson['myAnimeListScore']! as String),
-          ),
-        )
-        .toList(growable: false);
+    return anime365Data.map(
+      (movieJson) {
+        final String shikimoriId =
+            (movieJson['myAnimeListId']! as int).toString();
+        final Json shikimoriPoster =
+            shikimoriMovies[shikimoriId]!['poster']! as Json;
+        return MovieBaseDto(
+          id: movieJson['id']! as int,
+          title: (movieJson['titles'] as Json?)?['ru'] as String? ??
+              movieJson['title']! as String,
+          posterUrl: shikimoriPoster['mainAltUrl']! as String,
+          type: _convertJsonToMovieType(movieJson['type']! as String),
+          score: movieJson['myAnimeListScore'] == '-1'
+              ? null
+              : double.parse(movieJson['myAnimeListScore']! as String),
+        );
+      },
+    ).toList(growable: false);
   }
 
   @override
