@@ -80,7 +80,6 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     final Map<String, Json> shikimoriMovies = {
       for (final Json movie in shikimoriData) movie['id']! as String: movie,
     };
-
     return anime365Data.map(
       (movieJson) {
         final String shikimoriId =
