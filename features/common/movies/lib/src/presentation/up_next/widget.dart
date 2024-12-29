@@ -14,36 +14,38 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
 
   @override
   Widget build(IUpNextWM wm) {
-    return Scaffold(
-      appBar: AppBar(
-        title: ListenableBuilder(
-          listenable: wm.title,
-          builder: (context, __) => Text(wm.title.value),
+    return ShimmerScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: ListenableBuilder(
+            listenable: wm.title,
+            builder: (context, __) => Text(wm.title.value),
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: CustomScrollView(
-            controller: wm.scrollController,
-            slivers: [
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 16),
-              ),
-              SliverPagedGrid(
-                key: wm.pagedGridKey,
-                controller: wm.scrollController,
-                gridDelegate: MovieCard.gridDelegate,
-                onLoadPage: wm.handleLoadPage,
-                itemBuilder: (context, movie, animation) => MovieCard(
-                  movie,
-                  opacity: animation,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: CustomScrollView(
+              controller: wm.scrollController,
+              slivers: [
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 16),
                 ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 16),
-              ),
-            ],
+                SliverPagedGrid(
+                  key: wm.pagedGridKey,
+                  controller: wm.scrollController,
+                  gridDelegate: MovieCard.gridDelegate,
+                  onLoadPage: wm.handleLoadPage,
+                  itemBuilder: (context, movie, animation) => MovieCard(
+                    movie,
+                    opacity: animation,
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 16),
+                ),
+              ],
+            ),
           ),
         ),
       ),
