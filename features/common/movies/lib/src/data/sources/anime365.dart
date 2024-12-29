@@ -38,7 +38,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series',
           queryParameters: {
-            'fields': 'id,titles,title,posterUrl,type,myAnimeListId,'
+            'fields': 'id,titles,title,type,myAnimeListId,'
                 'myAnimeListScore',
             'order': _convertMoviesOrderToJson(order),
             if (isOngoing != null) 'isAiring': isOngoing ? 1 : 0,
@@ -55,7 +55,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
 
     final List<Json> anime365Data =
         List<Json>.from(response.body['data']! as List<dynamic>);
-    final List<int> ids = anime365Data
+    final List<int> shikimoriIds = anime365Data
         .map((movieJson) => movieJson['myAnimeListId']! as int)
         .toList(growable: false);
     final ResponseData<Json> shikimoriResponse = await _network.request(
@@ -65,7 +65,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         body: {
           'query': '''
             { 
-              animes(ids: "${ids.join(',')}", limit: 50 ) {
+              animes(ids: "${shikimoriIds.join(',')}", limit: 50 ) {
                 id
                 poster { mainAltUrl }
               }
