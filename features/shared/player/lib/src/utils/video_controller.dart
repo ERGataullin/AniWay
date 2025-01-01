@@ -33,6 +33,8 @@ sealed class VideoController {
 
   Future<void> seekTo(Duration position);
 
+  Future<void> setPlaybackSpeed(double speed);
+
   @mustCallSuper
   void dispose() {}
 }
@@ -114,6 +116,12 @@ class VideoPlayerController extends VideoController {
   Future<void> seekTo(Duration position) async {
     _assertHasInner();
     await _inner.value?.seekTo(position);
+  }
+
+  @override
+  Future<void> setPlaybackSpeed(double speed) async {
+    _assertHasInner();
+    await _inner.value?.setPlaybackSpeed(speed);
   }
 
   @override

@@ -31,7 +31,6 @@
     "passwordLabel": "Пароль",
     "playLabel": "Смотреть",
     "popularsTitle": "Популярное",
-    "qualityLabel": "Качество",
     "signInSubmitLabel": "Войти через Anime365",
     "searchPageTitle": "Поиск",
     "range": "{start}-{end}",
@@ -46,6 +45,16 @@
         }
     },
     "upNextTitle": "К просмотру",
+    "videoPlaybackSpeedLabel": "Скорость воспроизведения",
+    "videoPlaybackSpeed": "{speed, plural, =1{Обычная} other{{speed}}}",
+    "@videoPlaybackSpeed": {
+        "placeholders": {
+            "speed": {
+                "type": "num"
+            }
+        }
+    },
+    "videoQualityLabel": "Качество",
     "videoQuality": "{quality}p",
     "@videoQuality": {
         "placeholders": {

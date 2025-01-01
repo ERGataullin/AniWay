@@ -20,6 +20,8 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 
   ValueListenable<Uri?> get videoDataSource;
 
+  ValueListenable<double> get speed;
+
   set videoResolver(VideoResolver value);
 
   set locale(Locale value);
@@ -36,6 +38,8 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
   void setQuality(num quality);
 
   void handleVideoWatched();
+
+  void setSpeed(double speed);
 }
 
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
@@ -62,6 +66,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     trigger: Listenable.merge([video, quality]),
     () => video.value?.stream[quality.value],
   );
+
+  @override
+  final ValueNotifier<double> speed = ValueNotifier(1);
 
   final PlayerService _service;
 
@@ -136,6 +143,11 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
       for (final String author in _selectedTranslationAuthors)
         author: 1 + (authorsRates[author] ?? 0),
     });
+  }
+
+  @override
+  void setSpeed(double speed) {
+    this.speed.value = speed;
   }
 
   @override
