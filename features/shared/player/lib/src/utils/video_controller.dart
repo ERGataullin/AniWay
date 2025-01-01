@@ -18,6 +18,8 @@ sealed class VideoController {
 
   ValueListenable<Duration> get duration;
 
+  ValueListenable<double> get playbackSpeed;
+
   ValueListenable<String?> get webElementQuery;
 
   Future<void> setDataSource(
@@ -32,6 +34,8 @@ sealed class VideoController {
   Future<void> playPause();
 
   Future<void> seekTo(Duration position);
+
+  Future<void> setPlaybackSpeed(double speed);
 
   @mustCallSuper
   void dispose() {}
@@ -52,6 +56,9 @@ class VideoPlayerController extends VideoController {
 
   @override
   final ValueNotifier<Duration> duration = ValueNotifier(Duration.zero);
+
+  @override
+  final ValueNotifier<double> playbackSpeed = ValueNotifier(1);
 
   @override
   final ValueNotifier<String?> webElementQuery = ValueNotifier('');
@@ -117,6 +124,12 @@ class VideoPlayerController extends VideoController {
   }
 
   @override
+  Future<void> setPlaybackSpeed(double speed) async {
+    _assertHasInner();
+    await _inner.value?.setPlaybackSpeed(speed);
+  }
+
+  @override
   void dispose() {
     _inner.value?.dispose();
     _inner.dispose();
@@ -139,6 +152,7 @@ class VideoPlayerController extends VideoController {
 
     position.value = value.position;
     duration.value = value.duration;
+    playbackSpeed.value = value.playbackSpeed;
     loading.value =
         _inner.value == null || !value.isInitialized || value.isBuffering;
     playing.value = value.isPlaying;

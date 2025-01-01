@@ -177,12 +177,6 @@ abstract class L10n {
   /// **'Популярное'**
   String get popularsTitle;
 
-  /// No description provided for @qualityLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'Качество'**
-  String get qualityLabel;
-
   /// No description provided for @signInSubmitLabel.
   ///
   /// In ru, this message translates to:
@@ -206,6 +200,24 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'К просмотру'**
   String get upNextTitle;
+
+  /// No description provided for @videoPlaybackSpeedLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Скорость воспроизведения'**
+  String get videoPlaybackSpeedLabel;
+
+  /// No description provided for @videoPlaybackSpeed.
+  ///
+  /// In ru, this message translates to:
+  /// **'{speed, plural, =1{Обычная} other{{speed}}}'**
+  String videoPlaybackSpeed(num speed);
+
+  /// No description provided for @videoQualityLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Качество'**
+  String get videoQualityLabel;
 
   /// No description provided for @videoQuality.
   ///

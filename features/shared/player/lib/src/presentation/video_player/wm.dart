@@ -274,7 +274,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         ),
         MenuItemData.group(
           icon: Icons.high_quality,
-          label: l10n.value.qualityLabel,
+          label: l10n.value.videoQualityLabel,
           children: model.video.value == null
               ? const []
               : model.video.value!.stream.keys
@@ -283,6 +283,21 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
                       selected: quality == model.quality.value,
                       label: l10n.value.videoQuality(quality),
                       onSelected: () => model.setQuality(quality),
+                    ),
+                  )
+                  .toList(growable: false),
+        ),
+        MenuItemData.group(
+          icon: Icons.speed,
+          label: l10n.value.videoPlaybackSpeedLabel,
+          children: model.video.value == null
+              ? const []
+              : const <double>[.25, .5, .75, 1, 1.25, 1.5, 1.75, 2]
+                  .map(
+                    (speed) => MenuItemData.single(
+                      selected: speed == videoController.playbackSpeed.value,
+                      label: l10n.value.videoPlaybackSpeed(speed),
+                      onSelected: () => videoController.setPlaybackSpeed(speed),
                     ),
                   )
                   .toList(growable: false),

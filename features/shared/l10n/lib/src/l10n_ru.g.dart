@@ -98,9 +98,6 @@ class L10nRu extends L10n {
   String get popularsTitle => 'Популярное';
 
   @override
-  String get qualityLabel => 'Качество';
-
-  @override
   String get signInSubmitLabel => 'Войти через Anime365';
 
   @override
@@ -113,6 +110,23 @@ class L10nRu extends L10n {
 
   @override
   String get upNextTitle => 'К просмотру';
+
+  @override
+  String get videoPlaybackSpeedLabel => 'Скорость воспроизведения';
+
+  @override
+  String videoPlaybackSpeed(num speed) {
+    String _temp0 = intl.Intl.pluralLogic(
+      speed,
+      locale: localeName,
+      other: '$speed',
+      one: 'Обычная',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get videoQualityLabel => 'Качество';
 
   @override
   String videoQuality(num quality) {
