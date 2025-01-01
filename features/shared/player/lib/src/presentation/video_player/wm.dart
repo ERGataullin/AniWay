@@ -295,7 +295,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               : const <double>[.25, .5, .75, 1, 1.25, 1.5, 1.75, 2]
                   .map(
                     (speed) => MenuItemData.single(
-                      selected: model.speed.value == speed,
+                      selected: speed == videoController.playbackSpeed.value,
                       label: l10n.value.videoPlaybackSpeed(speed),
                       onSelected: () => videoController.setPlaybackSpeed(speed),
                     ),
