@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "flutter",
+			"options": {
+				"cwd": "features/shared/l10n",
+			},
+			"command": "flutter",
+			"args": [
+				"gen-l10n",
+			],
+			"problemMatcher": [],
+			"label": "Generate l10n",
+		}
+	]
+}
