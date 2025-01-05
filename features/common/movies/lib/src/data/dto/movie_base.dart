@@ -1,10 +1,11 @@
+import 'package:core/core.dart';
 import 'package:movies/src/data/dto/movie_type.dart';
 
 class MovieBaseDto {
   const MovieBaseDto({
     required this.id,
     required this.title,
-    required this.posterUrl,
+    required this.poster,
     required this.type,
     this.score,
   });
@@ -13,7 +14,7 @@ class MovieBaseDto {
 
   final String title;
 
-  final String posterUrl;
+  final ImageDto poster;
 
   final MovieTypeDto type;
 

@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:movies/src/domain/models/episode.dart';
 
@@ -6,7 +7,7 @@ class MovieDetailsData {
     required this.id,
     required this.uri,
     required this.title,
-    required this.posterUri,
+    required this.poster,
     required this.previews,
     required this.episodes,
     this.description,
@@ -17,7 +18,7 @@ class MovieDetailsData {
         id: dto.id,
         uri: Uri.parse(dto.url),
         title: dto.title,
-        posterUri: Uri.parse(dto.posterUrl),
+        poster: ImageData.fromDto(dto.poster),
         previews: List.unmodifiable(dto.previews.map(EpisodeData.fromDto)),
         episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),
         description: dto.description,
@@ -30,7 +31,7 @@ class MovieDetailsData {
 
   final String title;
 
-  final Uri posterUri;
+  final ImageData poster;
 
   final List<EpisodeData> previews;
 

@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:movies/src/data/dto/movie_base.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
 
@@ -5,7 +6,7 @@ class MovieBaseData {
   const MovieBaseData({
     required this.id,
     required this.title,
-    required this.posterUri,
+    required this.poster,
     required this.type,
     this.score,
   });
@@ -13,7 +14,7 @@ class MovieBaseData {
   factory MovieBaseData.fromDto(MovieBaseDto dto) => MovieBaseData(
         id: dto.id,
         title: dto.title,
-        posterUri: Uri.parse(dto.posterUrl),
+        poster: ImageData.fromDto(dto.poster),
         type: MovieType.fromDto(dto.type),
         score: dto.score,
       );
@@ -22,7 +23,7 @@ class MovieBaseData {
 
   final String title;
 
-  final Uri posterUri;
+  final ImageData poster;
 
   final MovieType type;
 

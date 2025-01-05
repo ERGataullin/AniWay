@@ -31,72 +31,75 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
     const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 16);
     return Provider<IMovieWM>.value(
       value: wm,
-      child: ListenableBuilder(
-        listenable: wm.showLoader,
-        builder: (context, __) => Scaffold(
-          body: CustomScrollView(
-            primary: true,
-            slivers: [
-              const _AppBar(),
-              if (wm.showLoader.value)
-                const SliverFillRemaining(
-                  child: Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  ),
-                )
-              else
-                SliverSafeArea(
-                  sliver: SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 16),
-                        Padding(
-                          padding: padding,
-                          child: ListenableBuilder(
-                            listenable: wm.score,
-                            builder: (context, __) => wm.score.value == null
-                                ? const SizedBox.shrink()
-                                : MovieScore(
-                                    wm.score.value!,
-                                    textStyle: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!,
-                                  ),
-                          ),
-                        ),
-                        Padding(
-                          padding: padding,
-                          child: ListenableBuilder(
-                            listenable: wm.title,
-                            builder: (context, __) => Text(
-                              wm.title.value,
-                              style: Theme.of(context).textTheme.headlineLarge,
+      child: ShimmerScope(
+        child: ListenableBuilder(
+          listenable: wm.showLoader,
+          builder: (context, __) => Scaffold(
+            body: CustomScrollView(
+              primary: true,
+              slivers: [
+                const _AppBar(),
+                if (wm.showLoader.value)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  )
+                else
+                  SliverSafeArea(
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          Padding(
+                            padding: padding,
+                            child: ListenableBuilder(
+                              listenable: wm.score,
+                              builder: (context, __) => wm.score.value == null
+                                  ? const SizedBox.shrink()
+                                  : MovieScore(
+                                      wm.score.value!,
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!,
+                                    ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Padding(
-                          padding: padding,
-                          child: _Description(),
-                        ),
-                        const SizedBox(height: 16),
-                        ListenableBuilder(
-                          listenable: context.wm.showEpisodes,
-                          builder: (context, __) =>
-                              context.wm.showEpisodes.value
-                                  ? const _Episodes()
-                                  : const SizedBox.shrink(),
-                        ),
-                        const SizedBox(height: 16 + 56 + 16),
-                      ],
+                          Padding(
+                            padding: padding,
+                            child: ListenableBuilder(
+                              listenable: wm.title,
+                              builder: (context, __) => Text(
+                                wm.title.value,
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          const Padding(
+                            padding: padding,
+                            child: _Description(),
+                          ),
+                          const SizedBox(height: 16),
+                          ListenableBuilder(
+                            listenable: context.wm.showEpisodes,
+                            builder: (context, __) =>
+                                context.wm.showEpisodes.value
+                                    ? const _Episodes()
+                                    : const SizedBox.shrink(),
+                          ),
+                          const SizedBox(height: 16 + 56 + 16),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
+            floatingActionButton:
+                wm.showPlayButton.value ? const _PlayButton() : null,
           ),
-          floatingActionButton:
-              wm.showPlayButton.value ? const _PlayButton() : null,
         ),
       ),
     );
@@ -152,9 +155,15 @@ class _AppBar extends StatelessWidget {
                   ),
                   child: ListenableBuilder(
                     listenable: context.wm.poster,
-                    builder: (context, __) => Image(
+                    builder: (context, __) => AdaptiveImageBuilder(
                       image: context.wm.poster.value!,
-                      fit: BoxFit.cover,
+                      builder: (context, opacity, image, _) => image == null
+                          ? const SizedBox.expand()
+                          : Image(
+                              fit: BoxFit.cover,
+                              opacity: opacity,
+                              image: image,
+                            ),
                     ),
                   ),
                 ),

@@ -12,7 +12,6 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
         errorHandler: context.read<ErrorHandler>(),
         service: context.read<MoviesService>(),
       ),
-      posterBaseUri: context.read<Network>().baseUri,
     );
 
 abstract interface class IMovieWM implements IWidgetModel {
@@ -24,7 +23,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get watchStatusButtonTooltip;
 
-  ValueListenable<ImageProvider?> get poster;
+  ValueListenable<ImageData?> get poster;
 
   ValueListenable<double?> get posterHeight;
 
@@ -54,12 +53,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     with L10nWMMixin
     implements IMovieWM {
-  MovieWM(
-    super._model, {
-    required Uri posterBaseUri,
-  }) : _posterBaseUri = posterBaseUri;
-
-  final Uri _posterBaseUri;
+  MovieWM(super._model);
 
   @override
   late final DynamicData<bool> watchStatusSelected = DynamicData(
@@ -84,13 +78,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<ImageProvider?> poster = DynamicData(
+  late final DynamicData<ImageData?> poster = DynamicData(
     trigger: model.movie,
-    () => model.movie.value == null
-        ? null
-        : NetworkImage(
-            _posterBaseUri.resolveUri(model.movie.value!.posterUri).toString(),
-          ),
+    () => model.movie.value?.poster,
   );
 
   @override

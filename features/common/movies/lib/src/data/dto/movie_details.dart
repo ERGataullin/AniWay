@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:movies/src/data/dto/episode.dart';
 
 class MovieDetailsDto {
@@ -5,7 +6,7 @@ class MovieDetailsDto {
     required this.id,
     required this.url,
     required this.title,
-    required this.posterUrl,
+    required this.poster,
     required this.previews,
     required this.episodes,
     this.description,
@@ -18,7 +19,7 @@ class MovieDetailsDto {
 
   final String title;
 
-  final String posterUrl;
+  final ImageDto poster;
 
   final List<EpisodeDto> previews;
 

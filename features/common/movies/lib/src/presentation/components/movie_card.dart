@@ -81,7 +81,7 @@ class MovieCard extends StatelessWidget {
                 Expanded(
                   child: _Poster(
                     opacity: opacity,
-                    uri: data?.posterUri,
+                    image: data?.poster,
                   ),
                 ),
                 _Footer(
@@ -103,12 +103,12 @@ class MovieCard extends StatelessWidget {
 class _Poster extends StatefulWidget {
   const _Poster({
     this.opacity,
-    this.uri,
+    this.image,
   });
 
   final Animation<double>? opacity;
 
-  final Uri? uri;
+  final ImageData? image;
 
   @override
   State<_Poster> createState() => _PosterState();
@@ -117,18 +117,12 @@ class _Poster extends StatefulWidget {
 class _PosterState extends State<_Poster> {
   @override
   Widget build(BuildContext context) {
-    final NetworkImage? image = widget.uri == null
-        ? null
-        : NetworkImage(
-            context.read<Network>().baseUri.resolveUri(widget.uri!).toString(),
-          );
-
-    return ListenableBuilder(
-      listenable: Listenable.merge([widget.opacity]),
-      builder: (context, __) => FadeInImageBuilder(
-        image: image,
-        builder: (context, fadeInOpacity, image, ____) => Shimmer(
-          enabled: fadeInOpacity != 1,
+    return AdaptiveImageBuilder(
+      image: widget.image,
+      builder: (context, fadeInOpacity, image, ____) => ListenableBuilder(
+        listenable: Listenable.merge([widget.opacity, fadeInOpacity]),
+        builder: (context, _) => Shimmer(
+          enabled: fadeInOpacity.value != 1,
           delegate: CustomShimmerDelegate(
             (context, color, gradient, ___) => Ink(
               decoration: ShapeDecoration(
@@ -139,8 +133,9 @@ class _PosterState extends State<_Poster> {
                     ? null
                     : DecorationImage(
                         fit: BoxFit.cover,
-                        filterQuality: FilterQuality.low,
-                        opacity: fadeInOpacity * (widget.opacity?.value ?? 1),
+                        filterQuality: FilterQuality.medium,
+                        opacity:
+                            fadeInOpacity.value * (widget.opacity?.value ?? 1),
                         image: image,
                       ),
               ),
