@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
@@ -5,7 +6,7 @@ import 'package:movies/src/domain/models/up_next.dart';
 
 class MovieCardData {
   const MovieCardData({
-    required this.posterUri,
+    required this.poster,
     required this.title,
     required this.subtitle,
     this.score,
@@ -18,7 +19,7 @@ class MovieCardData {
     required VoidCallback onPressed,
   }) =>
       MovieCardData(
-        posterUri: upNext.movie.posterUri,
+        poster: upNext.movie.poster,
         title: upNext.movie.title,
         subtitle: upNext.episode.number == null
             ? l10n.movieType(upNext.episode.type.name)
@@ -35,14 +36,14 @@ class MovieCardData {
     required VoidCallback onPressed,
   }) =>
       MovieCardData(
-        posterUri: movie.posterUri,
+        poster: movie.poster,
         title: movie.title,
         subtitle: l10n.movieType(movie.type.name),
         score: movie.score,
         onPressed: onPressed,
       );
 
-  final Uri posterUri;
+  final ImageData poster;
 
   final String title;
 

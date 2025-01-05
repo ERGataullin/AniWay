@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 typedef FadeInImageBuilderDelegate = Widget Function(
   BuildContext context,
-  double opacity,
+  Animation<double> opacity,
   ImageProvider<Object>? image,
   Widget? child,
 );
@@ -98,13 +98,10 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([
-        _opacityController,
-        _imageProvider,
-      ]),
+      listenable: _imageProvider,
       builder: (context, __) => widget.builder(
         context,
-        _opacityController.value,
+        _opacityController,
         _imageProvider.value,
         widget.child,
       ),

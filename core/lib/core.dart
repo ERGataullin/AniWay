@@ -8,9 +8,12 @@ export 'package:provider/provider.dart';
 export 'package:url_launcher/link.dart';
 export 'package:url_launcher/url_launcher.dart';
 
+export 'src/data/dto/image.dart';
 export 'src/domain/models/dynamic.dart';
+export 'src/domain/models/image.dart';
 export 'src/domain/models/json.dart';
 export 'src/domain/models/proxied_uri.dart';
+export 'src/presentation/components/adaptive_image_builder.dart';
 export 'src/presentation/components/animated_visibility.dart';
 export 'src/presentation/components/conditional_wrapper.dart';
 export 'src/presentation/components/expandable_text.dart';

@@ -66,7 +66,15 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             { 
               animes(ids: "${shikimoriIds.join(',')}", limit: 50 ) {
                 id
-                poster { mainAltUrl }
+                poster { 
+                  miniAltUrl
+                  miniAlt2xUrl
+                  mainAltUrl
+                  previewAltUrl
+                  previewAlt2xUrl
+                  mainAlt2xUrl
+                  originalUrl
+                }
               }
             }''',
         },
@@ -89,7 +97,18 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           id: movieJson['id']! as int,
           title: (movieJson['titles'] as Json?)?['ru'] as String? ??
               movieJson['title']! as String,
-          posterUrl: shikimoriPoster['mainAltUrl']! as String,
+          poster: ImageDto(
+            url: {
+              60: shikimoriPoster['miniAltUrl']! as String,
+              120: shikimoriPoster['miniAlt2xUrl']! as String,
+              160: shikimoriPoster['previewAltUrl']! as String,
+              225: shikimoriPoster['mainAltUrl']! as String,
+              320: shikimoriPoster['previewAlt2xUrl']! as String,
+              450: shikimoriPoster['mainAlt2xUrl']! as String,
+              double.infinity: shikimoriPoster['originalUrl']! as String,
+            },
+          ),
+          // poster: shikimoriPoster['mainAltUrl']! as String,
           type: _convertJsonToMovieType(movieJson['type']! as String),
           score: movieJson['myAnimeListScore'] == '-1'
               ? null
@@ -223,7 +242,12 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           movie: MovieBaseDto(
             id: movieId,
             title: movieTitle,
-            posterUrl: posterUrl,
+            poster: ImageDto(
+              url: {
+                140: posterUrl,
+                double.infinity: posterUrl.replaceFirst('140x140.1.', ''),
+              },
+            ),
             type: type,
           ),
           episode: EpisodeDto(
@@ -259,8 +283,16 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           'query': '''
             { 
               animes(ids: "${anime365Data['myAnimeListId']}" ) {
-                poster { originalUrl }
                 videos { name kind imageUrl }
+                poster { 
+                  miniAltUrl
+                  miniAlt2xUrl
+                  mainAltUrl
+                  previewAltUrl
+                  previewAlt2xUrl
+                  mainAlt2xUrl
+                  originalUrl
+                }
               }
             }''',
         },
@@ -269,6 +301,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     final Json shikimoriData =
         ((shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>)
             .first as Json;
+    final Json shikimoriPoster = shikimoriData['poster']! as Json;
     final Map<num, Json> shikimoriEpisodePreviews =
         switch (shikimoriData['videos']) {
       final List<dynamic> videosJsons => {
@@ -311,7 +344,17 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       id: id,
       url: movieUri.path,
       title: (anime365Data['titles']! as Json)['ru']! as String,
-      posterUrl: (shikimoriData['poster']! as Json)['originalUrl']! as String,
+      poster: ImageDto(
+        url: {
+          60: shikimoriPoster['miniAltUrl']! as String,
+          120: shikimoriPoster['miniAlt2xUrl']! as String,
+          160: shikimoriPoster['previewAltUrl']! as String,
+          225: shikimoriPoster['mainAltUrl']! as String,
+          320: shikimoriPoster['previewAlt2xUrl']! as String,
+          450: shikimoriPoster['mainAlt2xUrl']! as String,
+          double.infinity: shikimoriPoster['originalUrl']! as String,
+        },
+      ),
       previews: previewsAndEpisodes
           .where((episode) => episode.type == MovieTypeDto.preview)
           .toList(growable: false),
