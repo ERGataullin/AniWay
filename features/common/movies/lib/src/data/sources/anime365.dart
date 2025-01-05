@@ -244,8 +244,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
             title: movieTitle,
             poster: ImageDto(
               url: {
-                140: posterUrl.replaceFirst('140x140.1.', ''),
-                double.infinity: posterUrl,
+                140: posterUrl,
+                double.infinity: posterUrl.replaceFirst('140x140.1.', ''),
               },
             ),
             type: type,
@@ -301,6 +301,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     final Json shikimoriData =
         ((shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>)
             .first as Json;
+    final Json shikimoriPoster = shikimoriData['poster']! as Json;
     final Map<num, Json> shikimoriEpisodePreviews =
         switch (shikimoriData['videos']) {
       final List<dynamic> videosJsons => {
@@ -345,14 +346,13 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       title: (anime365Data['titles']! as Json)['ru']! as String,
       poster: ImageDto(
         url: {
-          60: (shikimoriData['poster']! as Json)['miniAltUrl']! as String,
-          120: (shikimoriData['poster']! as Json)['miniAlt2xUrl']! as String,
-          160: (shikimoriData['poster']! as Json)['previewAltUrl']! as String,
-          225: (shikimoriData['poster']! as Json)['mainAltUrl']! as String,
-          320: (shikimoriData['poster']! as Json)['previewAlt2xUrl']! as String,
-          450: (shikimoriData['poster']! as Json)['mainAlt2xUrl']! as String,
-          double.infinity:
-              (shikimoriData['poster']! as Json)['originalUrl']! as String,
+          60: shikimoriPoster['miniAltUrl']! as String,
+          120: shikimoriPoster['miniAlt2xUrl']! as String,
+          160: shikimoriPoster['previewAltUrl']! as String,
+          225: shikimoriPoster['mainAltUrl']! as String,
+          320: shikimoriPoster['previewAlt2xUrl']! as String,
+          450: shikimoriPoster['mainAlt2xUrl']! as String,
+          double.infinity: shikimoriPoster['originalUrl']! as String,
         },
       ),
       previews: previewsAndEpisodes

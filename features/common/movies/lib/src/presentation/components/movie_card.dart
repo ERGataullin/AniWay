@@ -100,7 +100,7 @@ class MovieCard extends StatelessWidget {
   }
 }
 
-class _Poster extends StatefulWidget {
+class _Poster extends StatelessWidget {
   const _Poster({
     this.opacity,
     this.image,
@@ -111,16 +111,11 @@ class _Poster extends StatefulWidget {
   final ImageData? image;
 
   @override
-  State<_Poster> createState() => _PosterState();
-}
-
-class _PosterState extends State<_Poster> {
-  @override
   Widget build(BuildContext context) {
     return AdaptiveImageBuilder(
-      image: widget.image,
+      image: image,
       builder: (context, fadeInOpacity, image, ____) => ListenableBuilder(
-        listenable: Listenable.merge([widget.opacity, fadeInOpacity]),
+        listenable: Listenable.merge([opacity, fadeInOpacity]),
         builder: (context, _) => Shimmer(
           enabled: fadeInOpacity.value != 1,
           delegate: CustomShimmerDelegate(
@@ -134,8 +129,7 @@ class _PosterState extends State<_Poster> {
                     : DecorationImage(
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.medium,
-                        opacity:
-                            fadeInOpacity.value * (widget.opacity?.value ?? 1),
+                        opacity: fadeInOpacity.value * (opacity?.value ?? 1),
                         image: image,
                       ),
               ),
