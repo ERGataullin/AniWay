@@ -193,7 +193,9 @@ class _Episodes extends StatelessWidget {
     const EdgeInsets margin = EdgeInsets.symmetric(horizontal: 16);
     final TextStyle textStyle = Theme.of(context).textTheme.titleLarge!;
     final TextButton button = TextButton(
-      onPressed: context.wm.handleEpisodesPressed,
+      onPressed: context.wm.episodes.value.length > 10
+          ? context.wm.handleEpisodesPressed
+          : null,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -240,7 +242,7 @@ class _Episodes extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
-              itemCount: context.wm.episodes.value.length,
+              itemCount: context.wm.episodesSize.value,
               separatorBuilder: (context, __) => const SizedBox(width: 8),
               itemBuilder: (context, index) => _Episode(
                 context.wm.episodes.value[index],

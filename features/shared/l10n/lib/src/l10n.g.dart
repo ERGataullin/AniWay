@@ -108,8 +108,14 @@ abstract class L10n {
   /// No description provided for @episodesLabel.
   ///
   /// In ru, this message translates to:
-  /// **'Cписок серий'**
+  /// **'Список серий'**
   String get episodesLabel;
+
+  /// No description provided for @episodesLabelDetails.
+  ///
+  /// In ru, this message translates to:
+  /// **'Cписок серий {episodes} / {numberOfEpisodes}'**
+  String episodesLabelDetails(Object episodes, Object numberOfEpisodes);
 
   /// No description provided for @emailLabel.
   ///

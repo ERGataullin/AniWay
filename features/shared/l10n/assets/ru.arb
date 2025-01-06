@@ -9,7 +9,18 @@
             }
         }
     },
-    "episodesLabel": "Cписок серий",
+    "episodesLabel": "Список серий",
+    "episodesLabelDetails": "Cписок серий {episodes} / {numberOfEpisodes}",
+    "@episodesLabelDetais": {
+        "placeholders": {
+            "episodes": {
+                "type": "int"
+            },
+            "numberOfEpisodes": {
+                "type": "int"
+            }
+        }
+    },
     "emailLabel": "Электронная почта",
     "emailValidationError": "Неверный адрес электронной почты",
     "homePageTitle": "Главная",

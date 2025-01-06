@@ -267,7 +267,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields': 'url,titles,posterUrl,episodes,'
+            'fields': 'url,titles,posterUrl,episodes,numberOfEpisodes,'
                 'descriptions,myAnimeListId,myAnimeListScore',
           },
         ),
@@ -361,6 +361,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       episodes: previewsAndEpisodes
           .where((episode) => episode.type != MovieTypeDto.preview)
           .toList(growable: false),
+      numberOfEpisodes: anime365Data['numberOfEpisodes']! as int,
       description: switch (anime365Data['descriptions']) {
         final List<dynamic> jsons => (jsons.first as Json)['value']! as String,
         _ => null,

@@ -17,7 +17,12 @@ class L10nRu extends L10n {
   }
 
   @override
-  String get episodesLabel => 'Cписок серий';
+  String get episodesLabel => 'Список серий';
+
+  @override
+  String episodesLabelDetails(Object episodes, Object numberOfEpisodes) {
+    return 'Cписок серий $episodes / $numberOfEpisodes';
+  }
 
   @override
   String get emailLabel => 'Электронная почта';
