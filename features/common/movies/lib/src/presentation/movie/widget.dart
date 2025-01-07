@@ -61,8 +61,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                                   ? const SizedBox.shrink()
                                   : MovieScore(
                                       wm.score.value!,
-                                      textStyle: Theme.of(context)
-                                          .textTheme
+                                      textStyle: TextTheme.of(context)
                                           .titleMedium!,
                                     ),
                             ),
@@ -74,7 +73,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               builder: (context, __) => Text(
                                 wm.title.value,
                                 style:
-                                    Theme.of(context).textTheme.headlineLarge,
+                                    TextTheme.of(context).headlineLarge,
                               ),
                             ),
                           ),
@@ -207,9 +206,8 @@ class _Episodes extends StatelessWidget {
               listenable: context.wm.episodesCount,
               builder: (context, __) => Text(
                 context.wm.episodesCount.value,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context)
-                          .textTheme
+                style: TextTheme.of(context).titleMedium?.copyWith(
+                      color: TextTheme.of(context)
                           .titleMedium
                           ?.color
                           ?.withValues(alpha: 0.6),
@@ -298,7 +296,7 @@ class _Episode extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               context.wm.getEpisodeTitle(data),
-              style: Theme.of(context).textTheme.labelLarge,
+              style: TextTheme.of(context).labelLarge,
             ),
           ],
         ),
