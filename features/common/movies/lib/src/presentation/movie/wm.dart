@@ -59,7 +59,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     implements IMovieWM {
   MovieWM(super._model);
 
-  static const int _episodesSize = 10;
+  static const int _episodesLimit = 10;
 
   @override
   late final DynamicData<bool> watchStatusSelected = DynamicData(
@@ -134,7 +134,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   late final ValueListenable<Uri?> episodesUri = DynamicData(
     trigger: model.movie,
-    () => (model.movie.value?.episodes.length ?? 0) > _episodesSize
+    () => (model.movie.value?.episodes.length ?? 0) > _episodesLimit
         ? widget.episodesUri
         : null,
   );
@@ -162,7 +162,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     trigger: model.movie,
     () =>
         model.movie.value?.episodes
-            .take(_episodesSize)
+            .take(_episodesLimit)
             .toList(growable: false) ??
         const [],
   );
