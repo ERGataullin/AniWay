@@ -151,8 +151,10 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   Future<void> _handleTranslationChanged() async {
     _selectedTranslationLocale =
         translation.value?.locale ?? _selectedTranslationLocale;
-    _selectedTranslationAuthors =
-        translation.value?.authors ?? _selectedTranslationAuthors;
+    _selectedTranslationAuthors = translation.value?.authors
+            .map((author) => author.toLowerCase())
+            .toList(growable: false) ??
+        _selectedTranslationAuthors;
     video.value = null;
     if (translation.value != null) {
       video.value = await _videoResolver(translation.value!.id);
