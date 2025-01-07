@@ -108,9 +108,7 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   @override
   void dispose() {
     _imageInfo?.dispose();
-    _imageStream
-      ..value?.removeListener(_imageStreamListener)
-      ..dispose();
+    _imageStream.dispose();
     _imageProvider.dispose();
     _opacityController.dispose();
     _scrollAwareContext.dispose();
