@@ -40,8 +40,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   final GlobalKey materialChildKey = GlobalKey();
 
   @override
-  late final DynamicData<Map<Type, GestureRecognizerFactory>> gestures =
-      DynamicData(
+  late final Computed<Map<Type, GestureRecognizerFactory>> gestures = Computed(
     trigger: Listenable.merge([
       _videoController.position,
       _videoController.duration,
@@ -66,12 +65,12 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   );
 
   @override
-  late final DynamicData<ShapeBorder> shape = DynamicData(
+  late final Computed<ShapeBorder> shape = Computed(
     () => SeekAreaShapeBorder(widget.type),
   );
 
   @override
-  late final DynamicData<String> value = DynamicData(
+  late final Computed<String> value = Computed(
     trigger: model.value,
     () => model.value.value == Duration.zero
         ? ''
@@ -79,7 +78,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   );
 
   @override
-  late final DynamicData<int> iconsRotation = DynamicData(
+  late final Computed<int> iconsRotation = Computed(
     () => switch (widget.type) {
       SeekType.rewind => 2,
       SeekType.fastForward => 0,
@@ -155,7 +154,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
       ),
     );
 
-    final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
+    final referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
 
     theme.value.splashFactory
@@ -176,7 +175,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   }
 
   Future<void> _handleValueChaged() async {
-    final bool visible = model.value.value != Duration.zero;
+    final visible = model.value.value != Duration.zero;
     if (visible) {
       for (final AnimationController iconController in _iconsControllers) {
         await iconController.forward();

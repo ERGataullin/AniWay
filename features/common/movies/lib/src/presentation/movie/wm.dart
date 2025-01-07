@@ -56,7 +56,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   MovieWM(super._model);
 
   @override
-  late final DynamicData<bool> watchStatusSelected = DynamicData(
+  late final Computed<bool> watchStatusSelected = Computed(
     trigger: model.watchStatusDetails,
     () => switch (model.watchStatusDetails.value?.status) {
       null || WatchStatus.none => false,
@@ -65,7 +65,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<String> watchStatusButtonTooltip = DynamicData(
+  late final Computed<String> watchStatusButtonTooltip = Computed(
     trigger: Listenable.merge([
       l10n,
       model.watchStatusDetails,
@@ -78,61 +78,61 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final DynamicData<ImageData?> poster = DynamicData(
+  late final Computed<ImageData?> poster = Computed(
     trigger: model.movie,
     () => model.movie.value?.poster,
   );
 
   @override
-  late final DynamicData<double?> posterHeight = DynamicData(
+  late final Computed<double?> posterHeight = Computed(
     trigger: showLoader,
     () => showLoader.value ? null : MediaQuery.of(context).size.width * 1.25,
   );
 
   @override
-  late final DynamicData<bool> showPlayButton = DynamicData(
+  late final Computed<bool> showPlayButton = Computed(
     trigger: model.movie,
     () => model.movie.value?.episodes.isNotEmpty ?? false,
   );
 
   @override
-  late final DynamicData<String> playButtonLabel = DynamicData(
+  late final Computed<String> playButtonLabel = Computed(
     trigger: l10n,
     () => l10n.value.playLabel,
   );
 
   @override
-  late final DynamicData<double?> score = DynamicData(
+  late final Computed<double?> score = Computed(
     trigger: model.movie,
     () => model.movie.value?.score,
   );
 
   @override
-  late final DynamicData<String> title = DynamicData(
+  late final Computed<String> title = Computed(
     trigger: model.movie,
     () => model.movie.value?.title ?? '',
   );
 
   @override
-  late final DynamicData<String> description = DynamicData(
+  late final Computed<String> description = Computed(
     trigger: model.movie,
     () => model.movie.value?.description ?? '',
   );
 
   @override
-  late final DynamicData<bool> showEpisodes = DynamicData(
+  late final Computed<bool> showEpisodes = Computed(
     trigger: model.movie,
     () => model.movie.value?.episodes.isNotEmpty ?? false,
   );
 
   @override
-  late final DynamicData<String> episodesLabel = DynamicData(
+  late final Computed<String> episodesLabel = Computed(
     trigger: l10n,
     () => l10n.value.episodesLabel,
   );
 
   @override
-  late final DynamicData<List<EpisodeData>> episodes = DynamicData(
+  late final Computed<List<EpisodeData>> episodes = Computed(
     trigger: model.movie,
     () => model.movie.value?.episodes ?? const [],
   );

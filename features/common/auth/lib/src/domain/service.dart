@@ -12,7 +12,7 @@ class AuthService implements Initable {
   })  : _repository = repository,
         _cookieManager = cookieManager;
 
-  late final DynamicData<bool> signedIn = DynamicData(
+  late final Computed<bool> signedIn = Computed(
     trigger: _cookieManager.cookie,
     () {
       final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];

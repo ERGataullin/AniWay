@@ -119,6 +119,7 @@ linter:
     noop_primitive_operations: true
     null_check_on_nullable_type_parameter: true
     null_closures: true
+    omit_obvious_local_variable_types: true
     only_throw_errors: true
     overridden_fields: true
     package_prefixed_library_names: true
@@ -164,6 +165,7 @@ linter:
     sort_child_properties_last: true
     sort_constructors_first: true
     sort_unnamed_constructors_first: true
+    specify_nonobvious_local_variable_types: true
     tighten_type_of_initializing_formals: true
     type_annotate_public_apis: true
     type_init_formals: true
@@ -213,6 +215,5 @@ linter:
     package_names: true
     secure_pubspec_urls: true
     sort_pub_dependencies: true
-
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

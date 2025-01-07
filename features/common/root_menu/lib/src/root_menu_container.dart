@@ -40,9 +40,8 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
 
   Widget _layoutBuilder(List<Widget> entries) {
     for (final Widget entry in entries) {
-      final KeyedSubtree subtree = entry as KeyedSubtree;
-      final FadeThroughTransition transition =
-          subtree.child as FadeThroughTransition;
+      final subtree = entry as KeyedSubtree;
+      final transition = subtree.child as FadeThroughTransition;
       final Key childKey = transition.child!.key!;
       _subtrees
         ..remove(childKey)

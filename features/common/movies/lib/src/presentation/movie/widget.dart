@@ -28,7 +28,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   @override
   Widget build(IMovieWM wm) {
-    const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 16);
+    const padding = EdgeInsets.symmetric(horizontal: 16);
     return Provider<IMovieWM>.value(
       value: wm,
       child: ShimmerScope(
@@ -190,9 +190,9 @@ class _Episodes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const EdgeInsets margin = EdgeInsets.symmetric(horizontal: 16);
+    const margin = EdgeInsets.symmetric(horizontal: 16);
     final TextStyle textStyle = Theme.of(context).textTheme.titleLarge!;
-    final TextButton button = TextButton(
+    final button = TextButton(
       onPressed: context.wm.handleEpisodesPressed,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -217,7 +217,7 @@ class _Episodes extends StatelessWidget {
         .padding
         ?.resolve(WidgetState.values.toSet())
         ?.resolve(Directionality.of(context));
-    final EdgeInsets effectiveMargin = buttonPadding == null
+    final effectiveMargin = buttonPadding == null
         ? margin
         : EdgeInsets.symmetric(
             horizontal: (margin.horizontal - buttonPadding.horizontal) / 2,

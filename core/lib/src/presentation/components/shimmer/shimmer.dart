@@ -37,7 +37,7 @@ class Shimmer extends StatelessWidget {
       child: AnimatedBuilder(
         animation: shimmerScope.animation,
         builder: (_, __) {
-          final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+          final renderBox = context.findRenderObject() as RenderBox?;
           final (Color? color, Gradient? gradient) =
               shimmerScope.createBackground(
             theme: Theme.of(context),

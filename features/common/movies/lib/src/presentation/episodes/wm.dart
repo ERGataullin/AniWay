@@ -42,7 +42,7 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   ValueListenable<bool> get showLoader => model.loading;
 
   @override
-  late final DynamicData<TabController?> tabController = DynamicData(
+  late final Computed<TabController?> tabController = Computed(
     () => _episodes.value.isEmpty
         ? null
         : TabController(
@@ -52,7 +52,7 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   );
 
   @override
-  late final DynamicData<List<String>> tabsTexts = DynamicData(
+  late final Computed<List<String>> tabsTexts = Computed(
     trigger: _episodes,
     () => List.generate(
       (_episodes.value.length / _groupSize).ceil(),
@@ -67,18 +67,18 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   );
 
   @override
-  late final DynamicData<String> episodesLabel = DynamicData(
+  late final Computed<String> episodesLabel = Computed(
     trigger: l10n,
     () => l10n.value.episodesLabel,
   );
 
-  late final DynamicData<List<EpisodeData>> _episodes = DynamicData(
+  late final Computed<List<EpisodeData>> _episodes = Computed(
     trigger: model.movie,
     () => model.movie.value?.episodes ?? const [],
   );
 
   @override
-  late final DynamicData<List<List<EpisodeData>>> tabsEpisodes = DynamicData(
+  late final Computed<List<List<EpisodeData>>> tabsEpisodes = Computed(
     trigger: _episodes,
     () => List.generate(
       (_episodes.value.length / _groupSize).ceil(),

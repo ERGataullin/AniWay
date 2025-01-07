@@ -34,7 +34,7 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
       GlobalKey();
 
   @override
-  late final DynamicData<String> title = DynamicData(
+  late final Computed<String> title = Computed(
     trigger: l10n,
     () => l10n.value.upNextTitle,
   );

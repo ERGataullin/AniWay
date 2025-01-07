@@ -45,13 +45,13 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   final SearchController queryController = SearchController();
 
   @override
-  late final DynamicData<String> queryHint = DynamicData(
+  late final Computed<String> queryHint = Computed(
     trigger: l10n,
     () => l10n.value.searchPageTitle,
   );
 
   @override
-  late final DynamicData<bool> showClearButton = DynamicData(
+  late final Computed<bool> showClearButton = Computed(
     trigger: queryController,
     () => queryController.text.isEmpty,
   );

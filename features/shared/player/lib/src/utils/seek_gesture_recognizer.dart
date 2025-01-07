@@ -194,7 +194,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
         _reset();
         return _trackTap(event);
       } else if (onSeekTapDown != null) {
-        final TapDownDetails details = TapDownDetails(
+        final details = TapDownDetails(
           globalPosition: event.position,
           localPosition: event.localPosition,
           kind: getKindForPointer(event.pointer),
@@ -211,7 +211,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
   void _trackTap(PointerDownEvent event) {
     _stopDoubleTapTimer();
     _startDoubleTapTimer();
-    final _TapTracker tracker = _TapTracker(
+    final tracker = _TapTracker(
       event: event,
       entry: GestureBinding.instance.gestureArena.add(event.pointer, this),
       doubleTapMinTime: kDoubleTapMinTime,
@@ -335,7 +335,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
 
   void _checkUp(PointerUpEvent event, _TapTracker tracker) {
     if (onSeekTapUp != null) {
-      final TapUpDetails details = TapUpDetails(
+      final details = TapUpDetails(
         globalPosition: event.position,
         localPosition: event.localPosition,
         kind: getKindForPointer(tracker.pointer),
