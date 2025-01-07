@@ -4,8 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
+import 'package:movies/src/domain/models/movie_details.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:movies/src/presentation/movie/model.dart';
+import 'package:theme/theme.dart';
 
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
       MovieModel(
@@ -37,25 +39,23 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<bool> get showEpisodes;
 
+  ValueListenable<Uri?> get episodesUri;
+
   ValueListenable<String> get episodesLabel;
 
+  ValueListenable<String> get episodesCount;
+
   ValueListenable<List<EpisodeData>> get episodes;
-
-  ValueListenable<int?> get numberOfEpisodes;
-
-  ValueListenable<int> get episodesSize;
 
   String getEpisodeTitle(EpisodeData episode);
 
   void handlePlayPressed();
 
   void handleEpisodePressed(int episodeId);
-
-  void handleEpisodesPressed();
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
-    with L10nWMMixin
+    with L10nWMMixin, ThemeWMMixin
     implements IMovieWM {
   MovieWM(super._model);
 
@@ -130,32 +130,39 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final ValueListenable<Uri?> episodesUri = DynamicData(
+    trigger: model.movie,
+    () => model.movie.value == null
+        ? null
+        : model.movie.value!.episodes.length > 10
+            ? widget.episodesUri
+            : null,
+  );
+
+  @override
   late final DynamicData<String> episodesLabel = DynamicData(
     trigger: l10n,
-    () => (numberOfEpisodes.value == null)
-        ? l10n.value.episodesLabel
-        : l10n.value.episodesLabelDetails(
-            episodes.value.length,
-            numberOfEpisodes.value!,
-          ),
+    () => l10n.value.episodesLabel,
+  );
+
+  @override
+  late final DynamicData<String> episodesCount = DynamicData(
+    trigger: Listenable.merge([l10n, model.movie]),
+    () => switch (model.movie.value) {
+      final MovieDetailsData movie => l10n.value.xOfY(
+          movie.episodes.length,
+          movie.episodesCount,
+        ),
+      null => '',
+    },
   );
 
   @override
   late final DynamicData<List<EpisodeData>> episodes = DynamicData(
     trigger: model.movie,
-    () => model.movie.value?.episodes ?? const [],
-  );
-
-  @override
-  late final DynamicData<int?> numberOfEpisodes = DynamicData(
-    trigger: model.movie,
-    () => model.movie.value?.numberOfEpisodes,
-  );
-
-  @override
-  late final DynamicData<int> episodesSize = DynamicData(
-    trigger: model.movie,
-    () => episodes.value.length <= 10 ? episodes.value.length : 10,
+    () =>
+        model.movie.value?.episodes.take(10).toList(growable: false) ??
+        const [],
   );
 
   @override
@@ -183,11 +190,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   void handleEpisodePressed(int episodeId) {
     widget.onEpisodePressed(episodeId);
-  }
-
-  @override
-  void handleEpisodesPressed() {
-    widget.onEpisodesPressed();
   }
 
   @override

@@ -10,17 +10,6 @@
         }
     },
     "episodesLabel": "Список серий",
-    "episodesLabelDetails": "Cписок серий {episodes} / {numberOfEpisodes}",
-    "@episodesLabelDetais": {
-        "placeholders": {
-            "episodes": {
-                "type": "int"
-            },
-            "numberOfEpisodes": {
-                "type": "int"
-            }
-        }
-    },
     "emailLabel": "Электронная почта",
     "emailValidationError": "Неверный адрес электронной почты",
     "homePageTitle": "Главная",
@@ -76,5 +65,16 @@
     },
     "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}",
     "watchStatusAdd": "Добавить в список",
-    "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{В библиотеке отсутствует} other{Неизвестный статус}}"
+    "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{В библиотеке отсутствует} other{Неизвестный статус}}",
+    "xOfY": "{x} из {y}",
+    "@xOfY": {
+        "placeholders": {
+            "x": {
+                "type": "num"
+            },
+            "y": {
+                "type": "num"
+            }
+        }
+    }
 }

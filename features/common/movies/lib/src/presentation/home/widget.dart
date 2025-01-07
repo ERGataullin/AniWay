@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/movie_card.dart';
+import 'package:movies/src/presentation/components/destination_title.dart';
 import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/home/wm.dart';
 
@@ -139,7 +140,7 @@ class _Category extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _CategoryTitle(
+          DestinationTitle(
             title,
             uri: uri,
             margin: EdgeInsets.only(
@@ -158,67 +159,67 @@ class _Category extends StatelessWidget {
   }
 }
 
-class _CategoryTitle extends StatelessWidget {
-  const _CategoryTitle(
-    this.data, {
-    this.margin = EdgeInsets.zero,
-    required this.uri,
-  });
+// class _CategoryTitle extends StatelessWidget {
+//   const _CategoryTitle(
+//     this.data, {
+//     this.margin = EdgeInsets.zero,
+//     required this.uri,
+//   });
 
-  final EdgeInsets margin;
+//   final EdgeInsets margin;
 
-  final ValueListenable<String> data;
+//   final ValueListenable<String> data;
 
-  final Uri uri;
+//   final Uri uri;
 
-  @override
-  Widget build(BuildContext context) {
-    final TextStyle titleStyle = Theme.of(context).textTheme.titleLarge!;
-    return SafeArea(
-      child: Link(
-        uri: uri,
-        builder: (context, followLink) {
-          final TextButton button = TextButton(
-            onPressed: followLink,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ValueListenableBuilder<String>(
-                  valueListenable: data,
-                  builder: (context, title, ___) => Text(
-                    title,
-                    style: titleStyle,
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  size: titleStyle.fontSize,
-                  color: titleStyle.color?.withValues(alpha: .6),
-                ),
-              ],
-            ),
-          );
-          final EdgeInsetsGeometry? buttonPadding = button
-              .defaultStyleOf(context)
-              .padding
-              ?.resolve(WidgetState.values.toSet())
-              ?.resolve(Directionality.of(context));
-          final EdgeInsets effectiveMargin = buttonPadding == null
-              ? margin
-              : EdgeInsets.symmetric(
-                  horizontal:
-                      (margin.horizontal - buttonPadding.horizontal) / 2,
-                );
+//   @override
+//   Widget build(BuildContext context) {
+//     final TextStyle titleStyle = Theme.of(context).textTheme.titleLarge!;
+//     return SafeArea(
+//       child: Link(
+//         uri: uri,
+//         builder: (context, followLink) {
+//           final TextButton button = TextButton(
+//             onPressed: followLink,
+//             child: Row(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 ValueListenableBuilder<String>(
+//                   valueListenable: data,
+//                   builder: (context, title, ___) => Text(
+//                     title,
+//                     style: titleStyle,
+//                   ),
+//                 ),
+//                 Icon(
+//                   Icons.chevron_right,
+//                   size: titleStyle.fontSize,
+//                   color: titleStyle.color?.withValues(alpha: .6),
+//                 ),
+//               ],
+//             ),
+//           );
+//           final EdgeInsetsGeometry? buttonPadding = button
+//               .defaultStyleOf(context)
+//               .padding
+//               ?.resolve(WidgetState.values.toSet())
+//               ?.resolve(Directionality.of(context));
+//           final EdgeInsets effectiveMargin = buttonPadding == null
+//               ? margin
+//               : EdgeInsets.symmetric(
+//                   horizontal:
+//                       (margin.horizontal - buttonPadding.horizontal) / 2,
+//                 );
 
-          return Padding(
-            padding: effectiveMargin,
-            child: button,
-          );
-        },
-      ),
-    );
-  }
-}
+//           return Padding(
+//             padding: effectiveMargin,
+//             child: button,
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
 
 class _Movies extends StatelessWidget {
   const _Movies({

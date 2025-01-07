@@ -9,8 +9,8 @@ class MovieDetailsData {
     required this.title,
     required this.poster,
     required this.previews,
+    required this.episodesCount,
     required this.episodes,
-    required this.numberOfEpisodes,
     this.description,
     this.score,
   });
@@ -21,8 +21,8 @@ class MovieDetailsData {
         title: dto.title,
         poster: ImageData.fromDto(dto.poster),
         previews: List.unmodifiable(dto.previews.map(EpisodeData.fromDto)),
+        episodesCount: dto.episodesCount,
         episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),
-        numberOfEpisodes: dto.numberOfEpisodes,
         description: dto.description,
         score: dto.score,
       );
@@ -37,9 +37,9 @@ class MovieDetailsData {
 
   final List<EpisodeData> previews;
 
-  final List<EpisodeData> episodes;
+  final int episodesCount;
 
-  final int numberOfEpisodes;
+  final List<EpisodeData> episodes;
 
   final String? description;
 
