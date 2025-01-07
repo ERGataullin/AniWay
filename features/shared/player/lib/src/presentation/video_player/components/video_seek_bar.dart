@@ -21,7 +21,7 @@ class VideoSeekBar extends StatefulWidget {
 }
 
 class _VideoSeekBarState extends State<VideoSeekBar> {
-  late final DynamicData<double> _value = DynamicData(
+  late final Computed<double> _value = Computed(
     trigger: Listenable.merge([
       widget.videoController.position,
       widget.videoController.duration,

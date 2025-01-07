@@ -9,7 +9,6 @@ export 'package:url_launcher/link.dart';
 export 'package:url_launcher/url_launcher.dart';
 
 export 'src/data/dto/image.dart';
-export 'src/domain/models/dynamic.dart';
 export 'src/domain/models/image.dart';
 export 'src/domain/models/json.dart';
 export 'src/domain/models/proxied_uri.dart';
@@ -24,6 +23,7 @@ export 'src/presentation/components/shimmer/delegate.dart';
 export 'src/presentation/components/shimmer/scope.dart';
 export 'src/presentation/components/shimmer/shimmer.dart';
 export 'src/presentation/components/sliver_paged_grid.dart';
+export 'src/utils/computed.dart';
 export 'src/utils/error_handler/debug_print.dart';
 export 'src/utils/error_handler/util.dart';
 export 'src/utils/initable.dart';

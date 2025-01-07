@@ -58,7 +58,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   final ValueNotifier<num?> quality = ValueNotifier(null);
 
   @override
-  late final DynamicData<Uri?> videoDataSource = DynamicData(
+  late final Computed<Uri?> videoDataSource = Computed(
     trigger: Listenable.merge([video, quality]),
     () => video.value?.stream[quality.value],
   );
@@ -99,7 +99,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   void setTranslations(List<VideoTranslationData> value) {
-    final LocaledTranslations translations = {};
+    final translations = <Locale, List<VideoTranslationData>>{};
     for (final VideoTranslationData translation in value) {
       if (translation.type == VideoTranslationType.sub) continue;
       translations[translation.locale] = [
@@ -183,7 +183,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     };
     VideoTranslationData suitableTranslation = suitableLocaleTranslations.first;
     double suitability = 0;
-    for (final VideoTranslationData translation in suitableLocaleTranslations) {
+    for (final translation in suitableLocaleTranslations) {
       int translationSuitabilitySum = 0;
       for (final String author in translation.authors) {
         translationSuitabilitySum +=

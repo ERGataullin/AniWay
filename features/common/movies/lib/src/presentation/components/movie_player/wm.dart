@@ -40,13 +40,13 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   MoviePlayerWM(super._model);
 
   @override
-  late final DynamicData<String> title = DynamicData(
+  late final Computed<String> title = Computed(
     trigger: model.movie,
     () => model.movie.value?.title ?? '',
   );
 
   @override
-  late final DynamicData<String> subtitle = DynamicData(
+  late final Computed<String> subtitle = Computed(
     trigger: Listenable.merge([model.episode, l10n]),
     () => model.episode.value == null
         ? ''
@@ -57,13 +57,13 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   );
 
   @override
-  late final DynamicData<VoidCallback?> onPreviousPressed = DynamicData(
+  late final Computed<VoidCallback?> onPreviousPressed = Computed(
     trigger: model.hasPreviousEpisode,
     () => model.hasPreviousEpisode.value ? model.loadPreviousEpisode : null,
   );
 
   @override
-  late final DynamicData<VoidCallback?> onNextPressed = DynamicData(
+  late final Computed<VoidCallback?> onNextPressed = Computed(
     trigger: model.hasNextEpisode,
     () => model.hasNextEpisode.value ? model.loadNextEpisode : null,
   );

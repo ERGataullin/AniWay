@@ -32,7 +32,7 @@ class MovieCard extends StatelessWidget {
       child: ConditionalWrapper(
         condition: opacity != null,
         wrapper: (context, child) {
-          final ThemeDataTween themeTween = ThemeDataTween(
+          final themeTween = ThemeDataTween(
             begin: theme.copyWith(
               colorScheme: theme.colorScheme.copyWith(
                 surfaceContainerLow:

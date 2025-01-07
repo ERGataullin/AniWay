@@ -72,7 +72,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   final FullscreenController fullscreenController = FullscreenController();
 
   @override
-  late final DynamicData<double> maxScale = DynamicData(
+  late final Computed<double> maxScale = Computed(
     trigger: videoController.aspectRatio,
     () => model.getMaxScale(
       surfaceAspectRatio: MediaQuery.sizeOf(context).aspectRatio,
@@ -81,24 +81,24 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final DynamicData<List<double>> scaleAnchors = DynamicData(
+  late final Computed<List<double>> scaleAnchors = Computed(
     trigger: maxScale,
     () => [1, maxScale.value],
   );
 
   @override
-  late final DynamicData<String> title = DynamicData(() => widget.title);
+  late final Computed<String> title = Computed(() => widget.title);
 
   @override
-  late final DynamicData<String> subtitle = DynamicData(() => widget.subtitle);
+  late final Computed<String> subtitle = Computed(() => widget.subtitle);
 
   @override
-  late final DynamicData<VoidCallback?> onMenuPressed = DynamicData(
+  late final Computed<VoidCallback?> onMenuPressed = Computed(
     () => widget.translations.isEmpty ? null : _handleMenuPressed,
   );
 
   @override
-  late final DynamicData<VoidCallback?> previousCallback = DynamicData(
+  late final Computed<VoidCallback?> previousCallback = Computed(
     () => widget.onPreviousPressed == null
         ? null
         : () {
@@ -108,7 +108,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final DynamicData<VoidCallback?> nextCallback = DynamicData(
+  late final Computed<VoidCallback?> nextCallback = Computed(
     () => widget.onNextPressed == null
         ? null
         : () {

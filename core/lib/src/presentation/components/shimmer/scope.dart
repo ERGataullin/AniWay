@@ -34,14 +34,14 @@ class ShimmerScopeState extends State<ShimmerScope>
     required ThemeData theme,
     RenderBox? shimmer,
   }) {
-    final RenderBox? scope = context.findRenderObject() as RenderBox?;
+    final scope = context.findRenderObject() as RenderBox?;
     final Color backgroundColor = theme.colorScheme.surfaceContainerLow;
 
     final bool attachedShimmer = shimmer?.attached ?? false;
     final bool attachedScope = scope?.attached ?? false;
     if (!attachedShimmer || !attachedScope) return (backgroundColor, null);
 
-    final LinearGradient gradient = LinearGradient(
+    final gradient = LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
       stops: const [0.1, 0.3, 0.4],

@@ -36,7 +36,7 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   late final AnimationController _opacityController =
       AnimationController(vsync: this);
 
-  late final DynamicData<ImageProvider<Object>?> _imageProvider = DynamicData(
+  late final Computed<ImageProvider<Object>?> _imageProvider = Computed(
     () {
       return widget.image == null
           ? null
@@ -47,17 +47,14 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
     },
   );
 
-  late final DynamicData<ImageStream?> _imageStream = DynamicData.initialValue(
-    initialValue: null,
+  late final Computed<ImageStream?> _imageStream = Computed(
     trigger: _imageProvider,
+    onDisposeValue: (value) => value?.removeListener(_imageStreamListener),
     () {
       final ImageConfiguration configuration =
           createLocalImageConfiguration(context);
       final ImageStream? stream = _imageProvider.value?.resolve(configuration);
 
-      if (stream?.key == _imageStream.value?.key) return _imageStream.value;
-
-      _imageStream.value?.removeListener(_imageStreamListener);
       return stream?..addListener(_imageStreamListener);
     },
   );

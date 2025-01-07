@@ -7,7 +7,7 @@ extension _DurationFormat on Duration {
     final int minutes = inMinutes % 60;
     final int seconds = inSeconds % 60;
 
-    final StringBuffer buffer = StringBuffer();
+    final buffer = StringBuffer();
     if (hours > 0) {
       buffer
         ..write(hours)

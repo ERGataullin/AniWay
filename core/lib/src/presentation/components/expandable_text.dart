@@ -21,7 +21,7 @@ class _ExpandableTextState extends State<ExpandableText> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final TextPainter textPainter = TextPainter(
+        final textPainter = TextPainter(
           maxLines: _maxLinesCollapsed,
           textDirection: Directionality.of(context),
           text: TextSpan(text: widget.data),
