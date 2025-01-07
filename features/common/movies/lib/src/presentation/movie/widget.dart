@@ -47,6 +47,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                   )
                 else
                   SliverSafeArea(
+                    top: false,
                     sliver: SliverToBoxAdapter(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
