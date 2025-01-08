@@ -4,8 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/domain/models/episode.dart';
+import 'package:movies/src/domain/models/movie_details.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:movies/src/presentation/movie/model.dart';
+import 'package:theme/theme.dart';
 
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
       MovieModel(
@@ -37,7 +39,11 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<bool> get showEpisodes;
 
+  ValueListenable<Uri?> get episodesUri;
+
   ValueListenable<String> get episodesLabel;
+
+  ValueListenable<String> get episodesCount;
 
   ValueListenable<List<EpisodeData>> get episodes;
 
@@ -46,14 +52,14 @@ abstract interface class IMovieWM implements IWidgetModel {
   void handlePlayPressed();
 
   void handleEpisodePressed(int episodeId);
-
-  void handleEpisodesPressed();
 }
 
 class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
-    with L10nWMMixin
+    with L10nWMMixin, ThemeWMMixin
     implements IMovieWM {
   MovieWM(super._model);
+
+  static const int _episodesLimit = 10;
 
   @override
   late final Computed<bool> watchStatusSelected = Computed(
@@ -126,15 +132,39 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
+  late final Computed<Uri?> episodesUri = Computed(
+    trigger: model.movie,
+    () => (model.movie.value?.episodes.length ?? 0) > _episodesLimit
+        ? widget.episodesUri
+        : null,
+  );
+
+  @override
   late final Computed<String> episodesLabel = Computed(
     trigger: l10n,
     () => l10n.value.episodesLabel,
   );
 
   @override
+  late final Computed<String> episodesCount = Computed(
+    trigger: Listenable.merge([l10n, model.movie]),
+    () => switch (model.movie.value) {
+      final MovieDetailsData movie => l10n.value.xOfY(
+          movie.episodes.length,
+          movie.episodesCount,
+        ),
+      null => '',
+    },
+  );
+
+  @override
   late final Computed<List<EpisodeData>> episodes = Computed(
     trigger: model.movie,
-    () => model.movie.value?.episodes ?? const [],
+    () =>
+        model.movie.value?.episodes
+            .take(_episodesLimit)
+            .toList(growable: false) ??
+        const [],
   );
 
   @override
@@ -162,11 +192,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   void handleEpisodePressed(int episodeId) {
     widget.onEpisodePressed(episodeId);
-  }
-
-  @override
-  void handleEpisodesPressed() {
-    widget.onEpisodesPressed();
   }
 
   @override

@@ -108,7 +108,7 @@ abstract class L10n {
   /// No description provided for @episodesLabel.
   ///
   /// In ru, this message translates to:
-  /// **'Cписок серий'**
+  /// **'Список серий'**
   String get episodesLabel;
 
   /// No description provided for @emailLabel.
@@ -242,6 +242,12 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{В библиотеке отсутствует} other{Неизвестный статус}}'**
   String watchStatus(String type);
+
+  /// No description provided for @xOfY.
+  ///
+  /// In ru, this message translates to:
+  /// **'{x} из {y}'**
+  String xOfY(num x, num y);
 }
 
 class _L10nDelegate extends LocalizationsDelegate<L10n> {

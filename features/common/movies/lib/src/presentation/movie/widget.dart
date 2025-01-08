@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/episode.dart';
+import 'package:movies/src/presentation/components/destination_title.dart';
 import 'package:movies/src/presentation/components/movie_score.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
 
@@ -14,17 +15,17 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
     required this.movieId,
     required this.onPlayPressed,
     required this.onEpisodePressed,
-    required this.onEpisodesPressed,
+    required this.episodesUri,
     WidgetModelFactory wmFactory = movieWMFactory,
   }) : super(wmFactory);
 
   final int movieId;
 
+  final Uri? episodesUri;
+
   final void Function(int? episodeId) onPlayPressed;
 
   final void Function(int? episodeId) onEpisodePressed;
-
-  final VoidCallback onEpisodesPressed;
 
   @override
   Widget build(IMovieWM wm) {
@@ -60,8 +61,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                                   ? const SizedBox.shrink()
                                   : MovieScore(
                                       wm.score.value!,
-                                      textStyle: Theme.of(context)
-                                          .textTheme
+                                      textStyle: TextTheme.of(context)
                                           .titleMedium!,
                                     ),
                             ),
@@ -73,7 +73,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               builder: (context, __) => Text(
                                 wm.title.value,
                                 style:
-                                    Theme.of(context).textTheme.headlineLarge,
+                                    TextTheme.of(context).headlineLarge,
                               ),
                             ),
                           ),
@@ -190,48 +190,33 @@ class _Episodes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const margin = EdgeInsets.symmetric(horizontal: 16);
-    final TextStyle textStyle = Theme.of(context).textTheme.titleLarge!;
-    final button = TextButton(
-      onPressed: context.wm.handleEpisodesPressed,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListenableBuilder(
-            listenable: context.wm.episodesLabel,
-            builder: (context, __) => Text(
-              context.wm.episodesLabel.value,
-              style: Theme.of(context).textTheme.titleLarge!,
-            ),
-          ),
-          Icon(
-            Icons.chevron_right,
-            size: textStyle.fontSize,
-            color: textStyle.color?.withValues(alpha: .6),
-          ),
-        ],
-      ),
-    );
-    final EdgeInsetsGeometry? buttonPadding = button
-        .defaultStyleOf(context)
-        .padding
-        ?.resolve(WidgetState.values.toSet())
-        ?.resolve(Directionality.of(context));
-    final effectiveMargin = buttonPadding == null
-        ? margin
-        : EdgeInsets.symmetric(
-            horizontal: (margin.horizontal - buttonPadding.horizontal) / 2,
-          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: effectiveMargin,
-          child: button,
+        ListenableBuilder(
+          listenable: Listenable.merge([
+            context.wm.episodesLabel,
+            context.wm.episodesUri,
+          ]),
+          builder: (context, __) => DestinationTitle(
+            context.wm.episodesLabel,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            uri: context.wm.episodesUri.value,
+            trailing: ListenableBuilder(
+              listenable: context.wm.episodesCount,
+              builder: (context, __) => Text(
+                context.wm.episodesCount.value,
+                style: TextTheme.of(context).titleMedium?.copyWith(
+                      color: TextTheme.of(context)
+                          .titleMedium
+                          ?.color
+                          ?.withValues(alpha: 0.6),
+                    ),
+              ),
+            ),
+          ),
         ),
-        const SizedBox(
-          height: 16,
-        ),
+        const SizedBox(height: 16),
         SizedBox(
           height: 128,
           child: ListenableBuilder(
@@ -311,7 +296,7 @@ class _Episode extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               context.wm.getEpisodeTitle(data),
-              style: Theme.of(context).textTheme.labelLarge,
+              style: TextTheme.of(context).labelLarge,
             ),
           ],
         ),

@@ -8,6 +8,7 @@ class MovieDetailsDto {
     required this.title,
     required this.poster,
     required this.previews,
+    required this.episodesCount,
     required this.episodes,
     this.description,
     this.score,
@@ -22,6 +23,8 @@ class MovieDetailsDto {
   final ImageDto poster;
 
   final List<EpisodeDto> previews;
+
+  final int episodesCount;
 
   final List<EpisodeDto> episodes;
 
