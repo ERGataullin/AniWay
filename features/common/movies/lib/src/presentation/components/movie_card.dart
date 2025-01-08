@@ -128,7 +128,7 @@ class _Poster extends StatelessWidget {
                     ? null
                     : DecorationImage(
                         fit: BoxFit.cover,
-                        filterQuality: FilterQuality.medium,
+                        filterQuality: FilterQuality.low,
                         opacity: fadeInOpacity.value * (opacity?.value ?? 1),
                         image: image,
                       ),
