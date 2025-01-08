@@ -29,7 +29,6 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   @override
   Widget build(IMovieWM wm) {
-    const padding = EdgeInsets.symmetric(horizontal: 16);
     return Provider<IMovieWM>.value(
       value: wm,
       child: ShimmerScope(
@@ -47,50 +46,18 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                     ),
                   )
                 else
-                  SliverSafeArea(
+                  const SliverSafeArea(
                     top: false,
                     sliver: SliverToBoxAdapter(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 16),
-                          Padding(
-                            padding: padding,
-                            child: ListenableBuilder(
-                              listenable: wm.score,
-                              builder: (context, __) => wm.score.value == null
-                                  ? const SizedBox.shrink()
-                                  : MovieScore(
-                                      wm.score.value!,
-                                      textStyle:
-                                          TextTheme.of(context).titleMedium!,
-                                    ),
-                            ),
-                          ),
-                          Padding(
-                            padding: padding,
-                            child: ListenableBuilder(
-                              listenable: wm.title,
-                              builder: (context, __) => Text(
-                                wm.title.value,
-                                style: TextTheme.of(context).headlineLarge,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          const Padding(
-                            padding: padding,
-                            child: _Description(),
-                          ),
-                          const SizedBox(height: 16),
-                          ListenableBuilder(
-                            listenable: context.wm.showEpisodes,
-                            builder: (context, __) =>
-                                context.wm.showEpisodes.value
-                                    ? const _Episodes()
-                                    : const SizedBox.shrink(),
-                          ),
-                          const SizedBox(height: 16 + 56 + 16),
+                          SizedBox(height: 16),
+                          _Score(),
+                          _Title(),
+                          _Description(marginTop: 16),
+                          _Episodes(marginTop: 16),
+                          SizedBox(height: 16 + 56 + 16),
                         ],
                       ),
                     ),
@@ -115,6 +82,7 @@ class _AppBar extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.posterHeight,
       builder: (context, __) => SliverAppBar(
+        pinned: true,
         expandedHeight: context.wm.posterHeight.value,
         leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
@@ -173,64 +141,116 @@ class _AppBar extends StatelessWidget {
   }
 }
 
+class _Score extends StatelessWidget {
+  const _Score();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ListenableBuilder(
+        listenable: context.wm.score,
+        builder: (context, __) => switch (context.wm.score.value) {
+          null => const SizedBox.shrink(),
+          final double score => MovieScore(
+              score,
+              textStyle: TextTheme.of(context).titleMedium,
+            )
+        },
+      ),
+    );
+  }
+}
+
+class _Title extends StatelessWidget {
+  const _Title();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: ListenableBuilder(
+        listenable: context.wm.title,
+        builder: (context, __) => Text(
+          context.wm.title.value,
+          style: TextTheme.of(context).headlineLarge,
+        ),
+      ),
+    );
+  }
+}
+
 class _Description extends StatelessWidget {
-  const _Description();
+  const _Description({this.marginTop = 0});
+
+  final double marginTop;
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.description,
-      builder: (context, __) => ExpandableText(context.wm.description.value),
+      builder: (context, __) => switch (context.wm.description.value) {
+        final String description when description.isNotEmpty => Padding(
+            padding: EdgeInsets.only(top: marginTop) +
+                const EdgeInsets.symmetric(horizontal: 16),
+            child: ExpandableText(description),
+          ),
+        _ => const SizedBox.shrink(),
+      },
     );
   }
 }
 
 class _Episodes extends StatelessWidget {
-  const _Episodes();
+  const _Episodes({this.marginTop = 0});
+
+  final double marginTop;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListenableBuilder(
-          listenable: context.wm.episodesUri,
-          builder: (context, __) => DestinationTitle(
-            context.wm.episodesLabel,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            uri: context.wm.episodesUri.value,
-            trailing: ListenableBuilder(
-              listenable: context.wm.episodesCount,
-              builder: (context, __) => Text(
-                context.wm.episodesCount.value,
-                style: TextTheme.of(context).titleMedium?.copyWith(
-                      color: TextTheme.of(context)
-                          .titleMedium
-                          ?.color
-                          ?.withValues(alpha: 0.6),
+    return ListenableBuilder(
+      listenable: context.wm.showEpisodes,
+      builder: (context, __) => !context.wm.showEpisodes.value
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: EdgeInsets.only(top: marginTop),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListenableBuilder(
+                    listenable: context.wm.episodesUri,
+                    builder: (context, __) => DestinationTitle(
+                      context.wm.episodesLabel,
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      uri: context.wm.episodesUri.value,
+                      trailing: ListenableBuilder(
+                        listenable: context.wm.episodesCount,
+                        builder: (context, __) =>
+                            Text(context.wm.episodesCount.value),
+                      ),
                     ),
+                  ),
+                  const SizedBox(height: 4),
+                  SizedBox(
+                    height: 128,
+                    child: ListenableBuilder(
+                      listenable: context.wm.episodes,
+                      builder: (context, __) => ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        clipBehavior: Clip.none,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: context.wm.episodes.value.length,
+                        separatorBuilder: (context, __) =>
+                            const SizedBox(width: 8),
+                        itemBuilder: (context, index) => _Episode(
+                          context.wm.episodes.value[index],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 128,
-          child: ListenableBuilder(
-            listenable: context.wm.episodes,
-            builder: (context, __) => ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              clipBehavior: Clip.none,
-              scrollDirection: Axis.horizontal,
-              itemCount: context.wm.episodes.value.length,
-              separatorBuilder: (context, __) => const SizedBox(width: 8),
-              itemBuilder: (context, index) => _Episode(
-                context.wm.episodes.value[index],
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -28,6 +28,11 @@ class DestinationTitle extends StatelessWidget {
         .padding
         ?.resolve(WidgetState.values.toSet())
         ?.resolve(Directionality.of(context));
+    TextStyle trailingStyle = TextTheme.of(context).titleMedium!;
+    trailingStyle = trailingStyle.copyWith(
+      color: trailingStyle.color!.withValues(alpha: .6),
+    );
+
     return SafeArea(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,12 +57,15 @@ class DestinationTitle extends StatelessWidget {
           ),
           if (trailing != null) ...[
             const Spacer(),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: buttonPadding!.vertical / 4,
-                horizontal: margin.horizontal / 2,
+            DefaultTextStyle(
+              style: trailingStyle,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: buttonPadding!.vertical / 4,
+                  horizontal: margin.horizontal / 2,
+                ),
+                child: trailing,
               ),
-              child: trailing,
             ),
           ],
         ],
