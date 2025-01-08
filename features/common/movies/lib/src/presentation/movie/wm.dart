@@ -35,7 +35,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<String> get title;
 
-  ValueListenable<String> get description;
+  ValueListenable<String?> get description;
 
   ValueListenable<bool> get showEpisodes;
 
@@ -120,9 +120,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<String> description = Computed(
+  late final Computed<String?> description = Computed(
     trigger: model.movie,
-    () => model.movie.value?.description ?? '',
+    () => model.movie.value?.description,
   );
 
   @override
