@@ -48,8 +48,10 @@ class _LongSeekButtonState extends State<LongSeekButton> {
     return ListenableBuilder(
       listenable: _canSeek,
       child: switch (widget.type) {
-        SeekType.rewind => const Icon(Icons.keyboard_double_arrow_left),
-        SeekType.fastForward => const Icon(Icons.keyboard_double_arrow_right),
+        SeekType.rewind =>
+          const Icon(Icons.keyboard_double_arrow_left_outlined),
+        SeekType.fastForward =>
+          const Icon(Icons.keyboard_double_arrow_right_outlined),
       },
       builder: (context, icon) => IconButton(
         onPressed: !_canSeek.value

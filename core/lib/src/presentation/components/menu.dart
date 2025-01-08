@@ -113,7 +113,7 @@ class _SelectionWidgetState extends State<MenuWidget> {
       onTap: () => _handleItemSelected(item),
       leading: item.icon == null
           ? item.selected
-              ? const Icon(Icons.done)
+              ? const Icon(Icons.done_outlined)
               : const SizedBox.shrink()
           : Icon(item.icon),
       title: Text(
@@ -136,7 +136,7 @@ class _SelectionWidgetState extends State<MenuWidget> {
                       overflow: TextOverflow.fade,
                     ),
                   ),
-                const Icon(Icons.chevron_right),
+                const Icon(Icons.chevron_right_outlined),
               ],
             )
           : item.trailing == null

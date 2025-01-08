@@ -48,7 +48,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                   curve: Easing.standard,
                   duration: Durations.medium2,
                   turns: _isExpanded ? 0.25 : -0.25,
-                  child: const Icon(Icons.chevron_left),
+                  child: const Icon(Icons.chevron_left_outlined),
                 ),
                 onPressed: () => setState(
                   () => _isExpanded = !_isExpanded,

@@ -92,7 +92,7 @@ class DestinationTitle extends StatelessWidget {
           ),
           if (onPressed != null)
             Icon(
-              Icons.chevron_right,
+              Icons.chevron_right_outlined,
               applyTextScaling: true,
               size: titleStyle.fontSize,
               weight: titleStyle.fontWeight?.value.toDouble(),

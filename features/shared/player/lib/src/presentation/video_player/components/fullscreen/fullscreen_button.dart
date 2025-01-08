@@ -37,7 +37,9 @@ class FullscreenButton extends StatelessWidget {
           switchOutCurve: Easing.standard.flipped,
           duration: Durations.medium2,
           child: Icon(
-            controller.isFullscreen ? Icons.fullscreen_exit : Icons.fullscreen,
+            controller.isFullscreen
+                ? Icons.fullscreen_exit_outlined
+                : Icons.fullscreen_outlined,
             key: ValueKey(controller.isFullscreen),
           ),
         ),

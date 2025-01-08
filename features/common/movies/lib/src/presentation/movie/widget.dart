@@ -86,7 +86,7 @@ class _AppBar extends StatelessWidget {
         expandedHeight: context.wm.posterHeight.value,
         leading: IconButton.filledTonal(
           onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_outlined),
         ),
         actions: context.wm.showLoader.value
             ? const []
@@ -100,8 +100,8 @@ class _AppBar extends StatelessWidget {
                     onPressed: () {},
                     isSelected: context.wm.watchStatusSelected.value,
                     tooltip: context.wm.watchStatusButtonTooltip.value,
-                    icon: const Icon(Icons.library_add),
-                    selectedIcon: const Icon(Icons.library_add_check),
+                    icon: const Icon(Icons.library_add_outlined),
+                    selectedIcon: const Icon(Icons.library_add_check_outlined),
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -266,7 +266,7 @@ class _PlayButton extends StatelessWidget {
         listenable: context.wm.playButtonLabel,
         builder: (context, __) => Text(context.wm.playButtonLabel.value),
       ),
-      icon: const Icon(Icons.play_arrow),
+      icon: const Icon(Icons.play_arrow_outlined),
     );
   }
 }

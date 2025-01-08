@@ -114,7 +114,7 @@ class _Icons extends StatelessWidget {
                   ignoring: opacity == 0,
                   child: Opacity(
                     opacity: opacity,
-                    child: const Icon(Icons.play_arrow),
+                    child: const Icon(Icons.play_arrow_outlined),
                   ),
                 ),
               ),
