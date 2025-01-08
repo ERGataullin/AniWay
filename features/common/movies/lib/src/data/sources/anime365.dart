@@ -52,7 +52,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       ),
     );
 
-    final List<Json> anime365Data =
+    final anime365Data =
         List<Json>.from(response.body['data']! as List<dynamic>);
     final List<int> shikimoriIds = anime365Data
         .map((movieJson) => movieJson['myAnimeListId']! as int)
@@ -81,7 +81,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       ),
     );
 
-    final List<Map<String, Object?>> shikimoriData = List<Json>.from(
+    final shikimoriData = List<Json>.from(
       (shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>,
     );
     final Map<String, Json> shikimoriMovies = {
@@ -89,9 +89,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     };
     return anime365Data.map(
       (movieJson) {
-        final String shikimoriId =
-            (movieJson['myAnimeListId']! as int).toString();
-        final Json shikimoriPoster =
+        final shikimoriId = (movieJson['myAnimeListId']! as int).toString();
+        final shikimoriPoster =
             shikimoriMovies[shikimoriId]!['poster']! as Json;
         return MovieBaseDto(
           id: movieJson['id']! as int,
@@ -108,7 +107,6 @@ class Anime365MoviesDataSource implements MoviesDataSource {
               double.infinity: shikimoriPoster['originalUrl']! as String,
             },
           ),
-          // poster: shikimoriPoster['mainAltUrl']! as String,
           type: _convertJsonToMovieType(movieJson['type']! as String),
           score: movieJson['myAnimeListScore'] == '-1'
               ? null
@@ -153,27 +151,27 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       // Up next items
       'div.row > div.items', // up next items
     )!;
-    final RegExp episodeNumberPattern = RegExp(r'\d+(\.\d)?');
-    final RegExp tvEpisodeTitlePattern = RegExp(
+    final episodeNumberPattern = RegExp(r'\d+(\.\d)?');
+    final tvEpisodeTitlePattern = RegExp(
       '^${episodeNumberPattern.pattern} серия\$',
     );
-    final RegExp movieEpisodeTitlePattern = RegExp(
+    final movieEpisodeTitlePattern = RegExp(
       '^Фильм( ${episodeNumberPattern.pattern} серия)?\$',
     );
-    final RegExp ovaEpisodeTitlePattern = RegExp(
+    final ovaEpisodeTitlePattern = RegExp(
       '^OVA( ${episodeNumberPattern.pattern} серия)?\$',
     );
-    final RegExp onaEpisodeTitlePattern = RegExp(
+    final onaEpisodeTitlePattern = RegExp(
       '^ONA( ${episodeNumberPattern.pattern} серия)?\$',
     );
-    final RegExp specialEpisodeTitlePattern = RegExp(
+    final specialEpisodeTitlePattern = RegExp(
       '^SP( ${episodeNumberPattern.pattern} серия)?\$',
     );
-    final RegExp tvSpecialEpisodeTitlePattern = RegExp(
+    final tvSpecialEpisodeTitlePattern = RegExp(
       '^TV SP( ${episodeNumberPattern.pattern} серия)?\$',
     );
-    final RegExp musicEpisodeTitlePattern = RegExp(r'^Музыкальное видео$');
-    final RegExp pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
+    final musicEpisodeTitlePattern = RegExp(r'^Музыкальное видео$');
+    final pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
 
     return upNextItemsContainer.children.map(
       (itemElement) {
@@ -193,8 +191,8 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         final String posterStyle = itemElement
             .querySelector('div.circle[style]')!
             .attributes['style']!;
-        const String posterUrlPrefix = 'background-image: url(\'';
-        const String posterUrlPostfix = '\');';
+        const posterUrlPrefix = 'background-image: url(\'';
+        const posterUrlPostfix = '\');';
         String posterUrl = posterStyle.substring(
           posterStyle.indexOf(posterUrlPrefix) + posterUrlPrefix.length,
         );
@@ -274,7 +272,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         method: RequestMethod.get,
       ),
     );
-    final Json anime365Data = anime365Response.body['data']! as Json;
+    final anime365Data = anime365Response.body['data']! as Json;
     final ResponseData<Json> shikimoriResponse = await _network.request(
       RequestData(
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
@@ -298,10 +296,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         },
       ),
     );
-    final Json shikimoriData =
+    final shikimoriData =
         ((shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>)
             .first as Json;
-    final Json shikimoriPoster = shikimoriData['poster']! as Json;
+    final shikimoriPoster = shikimoriData['poster']! as Json;
     final Map<num, Json> shikimoriEpisodePreviews =
         switch (shikimoriData['videos']) {
       final List<dynamic> videosJsons => {
@@ -324,7 +322,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
                   final num number = num.parse(
                     episodeJson['episodeInt']! as String,
                   );
-                  String? previewUrl =
+                  var previewUrl =
                       shikimoriEpisodePreviews[number]?['imageUrl'] as String?;
                   if (previewUrl?.startsWith('//') ?? false) {
                     previewUrl = 'https:$previewUrl';
@@ -385,7 +383,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         method: RequestMethod.get,
       ),
     );
-    final Json data = response.body['data']! as Json;
+    final data = response.body['data']! as Json;
 
     return (data['translations']! as List<dynamic>)
         .cast<Json>()
@@ -419,7 +417,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         method: RequestMethod.get,
       ),
     );
-    final Json data = response.body['data']! as Json;
+    final data = response.body['data']! as Json;
 
     final List<Json> downloadSourcesJsons =
         (data['download']! as List<dynamic>).cast();

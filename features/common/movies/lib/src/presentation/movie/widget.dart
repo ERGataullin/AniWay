@@ -29,7 +29,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 
   @override
   Widget build(IMovieWM wm) {
-    const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 16);
+    const padding = EdgeInsets.symmetric(horizontal: 16);
     return Provider<IMovieWM>.value(
       value: wm,
       child: ShimmerScope(

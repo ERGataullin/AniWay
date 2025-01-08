@@ -76,7 +76,7 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const EdgeInsets categoriesMargin = EdgeInsets.symmetric(horizontal: 16);
+    const categoriesMargin = EdgeInsets.symmetric(horizontal: 16);
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(

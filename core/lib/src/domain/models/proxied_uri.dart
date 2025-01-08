@@ -118,14 +118,14 @@ class ProxiedUri implements Uri {
 
   @override
   Uri resolve(String reference) {
-    final String proxiedReference = original.resolve(reference).toString();
+    final proxiedReference = original.resolve(reference).toString();
     return proxy.resolve(proxiedReference);
   }
 
   @override
   Uri resolveUri(Uri reference) {
     final Uri originalResolved = original.resolveUri(reference);
-    final Uri proxiedReference = Uri(
+    final proxiedReference = Uri(
       userInfo: originalResolved.userInfo,
       path: [
         if (originalResolved.hasScheme) '${originalResolved.scheme}://',

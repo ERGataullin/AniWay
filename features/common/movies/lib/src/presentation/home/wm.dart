@@ -45,38 +45,38 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   HomeWM(super._model);
 
   @override
-  late final DynamicData<String> title = DynamicData(
+  late final Computed<String> title = Computed(
     trigger: l10n,
     () => l10n.value.homePageTitle,
   );
 
   @override
-  late final DynamicData<String> upNextTitle = DynamicData(
+  late final Computed<String> upNextTitle = Computed(
     trigger: l10n,
     () => l10n.value.upNextTitle,
   );
 
   @override
-  late final DynamicData<String> ongoingsTitle = DynamicData(
+  late final Computed<String> ongoingsTitle = Computed(
     trigger: l10n,
     () => l10n.value.ongoingsTitle,
   );
 
   @override
-  late final DynamicData<String> popularsTitle = DynamicData(
+  late final Computed<String> popularsTitle = Computed(
     trigger: l10n,
     () => l10n.value.popularsTitle,
   );
 
   @override
-  late final DynamicData<List<MovieCardData>> upNextItems = DynamicData(
+  late final Computed<List<MovieCardData>> upNextItems = Computed(
     trigger: Listenable.merge([l10n, model.upNext]),
     () =>
         model.upNext.value.map(_moviePreviewFromUpNext).toList(growable: false),
   );
 
   @override
-  late final DynamicData<List<MovieCardData>> ongoingItems = DynamicData(
+  late final Computed<List<MovieCardData>> ongoingItems = Computed(
     trigger: Listenable.merge([l10n, model.ongoings]),
     () => model.ongoings.value
         .map(_moviePreviewFromMovie)
@@ -84,7 +84,7 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
-  late final DynamicData<List<MovieCardData>> popularItems = DynamicData(
+  late final Computed<List<MovieCardData>> popularItems = Computed(
     trigger: Listenable.merge([l10n, model.populars]),
     () => model.populars.value
         .map(_moviePreviewFromMovie)

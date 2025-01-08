@@ -116,7 +116,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final CurveTween curveTween = CurveTween(curve: Easing.standardDecelerate);
+    final curveTween = CurveTween(curve: Easing.standardDecelerate);
     return SliverLayoutBuilder(
       builder: (context, constraints) {
         _handleConstraintsChanged(constraints);
@@ -261,7 +261,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
 
   /// Удаляет элементы, начиная с индекса [from].
   void _removeItems({int from = 0}) {
-    final CurveTween curveTween = CurveTween(curve: Easing.standardAccelerate);
+    final curveTween = CurveTween(curve: Easing.standardAccelerate);
     for (int i = _items.length - 1; i >= from; i--) {
       final ValueNotifier<T?> item = _items.removeAt(i)..dispose();
       _gridKey.currentState?.removeItem(

@@ -44,13 +44,13 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   SignInWM(super._model);
 
   @override
-  late final DynamicData<String> emailLabel = DynamicData(
+  late final Computed<String> emailLabel = Computed(
     trigger: l10n,
     () => l10n.value.emailLabel,
   );
 
   @override
-  late final DynamicData<String> passwordLabel = DynamicData(
+  late final Computed<String> passwordLabel = Computed(
     trigger: l10n,
     () => l10n.value.passwordLabel,
   );
@@ -62,7 +62,7 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   final ValueNotifier<bool> showLoader = ValueNotifier(false);
 
   @override
-  late final DynamicData<String> submitLabel = DynamicData(
+  late final Computed<String> submitLabel = Computed(
     trigger: l10n,
     () => l10n.value.signInSubmitLabel,
   );
