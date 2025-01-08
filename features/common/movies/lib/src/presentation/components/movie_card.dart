@@ -158,7 +158,7 @@ class _Footer extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(4)),
       ),
     );
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    final TextTheme textTheme = TextTheme.of(context);
     return Padding(
       padding: margin,
       child: DefaultTextStyle(

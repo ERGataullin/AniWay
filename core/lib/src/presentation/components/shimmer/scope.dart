@@ -31,11 +31,11 @@ class ShimmerScopeState extends State<ShimmerScope>
   Animation<double> get animation => _animationController;
 
   (Color?, LinearGradient?) createBackground({
-    required ThemeData theme,
+    required ColorScheme colorScheme,
     RenderBox? shimmer,
   }) {
     final scope = context.findRenderObject() as RenderBox?;
-    final Color backgroundColor = theme.colorScheme.surfaceContainerLow;
+    final Color backgroundColor = colorScheme.surfaceContainerLow;
 
     final bool attachedShimmer = shimmer?.attached ?? false;
     final bool attachedScope = scope?.attached ?? false;
@@ -46,9 +46,9 @@ class ShimmerScopeState extends State<ShimmerScope>
       end: Alignment.centerRight,
       stops: const [0.1, 0.3, 0.4],
       colors: [
-        theme.colorScheme.surfaceContainerLow,
-        theme.colorScheme.surfaceContainerHighest,
-        theme.colorScheme.surfaceContainerLow,
+        colorScheme.surfaceContainerLow,
+        colorScheme.surfaceContainerHighest,
+        colorScheme.surfaceContainerLow,
       ],
       transform: _SlidingGradientTransform(
         slidePercent: _animationController.value,

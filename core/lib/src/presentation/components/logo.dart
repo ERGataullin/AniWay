@@ -13,7 +13,7 @@ class Logo extends StatelessWidget {
           fontFamily: 'Alvida',
           package: 'core',
           height: .75,
-          color: Theme.of(context).colorScheme.primary,
+          color: ColorScheme.of(context).primary,
         ),
       ),
     );

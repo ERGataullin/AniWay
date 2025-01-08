@@ -115,7 +115,7 @@ class _Episode extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Text(
               context.wm.getEpisodeTitle(data),
-              style: Theme.of(context).textTheme.labelLarge,
+              style: TextTheme.of(context).labelLarge,
             ),
           ),
         ],

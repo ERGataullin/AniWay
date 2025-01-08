@@ -145,7 +145,7 @@ class _Player extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: ColorScheme.of(context).surface,
       ),
       child: Stack(
         clipBehavior: Clip.none,
@@ -208,7 +208,7 @@ class _Controls extends StatelessWidget {
                     _Title(context.wm.title),
                     _Title(
                       context.wm.subtitle,
-                      style: Theme.of(context).primaryTextTheme.titleMedium,
+                      style: TextTheme.primaryOf(context).titleMedium,
                     ),
                   ],
                 ),
@@ -338,7 +338,7 @@ class _SkipButton extends StatelessWidget {
         onPressed: onPressed.value,
         style: ButtonStyle(
           backgroundColor: WidgetStatePropertyAll(
-            Theme.of(context).colorScheme.secondaryContainer,
+            ColorScheme.of(context).secondaryContainer,
           ),
         ),
         icon: icon,
