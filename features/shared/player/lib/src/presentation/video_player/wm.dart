@@ -250,7 +250,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       context: context,
       items: [
         MenuItemData.group(
-          icon: Icons.language,
+          icon: Icons.language_outlined,
           label: l10n.value.languageLabel,
           children: model.translations.value.keys
               .map(
@@ -263,7 +263,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               .toList(growable: false),
         ),
         MenuItemData.group(
-          icon: Icons.person,
+          icon: Icons.person_outlined,
           label: l10n.value.authorLabel,
           children: switch (model.translation.value) {
             final VideoTranslationData translation => _getTranslationMenuItems(
@@ -273,7 +273,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
           },
         ),
         MenuItemData.group(
-          icon: Icons.high_quality,
+          icon: Icons.high_quality_outlined,
           label: l10n.value.videoQualityLabel,
           children: model.video.value == null
               ? const []
@@ -288,7 +288,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
                   .toList(growable: false),
         ),
         MenuItemData.group(
-          icon: Icons.speed,
+          icon: Icons.speed_outlined,
           label: l10n.value.videoPlaybackSpeedLabel,
           children: model.video.value == null
               ? const []

@@ -85,7 +85,7 @@ class _SearchBar extends StatelessWidget implements PreferredSizeWidget {
               ? const BackButton()
               : IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Icons.search_outlined),
                 ),
           hintText: context.wm.queryHint.value,
           trailing: [
@@ -100,7 +100,7 @@ class _SearchBar extends StatelessWidget implements PreferredSizeWidget {
                     ? const SizedBox.shrink()
                     : IconButton(
                         onPressed: context.wm.handleClearPressed,
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear_outlined),
                       ),
               ),
             ),

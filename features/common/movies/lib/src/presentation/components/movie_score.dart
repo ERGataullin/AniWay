@@ -34,7 +34,7 @@ class MovieScore extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            Icons.star,
+            Icons.star_outline,
             applyTextScaling: true,
             size: effectiveTextStyle.fontSize,
             weight: effectiveTextStyle.fontWeight?.value.toDouble(),

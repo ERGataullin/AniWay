@@ -86,11 +86,13 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         ),
         destinations: [
           NavigationDestination(
-            icon: const Icon(Icons.home),
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(Icons.home),
             label: _l10n.homePageTitle,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.search_outlined),
+            selectedIcon: const Icon(Icons.search),
             label: _l10n.searchPageTitle,
           ),
         ],
