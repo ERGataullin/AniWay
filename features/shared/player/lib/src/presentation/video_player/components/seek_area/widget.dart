@@ -140,7 +140,7 @@ class _Value extends StatelessWidget {
         child: Text(
           value,
           key: Key(value),
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          style: TextTheme.of(context).bodyLarge?.copyWith(
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
         ),

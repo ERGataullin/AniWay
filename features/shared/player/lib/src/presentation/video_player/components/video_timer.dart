@@ -53,7 +53,7 @@ class VideoTimer extends StatelessWidget {
             shadows: [
               Shadow(
                 blurRadius: 16,
-                color: Theme.of(context).colorScheme.shadow,
+                color: theme.colorScheme.shadow,
               ),
             ],
           ),

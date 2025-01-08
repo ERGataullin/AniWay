@@ -62,8 +62,8 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                                   ? const SizedBox.shrink()
                                   : MovieScore(
                                       wm.score.value!,
-                                      textStyle: TextTheme.of(context)
-                                          .titleMedium!,
+                                      textStyle:
+                                          TextTheme.of(context).titleMedium!,
                                     ),
                             ),
                           ),
@@ -73,8 +73,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               listenable: wm.title,
                               builder: (context, __) => Text(
                                 wm.title.value,
-                                style:
-                                    TextTheme.of(context).headlineLarge,
+                                style: TextTheme.of(context).headlineLarge,
                               ),
                             ),
                           ),
@@ -112,7 +111,7 @@ class _AppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color surfaceColor = Theme.of(context).colorScheme.surface;
+    final Color surfaceColor = ColorScheme.of(context).surface;
     return ListenableBuilder(
       listenable: context.wm.posterHeight,
       builder: (context, __) => SliverAppBar(
@@ -195,10 +194,7 @@ class _Episodes extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListenableBuilder(
-          listenable: Listenable.merge([
-            context.wm.episodesLabel,
-            context.wm.episodesUri,
-          ]),
+          listenable: context.wm.episodesUri,
           builder: (context, __) => DestinationTitle(
             context.wm.episodesLabel,
             margin: const EdgeInsets.symmetric(horizontal: 16),

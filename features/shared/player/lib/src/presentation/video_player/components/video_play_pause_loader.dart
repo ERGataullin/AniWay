@@ -45,7 +45,7 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
       onPressed: _loading ? null : _handlePressed,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(
-          Theme.of(context).colorScheme.secondaryContainer,
+          ColorScheme.of(context).secondaryContainer,
         ),
       ),
       icon: AnimatedSwitcher(

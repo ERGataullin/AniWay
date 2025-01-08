@@ -21,8 +21,8 @@ class DestinationTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ButtonStyleButton button = _buildButton(context);
-    final EdgeInsetsGeometry? buttonPadding = button
+    final ButtonStyleButton buttonPrototype = _buildButton(context);
+    final EdgeInsetsGeometry? buttonPadding = buttonPrototype
         // ignore: invalid_use_of_protected_member
         .defaultStyleOf(context)
         .padding
@@ -31,7 +31,8 @@ class DestinationTitle extends StatelessWidget {
     return SafeArea(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           Link(
             uri: uri,
@@ -68,7 +69,7 @@ class DestinationTitle extends StatelessWidget {
     BuildContext context, {
     VoidCallback? onPressed,
   }) {
-    final TextStyle titleStyle = Theme.of(context).textTheme.titleLarge!;
+    final TextStyle titleStyle = TextTheme.of(context).titleLarge!;
     return TextButton(
       onPressed: onPressed,
       child: Row(
@@ -84,7 +85,9 @@ class DestinationTitle extends StatelessWidget {
           if (onPressed != null)
             Icon(
               Icons.chevron_right,
+              applyTextScaling: true,
               size: titleStyle.fontSize,
+              weight: titleStyle.fontWeight?.value.toDouble(),
               color: titleStyle.color?.withValues(alpha: .6),
             ),
         ],
