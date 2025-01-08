@@ -36,7 +36,7 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
     implements IEpisodesWM {
   EpisodesWM(super._model);
 
-  static const int _groupSize = 25;
+  static const int _groupSize = 24;
 
   @override
   ValueListenable<bool> get showLoader => model.loading;

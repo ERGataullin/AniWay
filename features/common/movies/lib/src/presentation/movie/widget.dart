@@ -2,6 +2,7 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/presentation/components/destination_title.dart';
+import 'package:movies/src/presentation/components/episode_card.dart';
 import 'package:movies/src/presentation/components/movie_score.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
 
@@ -64,8 +65,13 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                   ),
               ],
             ),
-            floatingActionButton:
-                wm.showPlayButton.value ? const _PlayButton() : null,
+            floatingActionButton: wm.showPlayButton.value
+                ? FloatingActionButton.extended(
+                    onPressed: context.wm.handlePlayPressed,
+                    label: const _PlayLabel(),
+                    icon: const Icon(Icons.play_arrow_outlined),
+                  )
+                : null,
           ),
         ),
       ),
@@ -255,18 +261,14 @@ class _Episodes extends StatelessWidget {
   }
 }
 
-class _PlayButton extends StatelessWidget {
-  const _PlayButton();
+class _PlayLabel extends StatelessWidget {
+  const _PlayLabel();
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: context.wm.handlePlayPressed,
-      label: ListenableBuilder(
-        listenable: context.wm.playButtonLabel,
-        builder: (context, __) => Text(context.wm.playButtonLabel.value),
-      ),
-      icon: const Icon(Icons.play_arrow_outlined),
+    return ListenableBuilder(
+      listenable: context.wm.playButtonLabel,
+      builder: (context, __) => Text(context.wm.playButtonLabel.value),
     );
   }
 }
@@ -278,45 +280,11 @@ class _Episode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CardThemeData cardTheme = CardTheme.of(context);
-    return GestureDetector(
-      onTap: () => context.wm.handleEpisodePressed(data.id),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Card(
-                  clipBehavior: Clip.hardEdge,
-                  child: InkWell(
-                    onTap: () => context.wm.handleEpisodePressed(data.id),
-                    customBorder: cardTheme.shape!,
-                    child: data.previewUri == null
-                        ? null
-                        : Image(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              context
-                                  .read<Network>()
-                                  .baseUri
-                                  .resolveUri(data.previewUri!)
-                                  .toString(),
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              context.wm.getEpisodeTitle(data),
-              style: TextTheme.of(context).labelLarge,
-            ),
-          ],
-        ),
+    return AspectRatio(
+      aspectRatio: 16 / 10,
+      child: EpisodeCard(
+        data,
+        onPressed: context.wm.handleEpisodePressed,
       ),
     );
   }

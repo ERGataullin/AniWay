@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:movies/src/data/dto/episode.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
 
@@ -6,14 +7,17 @@ class EpisodeData {
     required this.id,
     required this.type,
     this.number,
-    this.previewUri,
+    this.preview,
   });
 
   factory EpisodeData.fromDto(EpisodeDto dto) => EpisodeData(
         id: dto.id,
         type: MovieType.fromDto(dto.type),
         number: dto.number,
-        previewUri: dto.previewUrl == null ? null : Uri.parse(dto.previewUrl!),
+        preview: switch (dto.preview) {
+          final ImageDto previewDto => ImageData.fromDto(previewDto),
+          null => null,
+        },
       );
 
   final int id;
@@ -22,5 +26,5 @@ class EpisodeData {
 
   final num? number;
 
-  final Uri? previewUri;
+  final ImageData? preview;
 }

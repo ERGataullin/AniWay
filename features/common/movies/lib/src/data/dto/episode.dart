@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:movies/src/data/dto/movie_type.dart';
 
 class EpisodeDto {
@@ -5,7 +6,7 @@ class EpisodeDto {
     required this.id,
     required this.type,
     this.number,
-    this.previewUrl,
+    this.preview,
   });
 
   final int id;
@@ -14,5 +15,5 @@ class EpisodeDto {
 
   final num? number;
 
-  final String? previewUrl;
+  final ImageDto? preview;
 }

@@ -333,7 +333,11 @@ class Anime365MoviesDataSource implements MoviesDataSource {
                       episodeJson['episodeType']! as String,
                     ),
                     number: number,
-                    previewUrl: previewUrl,
+                    preview: previewUrl == null
+                        ? null
+                        : ImageDto(
+                            url: {double.infinity: previewUrl},
+                          ),
                   );
                 },
               ).toList(growable: false);
