@@ -261,7 +261,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
 
   /// Удаляет элементы, начиная с индекса [from].
   void _removeItems({int from = 0}) {
-    final curveTween = CurveTween(curve: Easing.standardAccelerate);
+    final curveTween = CurveTween(curve: Easing.standardAccelerate.flipped);
     for (int i = _items.length - 1; i >= from; i--) {
       final ValueNotifier<T?> item = _items.removeAt(i)..dispose();
       _gridKey.currentState?.removeItem(
