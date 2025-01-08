@@ -5,8 +5,8 @@ extension _CSSStyleValue on web.CSSStyleValue {
   external String operator [](int index);
 }
 
-class WebMediaQuery extends StatefulWidget {
-  const WebMediaQuery({
+class PlatformWrapperPlatform extends StatefulWidget {
+  const PlatformWrapperPlatform({
     super.key,
     required this.child,
   });
@@ -14,10 +14,11 @@ class WebMediaQuery extends StatefulWidget {
   final Widget child;
 
   @override
-  State<WebMediaQuery> createState() => _WebMediaQueryState();
+  State<PlatformWrapperPlatform> createState() =>
+      _PlatformWrapperPlatformState();
 }
 
-class _WebMediaQueryState extends State<WebMediaQuery> {
+class _PlatformWrapperPlatformState extends State<PlatformWrapperPlatform> {
   static const String _leftInsetProperty = '--safe-area-insets-left';
   static const String _topInsetProperty = '--safe-area-insets-top';
   static const String _rightInsetProperty = '--safe-area-insets-right';
