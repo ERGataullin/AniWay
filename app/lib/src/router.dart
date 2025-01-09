@@ -226,6 +226,10 @@ class AppRouter implements RouterConfig<RouteMatchList> {
           pathParameters: {'movieId': movieId.toString()},
           queryParameters: {'episodeId': episodeId.toString()},
         ),
+        onItemLongPressed: (movieId, __) => context.pushNamed(
+          movieRoute.name!,
+          pathParameters: {'movieId': movieId.toString()},
+        ),
       ),
     );
   }

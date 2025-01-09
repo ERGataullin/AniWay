@@ -74,6 +74,7 @@ class MovieCard extends StatelessWidget {
         child: Card(
           child: InkWell(
             onTap: data?.onPressed,
+            onLongPress: data?.onLongPressed,
             customBorder: cardTheme.shape,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

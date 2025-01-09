@@ -2,6 +2,21 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Checkout actual dev",
+			"type": "shell",
+			"command": [
+				"git checkout dev;",
+				"git pull;",
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"close": true,
+				"echo": true,
+				"reveal": "silent",
+			},
+		},
+		{
+			"label": "Generate l10n",
 			"type": "flutter",
 			"options": {
 				"cwd": "features/shared/l10n",
@@ -11,7 +26,6 @@
 				"gen-l10n",
 			],
 			"problemMatcher": [],
-			"label": "Generate l10n",
 		}
 	]
 }
