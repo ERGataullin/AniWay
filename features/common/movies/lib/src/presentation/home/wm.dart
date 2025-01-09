@@ -121,6 +121,7 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
         upNext.movie.id,
         upNext.episode.id,
       ),
+      onLongPressed: () => widget.onMoviePressed(upNext.movie.id),
     );
   }
 

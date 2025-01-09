@@ -11,12 +11,14 @@ class MovieCardData {
     required this.subtitle,
     this.score,
     required this.onPressed,
+    this.onLongPressed,
   });
 
   factory MovieCardData.fromUpNext(
     UpNextData upNext, {
     required L10n l10n,
     required VoidCallback onPressed,
+    VoidCallback? onLongPressed,
   }) =>
       MovieCardData(
         poster: upNext.movie.poster,
@@ -28,12 +30,14 @@ class MovieCardData {
                 upNext.episode.number!,
               ),
         onPressed: onPressed,
+        onLongPressed: onLongPressed,
       );
 
   factory MovieCardData.fromMovie(
     MovieBaseData movie, {
     required L10n l10n,
     required VoidCallback onPressed,
+    VoidCallback? onLongPressed,
   }) =>
       MovieCardData(
         poster: movie.poster,
@@ -41,6 +45,7 @@ class MovieCardData {
         subtitle: l10n.movieType(movie.type.name),
         score: movie.score,
         onPressed: onPressed,
+        onLongPressed: onLongPressed,
       );
 
   final ImageData poster;
@@ -52,4 +57,6 @@ class MovieCardData {
   final double? score;
 
   final VoidCallback onPressed;
+
+  final VoidCallback? onLongPressed;
 }

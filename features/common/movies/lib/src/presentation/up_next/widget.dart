@@ -7,10 +7,13 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
   const UpNextWidget({
     super.key,
     required this.onItemPressed,
+    required this.onItemLongPressed,
     WidgetModelFactory wmFactory = upNextWMFactory,
   }) : super(wmFactory);
 
   final void Function(int movieId, int episodeId) onItemPressed;
+
+  final void Function(int movieId, int episodeId) onItemLongPressed;
 
   @override
   Widget build(IUpNextWM wm) {
