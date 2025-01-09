@@ -186,7 +186,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   void handlePlayPressed() {
-    widget.onPlayPressed(model.nextEpisodeId);
+    widget.onPlayPressed(model.nextEpisodeId.value);
   }
 
   @override
