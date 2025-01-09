@@ -47,16 +47,20 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                     ),
                   )
                 else
-                  const SliverSafeArea(
-                    top: false,
-                    sliver: SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _Description(marginTop: 16),
-                          _Episodes(marginTop: 16),
-                          SizedBox(height: 16 + 56 + 16),
-                        ],
+                  MediaQuery.removePadding(
+                    removeTop: true,
+                    context: context,
+                    child: const SliverSafeArea(
+                      top: false,
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _Description(marginTop: 16),
+                            _Episodes(marginTop: 16),
+                            SizedBox(height: 16 + 56 + 16),
+                          ],
+                        ),
                       ),
                     ),
                   ),
