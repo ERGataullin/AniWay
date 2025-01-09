@@ -74,10 +74,10 @@ class MovieModel extends ElementaryModel implements IMovieModel {
 
   @override
   void dispose() {
-    loading.dispose();
-    movie.dispose();
-    watchStatusDetails.dispose();
     nextEpisodeId.dispose();
+    watchStatusDetails.dispose();
+    movie.dispose();
+    loading.dispose();
     super.dispose();
   }
 }

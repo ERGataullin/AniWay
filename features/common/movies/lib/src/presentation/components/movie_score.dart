@@ -39,6 +39,7 @@ class MovieScore extends StatelessWidget {
             size: effectiveTextStyle.fontSize,
             weight: effectiveTextStyle.fontWeight?.value.toDouble(),
             color: effectiveTextStyle.color,
+            shadows: effectiveTextStyle.shadows,
           ),
           const SizedBox(width: 4),
           Text(
