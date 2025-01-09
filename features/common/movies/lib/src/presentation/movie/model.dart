@@ -11,7 +11,7 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<WatchListElementData?> get watchStatusDetails;
 
-  int? get nextEpisodeId;
+  ValueListenable<int?> get nextEpisodeId;
 
   void loadData({
     required int movieId,
@@ -35,7 +35,25 @@ class MovieModel extends ElementaryModel implements IMovieModel {
       ValueNotifier(null);
 
   @override
-  late final int? nextEpisodeId;
+  late final Computed<int?> nextEpisodeId = Computed(
+    trigger: Listenable.merge([movie, watchStatusDetails]),
+    () {
+      final int watchedEpisodesCount =
+          watchStatusDetails.value?.watchedEpisodesCount ?? 0;
+      return watchedEpisodesCount >= movie.value!.episodes.length
+          ? null
+          : movie.value?.episodes
+              .getRange(
+                watchedEpisodesCount == 0 ? 0 : watchedEpisodesCount - 1,
+                movie.value!.episodes.length,
+              )
+              .firstWhere(
+                (episode) => episode.number! > watchedEpisodesCount,
+                orElse: () => movie.value!.episodes.first,
+              )
+              .id;
+    },
+  );
 
   final MoviesService _service;
 
@@ -43,25 +61,23 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   Future<void> loadData({
     required int movieId,
   }) async {
-    loading.value = true;
-    movie.value = await _service.getMovie(movieId);
-    watchStatusDetails.value = await _service.getWatchStatusDetails(
-      movie.value!.uri,
-    );
-    final int watchedEpisodesCount =
-        watchStatusDetails.value!.watchedEpisodesCount;
-    nextEpisodeId = watchedEpisodesCount >= movie.value!.episodes.length
-        ? null
-        : movie.value?.episodes
-            .getRange(
-              watchedEpisodesCount == 0 ? 0 : watchedEpisodesCount - 1,
-              movie.value!.episodes.length,
-            )
-            .firstWhere(
-              (episode) => episode.number! > watchedEpisodesCount,
-              orElse: () => movie.value!.episodes.first,
-            )
-            .id;
-    loading.value = false;
+    try {
+      loading.value = true;
+      movie.value = await _service.getMovie(movieId);
+      watchStatusDetails.value = await _service.getWatchStatusDetails(
+        movie.value!.uri,
+      );
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    loading.dispose();
+    movie.dispose();
+    watchStatusDetails.dispose();
+    nextEpisodeId.dispose();
+    super.dispose();
   }
 }
