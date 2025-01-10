@@ -84,6 +84,12 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 class _AppBar extends StatelessWidget {
   const _AppBar();
 
+  static bool isScrolledUnder(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!
+        .isScrolledUnder!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -99,10 +105,7 @@ class _AppBar extends StatelessWidget {
           onPressed: Navigator.of(context).pop,
           icon: Builder(
             builder: (context) => ConditionalWrapper(
-              condition: !context
-                  .dependOnInheritedWidgetOfExactType<
-                      FlexibleSpaceBarSettings>()!
-                  .isScrolledUnder!,
+              condition: !isScrolledUnder(context),
               child: Icon(Icons.adaptive.arrow_back),
               wrapper: (context, child) => IconTheme(
                 data: Theme.of(context).primaryIconTheme,
@@ -115,39 +118,51 @@ class _AppBar extends StatelessWidget {
             ? const []
             : const [
                 _WatchStatusButton(),
-                SizedBox(width: 4),
+                SizedBox(width: 8),
               ],
-        flexibleSpace: context.wm.showLoader.value
-            ? null
-            : FlexibleSpaceBar(
+        flexibleSpace: const _AppBarFlexibleSpace(),
+      ),
+    );
+  }
+}
+
+class _AppBarFlexibleSpace extends StatelessWidget {
+  const _AppBarFlexibleSpace();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: context.wm.showLoader,
+      builder: (context, __) => context.wm.showLoader.value
+          ? const SizedBox.shrink()
+          : DefaultTextStyle(
+              style: TextTheme.primaryOf(context).headlineMedium!,
+              child: const FlexibleSpaceBar(
                 collapseMode: CollapseMode.pin,
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    const _PosterFaded(),
+                    _PosterFaded(),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: DefaultTextStyle(
-                        style: TextTheme.primaryOf(context).headlineMedium!,
-                        child: const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _Score(),
-                              _Title(),
-                              SizedBox(height: 8),
-                              _Genres(),
-                            ],
-                          ),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _Score(),
+                            _Title(),
+                            SizedBox(height: 8),
+                            _Genres(),
+                          ],
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-      ),
+            ),
     );
   }
 }
@@ -160,12 +175,10 @@ class _WatchStatusButton extends StatelessWidget {
     return ListenableBuilder(
       listenable: Listenable.merge([
         context.wm.watchStatusSelected,
-        context.wm.watchStatusButtonTooltip,
+        context.wm.watchStatusTooltip,
       ]),
       builder: (context, __) => ConditionalWrapper(
-        condition: !context
-            .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!
-            .isScrolledUnder!,
+        condition: !_AppBar.isScrolledUnder(context),
         wrapper: (context, child) => IconTheme(
           data: Theme.of(context).primaryIconTheme,
           child: child,
@@ -173,7 +186,7 @@ class _WatchStatusButton extends StatelessWidget {
         child: IconButton(
           onPressed: () {},
           isSelected: context.wm.watchStatusSelected.value,
-          tooltip: context.wm.watchStatusButtonTooltip.value,
+          tooltip: context.wm.watchStatusTooltip.value,
           icon: const Icon(Icons.library_add_outlined),
           selectedIcon: const Icon(Icons.library_add_check_outlined),
         ),
@@ -265,10 +278,12 @@ class _Genres extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Драма · Фэнтези · Триллер · Исекай · '
-      'Психологическое · Путешествие во времени',
-      style: TextTheme.primaryOf(context).labelLarge,
+    return ListenableBuilder(
+      listenable: context.wm.genres,
+      builder: (context, __) => Text(
+        context.wm.genres.value,
+        style: TextTheme.primaryOf(context).labelLarge,
+      ),
     );
   }
 }

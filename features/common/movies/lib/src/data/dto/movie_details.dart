@@ -6,6 +6,7 @@ class MovieDetailsDto {
     required this.id,
     required this.url,
     required this.title,
+    required this.genres,
     required this.poster,
     required this.previews,
     required this.episodesCount,
@@ -19,6 +20,8 @@ class MovieDetailsDto {
   final String url;
 
   final String title;
+
+  final List<String> genres;
 
   final ImageDto poster;
 
