@@ -30,7 +30,7 @@ class Themes {
     brightness: Brightness.dark,
     appBarTheme: const AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ),
     ),
   ).appOverrides;
