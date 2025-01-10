@@ -1,8 +1,8 @@
 name: player
 
 environment:
-  sdk: ">=3.1.5 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ^3.6.0
+resolution: workspace
 
 dependencies:
   core:
@@ -14,7 +14,7 @@ dependencies:
   theme:
     path: ../../shared/theme
   video_player: ^2.9.2
-  web: ^1.1.0
+  web:
 
 dev_dependencies:
   flutter_lints:

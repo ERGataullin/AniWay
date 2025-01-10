@@ -1,11 +1,11 @@
 name: root_menu
 
 environment:
-  sdk: '>=3.1.5 <4.0.0'
-  flutter: ">=1.17.0"
+  sdk: ^3.6.0
+resolution: workspace
 
 dependencies:
-  core: 
+  core:
     path: ../../../core
   flutter:
     sdk: flutter

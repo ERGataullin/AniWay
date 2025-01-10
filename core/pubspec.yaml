@@ -1,8 +1,8 @@
 name: core
 
 environment:
-  sdk: ">=3.1.5 <4.0.0"
-  flutter: ">=1.17.0"
+  sdk: ^3.6.0
+resolution: workspace
 
 dependencies:
   animations: ^2.0.11
