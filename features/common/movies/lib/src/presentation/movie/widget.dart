@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/presentation/components/destination_title.dart';
 import 'package:movies/src/presentation/components/episode_card.dart';
@@ -187,32 +188,42 @@ class _PosterFaded extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const Color fadeColor = Colors.black;
-    return DecoratedBox(
-      position: DecorationPosition.foreground,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0, .25, .45, 1],
-          colors: [
-            fadeColor.withValues(alpha: .45),
-            fadeColor.withValues(alpha: 0),
-            fadeColor.withValues(alpha: 0),
-            fadeColor,
-          ],
+    return ConditionalWrapper(
+      condition: Theme.of(context).brightness == Brightness.light,
+      wrapper: (context, child) => AnnotatedRegion(
+        sized: true,
+        value: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
         ),
+        child: child,
       ),
-      child: ListenableBuilder(
-        listenable: context.wm.poster,
-        builder: (context, __) => AdaptiveImageBuilder(
-          image: context.wm.poster.value!,
-          builder: (context, opacity, image, _) => image == null
-              ? const SizedBox.expand()
-              : Image(
-                  fit: BoxFit.cover,
-                  opacity: opacity,
-                  image: image,
-                ),
+      child: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: const [0, .25, .45, 1],
+            colors: [
+              fadeColor.withValues(alpha: .45),
+              fadeColor.withValues(alpha: 0),
+              fadeColor.withValues(alpha: 0),
+              fadeColor,
+            ],
+          ),
+        ),
+        child: ListenableBuilder(
+          listenable: context.wm.poster,
+          builder: (context, __) => AdaptiveImageBuilder(
+            image: context.wm.poster.value!,
+            builder: (context, opacity, image, _) => image == null
+                ? const SizedBox.expand()
+                : Image(
+                    fit: BoxFit.cover,
+                    opacity: opacity,
+                    image: image,
+                  ),
+          ),
         ),
       ),
     );
