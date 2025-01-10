@@ -265,7 +265,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields': 'url,titles,posterUrl,episodes,numberOfEpisodes,'
+            'fields': 'url,titles,genres,posterUrl,numberOfEpisodes,episodes,'
                 'descriptions,myAnimeListId,myAnimeListScore',
           },
         ),
@@ -273,6 +273,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       ),
     );
     final anime365Data = anime365Response.body['data']! as Json;
+
     final ResponseData<Json> shikimoriResponse = await _network.request(
       RequestData(
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
@@ -314,6 +315,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
     };
 
     final Uri movieUri = Uri.parse(anime365Data['url']! as String);
+    final List<String> genres = (anime365Data['genres']! as List<dynamic>)
+        .cast<Json>()
+        .map((genreJson) => genreJson['title']! as String)
+        .toList(growable: false);
     final List<EpisodeDto> previewsAndEpisodes =
         anime365Data['episodes'] == null
             ? const []
@@ -341,22 +346,24 @@ class Anime365MoviesDataSource implements MoviesDataSource {
                   );
                 },
               ).toList(growable: false);
+    final poster = ImageDto(
+      url: {
+        60: shikimoriPoster['miniAltUrl']! as String,
+        120: shikimoriPoster['miniAlt2xUrl']! as String,
+        160: shikimoriPoster['previewAltUrl']! as String,
+        225: shikimoriPoster['mainAltUrl']! as String,
+        320: shikimoriPoster['previewAlt2xUrl']! as String,
+        450: shikimoriPoster['mainAlt2xUrl']! as String,
+        double.infinity: shikimoriPoster['originalUrl']! as String,
+      },
+    );
 
     return MovieDetailsDto(
       id: id,
       url: movieUri.path,
       title: (anime365Data['titles']! as Json)['ru']! as String,
-      poster: ImageDto(
-        url: {
-          60: shikimoriPoster['miniAltUrl']! as String,
-          120: shikimoriPoster['miniAlt2xUrl']! as String,
-          160: shikimoriPoster['previewAltUrl']! as String,
-          225: shikimoriPoster['mainAltUrl']! as String,
-          320: shikimoriPoster['previewAlt2xUrl']! as String,
-          450: shikimoriPoster['mainAlt2xUrl']! as String,
-          double.infinity: shikimoriPoster['originalUrl']! as String,
-        },
-      ),
+      genres: genres,
+      poster: poster,
       previews: previewsAndEpisodes
           .where((episode) => episode.type == MovieTypeDto.preview)
           .toList(growable: false),

@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/presentation/components/destination_title.dart';
 import 'package:movies/src/presentation/components/episode_card.dart';
@@ -47,19 +48,20 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                     ),
                   )
                 else
-                  const SliverSafeArea(
-                    top: false,
-                    sliver: SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 16),
-                          _Score(),
-                          _Title(),
-                          _Description(marginTop: 16),
-                          _Episodes(marginTop: 16),
-                          SizedBox(height: 16 + 56 + 16),
-                        ],
+                  MediaQuery.removePadding(
+                    removeTop: true,
+                    context: context,
+                    child: const SliverSafeArea(
+                      top: false,
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _Description(marginTop: 16),
+                            _Episodes(marginTop: 16),
+                            SizedBox(height: 16 + 56 + 16),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -82,66 +84,160 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 class _AppBar extends StatelessWidget {
   const _AppBar();
 
+  static bool isScrolledUnder(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!
+        .isScrolledUnder!;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Color surfaceColor = ColorScheme.of(context).surface;
     return ListenableBuilder(
-      listenable: context.wm.posterHeight,
-      builder: (context, __) => SliverAppBar(
+      listenable: Listenable.merge([
+        context.wm.showLoader,
+        context.wm.posterHeight,
+      ]),
+      builder: (context, __) => SliverAppBar.large(
         pinned: true,
         expandedHeight: context.wm.posterHeight.value,
-        leading: IconButton.filledTonal(
+        title: const _Title(),
+        leading: IconButton(
           onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.arrow_back_outlined),
+          icon: Builder(
+            builder: (context) => ConditionalWrapper(
+              condition: !isScrolledUnder(context),
+              child: Icon(Icons.adaptive.arrow_back),
+              wrapper: (context, child) => IconTheme(
+                data: Theme.of(context).primaryIconTheme,
+                child: child,
+              ),
+            ),
+          ),
         ),
         actions: context.wm.showLoader.value
             ? const []
-            : [
-                ListenableBuilder(
-                  listenable: Listenable.merge([
-                    context.wm.watchStatusSelected,
-                    context.wm.watchStatusButtonTooltip,
-                  ]),
-                  builder: (context, __) => IconButton.filledTonal(
-                    onPressed: () {},
-                    isSelected: context.wm.watchStatusSelected.value,
-                    tooltip: context.wm.watchStatusButtonTooltip.value,
-                    icon: const Icon(Icons.library_add_outlined),
-                    selectedIcon: const Icon(Icons.library_add_check_outlined),
-                  ),
-                ),
-                const SizedBox(width: 4),
+            : const [
+                _WatchStatusButton(),
+                SizedBox(width: 8),
               ],
-        flexibleSpace: context.wm.showLoader.value
-            ? null
-            : FlexibleSpaceBar(
-                background: DecoratedBox(
-                  position: DecorationPosition.foreground,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: const Alignment(0, .8),
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        surfaceColor.withValues(alpha: 0),
-                        surfaceColor,
-                      ],
+        flexibleSpace: const _AppBarFlexibleSpace(),
+      ),
+    );
+  }
+}
+
+class _AppBarFlexibleSpace extends StatelessWidget {
+  const _AppBarFlexibleSpace();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: context.wm.showLoader,
+      builder: (context, __) => context.wm.showLoader.value
+          ? const SizedBox.shrink()
+          : DefaultTextStyle(
+              style: TextTheme.primaryOf(context).headlineMedium!,
+              child: const FlexibleSpaceBar(
+                collapseMode: CollapseMode.pin,
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _PosterFaded(),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _Score(),
+                            _Title(),
+                            SizedBox(height: 8),
+                            _Genres(),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                  child: ListenableBuilder(
-                    listenable: context.wm.poster,
-                    builder: (context, __) => AdaptiveImageBuilder(
-                      image: context.wm.poster.value!,
-                      builder: (context, opacity, image, _) => image == null
-                          ? const SizedBox.expand()
-                          : Image(
-                              fit: BoxFit.cover,
-                              opacity: opacity,
-                              image: image,
-                            ),
-                    ),
-                  ),
+                  ],
                 ),
               ),
+            ),
+    );
+  }
+}
+
+class _WatchStatusButton extends StatelessWidget {
+  const _WatchStatusButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        context.wm.watchStatusSelected,
+        context.wm.watchStatusTooltip,
+      ]),
+      builder: (context, __) => ConditionalWrapper(
+        condition: !_AppBar.isScrolledUnder(context),
+        wrapper: (context, child) => IconTheme(
+          data: Theme.of(context).primaryIconTheme,
+          child: child,
+        ),
+        child: IconButton(
+          onPressed: () {},
+          isSelected: context.wm.watchStatusSelected.value,
+          tooltip: context.wm.watchStatusTooltip.value,
+          icon: const Icon(Icons.library_add_outlined),
+          selectedIcon: const Icon(Icons.library_add_check_outlined),
+        ),
+      ),
+    );
+  }
+}
+
+class _PosterFaded extends StatelessWidget {
+  const _PosterFaded();
+
+  @override
+  Widget build(BuildContext context) {
+    const Color fadeColor = Colors.black;
+    return ConditionalWrapper(
+      condition: Theme.of(context).brightness == Brightness.light,
+      wrapper: (context, child) => AnnotatedRegion(
+        sized: true,
+        value: const SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+        ),
+        child: child,
+      ),
+      child: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: const [0, .25, .45, 1],
+            colors: [
+              fadeColor.withValues(alpha: .45),
+              fadeColor.withValues(alpha: 0),
+              fadeColor.withValues(alpha: 0),
+              fadeColor,
+            ],
+          ),
+        ),
+        child: ListenableBuilder(
+          listenable: context.wm.poster,
+          builder: (context, __) => AdaptiveImageBuilder(
+            image: context.wm.poster.value!,
+            builder: (context, opacity, image, _) => image == null
+                ? const SizedBox.expand()
+                : Image(
+                    fit: BoxFit.cover,
+                    opacity: opacity,
+                    image: image,
+                  ),
+          ),
+        ),
       ),
     );
   }
@@ -152,18 +248,15 @@ class _Score extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListenableBuilder(
-        listenable: context.wm.score,
-        builder: (context, __) => switch (context.wm.score.value) {
-          null => const SizedBox.shrink(),
-          final double score => MovieScore(
-              score,
-              textStyle: TextTheme.of(context).titleMedium,
-            )
-        },
-      ),
+    return ListenableBuilder(
+      listenable: context.wm.score,
+      builder: (context, __) => switch (context.wm.score.value) {
+        null => const SizedBox.shrink(),
+        final double score => MovieScore(
+            score,
+            textStyle: TextTheme.primaryOf(context).titleMedium,
+          )
+      },
     );
   }
 }
@@ -173,14 +266,23 @@ class _Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListenableBuilder(
-        listenable: context.wm.title,
-        builder: (context, __) => Text(
-          context.wm.title.value,
-          style: TextTheme.of(context).headlineLarge,
-        ),
+    return ListenableBuilder(
+      listenable: context.wm.title,
+      builder: (context, __) => Text(context.wm.title.value),
+    );
+  }
+}
+
+class _Genres extends StatelessWidget {
+  const _Genres();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: context.wm.genres,
+      builder: (context, __) => Text(
+        context.wm.genres.value,
+        style: TextTheme.primaryOf(context).labelLarge,
       ),
     );
   }

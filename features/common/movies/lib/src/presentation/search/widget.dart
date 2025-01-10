@@ -75,36 +75,44 @@ class _SearchBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(_margin),
-      child: ListenableBuilder(
-        listenable: context.wm.queryHint,
-        builder: (context, __) => SearchBar(
-          controller: context.wm.queryController,
-          leading: context.wm.showBackButton
-              ? const BackButton()
-              : IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search_outlined),
+    final AppBarTheme appBarTheme = AppBarTheme.of(context);
+    return ConditionalWrapper(
+      condition: appBarTheme.systemOverlayStyle != null,
+      wrapper: (context, child) => AnnotatedRegion(
+        value: appBarTheme.systemOverlayStyle!,
+        child: child,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(_margin),
+        child: ListenableBuilder(
+          listenable: context.wm.queryHint,
+          builder: (context, __) => SearchBar(
+            controller: context.wm.queryController,
+            leading: context.wm.showBackButton
+                ? const BackButton()
+                : IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.search_outlined),
+                  ),
+            hintText: context.wm.queryHint.value,
+            trailing: [
+              ListenableBuilder(
+                listenable: context.wm.showClearButton,
+                builder: (context, __) => AnimatedSwitcher(
+                  duration: Durations.medium1,
+                  reverseDuration: Durations.short4,
+                  switchInCurve: Easing.standardDecelerate,
+                  switchOutCurve: Easing.standardAccelerate.flipped,
+                  child: context.wm.showClearButton.value
+                      ? const SizedBox.shrink()
+                      : IconButton(
+                          onPressed: context.wm.handleClearPressed,
+                          icon: const Icon(Icons.clear_outlined),
+                        ),
                 ),
-          hintText: context.wm.queryHint.value,
-          trailing: [
-            ListenableBuilder(
-              listenable: context.wm.showClearButton,
-              builder: (context, __) => AnimatedSwitcher(
-                duration: Durations.medium1,
-                reverseDuration: Durations.short4,
-                switchInCurve: Easing.standardDecelerate,
-                switchOutCurve: Easing.standardAccelerate.flipped,
-                child: context.wm.showClearButton.value
-                    ? const SizedBox.shrink()
-                    : IconButton(
-                        onPressed: context.wm.handleClearPressed,
-                        icon: const Icon(Icons.clear_outlined),
-                      ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

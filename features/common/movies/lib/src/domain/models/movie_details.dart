@@ -7,6 +7,7 @@ class MovieDetailsData {
     required this.id,
     required this.uri,
     required this.title,
+    required this.genres,
     required this.poster,
     required this.previews,
     required this.episodesCount,
@@ -19,6 +20,7 @@ class MovieDetailsData {
         id: dto.id,
         uri: Uri.parse(dto.url),
         title: dto.title,
+        genres: dto.genres,
         poster: ImageData.fromDto(dto.poster),
         previews: List.unmodifiable(dto.previews.map(EpisodeData.fromDto)),
         episodesCount: dto.episodesCount,
@@ -32,6 +34,8 @@ class MovieDetailsData {
   final Uri uri;
 
   final String title;
+
+  final List<String> genres;
 
   final ImageData poster;
 

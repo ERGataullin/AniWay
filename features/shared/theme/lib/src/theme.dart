@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 extension _AppOverrides on ThemeData {
   ThemeData get appOverrides => copyWith(
@@ -17,10 +18,21 @@ extension _AppOverrides on ThemeData {
 class Themes {
   Themes._();
 
-  static final ThemeData light = ThemeData().appOverrides;
+  static final ThemeData light = ThemeData(
+    appBarTheme: const AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+      ),
+    ),
+  ).appOverrides;
 
   static final ThemeData dark = ThemeData(
     brightness: Brightness.dark,
+    appBarTheme: const AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+      ),
+    ),
   ).appOverrides;
 
   static final ThemeData videoPlayer = ThemeData.from(

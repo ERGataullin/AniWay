@@ -23,7 +23,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<bool> get watchStatusSelected;
 
-  ValueListenable<String> get watchStatusButtonTooltip;
+  ValueListenable<String> get watchStatusTooltip;
 
   ValueListenable<ImageData?> get poster;
 
@@ -34,6 +34,8 @@ abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<double?> get score;
 
   ValueListenable<String> get title;
+
+  ValueListenable<String> get genres;
 
   ValueListenable<String?> get description;
 
@@ -71,7 +73,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<String> watchStatusButtonTooltip = Computed(
+  late final Computed<String> watchStatusTooltip = Computed(
     trigger: Listenable.merge([
       l10n,
       model.watchStatusDetails,
@@ -115,8 +117,14 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   late final Computed<String> title = Computed(
+    trigger: Listenable.merge([showLoader, model.movie]),
+    () => showLoader.value ? '' : model.movie.value?.title ?? '',
+  );
+
+  @override
+  late final Computed<String> genres = Computed(
     trigger: model.movie,
-    () => model.movie.value?.title ?? '',
+    () => model.movie.value?.genres.join(' · ') ?? '',
   );
 
   @override
@@ -180,8 +188,10 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   String getEpisodeTitle(EpisodeData episodeData) {
-    return context.l10n
-        .movieEpisode(episodeData.type.name, episodeData.number ?? 0);
+    return context.l10n.movieEpisode(
+      episodeData.type.name,
+      episodeData.number ?? 0,
+    );
   }
 
   @override
@@ -203,15 +213,19 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   void dispose() {
     watchStatusSelected.dispose();
-    watchStatusButtonTooltip.dispose();
+    watchStatusTooltip.dispose();
     poster.dispose();
     posterHeight.dispose();
     showPlayButton.dispose();
     playButtonLabel.dispose();
     score.dispose();
     title.dispose();
+    genres.dispose();
     description.dispose();
     showEpisodes.dispose();
+    episodesUri.dispose();
+    episodesLabel.dispose();
+    episodesCount.dispose();
     episodes.dispose();
     super.dispose();
   }
