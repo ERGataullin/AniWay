@@ -7,4 +7,13 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
-  video_player: ^2.9.2
+
+  core:
+  l10n:
+  theme:
+
+  video_player:
+  web:
+
+dev_dependencies:
+  flutter_native_splash: ^2.4.4

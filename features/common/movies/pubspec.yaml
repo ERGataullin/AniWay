@@ -7,3 +7,9 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
+
+  cookie_manager:
+  core:
+  l10n:
+  player:
+  theme:

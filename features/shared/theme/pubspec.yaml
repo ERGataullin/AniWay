@@ -7,3 +7,5 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
+
+  core:
