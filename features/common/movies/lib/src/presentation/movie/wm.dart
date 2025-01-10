@@ -115,8 +115,8 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   late final Computed<String> title = Computed(
-    trigger: model.movie,
-    () => model.movie.value?.title ?? '',
+    trigger: Listenable.merge([showLoader, model.movie]),
+    () => showLoader.value ? '' : model.movie.value?.title ?? '',
   );
 
   @override

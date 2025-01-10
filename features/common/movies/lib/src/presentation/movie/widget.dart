@@ -83,27 +83,31 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
 class _AppBar extends StatelessWidget {
   const _AppBar();
 
-  static List<Shadow> expandedForegroundShadows(BuildContext context) {
-    return [
-      Shadow(
-        blurRadius: 24,
-        color: ColorScheme.of(context).shadow,
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: context.wm.posterHeight,
-      builder: (context, __) => SliverAppBar(
+      listenable: Listenable.merge([
+        context.wm.showLoader,
+        context.wm.posterHeight,
+      ]),
+      builder: (context, __) => SliverAppBar.large(
         pinned: true,
         expandedHeight: context.wm.posterHeight.value,
+        title: const _Title(),
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
-          icon: Icon(
-            Icons.adaptive.arrow_back,
-            shadows: expandedForegroundShadows(context),
+          icon: Builder(
+            builder: (context) => ConditionalWrapper(
+              condition: !context
+                  .dependOnInheritedWidgetOfExactType<
+                      FlexibleSpaceBarSettings>()!
+                  .isScrolledUnder!,
+              child: Icon(Icons.adaptive.arrow_back),
+              wrapper: (context, child) => IconTheme(
+                data: Theme.of(context).primaryIconTheme,
+                child: child,
+              ),
+            ),
           ),
         ),
         actions: context.wm.showLoader.value
@@ -114,24 +118,29 @@ class _AppBar extends StatelessWidget {
               ],
         flexibleSpace: context.wm.showLoader.value
             ? null
-            : const FlexibleSpaceBar(
+            : FlexibleSpaceBar(
                 collapseMode: CollapseMode.pin,
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    _PosterFaded(),
+                    const _PosterFaded(),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _Score(),
-                          _Title(),
-                          SizedBox(height: 8),
-                          _Genres(),
-                          SizedBox(height: 16),
-                        ],
+                      child: DefaultTextStyle(
+                        style: TextTheme.primaryOf(context).headlineMedium!,
+                        child: const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _Score(),
+                              _Title(),
+                              SizedBox(height: 8),
+                              _Genres(),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -152,17 +161,20 @@ class _WatchStatusButton extends StatelessWidget {
         context.wm.watchStatusSelected,
         context.wm.watchStatusButtonTooltip,
       ]),
-      builder: (context, __) => IconButton(
-        onPressed: () {},
-        isSelected: context.wm.watchStatusSelected.value,
-        tooltip: context.wm.watchStatusButtonTooltip.value,
-        icon: Icon(
-          Icons.library_add_outlined,
-          shadows: _AppBar.expandedForegroundShadows(context),
+      builder: (context, __) => ConditionalWrapper(
+        condition: !context
+            .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!
+            .isScrolledUnder!,
+        wrapper: (context, child) => IconTheme(
+          data: Theme.of(context).primaryIconTheme,
+          child: child,
         ),
-        selectedIcon: Icon(
-          Icons.library_add_check_outlined,
-          shadows: _AppBar.expandedForegroundShadows(context),
+        child: IconButton(
+          onPressed: () {},
+          isSelected: context.wm.watchStatusSelected.value,
+          tooltip: context.wm.watchStatusButtonTooltip.value,
+          icon: const Icon(Icons.library_add_outlined),
+          selectedIcon: const Icon(Icons.library_add_check_outlined),
         ),
       ),
     );
@@ -174,20 +186,16 @@ class _PosterFaded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = ColorScheme.of(context);
-    final Color fadeColor = switch (colorScheme.brightness) {
-      Brightness.light => colorScheme.shadow.withValues(alpha: 1),
-      Brightness.dark => colorScheme.surface,
-    };
+    const Color fadeColor = Colors.black;
     return DecoratedBox(
       position: DecorationPosition.foreground,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: const [0, .15, .45, 1],
+          stops: const [0, .25, .45, 1],
           colors: [
-            fadeColor.withValues(alpha: .4),
+            fadeColor.withValues(alpha: .45),
             fadeColor.withValues(alpha: 0),
             fadeColor.withValues(alpha: 0),
             fadeColor,
@@ -216,20 +224,15 @@ class _Score extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListenableBuilder(
-        listenable: context.wm.score,
-        builder: (context, __) => switch (context.wm.score.value) {
-          null => const SizedBox.shrink(),
-          final double score => MovieScore(
-              score,
-              textStyle: TextTheme.primaryOf(context).titleMedium?.copyWith(
-                    shadows: _AppBar.expandedForegroundShadows(context),
-                  ),
-            )
-        },
-      ),
+    return ListenableBuilder(
+      listenable: context.wm.score,
+      builder: (context, __) => switch (context.wm.score.value) {
+        null => const SizedBox.shrink(),
+        final double score => MovieScore(
+            score,
+            textStyle: TextTheme.primaryOf(context).titleMedium,
+          )
+      },
     );
   }
 }
@@ -239,17 +242,9 @@ class _Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListenableBuilder(
-        listenable: context.wm.title,
-        builder: (context, __) => Text(
-          context.wm.title.value,
-          style: TextTheme.primaryOf(context).headlineMedium?.copyWith(
-                shadows: _AppBar.expandedForegroundShadows(context),
-              ),
-        ),
-      ),
+    return ListenableBuilder(
+      listenable: context.wm.title,
+      builder: (context, __) => Text(context.wm.title.value),
     );
   }
 }
@@ -259,15 +254,10 @@ class _Genres extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        'Драма · Фэнтези · Триллер · Исекай · '
-        'Психологическое · Путешествие во времени',
-        style: TextTheme.primaryOf(context).labelLarge?.copyWith(
-              shadows: _AppBar.expandedForegroundShadows(context),
-            ),
-      ),
+    return Text(
+      'Драма · Фэнтези · Триллер · Исекай · '
+      'Психологическое · Путешествие во времени',
+      style: TextTheme.primaryOf(context).labelLarge,
     );
   }
 }
