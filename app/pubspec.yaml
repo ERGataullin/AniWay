@@ -20,7 +20,7 @@ dependencies:
     path: ../features/common/root_menu
 
 dev_dependencies:
-  flutter_native_splash: ^2.4.2
+  flutter_native_splash: ^2.4.4
 
 flutter:
   uses-material-design: true
