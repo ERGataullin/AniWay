@@ -5,14 +5,5 @@ environment:
 resolution: workspace
 
 dependencies:
-  core:
-    path: ../../../core
   flutter:
     sdk: flutter
-
-dev_dependencies:
-  flutter_lints:
-  flutter_test:
-    sdk: flutter
-
-flutter:

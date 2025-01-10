@@ -1,7 +1,9 @@
 name: _
 publish_to: none
+
 environment:
   sdk: ^3.6.0
+
 workspace:
   - app
   - core
@@ -12,5 +14,31 @@ workspace:
   - features/shared/l10n
   - features/shared/player
   - features/shared/theme
+
 dependencies:
-  web: ^1.1.0
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+
+  core:
+    path: core
+  cookie_manager:
+    path: features/shared/cookie_manager
+  l10n:
+    path: features/shared/l10n
+  player:
+    path: features/shared/player
+  theme:
+    path: features/shared/theme
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

@@ -212,6 +212,7 @@ linter:
     void_checks: true
 
     # Pub rules
+    depend_on_referenced_packages: false
     package_names: true
     secure_pubspec_urls: true
     sort_pub_dependencies: true
