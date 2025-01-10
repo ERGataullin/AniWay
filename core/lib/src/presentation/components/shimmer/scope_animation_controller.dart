@@ -15,22 +15,22 @@ class ShimmerScopeAnimationController extends AnimationController {
 
   @override
   void addListener(VoidCallback listener) {
+    super.addListener(listener);
     _listeners.add(listener);
     _hasClients.value = true;
-    super.addListener(listener);
   }
 
   @override
   void removeListener(VoidCallback listener) {
-    _listeners.remove(listener);
-    _hasClients.value = _listeners.isNotEmpty;
     super.removeListener(listener);
+    if (_listeners.remove(listener)) {
+      _hasClients.value = _listeners.isNotEmpty;
+    }
   }
 
   @override
   void dispose() {
-    _listeners.clear();
-    _hasClients.dispose();
     super.dispose();
+    _hasClients.dispose();
   }
 }

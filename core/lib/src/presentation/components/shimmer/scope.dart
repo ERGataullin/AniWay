@@ -67,7 +67,9 @@ class ShimmerScopeState extends State<ShimmerScope>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController
+      ..hasClients.removeListener(_handleHasClientsChanged)
+      ..dispose();
     super.dispose();
   }
 
@@ -87,12 +89,9 @@ class ShimmerScopeState extends State<ShimmerScope>
         period: Durations.extralong4,
       );
     } else {
-      _animationController.stop();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!_animationController.hasClients.value) {
-          _animationController.reset();
-        }
-      });
+      _animationController
+        ..stop()
+        ..reset();
     }
   }
 }
