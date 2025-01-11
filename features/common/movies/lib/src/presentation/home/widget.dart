@@ -2,7 +2,6 @@ import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/src/domain/models/movie_card.dart';
-import 'package:movies/src/presentation/components/destination_title.dart';
 import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/home/wm.dart';
 
@@ -89,19 +88,18 @@ class _Content extends StatelessWidget {
           removeBottom: true,
           context: context,
           child: Column(
+            spacing: 16,
             children: [
               _Category(
                 title: context.wm.upNextTitle,
                 uri: context.wm.upNextUri,
                 movies: context.wm.upNextItems,
               ),
-              const SizedBox(height: 16),
               _Category(
                 title: context.wm.ongoingsTitle,
                 uri: context.wm.ongoingsUri,
                 movies: context.wm.ongoingItems,
               ),
-              const SizedBox(height: 16),
               _Category(
                 title: context.wm.popularsTitle,
                 uri: context.wm.popularsUri,

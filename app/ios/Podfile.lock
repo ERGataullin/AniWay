@@ -32,7 +32,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_native_splash: 576fbd69b830a63594ae678396fa17e43abbc5f8
+  flutter_native_splash: 6cad9122ea0fad137d23137dd14b937f3e90b145
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
