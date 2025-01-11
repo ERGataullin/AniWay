@@ -14,6 +14,7 @@ export 'src/domain/models/json.dart';
 export 'src/domain/models/proxied_uri.dart';
 export 'src/presentation/components/animated_visibility.dart';
 export 'src/presentation/components/conditional_wrapper.dart';
+export 'src/presentation/components/destination_title.dart';
 export 'src/presentation/components/expandable_text.dart';
 export 'src/presentation/components/image/adaptive_image_builder.dart';
 export 'src/presentation/components/image/fade_in_image_builder.dart';

@@ -156,6 +156,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     _pendingPageRequest = pageRequest;
     final List<T> pageItems = await pageRequest;
 
+    if (!mounted) return;
     // Выход, если данный запрос не является актуальным.
     if (pageRequest != _pendingPageRequest) return;
     _pendingPageRequest = null;

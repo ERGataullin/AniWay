@@ -18,7 +18,7 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  go_router: ^14.6.2
+  go_router: ^14.6.3
   l10n:
     path: ../features/shared/l10n
   movies:
@@ -33,7 +33,7 @@ dependencies:
 
 dev_dependencies:
   flutter_lints:
-  flutter_native_splash: ^2.4.2
+  flutter_native_splash: ^2.4.4
   flutter_test:
     sdk: flutter
 

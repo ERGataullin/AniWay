@@ -2,7 +2,6 @@ import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:movies/src/domain/models/episode.dart';
-import 'package:movies/src/presentation/components/destination_title.dart';
 import 'package:movies/src/presentation/components/episode_card.dart';
 import 'package:movies/src/presentation/components/movie_score.dart';
 import 'package:movies/src/presentation/movie/wm.dart';
@@ -338,7 +337,7 @@ class _Episodes extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   SizedBox(
                     height: 128,
                     child: ListenableBuilder(
