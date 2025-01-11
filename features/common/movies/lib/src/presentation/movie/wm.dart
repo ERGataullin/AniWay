@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -61,8 +63,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     implements IMovieWM {
   MovieWM(super._model);
 
-  static const int _episodesLimit = 10;
-
   @override
   late final Computed<bool> watchStatusSelected = Computed(
     trigger: model.watchStatusDetails,
@@ -106,7 +106,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   late final Computed<String> playButtonLabel = Computed(
     trigger: l10n,
-    () => l10n.value.playLabel,
+    () => l10n.value.videoPlayLabel,
   );
 
   @override
@@ -142,9 +142,11 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   late final Computed<Uri?> episodesUri = Computed(
     trigger: model.movie,
-    () => (model.movie.value?.episodes.length ?? 0) > _episodesLimit
-        ? widget.episodesUri
-        : null,
+    () => switch (model.movie.value) {
+      final MovieDetailsData movie when movie.episodes.length > 24 =>
+        widget.episodesUri,
+      _ => null,
+    },
   );
 
   @override
@@ -157,10 +159,13 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   late final Computed<String> episodesCount = Computed(
     trigger: Listenable.merge([l10n, model.movie]),
     () => switch (model.movie.value) {
-      final MovieDetailsData movie => l10n.value.xOfY(
-          movie.episodes.length,
-          movie.episodesCount,
+      final MovieDetailsData movie when movie.episodesCount != null =>
+        l10n.value.xOfY(
+          min(movie.episodes.length, movie.episodesCount!),
+          movie.episodesCount!,
         ),
+      final MovieDetailsData movie =>
+        l10n.value.releasedCount(movie.episodes.length),
       null => '',
     },
   );
@@ -168,11 +173,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   late final Computed<List<EpisodeData>> episodes = Computed(
     trigger: model.movie,
-    () =>
-        model.movie.value?.episodes
-            .take(_episodesLimit)
-            .toList(growable: false) ??
-        const [],
+    () => model.movie.value?.episodes ?? const [],
   );
 
   @override
@@ -184,6 +185,12 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     model.loadData(
       movieId: widget.movieId,
     );
+  }
+
+  @override
+  void didUpdateWidget(MovieWidget oldWidget) {
+    episodesUri.update();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override

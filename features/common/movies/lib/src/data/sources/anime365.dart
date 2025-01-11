@@ -319,6 +319,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         .cast<Json>()
         .map((genreJson) => genreJson['title']! as String)
         .toList(growable: false);
+    final int? episodesCount = switch (anime365Data['numberOfEpisodes']) {
+      final int numberOfEpisodes when numberOfEpisodes > 0 => numberOfEpisodes,
+      _ => null,
+    };
     final List<EpisodeDto> previewsAndEpisodes =
         anime365Data['episodes'] == null
             ? const []
@@ -367,10 +371,10 @@ class Anime365MoviesDataSource implements MoviesDataSource {
       previews: previewsAndEpisodes
           .where((episode) => episode.type == MovieTypeDto.preview)
           .toList(growable: false),
+      episodesCount: episodesCount,
       episodes: previewsAndEpisodes
           .where((episode) => episode.type != MovieTypeDto.preview)
           .toList(growable: false),
-      episodesCount: anime365Data['numberOfEpisodes']! as int,
       description: switch (anime365Data['descriptions']) {
         final List<dynamic> jsons => (jsons.first as Json)['value']! as String,
         _ => null,

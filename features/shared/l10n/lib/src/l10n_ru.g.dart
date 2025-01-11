@@ -9,6 +9,11 @@ class L10nRu extends L10n {
   L10nRu([String locale = 'ru']) : super(locale);
 
   @override
+  String releasedCount(int count) {
+    return 'Вышло $count';
+  }
+
+  @override
   String get authorLabel => 'Автор';
 
   @override
@@ -92,9 +97,6 @@ class L10nRu extends L10n {
   String get passwordLabel => 'Пароль';
 
   @override
-  String get playLabel => 'Смотреть';
-
-  @override
   String get popularsTitle => 'Популярное';
 
   @override
@@ -124,6 +126,9 @@ class L10nRu extends L10n {
     );
     return '$_temp0';
   }
+
+  @override
+  String get videoPlayLabel => 'Смотреть';
 
   @override
   String get videoQualityLabel => 'Качество';

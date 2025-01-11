@@ -10,7 +10,7 @@ class MovieDetailsData {
     required this.genres,
     required this.poster,
     required this.previews,
-    required this.episodesCount,
+    this.episodesCount,
     required this.episodes,
     this.description,
     this.score,
@@ -41,7 +41,7 @@ class MovieDetailsData {
 
   final List<EpisodeData> previews;
 
-  final int episodesCount;
+  final int? episodesCount;
 
   final List<EpisodeData> episodes;
 

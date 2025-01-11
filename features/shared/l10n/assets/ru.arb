@@ -1,6 +1,15 @@
 {
     "@@locale": "ru",
+    "releasedCount": "Вышло {count}",
+    "@releasedCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "authorLabel": "Автор",
+    "@authorLabel": {},
     "durationSeconds": "{seconds} секунд",
     "@durationSeconds": {
         "placeholders": {
@@ -10,11 +19,23 @@
         }
     },
     "episodesLabel": "Список серий",
+    "@episodesLabel": {},
     "emailLabel": "Электронная почта",
+    "@emailLabel": {},
     "emailValidationError": "Неверный адрес электронной почты",
+    "@emailValidationError": {},
     "homePageTitle": "Главная",
+    "@homePageTitle": {},
     "languageLabel": "Язык",
+    "@languageLabel": {},
     "languageTitle": "{type, select, ja{Японский} en{Английский} ru{Русский} other{Неизвестный язык}}",
+    "@languageTitle": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
     "movieEpisode": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} ad{Реклама {episode}} music{Музыка {episode}} preview{Трейлер {episode}} other{{episode} серия}}",
     "@movieEpisode": {
         "placeholders": {
@@ -27,12 +48,23 @@
         }
     },
     "movieType": "{type, select, tv{ТВ} movie{Фильм} ova{OVA} ona{ONA} special{Спешл} tvSpecial{ТВ спешл} ad{Реклама} music{Музыкальное} preview{Трейлер} other{}}",
+    "@movieType": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
     "ongoingsTitle": "Cейчас выходят",
+    "@ongoingsTitle": {},
     "passwordLabel": "Пароль",
-    "playLabel": "Смотреть",
+    "@passwordLabel": {},
     "popularsTitle": "Популярное",
+    "@popularsTitle": {},
     "signInSubmitLabel": "Войти через Anime365",
+    "@signInSubmitLabel": {},
     "searchPageTitle": "Поиск",
+    "@searchPageTitle": {},
     "range": "{start}-{end}",
     "@range": {
         "placeholders": {
@@ -45,7 +77,9 @@
         }
     },
     "upNextTitle": "К просмотру",
+    "@upNextTitle": {},
     "videoPlaybackSpeedLabel": "Скорость воспроизведения",
+    "@videoPlaybackSpeedLabel": {},
     "videoPlaybackSpeed": "{speed, plural, =1{Обычная} other{{speed}}}",
     "@videoPlaybackSpeed": {
         "placeholders": {
@@ -54,7 +88,10 @@
             }
         }
     },
+    "videoPlayLabel": "Смотреть",
+    "@videoPlayLabel": {},
     "videoQualityLabel": "Качество",
+    "@videoQualityLabel": {},
     "videoQuality": "{quality}p",
     "@videoQuality": {
         "placeholders": {
@@ -64,8 +101,23 @@
         }
     },
     "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}",
+    "@videoQualityType": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
     "watchStatusAdd": "Добавить в список",
+    "@watchStatusAdd": {},
     "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{В библиотеке отсутствует} other{Неизвестный статус}}",
+    "@watchStatus": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
     "xOfY": "{x} из {y}",
     "@xOfY": {
         "placeholders": {
