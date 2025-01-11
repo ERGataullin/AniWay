@@ -93,6 +93,12 @@ abstract class L10n {
     Locale('ru')
   ];
 
+  /// No description provided for @releasedCount.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вышло {count}'**
+  String releasedCount(int count);
+
   /// No description provided for @authorLabel.
   ///
   /// In ru, this message translates to:
@@ -165,12 +171,6 @@ abstract class L10n {
   /// **'Пароль'**
   String get passwordLabel;
 
-  /// No description provided for @playLabel.
-  ///
-  /// In ru, this message translates to:
-  /// **'Смотреть'**
-  String get playLabel;
-
   /// No description provided for @popularsTitle.
   ///
   /// In ru, this message translates to:
@@ -212,6 +212,12 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'{speed, plural, =1{Обычная} other{{speed}}}'**
   String videoPlaybackSpeed(num speed);
+
+  /// No description provided for @videoPlayLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Смотреть'**
+  String get videoPlayLabel;
 
   /// No description provided for @videoQualityLabel.
   ///
