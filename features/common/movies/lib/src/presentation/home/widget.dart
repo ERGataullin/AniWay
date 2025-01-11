@@ -76,7 +76,6 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const categoriesMargin = EdgeInsets.symmetric(horizontal: 16);
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
@@ -85,29 +84,31 @@ class _Content extends StatelessWidget {
           top: 16 + safeAreaPadding.top,
           bottom: 16 + safeAreaPadding.bottom,
         ),
-        child: Column(
-          children: [
-            _Category(
-              margin: categoriesMargin,
-              title: context.wm.upNextTitle,
-              uri: context.wm.upNextUri,
-              movies: context.wm.upNextItems,
-            ),
-            const SizedBox(height: 16),
-            _Category(
-              margin: categoriesMargin,
-              title: context.wm.ongoingsTitle,
-              uri: context.wm.ongoingsUri,
-              movies: context.wm.ongoingItems,
-            ),
-            const SizedBox(height: 16),
-            _Category(
-              margin: categoriesMargin,
-              title: context.wm.popularsTitle,
-              uri: context.wm.popularsUri,
-              movies: context.wm.popularItems,
-            ),
-          ],
+        child: MediaQuery.removePadding(
+          removeTop: true,
+          removeBottom: true,
+          context: context,
+          child: Column(
+            children: [
+              _Category(
+                title: context.wm.upNextTitle,
+                uri: context.wm.upNextUri,
+                movies: context.wm.upNextItems,
+              ),
+              const SizedBox(height: 16),
+              _Category(
+                title: context.wm.ongoingsTitle,
+                uri: context.wm.ongoingsUri,
+                movies: context.wm.ongoingItems,
+              ),
+              const SizedBox(height: 16),
+              _Category(
+                title: context.wm.popularsTitle,
+                uri: context.wm.popularsUri,
+                movies: context.wm.popularItems,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -116,13 +117,10 @@ class _Content extends StatelessWidget {
 
 class _Category extends StatelessWidget {
   const _Category({
-    this.margin = EdgeInsets.zero,
     required this.title,
     required this.uri,
     required this.movies,
   });
-
-  final EdgeInsets margin;
 
   final ValueListenable<String> title;
 
@@ -132,29 +130,21 @@ class _Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        top: margin.top,
-        bottom: margin.bottom,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DestinationTitle(
-            title,
-            uri: uri,
-            margin: EdgeInsets.only(
-              left: margin.left,
-              right: margin.right,
-            ),
-          ),
-          const SizedBox(height: 4),
-          _Movies(
-            margin: margin,
-            movies: movies,
-          ),
-        ],
-      ),
+    const marginHorizontal = EdgeInsets.symmetric(horizontal: 16);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DestinationTitle(
+          title,
+          uri: uri,
+          margin: marginHorizontal,
+        ),
+        const SizedBox(height: 8),
+        _Movies(
+          margin: marginHorizontal,
+          movies: movies,
+        ),
+      ],
     );
   }
 }

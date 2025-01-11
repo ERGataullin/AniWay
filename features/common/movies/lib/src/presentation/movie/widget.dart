@@ -338,7 +338,7 @@ class _Episodes extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   SizedBox(
                     height: 128,
                     child: ListenableBuilder(
