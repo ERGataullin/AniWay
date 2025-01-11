@@ -33,6 +33,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           ),
         )..layout(maxWidth: constraints.maxWidth);
         final bool exceedsBreakpoint = textPainter.didExceedMaxLines;
+        textPainter.dispose();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
