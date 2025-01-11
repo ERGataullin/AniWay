@@ -13,7 +13,9 @@ class ExpandableText extends StatefulWidget {
 }
 
 class _ExpandableTextState extends State<ExpandableText> {
-  static const int _maxLinesCollapsed = 5;
+  static const int _maxLinesCollapsed = 4;
+
+  static const int _breakpoint = 6;
 
   bool _isExpanded = false;
 
@@ -21,12 +23,16 @@ class _ExpandableTextState extends State<ExpandableText> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final TextStyle style = DefaultTextStyle.of(context).style;
         final textPainter = TextPainter(
-          maxLines: _maxLinesCollapsed,
+          maxLines: _breakpoint,
           textDirection: Directionality.of(context),
-          text: TextSpan(text: widget.data),
+          text: TextSpan(
+            text: widget.data,
+            style: style,
+          ),
         )..layout(maxWidth: constraints.maxWidth);
-        final bool exceedsMaxLinesCollapsed = textPainter.didExceedMaxLines;
+        final bool exceedsBreakpoint = textPainter.didExceedMaxLines;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -39,10 +45,15 @@ class _ExpandableTextState extends State<ExpandableText> {
                 widget.data,
                 key: ValueKey(_isExpanded),
                 overflow: TextOverflow.fade,
-                maxLines: _isExpanded ? null : _maxLinesCollapsed,
+                style: style,
+                maxLines: switch (exceedsBreakpoint) {
+                  false => null,
+                  true when _isExpanded => null,
+                  true => _maxLinesCollapsed,
+                },
               ),
             ),
-            if (exceedsMaxLinesCollapsed)
+            if (exceedsBreakpoint)
               IconButton(
                 icon: AnimatedRotation(
                   curve: Easing.standard,
