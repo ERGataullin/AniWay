@@ -38,12 +38,10 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
         child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: SizedBox(
+            title: const SizedBox(
               height: 24,
               child: FittedBox(
-                child: Logo(
-                  style: TextTheme.primaryOf(context).titleLarge,
-                ),
+                child: Logo(primary: false),
               ),
             ),
           ),
