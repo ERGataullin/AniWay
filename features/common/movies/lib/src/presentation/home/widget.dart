@@ -34,12 +34,17 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   Widget build(IHomeWM wm) {
     return Provider<IHomeWM>.value(
       value: wm,
-      child: ShimmerScope(
+      builder: (context, __) => ShimmerScope(
         child: Scaffold(
           appBar: AppBar(
-            title: ValueListenableBuilder(
-              valueListenable: wm.title,
-              builder: (context, title, ___) => Text(title),
+            centerTitle: true,
+            title: SizedBox(
+              height: 24,
+              child: FittedBox(
+                child: Logo(
+                  style: TextTheme.primaryOf(context).titleLarge,
+                ),
+              ),
             ),
           ),
           body: ListenableBuilder(

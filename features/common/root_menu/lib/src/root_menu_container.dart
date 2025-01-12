@@ -45,11 +45,11 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
       final Key childKey = transition.child!.key!;
       _subtrees
         ..remove(childKey)
-        ..[transition.child!.key!] = subtree;
+        ..[childKey] = subtree;
     }
 
     return Stack(
-      alignment: Alignment.center,
+      clipBehavior: Clip.none,
       children: _subtrees.values.toList(growable: false),
     );
   }

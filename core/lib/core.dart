@@ -1,5 +1,6 @@
 export 'package:animations/animations.dart';
 export 'package:elementary/elementary.dart' hide ErrorHandler;
+export 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:html/dom.dart' hide Text;
 export 'package:html/parser.dart';

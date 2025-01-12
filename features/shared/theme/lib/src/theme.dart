@@ -12,6 +12,9 @@ extension _AppOverrides on ThemeData {
         inputDecorationTheme: inputDecorationTheme.copyWith(
           border: const OutlineInputBorder(),
         ),
+        navigationRailTheme: navigationRailTheme.copyWith(
+          labelType: NavigationRailLabelType.all,
+        ),
       );
 }
 

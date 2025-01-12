@@ -31,32 +31,35 @@ class DestinationTitle extends StatelessWidget {
       child: Padding(
         padding: margin,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Link(
-              uri: uri,
-              builder: (context, followLink) => MouseRegion(
-                cursor: WidgetStateMouseCursor.clickable,
-                child: GestureDetector(
-                  onTap: followLink,
-                  child: Row(
-                    children: [
-                      Text(
-                        title.value,
-                        style: titleStyle,
-                      ),
-                      if (followLink != null)
-                        Icon(
-                          Icons.chevron_right_outlined,
-                          size: titleStyle.fontSize! * titleStyle.height!,
-                          weight: titleStyle.fontWeight?.value.toDouble(),
-                          color: titleStyle.color!.withValues(alpha: .6),
-                          shadows: titleStyle.shadows,
-                          applyTextScaling: true,
+            Expanded(
+              child: Link(
+                uri: uri,
+                builder: (context, followLink) => MouseRegion(
+                  cursor: WidgetStateMouseCursor.clickable,
+                  child: GestureDetector(
+                    onTap: followLink,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            title.value,
+                            style: titleStyle,
+                          ),
                         ),
-                    ],
+                        if (followLink != null)
+                          Icon(
+                            Icons.chevron_right_outlined,
+                            size: titleStyle.fontSize! * titleStyle.height!,
+                            weight: titleStyle.fontWeight?.value.toDouble(),
+                            color: titleStyle.color!.withValues(alpha: .6),
+                            shadows: titleStyle.shadows,
+                            applyTextScaling: true,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
