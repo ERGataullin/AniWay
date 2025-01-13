@@ -33,7 +33,6 @@ class Logo extends StatelessWidget {
         .copyWith(
       fontFamily: 'Alvida',
       package: 'core',
-      height: .75,
       color: primary ? ColorScheme.of(context).primary : null,
     );
 
