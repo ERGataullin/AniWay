@@ -68,27 +68,23 @@ class RootMenu extends StatelessWidget {
               outCurve: _menuAnimationCurveOut,
               inDuration: _menuAnimationDurationIn,
               outDuration: _menuAnimationDurationOut,
-              builder: (context) => DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border(
-                    right: BorderSide(
-                      width: 0,
-                      color: Theme.of(context).dividerColor,
+              builder: (context) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SafeArea(
+                    right: false,
+                    child: AdaptiveScaffold.standardNavigationRail(
+                      labelType: null,
+                      leading: const Logo.short(enableRedirect: true),
+                      selectedIndex: currentIndex,
+                      onDestinationSelected: onDestinationSelected,
+                      destinations: destinations
+                          .map(AdaptiveScaffold.toRailDestination)
+                          .toList(growable: false),
                     ),
                   ),
-                ),
-                child: SafeArea(
-                  right: false,
-                  child: AdaptiveScaffold.standardNavigationRail(
-                    labelType: null,
-                    leading: const Logo.short(),
-                    selectedIndex: currentIndex,
-                    onDestinationSelected: onDestinationSelected,
-                    destinations: destinations
-                        .map(AdaptiveScaffold.toRailDestination)
-                        .toList(growable: false),
-                  ),
-                ),
+                  const VerticalDivider(width: 1),
+                ],
               ),
             ),
             Breakpoints.largeAndUp: SlotLayout.from(
@@ -103,7 +99,7 @@ class RootMenu extends StatelessWidget {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(12 + 16),
-                    child: Logo(),
+                    child: Logo(enableRedirect: true),
                   ),
                   ...destinations.map(
                     (destination) => NavigationDrawerDestination(
