@@ -37,6 +37,8 @@ abstract interface class IHomeWM implements IWidgetModel {
   Uri get ongoingsUri;
 
   Uri get popularsUri;
+
+  Future<void> handleRefresh();
 }
 
 class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
@@ -102,6 +104,11 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
 
   @override
   Uri get popularsUri => widget.popularsUri;
+
+  @override
+  Future<void> handleRefresh() async {
+    await model.refresh();
+  }
 
   @override
   void dispose() {
