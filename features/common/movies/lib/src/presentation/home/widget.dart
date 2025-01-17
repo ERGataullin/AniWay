@@ -76,36 +76,39 @@ class _Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
-    return LayoutBuilder(
-      builder: (context, constraints) => SingleChildScrollView(
-        primary: true,
-        padding: EdgeInsets.only(
-          top: 16 + safeAreaPadding.top,
-          bottom: 16 + safeAreaPadding.bottom,
-        ),
-        child: MediaQuery.removePadding(
-          removeTop: true,
-          removeBottom: true,
-          context: context,
-          child: Column(
-            spacing: 16,
-            children: [
-              _Category(
-                title: context.wm.upNextTitle,
-                uri: context.wm.upNextUri,
-                movies: context.wm.upNextItems,
-              ),
-              _Category(
-                title: context.wm.ongoingsTitle,
-                uri: context.wm.ongoingsUri,
-                movies: context.wm.ongoingItems,
-              ),
-              _Category(
-                title: context.wm.popularsTitle,
-                uri: context.wm.popularsUri,
-                movies: context.wm.popularItems,
-              ),
-            ],
+    return RefreshIndicator(
+      onRefresh: context.wm.handleRefresh,
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          primary: true,
+          padding: EdgeInsets.only(
+            top: 16 + safeAreaPadding.top,
+            bottom: 16 + safeAreaPadding.bottom,
+          ),
+          child: MediaQuery.removePadding(
+            removeTop: true,
+            removeBottom: true,
+            context: context,
+            child: Column(
+              spacing: 16,
+              children: [
+                _Category(
+                  title: context.wm.upNextTitle,
+                  uri: context.wm.upNextUri,
+                  movies: context.wm.upNextItems,
+                ),
+                _Category(
+                  title: context.wm.ongoingsTitle,
+                  uri: context.wm.ongoingsUri,
+                  movies: context.wm.ongoingItems,
+                ),
+                _Category(
+                  title: context.wm.popularsTitle,
+                  uri: context.wm.popularsUri,
+                  movies: context.wm.popularItems,
+                ),
+              ],
+            ),
           ),
         ),
       ),

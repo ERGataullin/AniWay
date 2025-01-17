@@ -12,6 +12,8 @@ abstract interface class IHomeModel implements ElementaryModel {
   ValueListenable<List<MovieBaseData>> get ongoings;
 
   ValueListenable<List<MovieBaseData>> get populars;
+
+  Future<void> refresh();
 }
 
 class HomeModel extends ElementaryModel implements IHomeModel {
@@ -37,6 +39,22 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   final MoviesService _service;
 
   @override
+  Future<void> refresh() async {
+    final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
+    final Future<List<MovieBaseData>> newOngoingFuture =
+        _service.getMovies(isOngoing: true);
+    final Future<List<MovieBaseData>> newPopularFuture = _service.getMovies();
+
+    final List<UpNextData> upNext = await newUpNextFuture;
+    final List<MovieBaseData> ongoings = await newOngoingFuture;
+    final List<MovieBaseData> populars = await newPopularFuture;
+
+    this.upNext.value = List.unmodifiable(upNext.take(10));
+    this.ongoings.value = List.unmodifiable(ongoings.take(10));
+    this.populars.value = List.unmodifiable(populars.take(10));
+  }
+
+  @override
   void init() {
     _load();
     _service.upNextChanges.addListener(_load);
@@ -54,19 +72,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
 
   Future<void> _load() async {
     loading.value = true;
-
-    final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
-    final Future<List<MovieBaseData>> newOngoingFuture =
-        _service.getMovies(isOngoing: true);
-    final Future<List<MovieBaseData>> newPopularFuture = _service.getMovies();
-
-    final List<UpNextData> upNext = await newUpNextFuture;
-    final List<MovieBaseData> ongoings = await newOngoingFuture;
-    final List<MovieBaseData> populars = await newPopularFuture;
-
-    this.upNext.value = List.unmodifiable(upNext.take(10));
-    this.ongoings.value = List.unmodifiable(ongoings.take(10));
-    this.populars.value = List.unmodifiable(populars.take(10));
+    await refresh();
     loading.value = false;
   }
 }
