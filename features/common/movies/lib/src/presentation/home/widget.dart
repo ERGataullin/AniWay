@@ -76,7 +76,7 @@ class _Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
-    return RefreshIndicator(
+    return RefreshIndicator.adaptive(
       onRefresh: context.wm.handleRefresh,
       child: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
