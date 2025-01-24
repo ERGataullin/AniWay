@@ -36,6 +36,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
       value: wm,
       builder: (context, __) => ShimmerScope(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             centerTitle: true,
             title: const SizedBox(

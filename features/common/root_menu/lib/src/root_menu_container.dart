@@ -45,7 +45,7 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
       final Key childKey = transition.child!.key!;
       _subtrees
         ..remove(childKey)
-        ..[childKey] = subtree;
+        ..[childKey] = entry;
     }
 
     return Stack(
