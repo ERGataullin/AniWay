@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:core/core.dart';
 import 'package:http/http.dart';
 
-class HttpNetwork implements Network {
-  HttpNetwork({
+class HttpService implements NetworkService {
+  HttpService({
     required this.baseUri,
   }) : _client = Client();
 

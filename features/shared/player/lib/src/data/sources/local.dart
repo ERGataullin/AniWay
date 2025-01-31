@@ -3,7 +3,7 @@ import 'package:player/player.dart';
 
 class LocalPlayerDataSource implements PlayerDataSource {
   const LocalPlayerDataSource({
-    required Storage storage,
+    required StorageService storage,
   }) : _storage = storage;
 
   static const String _collection = 'player';
@@ -11,7 +11,7 @@ class LocalPlayerDataSource implements PlayerDataSource {
   static const String _personalizedTranslationAuthorsRatesKey =
       'personalized_translation_authors_rates';
 
-  final Storage _storage;
+  final StorageService _storage;
 
   @override
   Future<Map<String, int>> getPersonalizedTranslationAuthorsRates() async {

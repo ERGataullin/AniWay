@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-class HiveStorage implements Storage {
-  const HiveStorage();
+class HiveService implements StorageService {
+  const HiveService();
 
   @override
   Future<void> init() async {

@@ -59,7 +59,11 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
       orElse: () => widget.image!.uri.entries.last,
     );
     _imageProvider = NetworkImage(
-      context.read<Network>().baseUri.resolveUri(imageEntry.value).toString(),
+      context
+          .read<NetworkService>()
+          .baseUri
+          .resolveUri(imageEntry.value)
+          .toString(),
     );
     _imageWidth = imageEntry.key;
   }

@@ -16,7 +16,7 @@ abstract class CookieManager implements Initable {
 
 class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   CookieManagerImpl({
-    required Storage storage,
+    required StorageService storage,
   }) : _storage = storage;
 
   static const String _effectiveCookieHeaderName =
@@ -35,7 +35,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   @override
   final ValueNotifier<CookieMap> cookie = ValueNotifier(const {});
 
-  final Storage _storage;
+  final StorageService _storage;
 
   @override
   NetworkInterceptor get interceptor => this;

@@ -10,8 +10,8 @@ class AppScope extends InheritedWidget {
   AppScope({
     super.key,
     ErrorHandler? errorHandler,
-    Network? network,
-    Storage? storage,
+    NetworkService? network,
+    StorageService? storage,
     CookieManager? cookieManager,
     AuthService? authService,
     MoviesService? moviesService,
@@ -20,7 +20,7 @@ class AppScope extends InheritedWidget {
   }) {
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
     this.network = network ??
-        HttpNetwork(
+        HttpService(
           baseUri: kIsWeb
               ? ProxiedUri(
                   proxy: Uri(
@@ -37,7 +37,7 @@ class AppScope extends InheritedWidget {
                   host: 'smotret-anime.online',
                 ),
         );
-    this.storage = storage ?? const HiveStorage();
+    this.storage = storage ?? const HiveService();
     this.cookieManager =
         cookieManager ?? CookieManagerImpl(storage: this.storage);
     this.authService = authService ??
@@ -69,9 +69,9 @@ class AppScope extends InheritedWidget {
 
   late final ErrorHandler errorHandler;
 
-  late final Network network;
+  late final NetworkService network;
 
-  late final Storage storage;
+  late final StorageService storage;
 
   late final CookieManager cookieManager;
 
@@ -95,8 +95,8 @@ class AppScope extends InheritedWidget {
   Widget get child => MultiProvider(
         providers: [
           Provider<ErrorHandler>.value(value: errorHandler),
-          Provider<Network>.value(value: network),
-          Provider<Storage>.value(value: storage),
+          Provider<NetworkService>.value(value: network),
+          Provider<StorageService>.value(value: storage),
           Provider<CookieManager>.value(value: cookieManager),
           Provider<AuthService>.value(value: authService),
           Provider<MoviesService>.value(value: moviesService),

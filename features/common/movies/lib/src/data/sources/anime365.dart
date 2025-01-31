@@ -14,13 +14,13 @@ import 'package:player/player.dart';
 class Anime365MoviesDataSource implements MoviesDataSource {
   Anime365MoviesDataSource({
     required CookieManager cookieManager,
-    required Network network,
+    required NetworkService network,
   })  : _cookieManager = cookieManager,
         _network = network;
 
   final CookieManager _cookieManager;
 
-  final Network _network;
+  final NetworkService _network;
 
   int? _upNextMaxPage;
 
