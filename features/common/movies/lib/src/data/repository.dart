@@ -40,11 +40,11 @@ class MoviesRepository {
     return _remote.getMovie(id);
   }
 
-  Future<List<VideoTranslationDto>> getTranslations(int episodeId) {
+  Future<List<VideoTranslationData>> getTranslations(int episodeId) {
     return _remote.getTranslations(episodeId);
   }
 
-  Future<VideoDto> getTranslationVideo(int translationId) {
+  Future<VideoData> getTranslationVideo(int translationId) {
     return _remote.getTranslationVideo(translationId);
   }
 

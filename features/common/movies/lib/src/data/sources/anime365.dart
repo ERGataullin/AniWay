@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 import 'package:movies/movies.dart';
@@ -392,7 +394,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   }
 
   @override
-  Future<List<VideoTranslationDto>> getTranslations(Object episodeId) async {
+  Future<List<VideoTranslationData>> getTranslations(Object episodeId) async {
     final ResponseData<Json> response = await _network.request(
       RequestData(
         uri: Uri(
@@ -414,12 +416,18 @@ class Anime365MoviesDataSource implements MoviesDataSource {
               translationJson['type'] != 'voiceOther',
         )
         .map(
-          (translationJson) => VideoTranslationDto(
+          (translationJson) => VideoTranslationData(
             id: translationJson['id']! as int,
             title: translationJson['authorsSummary']! as String,
-            type: translationJson['typeKind']! as String,
-            language: translationJson['typeLang']! as String,
-            qualityType: translationJson['qualityType']! as String,
+            type: VideoTranslationType.valueOf(
+              translationJson['typeKind']! as String,
+            ),
+            locale: Locale.fromSubtags(
+              languageCode: translationJson['typeLang']! as String,
+            ),
+            qualityType: VideoQualityType.valueOf(
+              translationJson['qualityType']! as String,
+            ),
             authors: List.from(
               translationJson['authorsList']! as List<dynamic>,
             ),
@@ -429,7 +437,7 @@ class Anime365MoviesDataSource implements MoviesDataSource {
   }
 
   @override
-  Future<VideoDto> getTranslationVideo(Object translationId) async {
+  Future<VideoData> getTranslationVideo(Object translationId) async {
     final ResponseData<Json> response = await _network.request(
       RequestData(
         uri: Uri(
@@ -444,17 +452,21 @@ class Anime365MoviesDataSource implements MoviesDataSource {
         (data['download']! as List<dynamic>).cast();
     final List<Json> streamSourcesJsons =
         (data['stream']! as List<dynamic>).cast();
-    return VideoDto(
+    return VideoData(
       download: {
         for (final Json sourceJson in downloadSourcesJsons)
-          sourceJson['height']! as num: sourceJson['url']! as String,
+          sourceJson['height']! as num: Uri.parse(sourceJson['url']! as String),
       },
       stream: {
         for (final Json sourceJson in streamSourcesJsons)
-          sourceJson['height']! as num:
-              (sourceJson['urls']! as List<dynamic>).first as String,
+          sourceJson['height']! as num: Uri.parse(
+            (sourceJson['urls']! as List<dynamic>).first as String,
+          ),
       },
-      subtitlesUrl: data['subtitlesUrl'] as String?,
+      subtitlesUri: switch (data['subtitlesUrl']) {
+        final String url => Uri.tryParse(url),
+        _ => null,
+      },
     );
   }
 

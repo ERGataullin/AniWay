@@ -65,16 +65,14 @@ class MoviesService implements Initable {
     return MovieDetailsData.fromDto(dto);
   }
 
-  Future<List<VideoTranslationData>> getTranslations(int episodeId) async {
-    final List<VideoTranslationDto> dtos = await _repository.getTranslations(
+  Future<List<VideoTranslationData>> getTranslations(int episodeId) {
+    return _repository.getTranslations(
       episodeId,
     );
-    return dtos.map(VideoTranslationData.fromDto).toList(growable: false);
   }
 
-  Future<VideoData> getTranslationVideo(int translationId) async {
-    final VideoDto dto = await _repository.getTranslationVideo(translationId);
-    return VideoData.fromDto(dto);
+  Future<VideoData> getTranslationVideo(int translationId) {
+    return _repository.getTranslationVideo(translationId);
   }
 
   Future<void> saveTranslationWatched(int translationId) async {

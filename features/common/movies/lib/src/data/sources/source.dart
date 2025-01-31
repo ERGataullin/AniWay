@@ -22,9 +22,9 @@ abstract interface class MoviesDataSource {
 
   Future<MovieDetailsDto> getMovie(int id);
 
-  Future<List<VideoTranslationDto>> getTranslations(int episodeId);
+  Future<List<VideoTranslationData>> getTranslations(int episodeId);
 
-  Future<VideoDto> getTranslationVideo(int translationId);
+  Future<VideoData> getTranslationVideo(int translationId);
 
   Future<void> saveTranslationWatched(int translationId);
 
