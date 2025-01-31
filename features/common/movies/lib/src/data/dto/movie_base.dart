@@ -14,7 +14,7 @@ class MovieBaseDto {
 
   final String title;
 
-  final ImageDto poster;
+  final ImageData poster;
 
   final MovieTypeDto type;
 

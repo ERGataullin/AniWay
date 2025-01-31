@@ -54,9 +54,10 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
     final double breakpointWidth = physicalPixelsWidth * .9;
     if (breakpointWidth <= _imageWidth) return;
 
-    final MapEntry<num, Uri> imageEntry = widget.image!.uri.entries.firstWhere(
+    final MapEntry<num, Uri> imageEntry =
+        widget.image!.resolutionsUris.entries.firstWhere(
       (entry) => entry.key >= breakpointWidth,
-      orElse: () => widget.image!.uri.entries.last,
+      orElse: () => widget.image!.resolutionsUris.entries.last,
     );
     _imageProvider = NetworkImage(
       context

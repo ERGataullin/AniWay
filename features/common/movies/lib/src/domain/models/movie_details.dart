@@ -21,7 +21,7 @@ class MovieDetailsData {
         uri: Uri.parse(dto.url),
         title: dto.title,
         genres: dto.genres,
-        poster: ImageData.fromDto(dto.poster),
+        poster: dto.poster,
         previews: List.unmodifiable(dto.previews.map(EpisodeData.fromDto)),
         episodesCount: dto.episodesCount,
         episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),

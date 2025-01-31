@@ -14,7 +14,7 @@ class MovieBaseData {
   factory MovieBaseData.fromDto(MovieBaseDto dto) => MovieBaseData(
         id: dto.id,
         title: dto.title,
-        poster: ImageData.fromDto(dto.poster),
+        poster: dto.poster,
         type: MovieType.fromDto(dto.type),
         score: dto.score,
       );

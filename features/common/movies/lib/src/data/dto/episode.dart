@@ -15,5 +15,5 @@ class EpisodeDto {
 
   final num? number;
 
-  final ImageDto? preview;
+  final ImageData? preview;
 }

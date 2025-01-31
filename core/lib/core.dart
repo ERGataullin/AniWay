@@ -8,7 +8,6 @@ export 'package:provider/provider.dart';
 export 'package:url_launcher/link.dart';
 export 'package:url_launcher/url_launcher.dart';
 
-export 'src/data/dto/image.dart';
 export 'src/data/services/network/http.dart';
 export 'src/data/services/network/network.dart';
 export 'src/data/services/storage/hive.dart';

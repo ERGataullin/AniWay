@@ -96,15 +96,17 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           id: movieJson['id']! as int,
           title: (movieJson['titles'] as Json?)?['ru'] as String? ??
               movieJson['title']! as String,
-          poster: ImageDto(
-            url: {
-              60: shikimoriPoster['miniAltUrl']! as String,
-              120: shikimoriPoster['miniAlt2xUrl']! as String,
-              160: shikimoriPoster['previewAltUrl']! as String,
-              225: shikimoriPoster['mainAltUrl']! as String,
-              320: shikimoriPoster['previewAlt2xUrl']! as String,
-              450: shikimoriPoster['mainAlt2xUrl']! as String,
-              double.infinity: shikimoriPoster['originalUrl']! as String,
+          poster: ImageData(
+            resolutionsUris: {
+              60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
+              120: Uri.parse(shikimoriPoster['miniAlt2xUrl']! as String),
+              160: Uri.parse(shikimoriPoster['previewAltUrl']! as String),
+              225: Uri.parse(shikimoriPoster['mainAltUrl']! as String),
+              320: Uri.parse(shikimoriPoster['previewAlt2xUrl']! as String),
+              450: Uri.parse(shikimoriPoster['mainAlt2xUrl']! as String),
+              double.infinity: Uri.parse(
+                shikimoriPoster['originalUrl']! as String,
+              ),
             },
           ),
           type: _convertJsonToMovieType(movieJson['type']! as String),
@@ -240,10 +242,12 @@ class Anime365MoviesDataSource implements MoviesDataSource {
           movie: MovieBaseDto(
             id: movieId,
             title: movieTitle,
-            poster: ImageDto(
-              url: {
-                140: posterUrl,
-                double.infinity: posterUrl.replaceFirst('140x140.1.', ''),
+            poster: ImageData(
+              resolutionsUris: {
+                140: Uri.parse(posterUrl),
+                double.infinity: Uri.parse(
+                  posterUrl.replaceFirst('140x140.1.', ''),
+                ),
               },
             ),
             type: type,
@@ -344,21 +348,23 @@ class Anime365MoviesDataSource implements MoviesDataSource {
                     number: number,
                     preview: previewUrl == null
                         ? null
-                        : ImageDto(
-                            url: {double.infinity: previewUrl},
+                        : ImageData(
+                            resolutionsUris: {
+                              double.infinity: Uri.parse(previewUrl),
+                            },
                           ),
                   );
                 },
               ).toList(growable: false);
-    final poster = ImageDto(
-      url: {
-        60: shikimoriPoster['miniAltUrl']! as String,
-        120: shikimoriPoster['miniAlt2xUrl']! as String,
-        160: shikimoriPoster['previewAltUrl']! as String,
-        225: shikimoriPoster['mainAltUrl']! as String,
-        320: shikimoriPoster['previewAlt2xUrl']! as String,
-        450: shikimoriPoster['mainAlt2xUrl']! as String,
-        double.infinity: shikimoriPoster['originalUrl']! as String,
+    final poster = ImageData(
+      resolutionsUris: {
+        60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
+        120: Uri.parse(shikimoriPoster['miniAlt2xUrl']! as String),
+        160: Uri.parse(shikimoriPoster['previewAltUrl']! as String),
+        225: Uri.parse(shikimoriPoster['mainAltUrl']! as String),
+        320: Uri.parse(shikimoriPoster['previewAlt2xUrl']! as String),
+        450: Uri.parse(shikimoriPoster['mainAlt2xUrl']! as String),
+        double.infinity: Uri.parse(shikimoriPoster['originalUrl']! as String),
       },
     );
 

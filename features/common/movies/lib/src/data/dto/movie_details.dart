@@ -23,7 +23,7 @@ class MovieDetailsDto {
 
   final List<String> genres;
 
-  final ImageDto poster;
+  final ImageData poster;
 
   final List<EpisodeDto> previews;
 

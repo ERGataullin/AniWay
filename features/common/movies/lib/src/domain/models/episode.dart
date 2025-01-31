@@ -14,10 +14,7 @@ class EpisodeData {
         id: dto.id,
         type: MovieType.fromDto(dto.type),
         number: dto.number,
-        preview: switch (dto.preview) {
-          final ImageDto previewDto => ImageData.fromDto(previewDto),
-          null => null,
-        },
+        preview: dto.preview,
       );
 
   final int id;

@@ -1,17 +1,12 @@
-import 'package:core/core.dart';
-
+/// Изображение.
+///
+/// Может иметь экземпляры в различных разрешениях.
 class ImageData {
-  const ImageData({required this.uri});
-
-  factory ImageData.fromDto(ImageDto dto) => ImageData(
-        uri: dto.url.map(
-          (key, value) => MapEntry(key, Uri.parse(value)),
-        ),
-      );
+  const ImageData({required this.resolutionsUris});
 
   /// Набор изображений в различных разрешениях.
   ///
   /// Ключ - ширина изображений в физических пикселях.
   /// Значение - URI изображения.
-  final Map<num, Uri> uri;
+  final Map<num, Uri> resolutionsUris;
 }
