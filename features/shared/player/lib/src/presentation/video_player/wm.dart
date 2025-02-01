@@ -30,9 +30,9 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<VoidCallback?> get onMenuPressed;
 
-  ValueListenable<VoidCallback?> get previousCallback;
+  ValueListenable<VoidCallback?> get onPreviousPressed;
 
-  ValueListenable<VoidCallback?> get nextCallback;
+  ValueListenable<VoidCallback?> get onNextPressed;
 
   VideoController get videoController;
 
@@ -97,7 +97,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final Computed<VoidCallback?> previousCallback = Computed(
+  late final Computed<VoidCallback?> onPreviousPressed = Computed(
     () => widget.onPreviousPressed == null
         ? null
         : () {
@@ -107,7 +107,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final Computed<VoidCallback?> nextCallback = Computed(
+  late final Computed<VoidCallback?> onNextPressed = Computed(
     () => widget.onNextPressed == null
         ? null
         : () {
@@ -164,8 +164,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     title.update();
     subtitle.update();
     onMenuPressed.update();
-    previousCallback.update();
-    nextCallback.update();
+    onPreviousPressed.update();
+    onNextPressed.update();
   }
 
   @override
@@ -205,8 +205,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     title.dispose();
     subtitle.dispose();
     onMenuPressed.dispose();
-    previousCallback.dispose();
-    nextCallback.dispose();
+    onPreviousPressed.dispose();
+    onNextPressed.dispose();
     videoController.dispose();
     controlsVisibilityController.dispose();
     fullscreenController.dispose();

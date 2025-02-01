@@ -220,7 +220,7 @@ class _Controls extends StatelessWidget {
               children: [
                 _SkipButton(
                   icon: const Icon(Icons.skip_previous_outlined),
-                  onPressed: context.wm.previousCallback,
+                  onPressed: context.wm.onPreviousPressed,
                 ),
                 const SizedBox(width: 48),
                 VideoPlayPauseLoader(
@@ -229,7 +229,7 @@ class _Controls extends StatelessWidget {
                 const SizedBox(width: 48),
                 _SkipButton(
                   icon: const Icon(Icons.skip_next_outlined),
-                  onPressed: context.wm.nextCallback,
+                  onPressed: context.wm.onNextPressed,
                 ),
               ],
             ),
