@@ -15,7 +15,7 @@ import 'package:player/src/utils/video_controller.dart';
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
       VideoPlayerModel(
         errorHandler: context.read<ErrorHandler>(),
-        service: context.read<PlayerService>(),
+        repository: context.read<PlayerRepository>(),
       ),
     );
 

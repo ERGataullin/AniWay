@@ -40,8 +40,8 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   VideoPlayerModel({
     super.errorHandler,
-    required PlayerService service,
-  }) : _service = service;
+    required PlayerRepository repository,
+  }) : _repository = repository;
 
   @override
   final ValueNotifier<LocaledTranslations> translations =
@@ -62,7 +62,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     () => video.value?.stream[quality.value],
   );
 
-  final PlayerService _service;
+  final PlayerRepository _repository;
 
   late VideoResolver _videoResolver;
 
@@ -129,8 +129,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   @override
   Future<void> handleVideoWatched() async {
     final Map<String, int> authorsRates =
-        await _service.getPersonalizedTranslationAuthorsRates();
-    _service.savePersonalizedTranslationAuthorsRates({
+        await _repository.getPersonalizedTranslationAuthorsRates();
+    _repository.savePersonalizedTranslationAuthorsRates({
       ...authorsRates,
       for (final String author in _selectedTranslationAuthors)
         author: 1 + (authorsRates[author] ?? 0),
@@ -178,7 +178,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
         translations.value[suitableLocale]!;
 
     final Map<String, int> authorsSuitability = {
-      ...await _service.getPersonalizedTranslationAuthorsRates(),
+      ...await _repository.getPersonalizedTranslationAuthorsRates(),
       for (final String author in _selectedTranslationAuthors)
         author: double.maxFinite.toInt(),
     };

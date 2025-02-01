@@ -15,7 +15,7 @@ class AppScope extends InheritedWidget {
     CookieManager? cookieManager,
     AuthRepository? authService,
     MoviesRepository? moviesRepository,
-    PlayerService? playerService,
+    PlayerRepository? playerRepository,
     required super.child,
   }) {
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
@@ -55,11 +55,9 @@ class AppScope extends InheritedWidget {
             networkService: this.networkService,
           ),
         );
-    this.playerService = playerService ??
-        PlayerService(
-          repository: PlayerRepository(
-            local: LocalPlayerDataSource(storage: this.storageService),
-          ),
+    this.playerRepository = playerRepository ??
+        PlayerRepository(
+          local: LocalPlayerDataSource(storage: this.storageService),
         );
   }
 
@@ -75,7 +73,7 @@ class AppScope extends InheritedWidget {
 
   late final MoviesRepository moviesRepository;
 
-  late final PlayerService playerService;
+  late final PlayerRepository playerRepository;
 
   late final List<Initable> dependencies = [
     errorHandler,
@@ -84,7 +82,7 @@ class AppScope extends InheritedWidget {
     cookieManager,
     authService,
     moviesRepository,
-    playerService,
+    playerRepository,
   ];
 
   @override
@@ -96,7 +94,7 @@ class AppScope extends InheritedWidget {
           Provider<CookieManager>.value(value: cookieManager),
           Provider<AuthRepository>.value(value: authService),
           Provider<MoviesRepository>.value(value: moviesRepository),
-          Provider<PlayerService>.value(value: playerService),
+          Provider<PlayerRepository>.value(value: playerRepository),
         ],
         child: super.child,
       );
