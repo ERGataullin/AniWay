@@ -131,12 +131,12 @@ class _SubmitButton extends StatelessWidget {
     return FilledButton(
       onPressed: context.wm.handleSubmitPressed,
       child: ListenableBuilder(
-        listenable: context.wm.showLoader,
+        listenable: context.wm.loading,
         builder: (context, __) => AnimatedSwitcher(
           switchInCurve: Easing.standard,
           switchOutCurve: Easing.standard.flipped,
           duration: Durations.medium2,
-          child: context.wm.showLoader.value
+          child: context.wm.loading.value
               ? SizedBox.square(
                   dimension: IconTheme.of(context).size,
                   child: const CircularProgressIndicator.adaptive(),

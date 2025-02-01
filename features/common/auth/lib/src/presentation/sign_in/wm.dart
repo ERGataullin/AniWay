@@ -19,7 +19,7 @@ abstract interface class ISignInWM implements IWidgetModel {
 
   ValueListenable<bool> get obscurePassword;
 
-  ValueListenable<bool> get showLoader;
+  ValueListenable<bool> get loading;
 
   ValueListenable<String> get submitLabel;
 
@@ -59,7 +59,7 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   final ValueNotifier<bool> obscurePassword = ValueNotifier(true);
 
   @override
-  final ValueNotifier<bool> showLoader = ValueNotifier(false);
+  final ValueNotifier<bool> loading = ValueNotifier(false);
 
   @override
   late final Computed<String> submitLabel = Computed(
@@ -105,18 +105,18 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
     emailLabel.dispose();
     passwordLabel.dispose();
     obscurePassword.dispose();
-    showLoader.dispose();
+    loading.dispose();
     submitLabel.dispose();
     emailController.dispose();
     passwordController.dispose();
   }
 
   Future<void> _submit() async {
-    showLoader.value = true;
+    loading.value = true;
     await model.signIn(
       email: emailController.text,
       password: passwordController.text,
     );
-    showLoader.value = false;
+    loading.value = false;
   }
 }
