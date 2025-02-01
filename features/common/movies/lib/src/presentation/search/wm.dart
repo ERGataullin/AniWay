@@ -17,17 +17,15 @@ MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
     );
 
 abstract interface class IMoviesSearchWM implements IWidgetModel {
-  ValueListenable<String> get queryHint;
+  ValueListenable<bool> get canPop;
 
-  ValueListenable<bool> get showClearButton;
+  ValueListenable<String> get queryHint;
 
   SearchController get queryController;
 
   ScrollController get scrollController;
 
   Key? get pagedGridKey;
-
-  bool get showBackButton;
 
   Future<List<MovieCardData>> handleLoadPage(int page);
 
@@ -45,15 +43,14 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   final SearchController queryController = SearchController();
 
   @override
-  late final Computed<String> queryHint = Computed(
-    trigger: l10n,
-    () => l10n.value.searchPageTitle,
+  late final Computed<bool> canPop = Computed(
+    () => Navigator.canPop(context),
   );
 
   @override
-  late final Computed<bool> showClearButton = Computed(
-    trigger: queryController,
-    () => queryController.text.isEmpty,
+  late final Computed<String> queryHint = Computed(
+    trigger: l10n,
+    () => l10n.value.searchPageTitle,
   );
 
   @override
@@ -66,9 +63,6 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
 
   @override
   ScrollController get scrollController => PrimaryScrollController.of(context);
-
-  @override
-  bool get showBackButton => Navigator.canPop(context);
 
   @override
   void initWidgetModel() {
@@ -95,6 +89,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   void dispose() {
     _queryDebounceTimer?.cancel();
     queryController.dispose();
+    canPop.dispose();
     queryHint.dispose();
     super.dispose();
   }
