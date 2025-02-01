@@ -17,11 +17,11 @@ class MoviesServiceAnime365 implements MoviesService {
     required CookieManager cookieManager,
     required NetworkService networkService,
   })  : _cookieManager = cookieManager,
-        _network = networkService;
+        _networkService = networkService;
 
   final CookieManager _cookieManager;
 
-  final NetworkService _network;
+  final NetworkService _networkService;
 
   int? _upNextMaxPage;
 
@@ -34,7 +34,7 @@ class MoviesServiceAnime365 implements MoviesService {
     int? offset,
     List<WatchStatus> watchStatuses = const [],
   }) async {
-    final ResponseData<Json> response = await _network.request<Json>(
+    final ResponseData<Json> response = await _networkService.request<Json>(
       RequestData(
         uri: Uri(
           path: '/api/series',
@@ -58,7 +58,7 @@ class MoviesServiceAnime365 implements MoviesService {
     final List<int> shikimoriIds = anime365Data
         .map((movieJson) => movieJson['myAnimeListId']! as int)
         .toList(growable: false);
-    final ResponseData<Json> shikimoriResponse = await _network.request(
+    final ResponseData<Json> shikimoriResponse = await _networkService.request(
       RequestData(
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
         method: RequestMethod.post,
@@ -125,7 +125,7 @@ class MoviesServiceAnime365 implements MoviesService {
       return const [];
     }
 
-    final ResponseData<String> response = await _network.request(
+    final ResponseData<String> response = await _networkService.request(
       RequestData(
         uri: Uri(
           path: '/',
@@ -266,7 +266,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
   @override
   Future<MovieDetailsData> getMovie(int id) async {
-    final ResponseData<Json> anime365Response = await _network.request(
+    final ResponseData<Json> anime365Response = await _networkService.request(
       RequestData(
         uri: Uri(
           path: '/api/series/$id',
@@ -280,7 +280,7 @@ class MoviesServiceAnime365 implements MoviesService {
     );
     final anime365Data = anime365Response.body['data']! as Json;
 
-    final ResponseData<Json> shikimoriResponse = await _network.request(
+    final ResponseData<Json> shikimoriResponse = await _networkService.request(
       RequestData(
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
         method: RequestMethod.post,
@@ -395,7 +395,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
   @override
   Future<List<VideoTranslationData>> getTranslations(Object episodeId) async {
-    final ResponseData<Json> response = await _network.request(
+    final ResponseData<Json> response = await _networkService.request(
       RequestData(
         uri: Uri(
           path: '/api/episodes/$episodeId',
@@ -438,7 +438,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
   @override
   Future<VideoData> getTranslationVideo(Object translationId) async {
-    final ResponseData<Json> response = await _network.request(
+    final ResponseData<Json> response = await _networkService.request(
       RequestData(
         uri: Uri(
           path: '/api/translations/embed/$translationId',
@@ -472,7 +472,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
   @override
   Future<void> saveTranslationWatched(Object translationId) {
-    return _network.request<void>(
+    return _networkService.request<void>(
       RequestData(
         uri: Uri(path: '/translations/watched/$translationId'),
         method: RequestMethod.post,
@@ -483,7 +483,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
   @override
   Future<WatchListElementData> getWatchStatusDetails(Uri movieUri) async {
-    final ResponseData<String> response = await _network.request(
+    final ResponseData<String> response = await _networkService.request(
       RequestData(
         uri: movieUri,
         method: RequestMethod.get,

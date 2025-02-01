@@ -16,8 +16,8 @@ abstract class CookieManager implements Initable {
 
 class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   CookieManagerImpl({
-    required StorageService storage,
-  }) : _storage = storage;
+    required StorageService storageService,
+  }) : _storageService = storageService;
 
   static const String _effectiveCookieHeaderName =
       kIsWeb ? 'kaki' : HttpHeaders.cookieHeader;
@@ -35,7 +35,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   @override
   final ValueNotifier<CookieMap> cookie = ValueNotifier(const {});
 
-  final StorageService _storage;
+  final StorageService _storageService;
 
   @override
   NetworkInterceptor get interceptor => this;
@@ -48,7 +48,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   @override
   Future<void> init() async {
     cookie
-      ..value = await _storage
+      ..value = await _storageService
           .get<String?>(
             collection: 'cookie_manager',
             key: 'cookie',
@@ -105,7 +105,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   }
 
   void _handleCookieChanged() {
-    _storage.put<String?>(
+    _storageService.put<String?>(
       collection: 'cookie_manager',
       key: 'cookie',
       value: cookie.value.values.map((cookie) => cookie.toString()).join(','),

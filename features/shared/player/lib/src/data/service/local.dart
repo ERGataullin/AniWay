@@ -3,19 +3,19 @@ import 'package:player/player.dart';
 
 class LocalPlayerService implements PlayerService {
   const LocalPlayerService({
-    required StorageService storage,
-  }) : _storage = storage;
+    required StorageService storageService,
+  }) : _storageService = storageService;
 
   static const String _collection = 'player';
 
   static const String _personalizedTranslationAuthorsRatesKey =
       'personalized_translation_authors_rates';
 
-  final StorageService _storage;
+  final StorageService _storageService;
 
   @override
   Future<Map<String, int>> getPersonalizedTranslationAuthorsRates() async {
-    final Map<Object?, Object?> stored = await _storage.get(
+    final Map<Object?, Object?> stored = await _storageService.get(
       collection: _collection,
       key: _personalizedTranslationAuthorsRatesKey,
       defaultValue: const {},
@@ -27,7 +27,7 @@ class LocalPlayerService implements PlayerService {
   Future<void> savePersonalizedTranslationAuthorsRates(
     Map<String, int> rates,
   ) async {
-    await _storage.put<Map<Object?, Object?>>(
+    await _storageService.put<Map<Object?, Object?>>(
       collection: _collection,
       key: _personalizedTranslationAuthorsRatesKey,
       value: rates,

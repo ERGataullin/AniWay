@@ -39,7 +39,7 @@ class AppScope extends InheritedWidget {
         );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
-        cookieManager ?? CookieManagerImpl(storage: this.storageService);
+        cookieManager ?? CookieManagerImpl(storageService: this.storageService);
     this.authService = authService ??
         AuthRepository(
           remote: AuthServiceAnime365(
@@ -57,7 +57,7 @@ class AppScope extends InheritedWidget {
         );
     this.playerRepository = playerRepository ??
         PlayerRepository(
-          local: LocalPlayerService(storage: this.storageService),
+          local: LocalPlayerService(storageService: this.storageService),
         );
   }
 

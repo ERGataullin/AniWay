@@ -8,10 +8,10 @@ class AuthServiceAnime365 implements AuthService {
   AuthServiceAnime365({
     required NetworkService networkService,
     required CookieManager cookieManager,
-  })  : _network = networkService,
+  })  : _networkService = networkService,
         _cookieManager = cookieManager;
 
-  final NetworkService _network;
+  final NetworkService _networkService;
 
   final CookieManager _cookieManager;
 
@@ -20,14 +20,14 @@ class AuthServiceAnime365 implements AuthService {
     required String email,
     required String password,
   }) async {
-    await _network.request<void>(
+    await _networkService.request<void>(
       RequestData(
         uri: Uri(path: '/users/login'),
         method: RequestMethod.get,
       ),
     );
 
-    await _network.request<void>(
+    await _networkService.request<void>(
       RequestData(
         uri: Uri(path: '/users/login'),
         method: RequestMethod.post,
