@@ -15,10 +15,10 @@ abstract interface class ISignInModel implements ElementaryModel {
 class SignInModel extends ElementaryModel implements ISignInModel {
   SignInModel({
     super.errorHandler,
-    required AuthService service,
+    required AuthRepository service,
   }) : _service = service;
 
-  final AuthService _service;
+  final AuthRepository _service;
 
   final RegExp _emailRegExp = RegExp(
     r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}"

@@ -13,7 +13,7 @@ class AppScope extends InheritedWidget {
     NetworkService? network,
     StorageService? storage,
     CookieManager? cookieManager,
-    AuthService? authService,
+    AuthRepository? authService,
     MoviesService? moviesService,
     PlayerService? playerService,
     required super.child,
@@ -41,12 +41,10 @@ class AppScope extends InheritedWidget {
     this.cookieManager =
         cookieManager ?? CookieManagerImpl(storage: this.storage);
     this.authService = authService ??
-        AuthService(
-          repository: AuthRepository(
-            remote: Anime365AuthDataSource(
-              network: this.network,
-              cookieManager: this.cookieManager,
-            ),
+        AuthRepository(
+          remote: Anime365AuthDataSource(
+            network: this.network,
+            cookieManager: this.cookieManager,
           ),
           cookieManager: this.cookieManager,
         );
@@ -75,7 +73,7 @@ class AppScope extends InheritedWidget {
 
   late final CookieManager cookieManager;
 
-  late final AuthService authService;
+  late final AuthRepository authService;
 
   late final MoviesService moviesService;
 
@@ -98,7 +96,7 @@ class AppScope extends InheritedWidget {
           Provider<NetworkService>.value(value: network),
           Provider<StorageService>.value(value: storage),
           Provider<CookieManager>.value(value: cookieManager),
-          Provider<AuthService>.value(value: authService),
+          Provider<AuthRepository>.value(value: authService),
           Provider<MoviesService>.value(value: moviesService),
           Provider<PlayerService>.value(value: playerService),
         ],

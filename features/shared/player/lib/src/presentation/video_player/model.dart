@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:player/player.dart';
-import 'package:player/src/domain/models/video_translation_type.dart';
 import 'package:player/src/presentation/video_player/typedefs.dart';
 
 typedef LocaledTranslations = Map<Locale, List<VideoTranslationData>>;

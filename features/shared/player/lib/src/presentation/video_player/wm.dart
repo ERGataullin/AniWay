@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:l10n/l10n.dart';
 import 'package:player/player.dart';
-import 'package:player/src/domain/models/video_quality_type.dart';
 import 'package:player/src/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:player/src/presentation/video_player/components/show_on_mouse_hover.dart';
 import 'package:player/src/presentation/video_player/const.dart';
