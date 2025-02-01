@@ -10,8 +10,8 @@ class AppScope extends InheritedWidget {
   AppScope({
     super.key,
     ErrorHandler? errorHandler,
-    NetworkService? network,
-    StorageService? storage,
+    NetworkService? networkService,
+    StorageService? storageService,
     CookieManager? cookieManager,
     AuthRepository? authService,
     MoviesRepository? moviesRepository,
@@ -19,7 +19,7 @@ class AppScope extends InheritedWidget {
     required super.child,
   }) {
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
-    this.network = network ??
+    this.networkService = networkService ??
         HttpService(
           baseUri: kIsWeb
               ? ProxiedUri(
@@ -37,13 +37,13 @@ class AppScope extends InheritedWidget {
                   host: 'smotret-anime.online',
                 ),
         );
-    this.storage = storage ?? const HiveService();
+    this.storageService = storageService ?? const HiveService();
     this.cookieManager =
-        cookieManager ?? CookieManagerImpl(storage: this.storage);
+        cookieManager ?? CookieManagerImpl(storage: this.storageService);
     this.authService = authService ??
         AuthRepository(
           remote: Anime365AuthDataSource(
-            network: this.network,
+            networkService: this.networkService,
             cookieManager: this.cookieManager,
           ),
           cookieManager: this.cookieManager,
@@ -52,22 +52,22 @@ class AppScope extends InheritedWidget {
         MoviesRepository(
           remote: Anime365MoviesDataSource(
             cookieManager: this.cookieManager,
-            network: this.network,
+            networkService: this.networkService,
           ),
         );
     this.playerService = playerService ??
         PlayerService(
           repository: PlayerRepository(
-            local: LocalPlayerDataSource(storage: this.storage),
+            local: LocalPlayerDataSource(storage: this.storageService),
           ),
         );
   }
 
   late final ErrorHandler errorHandler;
 
-  late final NetworkService network;
+  late final NetworkService networkService;
 
-  late final StorageService storage;
+  late final StorageService storageService;
 
   late final CookieManager cookieManager;
 
@@ -79,8 +79,8 @@ class AppScope extends InheritedWidget {
 
   late final List<Initable> dependencies = [
     errorHandler,
-    network,
-    storage,
+    networkService,
+    storageService,
     cookieManager,
     authService,
     moviesRepository,
@@ -91,8 +91,8 @@ class AppScope extends InheritedWidget {
   Widget get child => MultiProvider(
         providers: [
           Provider<ErrorHandler>.value(value: errorHandler),
-          Provider<NetworkService>.value(value: network),
-          Provider<StorageService>.value(value: storage),
+          Provider<NetworkService>.value(value: networkService),
+          Provider<StorageService>.value(value: storageService),
           Provider<CookieManager>.value(value: cookieManager),
           Provider<AuthRepository>.value(value: authService),
           Provider<MoviesRepository>.value(value: moviesRepository),

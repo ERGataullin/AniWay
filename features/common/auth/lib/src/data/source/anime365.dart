@@ -6,9 +6,9 @@ import 'package:core/core.dart';
 
 class Anime365AuthDataSource implements AuthDataSource {
   Anime365AuthDataSource({
-    required NetworkService network,
+    required NetworkService networkService,
     required CookieManager cookieManager,
-  })  : _network = network,
+  })  : _network = networkService,
         _cookieManager = cookieManager;
 
   final NetworkService _network;

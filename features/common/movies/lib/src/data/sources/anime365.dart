@@ -16,9 +16,9 @@ import 'package:player/player.dart';
 class Anime365MoviesDataSource implements MoviesDataSource {
   Anime365MoviesDataSource({
     required CookieManager cookieManager,
-    required NetworkService network,
+    required NetworkService networkService,
   })  : _cookieManager = cookieManager,
-        _network = network;
+        _network = networkService;
 
   final CookieManager _cookieManager;
 

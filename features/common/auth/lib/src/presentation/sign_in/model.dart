@@ -15,10 +15,10 @@ abstract interface class ISignInModel implements ElementaryModel {
 class SignInModel extends ElementaryModel implements ISignInModel {
   SignInModel({
     super.errorHandler,
-    required AuthRepository service,
-  }) : _service = service;
+    required AuthRepository repository,
+  }) : _repository = repository;
 
-  final AuthRepository _service;
+  final AuthRepository _repository;
 
   final RegExp _emailRegExp = RegExp(
     r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}"
@@ -35,6 +35,6 @@ class SignInModel extends ElementaryModel implements ISignInModel {
     required String email,
     required String password,
   }) async {
-    await _service.signIn(email: email, password: password);
+    await _repository.signIn(email: email, password: password);
   }
 }

@@ -8,7 +8,7 @@ import 'package:l10n/l10n.dart';
 SignInWM signInWMFactory(BuildContext context) => SignInWM(
       SignInModel(
         errorHandler: context.read<ErrorHandler>(),
-        service: context.read<AuthRepository>(),
+        repository: context.read<AuthRepository>(),
       ),
     );
 

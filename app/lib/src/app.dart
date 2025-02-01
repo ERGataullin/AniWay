@@ -38,7 +38,7 @@ class _AppState extends State<App> {
   void didChangeDependencies() {
     final AppScope scope = AppScope.of(context);
     scope
-      ..network.addInterceptor(scope.cookieManager.interceptor)
+      ..networkService.addInterceptor(scope.cookieManager.interceptor)
       ..ensureInitialized().then(
         (_) => setState(() {
           _initialized = true;
