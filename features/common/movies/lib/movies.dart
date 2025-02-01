@@ -1,6 +1,6 @@
 export 'src/data/repository.dart';
-export 'src/data/sources/anime365.dart';
-export 'src/data/sources/source.dart';
+export 'src/data/services/anime365.dart';
+export 'src/data/services/service.dart';
 export 'src/domain/models/movies_order.dart';
 export 'src/presentation/components/movie_player/widget.dart';
 export 'src/presentation/episodes/widget.dart';

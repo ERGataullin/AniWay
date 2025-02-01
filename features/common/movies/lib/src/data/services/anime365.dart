@@ -12,8 +12,8 @@ import 'package:movies/src/domain/models/watch_list_element.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:player/player.dart';
 
-class Anime365MoviesDataSource implements MoviesDataSource {
-  Anime365MoviesDataSource({
+class Anime365MoviesService implements MoviesService {
+  Anime365MoviesService({
     required CookieManager cookieManager,
     required NetworkService networkService,
   })  : _cookieManager = cookieManager,

@@ -50,7 +50,7 @@ class AppScope extends InheritedWidget {
         );
     this.moviesRepository = moviesRepository ??
         MoviesRepository(
-          remote: Anime365MoviesDataSource(
+          remote: Anime365MoviesService(
             cookieManager: this.cookieManager,
             networkService: this.networkService,
           ),

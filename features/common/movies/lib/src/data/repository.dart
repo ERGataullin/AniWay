@@ -10,10 +10,10 @@ import 'package:player/player.dart';
 
 class MoviesRepository implements Initable {
   MoviesRepository({
-    required MoviesDataSource remote,
+    required MoviesService remote,
   }) : _remote = remote;
 
-  final MoviesDataSource _remote;
+  final MoviesService _remote;
 
   final _upNextChanges = ValueNotifier(0);
 

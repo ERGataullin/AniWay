@@ -6,8 +6,8 @@ import 'package:movies/src/domain/models/watch_list_element.dart';
 import 'package:movies/src/domain/models/watch_status.dart';
 import 'package:player/player.dart';
 
-abstract interface class MoviesDataSource {
-  const MoviesDataSource();
+abstract interface class MoviesService {
+  const MoviesService();
 
   Future<List<MovieBaseData>> getMovies({
     int? limit,
