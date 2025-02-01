@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/src/presentation/components/episode_card.dart';
 import 'package:movies/src/presentation/episodes/wm.dart';
 
@@ -28,11 +29,10 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
           listenable: Listenable.merge([
             wm.tabController,
             wm.tabsTexts,
-            wm.episodesLabel,
           ]),
           builder: (context, __) => Scaffold(
             appBar: AppBar(
-              title: Text(wm.episodesLabel.value),
+              title: Text(context.l10n.episodesLabel),
               bottom: wm.tabController.value == null
                   ? null
                   : TabBar(

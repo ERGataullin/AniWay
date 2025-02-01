@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -27,25 +25,19 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<ImageData?> get poster;
 
-  ValueListenable<String> get playButtonLabel;
-
   ValueListenable<double?> get score;
 
   ValueListenable<String> get title;
 
-  ValueListenable<String> get genres;
+  ValueListenable<List<String>> get genres;
 
   ValueListenable<String?> get description;
 
   ValueListenable<Uri?> get episodesUri;
 
-  ValueListenable<String> get episodesLabel;
-
-  ValueListenable<String> get episodesCount;
+  ValueListenable<int?> get episodesCount;
 
   ValueListenable<List<EpisodeData>> get episodes;
-
-  String getEpisodeTitle(EpisodeData episode);
 
   void handlePlayPressed();
 
@@ -86,12 +78,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<String> playButtonLabel = Computed(
-    trigger: l10n,
-    () => l10n.value.videoPlayLabel,
-  );
-
-  @override
   late final Computed<double?> score = Computed(
     trigger: model.movie,
     () => model.movie.value?.score,
@@ -104,9 +90,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<String> genres = Computed(
+  late final Computed<List<String>> genres = Computed(
     trigger: model.movie,
-    () => model.movie.value?.genres.join('\u{00A0}· ') ?? '',
+    () => model.movie.value?.genres ?? const [],
   );
 
   @override
@@ -126,24 +112,9 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<String> episodesLabel = Computed(
-    trigger: l10n,
-    () => l10n.value.episodesLabel,
-  );
-
-  @override
-  late final Computed<String> episodesCount = Computed(
-    trigger: Listenable.merge([l10n, model.movie]),
-    () => switch (model.movie.value) {
-      final MovieDetailsData movie when movie.episodesCount != null =>
-        l10n.value.xOfY(
-          min(movie.episodes.length, movie.episodesCount!),
-          movie.episodesCount!,
-        ),
-      final MovieDetailsData movie =>
-        l10n.value.releasedCount(movie.episodes.length),
-      null => '',
-    },
+  late final Computed<int?> episodesCount = Computed(
+    trigger: model.movie,
+    () => model.movie.value?.episodesCount,
   );
 
   @override
@@ -170,14 +141,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
-  String getEpisodeTitle(EpisodeData episodeData) {
-    return context.l10n.movieEpisode(
-      episodeData.type.name,
-      episodeData.number ?? 0,
-    );
-  }
-
-  @override
   void handlePlayPressed() {
     widget.onPlayPressed(model.nextEpisodeId.value);
   }
@@ -192,13 +155,11 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     watchStatusSelected.dispose();
     watchStatus.dispose();
     poster.dispose();
-    playButtonLabel.dispose();
     score.dispose();
     title.dispose();
     genres.dispose();
     description.dispose();
     episodesUri.dispose();
-    episodesLabel.dispose();
     episodesCount.dispose();
     episodes.dispose();
     super.dispose();

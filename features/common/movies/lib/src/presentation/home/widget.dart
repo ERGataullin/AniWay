@@ -1,6 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/src/domain/models/movie_card.dart';
 import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/home/wm.dart';
@@ -34,16 +35,13 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   Widget build(IHomeWM wm) {
     return Provider<IHomeWM>.value(
       value: wm,
-      child: ShimmerScope(
+      builder: (context, __) => ShimmerScope(
         child: Scaffold(
           appBar: AppBar(
-            title: ValueListenableBuilder(
-              valueListenable: wm.title,
-              builder: (context, title, ___) => Text(title),
-            ),
+            title: Text(context.l10n.homePageTitle),
           ),
           body: ListenableBuilder(
-            listenable: wm.showLoader,
+            listenable: wm.loading,
             builder: (context, __) => AnimatedSwitcher(
               switchInCurve: Easing.emphasizedDecelerate,
               switchOutCurve: Easing.emphasizedAccelerate.flipped,
@@ -56,7 +54,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
                   if (currentChild != null) currentChild,
                 ],
               ),
-              child: wm.showLoader.value
+              child: wm.loading.value
                   ? const Center(
                       key: ValueKey('Loader'),
                       child: CircularProgressIndicator.adaptive(),
@@ -78,32 +76,32 @@ class _Content extends StatelessWidget {
     final EdgeInsets safeAreaPadding = MediaQuery.paddingOf(context);
     return RefreshIndicator.adaptive(
       onRefresh: context.wm.handleRefresh,
-      child: LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-          primary: true,
-          padding: EdgeInsets.only(
-            top: 16 + safeAreaPadding.top,
-            bottom: 16 + safeAreaPadding.bottom,
-          ),
-          child: MediaQuery.removePadding(
-            removeTop: true,
-            removeBottom: true,
-            context: context,
+      child: MediaQuery.removePadding(
+        removeTop: true,
+        removeBottom: true,
+        context: context,
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            primary: true,
+            padding: EdgeInsets.only(
+              top: 16 + safeAreaPadding.top,
+              bottom: 16 + safeAreaPadding.bottom,
+            ),
             child: Column(
               spacing: 16,
               children: [
                 _Category(
-                  title: context.wm.upNextTitle,
+                  title: context.l10n.upNextTitle,
                   uri: context.wm.upNextUri,
                   movies: context.wm.upNextItems,
                 ),
                 _Category(
-                  title: context.wm.ongoingsTitle,
+                  title: context.l10n.ongoingsTitle,
                   uri: context.wm.ongoingsUri,
                   movies: context.wm.ongoingItems,
                 ),
                 _Category(
-                  title: context.wm.popularsTitle,
+                  title: context.l10n.popularsTitle,
                   uri: context.wm.popularsUri,
                   movies: context.wm.popularItems,
                 ),
@@ -123,7 +121,7 @@ class _Category extends StatelessWidget {
     required this.movies,
   });
 
-  final ValueListenable<String> title;
+  final String title;
 
   final Uri uri;
 

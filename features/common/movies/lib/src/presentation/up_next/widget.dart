@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/up_next/wm.dart';
 
@@ -18,36 +19,35 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
   @override
   Widget build(IUpNextWM wm) {
     return ShimmerScope(
-      child: Scaffold(
-        appBar: AppBar(
-          title: ListenableBuilder(
-            listenable: wm.title,
-            builder: (context, __) => Text(wm.title.value),
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text(context.l10n.upNextTitle),
           ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: CustomScrollView(
-              controller: wm.scrollController,
-              slivers: [
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 16),
-                ),
-                SliverPagedGrid(
-                  key: wm.pagedGridKey,
-                  controller: wm.scrollController,
-                  gridDelegate: MovieCard.gridDelegate,
-                  onLoadPage: wm.handleLoadPage,
-                  itemBuilder: (context, movie, animation) => MovieCard(
-                    movie,
-                    opacity: animation,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CustomScrollView(
+                controller: wm.scrollController,
+                slivers: [
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 16),
                   ),
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 16),
-                ),
-              ],
+                  SliverPagedGrid(
+                    key: wm.pagedGridKey,
+                    controller: wm.scrollController,
+                    gridDelegate: MovieCard.gridDelegate,
+                    onLoadPage: wm.handleLoadPage,
+                    itemBuilder: (context, movie, animation) => MovieCard(
+                      movie,
+                      opacity: animation,
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 16),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

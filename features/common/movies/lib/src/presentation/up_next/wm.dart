@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
@@ -15,8 +14,6 @@ UpNextWM upNextWMFactory(BuildContext context) => UpNextWM(
     );
 
 abstract interface class IUpNextWM implements IWidgetModel {
-  ValueListenable<String> get title;
-
   ScrollController get scrollController;
 
   Key? get pagedGridKey;
@@ -32,12 +29,6 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
   @override
   final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
       GlobalKey();
-
-  @override
-  late final Computed<String> title = Computed(
-    trigger: l10n,
-    () => l10n.value.upNextTitle,
-  );
 
   @override
   ScrollController get scrollController => PrimaryScrollController.of(context);
@@ -57,7 +48,6 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
   @override
   void dispose() {
     model.removeListener(_handleChanged);
-    title.dispose();
     super.dispose();
   }
 

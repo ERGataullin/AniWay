@@ -16,17 +16,13 @@ EpisodesWM episodesWMFactory(BuildContext context) => EpisodesWM(
     );
 
 abstract interface class IEpisodesWM implements IWidgetModel {
-  ValueListenable<bool> get showLoader;
+  ValueListenable<bool> get loading;
 
   ValueListenable<TabController?> get tabController;
 
   ValueListenable<List<String>> get tabsTexts;
 
-  ValueListenable<String> get episodesLabel;
-
   ValueListenable<List<List<EpisodeData>>> get tabsEpisodes;
-
-  String getEpisodeTitle(EpisodeData episode);
 
   void handleEpisodePressed(int episodeId);
 }
@@ -39,7 +35,7 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   static const int _groupSize = 24;
 
   @override
-  ValueListenable<bool> get showLoader => model.loading;
+  ValueListenable<bool> get loading => model.loading;
 
   @override
   late final Computed<TabController?> tabController = Computed(
@@ -66,12 +62,6 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
     ),
   );
 
-  @override
-  late final Computed<String> episodesLabel = Computed(
-    trigger: l10n,
-    () => l10n.value.episodesLabel,
-  );
-
   late final Computed<List<EpisodeData>> _episodes = Computed(
     trigger: model.movie,
     () => model.movie.value?.episodes ?? const [],
@@ -96,14 +86,6 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   );
 
   @override
-  String getEpisodeTitle(EpisodeData episodeData) {
-    return context.l10n.movieEpisode(
-      episodeData.type.name,
-      episodeData.number ?? 0,
-    );
-  }
-
-  @override
   void handleEpisodePressed(int episodeId) {
     widget.onEpisodePressed(episodeId);
   }
@@ -112,15 +94,12 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   void initWidgetModel() {
     super.initWidgetModel();
     _episodes.addListener(_handleEpisodesChanged);
-    model.loadData(
-      movieId: widget.movieId,
-    );
+    model.loadData(movieId: widget.movieId);
   }
 
   @override
   void dispose() {
     _episodes.dispose();
-    episodesLabel.dispose();
     tabController
       ..value?.dispose()
       ..dispose();

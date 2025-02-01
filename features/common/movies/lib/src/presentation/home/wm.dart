@@ -16,19 +16,11 @@ HomeWM homeWMFactory(BuildContext context) => HomeWM(
     );
 
 abstract interface class IHomeWM implements IWidgetModel {
-  ValueListenable<String> get title;
-
-  ValueListenable<bool> get showLoader;
-
-  ValueListenable<String> get upNextTitle;
+  ValueListenable<bool> get loading;
 
   ValueListenable<List<MovieCardData>> get upNextItems;
 
-  ValueListenable<String> get ongoingsTitle;
-
   ValueListenable<List<MovieCardData>> get ongoingItems;
-
-  ValueListenable<String> get popularsTitle;
 
   ValueListenable<List<MovieCardData>> get popularItems;
 
@@ -45,30 +37,6 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     with L10nWMMixin
     implements IHomeWM {
   HomeWM(super._model);
-
-  @override
-  late final Computed<String> title = Computed(
-    trigger: l10n,
-    () => l10n.value.homePageTitle,
-  );
-
-  @override
-  late final Computed<String> upNextTitle = Computed(
-    trigger: l10n,
-    () => l10n.value.upNextTitle,
-  );
-
-  @override
-  late final Computed<String> ongoingsTitle = Computed(
-    trigger: l10n,
-    () => l10n.value.ongoingsTitle,
-  );
-
-  @override
-  late final Computed<String> popularsTitle = Computed(
-    trigger: l10n,
-    () => l10n.value.popularsTitle,
-  );
 
   @override
   late final Computed<List<MovieCardData>> upNextItems = Computed(
@@ -94,7 +62,7 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
-  ValueListenable<bool> get showLoader => model.loading;
+  ValueListenable<bool> get loading => model.loading;
 
   @override
   Uri get upNextUri => widget.upNextUri;
@@ -112,10 +80,8 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
 
   @override
   void dispose() {
-    title.dispose();
-    upNextTitle.dispose();
     upNextItems.dispose();
-    popularsTitle.dispose();
+    ongoingItems.dispose();
     popularItems.dispose();
     super.dispose();
   }

@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/src/domain/models/episode.dart';
 import 'package:movies/src/presentation/components/episode_card.dart';
 import 'package:movies/src/presentation/components/movie_score.dart';
@@ -70,7 +73,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                 ? null
                 : FloatingActionButton.extended(
                     onPressed: context.wm.handlePlayPressed,
-                    label: const _PlayLabel(),
+                    label: Text(context.l10n.videoPlayLabel),
                     icon: const Icon(Icons.play_arrow_outlined),
                   ),
           ),
@@ -279,7 +282,7 @@ class _Genres extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.genres,
       builder: (context, __) => Text(
-        context.wm.genres.value,
+        context.wm.genres.value.join('\u{00A0}· '),
         style: TextTheme.primaryOf(context).labelLarge,
       ),
     );
@@ -326,13 +329,24 @@ class _Episodes extends StatelessWidget {
                   ListenableBuilder(
                     listenable: context.wm.episodesUri,
                     builder: (context, __) => DestinationTitle(
-                      context.wm.episodesLabel,
+                      context.l10n.episodesLabel,
                       margin: const EdgeInsets.symmetric(horizontal: 16),
                       uri: context.wm.episodesUri.value,
                       trailing: ListenableBuilder(
                         listenable: context.wm.episodesCount,
                         builder: (context, __) => Text(
-                          context.wm.episodesCount.value,
+                          switch (context.wm.episodesCount.value) {
+                            final int episodesCount => context.l10n.xOfY(
+                                min(
+                                  context.wm.episodes.value.length,
+                                  episodesCount,
+                                ),
+                                episodesCount,
+                              ),
+                            _ => context.l10n.releasedCount(
+                                context.wm.episodes.value.length,
+                              )
+                          },
                         ),
                       ),
                     ),
@@ -355,18 +369,6 @@ class _Episodes extends StatelessWidget {
                 ],
               ),
             ),
-    );
-  }
-}
-
-class _PlayLabel extends StatelessWidget {
-  const _PlayLabel();
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: context.wm.playButtonLabel,
-      builder: (context, __) => Text(context.wm.playButtonLabel.value),
     );
   }
 }

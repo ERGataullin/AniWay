@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
 import 'package:movies/src/presentation/components/movie_card.dart';
 import 'package:movies/src/presentation/search/wm.dart';
@@ -85,20 +86,16 @@ class _SearchBar extends StatelessWidget implements PreferredSizeWidget {
       child: Padding(
         padding: const EdgeInsets.all(_margin),
         child: ListenableBuilder(
-          listenable: Listenable.merge([
-            context.wm.canPop,
-            context.wm.queryHint,
-            context.wm.queryController,
-          ]),
+          listenable: context.wm.queryController,
           builder: (context, __) => SearchBar(
             controller: context.wm.queryController,
-            leading: context.wm.canPop.value
+            leading: Navigator.canPop(context)
                 ? const BackButton()
                 : IconButton(
                     onPressed: () {},
                     icon: const Icon(Icons.search_outlined),
                   ),
-            hintText: context.wm.queryHint.value,
+            hintText: context.l10n.searchPageTitle,
             trailing: context.wm.queryController.text.isEmpty
                 ? null
                 : [

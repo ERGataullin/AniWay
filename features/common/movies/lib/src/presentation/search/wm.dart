@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:l10n/l10n.dart';
 import 'package:movies/movies.dart';
@@ -17,10 +16,6 @@ MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
     );
 
 abstract interface class IMoviesSearchWM implements IWidgetModel {
-  ValueListenable<bool> get canPop;
-
-  ValueListenable<String> get queryHint;
-
   SearchController get queryController;
 
   ScrollController get scrollController;
@@ -41,17 +36,6 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
 
   @override
   final SearchController queryController = SearchController();
-
-  @override
-  late final Computed<bool> canPop = Computed(
-    () => Navigator.canPop(context),
-  );
-
-  @override
-  late final Computed<String> queryHint = Computed(
-    trigger: l10n,
-    () => l10n.value.searchPageTitle,
-  );
 
   @override
   final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
@@ -89,8 +73,6 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   void dispose() {
     _queryDebounceTimer?.cancel();
     queryController.dispose();
-    canPop.dispose();
-    queryHint.dispose();
     super.dispose();
   }
 

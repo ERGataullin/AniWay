@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DestinationTitle extends StatelessWidget {
@@ -13,7 +12,7 @@ class DestinationTitle extends StatelessWidget {
 
   final EdgeInsets margin;
 
-  final ValueListenable<String> title;
+  final String title;
 
   final Uri? uri;
 
@@ -43,10 +42,7 @@ class DestinationTitle extends StatelessWidget {
                   onTap: followLink,
                   child: Row(
                     children: [
-                      Text(
-                        title.value,
-                        style: titleStyle,
-                      ),
+                      Text(title, style: titleStyle),
                       if (followLink != null)
                         Icon(
                           Icons.chevron_right_outlined,
