@@ -12,7 +12,7 @@ import 'package:movies/src/presentation/search/model.dart';
 MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
       MoviesSearchModel(
         errorHandler: context.read<ErrorHandler>(),
-        service: context.read<MoviesService>(),
+        repository: context.read<MoviesRepository>(),
       ),
     );
 

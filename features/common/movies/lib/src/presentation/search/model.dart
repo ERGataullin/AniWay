@@ -15,10 +15,10 @@ abstract interface class IMoviesSearchModel implements ElementaryModel {
 class MoviesSearchModel extends ElementaryModel implements IMoviesSearchModel {
   MoviesSearchModel({
     super.errorHandler,
-    required MoviesService service,
-  }) : _service = service;
+    required MoviesRepository repository,
+  }) : _repository = repository;
 
-  final MoviesService _service;
+  final MoviesRepository _repository;
 
   @override
   Future<List<MovieBaseData>> loadPage({
@@ -26,7 +26,7 @@ class MoviesSearchModel extends ElementaryModel implements IMoviesSearchModel {
     String? query,
     bool? isOngoing,
   }) {
-    return _service.getMovies(
+    return _repository.getMovies(
       page: page,
       query: query,
       isOngoing: isOngoing,

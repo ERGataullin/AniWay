@@ -21,8 +21,8 @@ abstract interface class IMovieModel implements ElementaryModel {
 class MovieModel extends ElementaryModel implements IMovieModel {
   MovieModel({
     super.errorHandler,
-    required MoviesService service,
-  }) : _service = service;
+    required MoviesRepository repository,
+  }) : _repository = repository;
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
@@ -55,7 +55,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
     },
   );
 
-  final MoviesService _service;
+  final MoviesRepository _repository;
 
   @override
   Future<void> loadData({
@@ -63,8 +63,8 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   }) async {
     try {
       loading.value = true;
-      movie.value = await _service.getMovie(movieId);
-      watchStatusDetails.value = await _service.getWatchStatusDetails(
+      movie.value = await _repository.getMovie(movieId);
+      watchStatusDetails.value = await _repository.getWatchStatusDetails(
         movie.value!.uri,
       );
     } finally {

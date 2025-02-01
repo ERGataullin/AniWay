@@ -16,10 +16,10 @@ abstract interface class IEpisodesModel implements ElementaryModel {
 class EpisodesModel extends ElementaryModel implements IEpisodesModel {
   EpisodesModel({
     super.errorHandler,
-    required MoviesService service,
-  }) : _service = service;
+    required MoviesRepository repository,
+  }) : _repository = repository;
 
-  final MoviesService _service;
+  final MoviesRepository _repository;
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
@@ -32,7 +32,7 @@ class EpisodesModel extends ElementaryModel implements IEpisodesModel {
     required int movieId,
   }) async {
     loading.value = true;
-    movie.value = await _service.getMovie(movieId);
+    movie.value = await _repository.getMovie(movieId);
     loading.value = false;
   }
 

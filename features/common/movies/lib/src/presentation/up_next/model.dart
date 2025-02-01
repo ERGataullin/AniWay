@@ -14,23 +14,23 @@ abstract interface class IUpNextModel implements ElementaryModel {
 class UpNextModel extends ElementaryModel implements IUpNextModel {
   UpNextModel({
     super.errorHandler,
-    required MoviesService service,
-  }) : _service = service;
+    required MoviesRepository repository,
+  }) : _repository = repository;
 
-  final MoviesService _service;
+  final MoviesRepository _repository;
 
   @override
   void addListener(VoidCallback listener) {
-    _service.upNextChanges.addListener(listener);
+    _repository.upNextChanges.addListener(listener);
   }
 
   @override
   void removeListener(VoidCallback listener) {
-    _service.upNextChanges.removeListener(listener);
+    _repository.upNextChanges.removeListener(listener);
   }
 
   @override
   Future<List<UpNextData>> loadPage({required int page}) {
-    return _service.getUpNext(page: page);
+    return _repository.getUpNext(page: page);
   }
 }

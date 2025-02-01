@@ -11,7 +11,7 @@ import 'package:movies/src/presentation/episodes/model.dart';
 EpisodesWM episodesWMFactory(BuildContext context) => EpisodesWM(
       EpisodesModel(
         errorHandler: context.read<ErrorHandler>(),
-        service: context.read<MoviesService>(),
+        repository: context.read<MoviesRepository>(),
       ),
     );
 

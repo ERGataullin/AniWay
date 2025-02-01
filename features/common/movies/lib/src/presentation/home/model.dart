@@ -19,8 +19,8 @@ abstract interface class IHomeModel implements ElementaryModel {
 class HomeModel extends ElementaryModel implements IHomeModel {
   HomeModel({
     super.errorHandler,
-    required MoviesService service,
-  }) : _service = service;
+    required MoviesRepository repository,
+  }) : _repository = repository;
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
@@ -36,14 +36,15 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     const [],
   );
 
-  final MoviesService _service;
+  final MoviesRepository _repository;
 
   @override
   Future<void> refresh() async {
-    final Future<List<UpNextData>> newUpNextFuture = _service.getUpNext();
+    final Future<List<UpNextData>> newUpNextFuture = _repository.getUpNext();
     final Future<List<MovieBaseData>> newOngoingFuture =
-        _service.getMovies(isOngoing: true);
-    final Future<List<MovieBaseData>> newPopularFuture = _service.getMovies();
+        _repository.getMovies(isOngoing: true);
+    final Future<List<MovieBaseData>> newPopularFuture =
+        _repository.getMovies();
 
     final List<UpNextData> upNext = await newUpNextFuture;
     final List<MovieBaseData> ongoings = await newOngoingFuture;
@@ -57,12 +58,12 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   @override
   void init() {
     _load();
-    _service.upNextChanges.addListener(_load);
+    _repository.upNextChanges.addListener(_load);
   }
 
   @override
   void dispose() {
-    _service.upNextChanges.removeListener(_load);
+    _repository.upNextChanges.removeListener(_load);
     loading.dispose();
     upNext.dispose();
     ongoings.dispose();

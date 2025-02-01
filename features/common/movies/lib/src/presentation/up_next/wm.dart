@@ -10,7 +10,7 @@ import 'package:movies/src/presentation/up_next/model.dart';
 UpNextWM upNextWMFactory(BuildContext context) => UpNextWM(
       UpNextModel(
         errorHandler: context.read<ErrorHandler>(),
-        service: context.read<MoviesService>(),
+        repository: context.read<MoviesRepository>(),
       ),
     );
 

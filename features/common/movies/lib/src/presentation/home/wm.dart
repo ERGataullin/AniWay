@@ -11,7 +11,7 @@ import 'package:movies/src/presentation/home/model.dart';
 HomeWM homeWMFactory(BuildContext context) => HomeWM(
       HomeModel(
         errorHandler: context.read<ErrorHandler>(),
-        service: context.read<MoviesService>(),
+        repository: context.read<MoviesRepository>(),
       ),
     );
 

@@ -12,7 +12,7 @@ import 'package:player/player.dart';
 MoviePlayerWM moviePlayerWMFactory(BuildContext context) => MoviePlayerWM(
       MoviePlayerModel(
         context.read<ErrorHandler>(),
-        service: context.read<MoviesService>(),
+        repository: context.read<MoviesRepository>(),
       ),
     );
 

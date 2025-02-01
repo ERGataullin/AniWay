@@ -14,7 +14,7 @@ import 'package:theme/theme.dart';
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
       MovieModel(
         errorHandler: context.read<ErrorHandler>(),
-        service: context.read<MoviesService>(),
+        repository: context.read<MoviesRepository>(),
       ),
     );
 

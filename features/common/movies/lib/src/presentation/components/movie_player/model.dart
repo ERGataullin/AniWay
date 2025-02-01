@@ -35,8 +35,8 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   MoviePlayerModel(
     ErrorHandler errorHandler, {
-    required MoviesService service,
-  })  : _service = service,
+    required MoviesRepository repository,
+  })  : _repository = repository,
         super(errorHandler: errorHandler);
 
   @override
@@ -55,7 +55,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   @override
   final ValueNotifier<bool> hasNextEpisode = ValueNotifier(false);
 
-  final MoviesService _service;
+  final MoviesRepository _repository;
 
   late int _episodeIndex;
 
@@ -64,7 +64,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
     required int movieId,
     int? episodeId,
   }) async {
-    movie.value = await _service.getMovie(movieId);
+    movie.value = await _repository.getMovie(movieId);
     _episodeIndex = episodeId == null
         ? 0
         : movie.value!.episodes.indexWhere(
@@ -86,12 +86,12 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   Future<VideoData> getVideo(int translationId) {
-    return _service.getTranslationVideo(translationId);
+    return _repository.getTranslationVideo(translationId);
   }
 
   @override
   void saveTranslationWatched(int translationId) {
-    _service.saveTranslationWatched(translationId);
+    _repository.saveTranslationWatched(translationId);
   }
 
   @override
@@ -112,6 +112,6 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
     episode.value = movie.value!.episodes[index];
     hasPreviousEpisode.value = index > 0;
     hasNextEpisode.value = index < movie.value!.episodes.length - 1;
-    translations.value = await _service.getTranslations(episode.value!.id);
+    translations.value = await _repository.getTranslations(episode.value!.id);
   }
 }
