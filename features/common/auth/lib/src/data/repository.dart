@@ -7,7 +7,7 @@ import 'package:core/core.dart';
 
 class AuthRepository implements Initable {
   AuthRepository({
-    required AuthDataSource remote,
+    required AuthService remote,
     required CookieManager cookieManager,
   })  : _remote = remote,
         _cookieManager = cookieManager;
@@ -23,7 +23,7 @@ class AuthRepository implements Initable {
     },
   );
 
-  final AuthDataSource _remote;
+  final AuthService _remote;
 
   final CookieManager _cookieManager;
 

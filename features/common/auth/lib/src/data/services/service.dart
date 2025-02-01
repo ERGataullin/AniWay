@@ -1,7 +1,7 @@
 import 'dart:async';
 
-abstract interface class AuthDataSource {
-  const AuthDataSource();
+abstract interface class AuthService {
+  const AuthService();
 
   Future<void> signIn({
     required String email,

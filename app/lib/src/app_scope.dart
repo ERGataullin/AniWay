@@ -42,7 +42,7 @@ class AppScope extends InheritedWidget {
         cookieManager ?? CookieManagerImpl(storage: this.storageService);
     this.authService = authService ??
         AuthRepository(
-          remote: Anime365AuthDataSource(
+          remote: Anime365AuthService(
             networkService: this.networkService,
             cookieManager: this.cookieManager,
           ),
