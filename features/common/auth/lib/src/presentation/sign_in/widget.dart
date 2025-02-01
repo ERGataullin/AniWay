@@ -1,6 +1,7 @@
 import 'package:auth/src/presentation/sign_in/wm.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:l10n/l10n.dart';
 
 extension SignInContext on BuildContext {
   ISignInWM get wm => read<ISignInWM>();
@@ -71,21 +72,18 @@ class _EmailField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.emailLabel,
-      builder: (context, label, ___) => TextFormField(
-        controller: context.wm.emailController,
-        autofocus: true,
-        textInputAction: TextInputAction.next,
-        keyboardType: TextInputType.emailAddress,
-        autofillHints: const [
-          AutofillHints.username,
-          AutofillHints.email,
-        ],
-        validator: context.wm.handleValidateEmail,
-        decoration: InputDecoration(
-          label: Text(label),
-        ),
+    return TextFormField(
+      controller: context.wm.emailController,
+      autofocus: true,
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.emailAddress,
+      autofillHints: const [
+        AutofillHints.username,
+        AutofillHints.email,
+      ],
+      validator: context.wm.handleValidateEmail,
+      decoration: InputDecoration(
+        label: Text(context.l10n.emailLabel),
       ),
     );
   }
@@ -97,10 +95,7 @@ class _PasswordField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([
-        context.wm.passwordLabel,
-        context.wm.obscurePassword,
-      ]),
+      listenable: context.wm.obscurePassword,
       builder: (context, __) => TextFormField(
         controller: context.wm.passwordController,
         autofocus: true,
@@ -110,7 +105,7 @@ class _PasswordField extends StatelessWidget {
         autofillHints: const [AutofillHints.password],
         onFieldSubmitted: context.wm.handlePasswordSubmitted,
         decoration: InputDecoration(
-          label: Text(context.wm.passwordLabel.value),
+          label: Text(context.l10n.passwordLabel),
           suffixIcon: IconButton(
             onPressed: context.wm.handlePasswordVisibilityPressed,
             isSelected: !context.wm.obscurePassword.value,

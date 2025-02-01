@@ -13,10 +13,6 @@ SignInWM signInWMFactory(BuildContext context) => SignInWM(
     );
 
 abstract interface class ISignInWM implements IWidgetModel {
-  ValueListenable<String> get emailLabel;
-
-  ValueListenable<String> get passwordLabel;
-
   ValueListenable<bool> get obscurePassword;
 
   ValueListenable<bool> get loading;
@@ -42,18 +38,6 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
     with L10nWMMixin
     implements ISignInWM {
   SignInWM(super._model);
-
-  @override
-  late final Computed<String> emailLabel = Computed(
-    trigger: l10n,
-    () => l10n.value.emailLabel,
-  );
-
-  @override
-  late final Computed<String> passwordLabel = Computed(
-    trigger: l10n,
-    () => l10n.value.passwordLabel,
-  );
 
   @override
   final ValueNotifier<bool> obscurePassword = ValueNotifier(true);
@@ -102,8 +86,6 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   @override
   void dispose() {
     super.dispose();
-    emailLabel.dispose();
-    passwordLabel.dispose();
     obscurePassword.dispose();
     loading.dispose();
     submitLabel.dispose();
