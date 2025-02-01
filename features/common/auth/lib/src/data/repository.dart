@@ -7,9 +7,9 @@ import 'package:core/core.dart';
 
 class AuthRepository implements Initable {
   AuthRepository({
-    required AuthService remote,
+    required AuthService authService,
     required CookieManager cookieManager,
-  })  : _remote = remote,
+  })  : _authService = authService,
         _cookieManager = cookieManager;
 
   late final Computed<bool> signedIn = Computed(
@@ -23,7 +23,7 @@ class AuthRepository implements Initable {
     },
   );
 
-  final AuthService _remote;
+  final AuthService _authService;
 
   final CookieManager _cookieManager;
 
@@ -39,7 +39,7 @@ class AuthRepository implements Initable {
     required String email,
     required String password,
   }) {
-    return _remote.signIn(
+    return _authService.signIn(
       email: email,
       password: password,
     );

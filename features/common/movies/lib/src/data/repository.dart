@@ -10,10 +10,10 @@ import 'package:player/player.dart';
 
 class MoviesRepository implements Initable {
   MoviesRepository({
-    required MoviesService remote,
-  }) : _remote = remote;
+    required MoviesService moviesService,
+  }) : _moviesService = moviesService;
 
-  final MoviesService _remote;
+  final MoviesService _moviesService;
 
   final _upNextChanges = ValueNotifier(0);
 
@@ -35,7 +35,7 @@ class MoviesRepository implements Initable {
     MoviesOrder order = MoviesOrder.byPopularity,
     List<WatchStatus> watchStatuses = const [],
   }) {
-    return _remote.getMovies(
+    return _moviesService.getMovies(
       offset: (page - 1) * limit,
       limit: limit,
       isOngoing: isOngoing,
@@ -46,27 +46,27 @@ class MoviesRepository implements Initable {
   }
 
   Future<List<UpNextData>> getUpNext({int page = 1}) {
-    return _remote.getUpNext(page: page);
+    return _moviesService.getUpNext(page: page);
   }
 
   Future<MovieDetailsData> getMovie(int id) {
-    return _remote.getMovie(id);
+    return _moviesService.getMovie(id);
   }
 
   Future<List<VideoTranslationData>> getTranslations(int episodeId) {
-    return _remote.getTranslations(episodeId);
+    return _moviesService.getTranslations(episodeId);
   }
 
   Future<VideoData> getTranslationVideo(int translationId) {
-    return _remote.getTranslationVideo(translationId);
+    return _moviesService.getTranslationVideo(translationId);
   }
 
   Future<void> saveTranslationWatched(int translationId) async {
-    await _remote.saveTranslationWatched(translationId);
+    await _moviesService.saveTranslationWatched(translationId);
     _upNextChanges.value++;
   }
 
   Future<WatchListElementData?> getWatchStatusDetails(Uri movieUri) {
-    return _remote.getWatchStatusDetails(movieUri);
+    return _moviesService.getWatchStatusDetails(movieUri);
   }
 }
