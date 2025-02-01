@@ -1,4 +1,4 @@
-abstract class PlayerDataSource {
+abstract class PlayerService {
   Future<Map<String, int>> getPersonalizedTranslationAuthorsRates();
 
   Future<void> savePersonalizedTranslationAuthorsRates(

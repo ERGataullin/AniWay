@@ -57,7 +57,7 @@ class AppScope extends InheritedWidget {
         );
     this.playerRepository = playerRepository ??
         PlayerRepository(
-          local: LocalPlayerDataSource(storage: this.storageService),
+          local: LocalPlayerService(storage: this.storageService),
         );
   }
 

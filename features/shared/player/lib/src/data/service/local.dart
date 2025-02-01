@@ -1,8 +1,8 @@
 import 'package:core/core.dart';
 import 'package:player/player.dart';
 
-class LocalPlayerDataSource implements PlayerDataSource {
-  const LocalPlayerDataSource({
+class LocalPlayerService implements PlayerService {
+  const LocalPlayerService({
     required StorageService storage,
   }) : _storage = storage;
 

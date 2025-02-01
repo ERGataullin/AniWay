@@ -3,10 +3,10 @@ import 'package:player/player.dart';
 
 class PlayerRepository implements Initable {
   const PlayerRepository({
-    required PlayerDataSource local,
+    required PlayerService local,
   }) : _local = local;
 
-  final PlayerDataSource _local;
+  final PlayerService _local;
 
   @override
   void init() {}
