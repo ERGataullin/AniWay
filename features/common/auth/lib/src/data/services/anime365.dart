@@ -4,8 +4,8 @@ import 'package:auth/auth.dart';
 import 'package:cookie_manager/cookie_manager.dart';
 import 'package:core/core.dart';
 
-class Anime365AuthService implements AuthService {
-  Anime365AuthService({
+class AuthServiceAnime365 implements AuthService {
+  AuthServiceAnime365({
     required NetworkService networkService,
     required CookieManager cookieManager,
   })  : _network = networkService,

@@ -42,7 +42,7 @@ class AppScope extends InheritedWidget {
         cookieManager ?? CookieManagerImpl(storage: this.storageService);
     this.authService = authService ??
         AuthRepository(
-          remote: Anime365AuthService(
+          remote: AuthServiceAnime365(
             networkService: this.networkService,
             cookieManager: this.cookieManager,
           ),
@@ -50,7 +50,7 @@ class AppScope extends InheritedWidget {
         );
     this.moviesRepository = moviesRepository ??
         MoviesRepository(
-          remote: Anime365MoviesService(
+          remote: MoviesServiceAnime365(
             cookieManager: this.cookieManager,
             networkService: this.networkService,
           ),
