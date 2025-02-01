@@ -19,17 +19,13 @@ MovieWM movieWMFactory(BuildContext context) => MovieWM(
     );
 
 abstract interface class IMovieWM implements IWidgetModel {
-  ValueListenable<bool> get showLoader;
-
-  ValueListenable<bool> get showPlayButton;
+  ValueListenable<bool> get loading;
 
   ValueListenable<bool> get watchStatusSelected;
 
-  ValueListenable<String> get watchStatusTooltip;
+  ValueListenable<String> get watchStatus;
 
   ValueListenable<ImageData?> get poster;
-
-  ValueListenable<double?> get posterHeight;
 
   ValueListenable<String> get playButtonLabel;
 
@@ -40,8 +36,6 @@ abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<String> get genres;
 
   ValueListenable<String?> get description;
-
-  ValueListenable<bool> get showEpisodes;
 
   ValueListenable<Uri?> get episodesUri;
 
@@ -73,7 +67,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<String> watchStatusTooltip = Computed(
+  late final Computed<String> watchStatus = Computed(
     trigger: Listenable.merge([
       l10n,
       model.watchStatusDetails,
@@ -92,18 +86,6 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<double?> posterHeight = Computed(
-    trigger: showLoader,
-    () => showLoader.value ? null : MediaQuery.of(context).size.width * 1.25,
-  );
-
-  @override
-  late final Computed<bool> showPlayButton = Computed(
-    trigger: model.movie,
-    () => model.movie.value?.episodes.isNotEmpty ?? false,
-  );
-
-  @override
   late final Computed<String> playButtonLabel = Computed(
     trigger: l10n,
     () => l10n.value.videoPlayLabel,
@@ -117,14 +99,14 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   late final Computed<String> title = Computed(
-    trigger: Listenable.merge([showLoader, model.movie]),
-    () => showLoader.value ? '' : model.movie.value?.title ?? '',
+    trigger: model.movie,
+    () => model.movie.value?.title ?? '',
   );
 
   @override
   late final Computed<String> genres = Computed(
     trigger: model.movie,
-    () => model.movie.value?.genres.join(' · ') ?? '',
+    () => model.movie.value?.genres.join('\u{00A0}· ') ?? '',
   );
 
   @override
@@ -134,16 +116,10 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<bool> showEpisodes = Computed(
-    trigger: model.movie,
-    () => model.movie.value?.episodes.isNotEmpty ?? false,
-  );
-
-  @override
   late final Computed<Uri?> episodesUri = Computed(
     trigger: model.movie,
     () => switch (model.movie.value) {
-      final MovieDetailsData movie when movie.episodes.length > 24 =>
+      final MovieDetailsData movie when movie.episodes.length > 1 =>
         widget.episodesUri,
       _ => null,
     },
@@ -177,7 +153,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  ValueListenable<bool> get showLoader => model.loading;
+  ValueListenable<bool> get loading => model.loading;
 
   @override
   void initWidgetModel() {
@@ -212,24 +188,15 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
-  void didChangeDependencies() {
-    posterHeight.update();
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     watchStatusSelected.dispose();
-    watchStatusTooltip.dispose();
+    watchStatus.dispose();
     poster.dispose();
-    posterHeight.dispose();
-    showPlayButton.dispose();
     playButtonLabel.dispose();
     score.dispose();
     title.dispose();
     genres.dispose();
     description.dispose();
-    showEpisodes.dispose();
     episodesUri.dispose();
     episodesLabel.dispose();
     episodesCount.dispose();

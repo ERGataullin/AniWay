@@ -34,13 +34,13 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
       value: wm,
       child: ShimmerScope(
         child: ListenableBuilder(
-          listenable: wm.showLoader,
+          listenable: Listenable.merge([wm.loading, wm.episodes]),
           builder: (context, __) => Scaffold(
             body: CustomScrollView(
               primary: true,
               slivers: [
                 const _AppBar(),
-                if (wm.showLoader.value)
+                if (wm.loading.value)
                   const SliverFillRemaining(
                     child: Center(
                       child: CircularProgressIndicator.adaptive(),
@@ -66,13 +66,13 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                   ),
               ],
             ),
-            floatingActionButton: wm.showPlayButton.value
-                ? FloatingActionButton.extended(
+            floatingActionButton: wm.episodes.value.isEmpty
+                ? null
+                : FloatingActionButton.extended(
                     onPressed: context.wm.handlePlayPressed,
                     label: const _PlayLabel(),
                     icon: const Icon(Icons.play_arrow_outlined),
-                  )
-                : null,
+                  ),
           ),
         ),
       ),
@@ -92,13 +92,12 @@ class _AppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([
-        context.wm.showLoader,
-        context.wm.posterHeight,
-      ]),
+      listenable: context.wm.loading,
       builder: (context, __) => SliverAppBar.large(
         pinned: true,
-        expandedHeight: context.wm.posterHeight.value,
+        expandedHeight: context.wm.loading.value
+            ? null
+            : MediaQuery.sizeOf(context).width * 1.25,
         title: const _Title(),
         leading: IconButton(
           onPressed: Navigator.of(context).pop,
@@ -113,8 +112,8 @@ class _AppBar extends StatelessWidget {
             ),
           ),
         ),
-        actions: context.wm.showLoader.value
-            ? const []
+        actions: context.wm.loading.value
+            ? null
             : const [
                 _WatchStatusButton(),
                 SizedBox(width: 8),
@@ -131,8 +130,8 @@ class _AppBarFlexibleSpace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: context.wm.showLoader,
-      builder: (context, __) => context.wm.showLoader.value
+      listenable: context.wm.loading,
+      builder: (context, __) => context.wm.loading.value
           ? const SizedBox.shrink()
           : DefaultTextStyle(
               style: TextTheme.primaryOf(context).headlineMedium!,
@@ -174,7 +173,7 @@ class _WatchStatusButton extends StatelessWidget {
     return ListenableBuilder(
       listenable: Listenable.merge([
         context.wm.watchStatusSelected,
-        context.wm.watchStatusTooltip,
+        context.wm.watchStatus,
       ]),
       builder: (context, __) => ConditionalWrapper(
         condition: !_AppBar.isScrolledUnder(context),
@@ -185,7 +184,7 @@ class _WatchStatusButton extends StatelessWidget {
         child: IconButton(
           onPressed: () {},
           isSelected: context.wm.watchStatusSelected.value,
-          tooltip: context.wm.watchStatusTooltip.value,
+          tooltip: context.wm.watchStatus.value,
           icon: const Icon(Icons.library_add_outlined),
           selectedIcon: const Icon(Icons.library_add_check_outlined),
         ),
@@ -316,8 +315,8 @@ class _Episodes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: context.wm.showEpisodes,
-      builder: (context, __) => !context.wm.showEpisodes.value
+      listenable: context.wm.episodes,
+      builder: (context, __) => context.wm.episodes.value.isEmpty
           ? const SizedBox.shrink()
           : Padding(
               padding: EdgeInsets.only(top: marginTop),
@@ -332,26 +331,24 @@ class _Episodes extends StatelessWidget {
                       uri: context.wm.episodesUri.value,
                       trailing: ListenableBuilder(
                         listenable: context.wm.episodesCount,
-                        builder: (context, __) =>
-                            Text(context.wm.episodesCount.value),
+                        builder: (context, __) => Text(
+                          context.wm.episodesCount.value,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
                     height: 128,
-                    child: ListenableBuilder(
-                      listenable: context.wm.episodes,
-                      builder: (context, __) => ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        clipBehavior: Clip.none,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: context.wm.episodes.value.length,
-                        separatorBuilder: (context, __) =>
-                            const SizedBox(width: 8),
-                        itemBuilder: (context, index) => _Episode(
-                          context.wm.episodes.value[index],
-                        ),
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      clipBehavior: Clip.none,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: context.wm.episodes.value.length,
+                      separatorBuilder: (context, __) =>
+                          const SizedBox(width: 8),
+                      itemBuilder: (context, index) => _Episode(
+                        context.wm.episodes.value[index],
                       ),
                     ),
                   ),
