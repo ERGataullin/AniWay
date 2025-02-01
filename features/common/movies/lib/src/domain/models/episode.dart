@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:movies/src/data/dto/episode.dart';
 import 'package:movies/src/domain/models/movie_type.dart';
 
 class EpisodeData {
@@ -9,13 +8,6 @@ class EpisodeData {
     this.number,
     this.preview,
   });
-
-  factory EpisodeData.fromDto(EpisodeDto dto) => EpisodeData(
-        id: dto.id,
-        type: MovieType.fromDto(dto.type),
-        number: dto.number,
-        preview: dto.preview,
-      );
 
   final int id;
 

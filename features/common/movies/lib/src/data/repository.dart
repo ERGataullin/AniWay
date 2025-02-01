@@ -1,10 +1,6 @@
 import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:movies/movies.dart';
-import 'package:movies/src/data/dto/movie_base.dart';
-import 'package:movies/src/data/dto/movie_details.dart';
-import 'package:movies/src/data/dto/up_next.dart';
-import 'package:movies/src/data/dto/watch_list_element.dart';
 import 'package:movies/src/domain/models/movie_base.dart';
 import 'package:movies/src/domain/models/movie_details.dart';
 import 'package:movies/src/domain/models/up_next.dart';
@@ -38,29 +34,23 @@ class MoviesRepository implements Initable {
     String? query,
     MoviesOrder order = MoviesOrder.byPopularity,
     List<WatchStatus> watchStatuses = const [],
-  }) async {
-    final List<MovieBaseDto> dtos = await _remote.getMovies(
+  }) {
+    return _remote.getMovies(
       offset: (page - 1) * limit,
       limit: limit,
       isOngoing: isOngoing,
       query: query,
-      order: order.toDto(),
-      watchStatuses: watchStatuses
-          .map((watchStatus) => watchStatus.toDto())
-          .toList(growable: false),
+      order: order,
+      watchStatuses: watchStatuses,
     );
-
-    return dtos.map(MovieBaseData.fromDto).toList(growable: false);
   }
 
-  Future<List<UpNextData>> getUpNext({int page = 1}) async {
-    final List<UpNextDto> dtos = await _remote.getUpNext(page: page);
-    return dtos.map(UpNextData.fromDto).toList(growable: false);
+  Future<List<UpNextData>> getUpNext({int page = 1}) {
+    return _remote.getUpNext(page: page);
   }
 
-  Future<MovieDetailsData> getMovie(int id) async {
-    final MovieDetailsDto dto = await _remote.getMovie(id);
-    return MovieDetailsData.fromDto(dto);
+  Future<MovieDetailsData> getMovie(int id) {
+    return _remote.getMovie(id);
   }
 
   Future<List<VideoTranslationData>> getTranslations(int episodeId) {
@@ -76,9 +66,7 @@ class MoviesRepository implements Initable {
     _upNextChanges.value++;
   }
 
-  Future<WatchListElementData?> getWatchStatusDetails(Uri movieUri) async {
-    final WatchListElementDto dto =
-        await _remote.getWatchStatusDetails(movieUri);
-    return WatchListElementData.fromDto(dto);
+  Future<WatchListElementData?> getWatchStatusDetails(Uri movieUri) {
+    return _remote.getWatchStatusDetails(movieUri);
   }
 }

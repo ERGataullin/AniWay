@@ -1,5 +1,4 @@
 import 'package:core/core.dart';
-import 'package:movies/src/data/dto/movie_details.dart';
 import 'package:movies/src/domain/models/episode.dart';
 
 class MovieDetailsData {
@@ -15,19 +14,6 @@ class MovieDetailsData {
     this.description,
     this.score,
   });
-
-  factory MovieDetailsData.fromDto(MovieDetailsDto dto) => MovieDetailsData(
-        id: dto.id,
-        uri: Uri.parse(dto.url),
-        title: dto.title,
-        genres: dto.genres,
-        poster: dto.poster,
-        previews: List.unmodifiable(dto.previews.map(EpisodeData.fromDto)),
-        episodesCount: dto.episodesCount,
-        episodes: List.unmodifiable(dto.episodes.map(EpisodeData.fromDto)),
-        description: dto.description,
-        score: dto.score,
-      );
 
   final int id;
 
