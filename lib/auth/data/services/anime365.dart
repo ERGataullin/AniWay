@@ -35,7 +35,7 @@ class AuthServiceAnime365 implements AuthService {
           'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
         body: {
-          'csrf': _cookieManager.csrf,
+          'csrf': _cookieManager.cookie.value['csrf']?.value,
           'LoginForm[username]': email,
           'LoginForm[password]': password,
         },

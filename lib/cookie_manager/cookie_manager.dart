@@ -10,8 +10,6 @@ abstract class CookieManager implements Initable {
   ValueListenable<CookieMap> get cookie;
 
   NetworkInterceptor get interceptor;
-
-  String? get csrf;
 }
 
 class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
@@ -39,11 +37,6 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
 
   @override
   NetworkInterceptor get interceptor => this;
-
-  @override
-  String? get csrf => cookie.value['csrf']?.value.isEmpty ?? true
-      ? null
-      : Uri.decodeComponent(cookie.value['csrf']!.value);
 
   @override
   Future<void> init() async {
@@ -96,6 +89,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
 
     final List<Cookie> setCookieList = setCookie
         .split(_setCookieSplitter)
+        .map(Uri.decodeComponent)
         .map(Cookie.fromSetCookieValue)
         .toList(growable: false);
 

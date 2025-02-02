@@ -476,7 +476,9 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(
         uri: Uri(path: '/translations/watched/$translationId'),
         method: RequestMethod.post,
-        body: {'csrf': _cookieManager.csrf},
+        body: {
+          'csrf': _cookieManager.cookie.value['csrf']?.value,
+        },
       ),
     );
   }
