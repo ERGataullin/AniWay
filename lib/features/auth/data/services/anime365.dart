@@ -1,0 +1,45 @@
+import 'dart:async';
+
+import 'package:app/core/core.dart';
+import 'package:app/features/auth/auth.dart';
+import 'package:app/features/cookie_manager/cookie_manager.dart';
+
+class AuthServiceAnime365 implements AuthService {
+  AuthServiceAnime365({
+    required NetworkService networkService,
+    required CookieManager cookieManager,
+  })  : _networkService = networkService,
+        _cookieManager = cookieManager;
+
+  final NetworkService _networkService;
+
+  final CookieManager _cookieManager;
+
+  @override
+  Future<void> signIn({
+    required String email,
+    required String password,
+  }) async {
+    await _networkService.request<void>(
+      RequestData(
+        uri: Uri(path: '/users/login'),
+        method: RequestMethod.get,
+      ),
+    );
+
+    await _networkService.request<void>(
+      RequestData(
+        uri: Uri(path: '/users/login'),
+        method: RequestMethod.post,
+        headers: const {
+          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: {
+          'csrf': _cookieManager.csrf,
+          'LoginForm[username]': email,
+          'LoginForm[password]': password,
+        },
+      ),
+    );
+  }
+}

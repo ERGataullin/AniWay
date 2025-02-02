@@ -1,0 +1,72 @@
+import 'package:app/core/core.dart';
+import 'package:app/features/l10n/l10n.dart';
+import 'package:app/features/movies/domain/models/movie_card.dart';
+import 'package:app/features/movies/domain/models/up_next.dart';
+import 'package:app/features/movies/movies.dart';
+import 'package:app/features/movies/presentation/up_next/model.dart';
+import 'package:flutter/widgets.dart';
+
+UpNextWM upNextWMFactory(BuildContext context) => UpNextWM(
+      UpNextModel(
+        errorHandler: context.read<ErrorHandler>(),
+        repository: context.read<MoviesRepository>(),
+      ),
+    );
+
+abstract interface class IUpNextWM implements IWidgetModel {
+  ScrollController get scrollController;
+
+  Key? get pagedGridKey;
+
+  Future<List<MovieCardData>> handleLoadPage(int page);
+}
+
+class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
+    with L10nWMMixin
+    implements IUpNextWM {
+  UpNextWM(super._model);
+
+  @override
+  final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
+      GlobalKey();
+
+  @override
+  ScrollController get scrollController => PrimaryScrollController.of(context);
+
+  @override
+  Future<List<MovieCardData>> handleLoadPage(int page) async {
+    final List<UpNextData> movies = await model.loadPage(page: page);
+    return movies.map(_moviePreviewFromUpNext).toList(growable: false);
+  }
+
+  @override
+  void initWidgetModel() {
+    super.initWidgetModel();
+    model.addListener(_handleChanged);
+  }
+
+  @override
+  void dispose() {
+    model.removeListener(_handleChanged);
+    super.dispose();
+  }
+
+  void _handleChanged() {
+    pagedGridKey.currentState?.reset();
+  }
+
+  MovieCardData _moviePreviewFromUpNext(UpNextData upNext) {
+    return MovieCardData.fromUpNext(
+      upNext,
+      l10n: l10n.value,
+      onPressed: () => widget.onItemPressed(
+        upNext.movie.id,
+        upNext.episode.id,
+      ),
+      onLongPressed: () => widget.onItemLongPressed(
+        upNext.movie.id,
+        upNext.episode.id,
+      ),
+    );
+  }
+}

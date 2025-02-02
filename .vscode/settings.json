@@ -16,7 +16,7 @@
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "*.dart": "${capture}.g.dart",
-    "pubspec.yaml": "pubspec.lock,pubspec_overrides.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,.metadata"
+    "pubspec.yaml": "analysis_options.yaml,devtools_options.yaml,pubspec.lock,pubspec_overrides.yaml,.flutter-plugins,.flutter-plugins-dependencies,.metadata,.packages"
   },
   "files.exclude": {
     "**/.DS_Store": true,
