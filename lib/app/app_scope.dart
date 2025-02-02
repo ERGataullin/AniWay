@@ -1,8 +1,8 @@
+import 'package:app/auth/auth.dart';
+import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
-import 'package:app/features/auth/auth.dart';
-import 'package:app/features/cookie_manager/cookie_manager.dart';
-import 'package:app/features/movies/movies.dart';
-import 'package:app/features/player/player.dart';
+import 'package:app/movies/movies.dart';
+import 'package:app/player/player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 

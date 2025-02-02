@@ -1,7 +1,7 @@
-import 'package:app/features/auth/auth.dart';
-import 'package:app/features/l10n/l10n.dart';
-import 'package:app/features/movies/movies.dart';
-import 'package:app/features/root_menu/root_menu.dart';
+import 'package:app/auth/auth.dart';
+import 'package:app/l10n/l10n.dart';
+import 'package:app/movies/movies.dart';
+import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

@@ -1,9 +1,9 @@
 import 'package:app/app/app_scope.dart';
 import 'package:app/app/platform_wrapper/platform_wrapper.dart';
 import 'package:app/app/router.dart';
-import 'package:app/features/auth/auth.dart';
-import 'package:app/features/l10n/l10n.dart';
-import 'package:app/features/theme/theme.dart';
+import 'package:app/auth/auth.dart';
+import 'package:app/l10n/l10n.dart';
+import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
