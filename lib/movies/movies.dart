@@ -1,0 +1,10 @@
+export 'data/repository.dart';
+export 'data/services/anime365.dart';
+export 'data/services/service.dart';
+export 'domain/models/movies_order.dart';
+export 'presentation/components/movie_player/widget.dart';
+export 'presentation/episodes/widget.dart';
+export 'presentation/home/widget.dart';
+export 'presentation/movie/widget.dart';
+export 'presentation/search/widget.dart';
+export 'presentation/up_next/widget.dart';

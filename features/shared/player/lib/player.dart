@@ -1,8 +1,0 @@
-export 'src/data/dto/dto.dart';
-export 'src/data/repository.dart';
-export 'src/data/sources/local.dart';
-export 'src/data/sources/source.dart';
-export 'src/domain/models/video.dart';
-export 'src/domain/models/video_translation.dart';
-export 'src/domain/service.dart';
-export 'src/presentation/video_player/widget.dart';
