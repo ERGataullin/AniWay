@@ -57,7 +57,12 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
       headers: {
         ...data.headers,
         _effectiveCookieHeaderName: cookie.value.values
-            .map((cookie) => '${cookie.name}=${cookie.value}')
+            .map(
+              (cookie) => [
+                cookie.name,
+                Uri.encodeComponent(cookie.value),
+              ].join('='),
+            )
             .join(';'),
       },
     );
