@@ -6,6 +6,10 @@ import 'package:flutter/foundation.dart';
 
 typedef CookieMap = Map<String, Cookie>;
 
+extension CookieDecoded on Cookie {
+  String get valueDecoded => Uri.decodeComponent(value);
+}
+
 abstract class CookieManager implements Initable {
   ValueListenable<CookieMap> get cookie;
 
@@ -57,12 +61,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
       headers: {
         ...data.headers,
         _effectiveCookieHeaderName: cookie.value.values
-            .map(
-              (cookie) => [
-                cookie.name,
-                Uri.encodeComponent(cookie.value),
-              ].join('='),
-            )
+            .map((cookie) => '${cookie.name}=${cookie.value}')
             .join(';'),
       },
     );
@@ -94,7 +93,6 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
 
     final List<Cookie> setCookieList = setCookie
         .split(_setCookieSplitter)
-        .map(Uri.decodeComponent)
         .map(Cookie.fromSetCookieValue)
         .toList(growable: false);
 
