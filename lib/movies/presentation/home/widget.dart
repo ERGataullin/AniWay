@@ -38,7 +38,13 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
       builder: (context, __) => ShimmerScope(
         child: Scaffold(
           appBar: AppBar(
-            title: Text(context.l10n.homePageTitle),
+            centerTitle: true,
+            title: const SizedBox(
+              height: 24,
+              child: FittedBox(
+                child: Logo(primary: false),
+              ),
+            ),
           ),
           body: ListenableBuilder(
             listenable: wm.loading,

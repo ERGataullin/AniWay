@@ -62,7 +62,9 @@ class _Logo extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SizedBox(
       height: 256,
-      child: Logo(),
+      child: FittedBox(
+        child: Logo.short(),
+      ),
     );
   }
 }

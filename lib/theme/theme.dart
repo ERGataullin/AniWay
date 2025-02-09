@@ -88,8 +88,20 @@ extension _AppOverrides on ThemeData {
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
+        dividerTheme: dividerTheme.copyWith(
+          thickness: 1,
+          color: colorScheme.outlineVariant,
+        ),
         inputDecorationTheme: inputDecorationTheme.copyWith(
           border: const OutlineInputBorder(),
+        ),
+        navigationDrawerTheme: navigationDrawerTheme.copyWith(
+          elevation: 1,
+          shadowColor: colorScheme.shadow,
+        ),
+        navigationRailTheme: navigationRailTheme.copyWith(
+          labelType: NavigationRailLabelType.all,
+          backgroundColor: colorScheme.surface,
         ),
       );
 }

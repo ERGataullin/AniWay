@@ -77,33 +77,35 @@ class _SearchBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final AppBarTheme appBarTheme = AppBarTheme.of(context);
-    return ConditionalWrapper(
-      condition: appBarTheme.systemOverlayStyle != null,
-      wrapper: (context, child) => AnnotatedRegion(
-        value: appBarTheme.systemOverlayStyle!,
-        child: child,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(_margin),
-        child: ListenableBuilder(
-          listenable: context.wm.queryController,
-          builder: (context, __) => SearchBar(
-            controller: context.wm.queryController,
-            leading: Navigator.canPop(context)
-                ? const BackButton()
-                : IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search_outlined),
-                  ),
-            hintText: context.l10n.searchPageTitle,
-            trailing: context.wm.queryController.text.isEmpty
-                ? null
-                : [
-                    IconButton(
-                      onPressed: context.wm.handleClearPressed,
-                      icon: const Icon(Icons.clear_outlined),
+    return SafeArea(
+      child: ConditionalWrapper(
+        condition: appBarTheme.systemOverlayStyle != null,
+        wrapper: (context, child) => AnnotatedRegion(
+          value: appBarTheme.systemOverlayStyle!,
+          child: child,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(_margin),
+          child: ListenableBuilder(
+            listenable: context.wm.queryController,
+            builder: (context, __) => SearchBar(
+              controller: context.wm.queryController,
+              leading: Navigator.canPop(context)
+                  ? const BackButton()
+                  : IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.search_outlined),
                     ),
-                  ],
+              hintText: context.l10n.searchPageTitle,
+              trailing: context.wm.queryController.text.isEmpty
+                  ? null
+                  : [
+                      IconButton(
+                        onPressed: context.wm.handleClearPressed,
+                        icon: const Icon(Icons.clear_outlined),
+                      ),
+                    ],
+            ),
           ),
         ),
       ),
