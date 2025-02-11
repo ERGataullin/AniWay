@@ -47,6 +47,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
           ),
           child: SafeArea(
             top: false,
+            bottom: false,
             child: CustomScrollView(
               controller: wm.scrollController,
               slivers: [
@@ -54,9 +55,9 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                   builder: (context) => SliverPadding(
                     padding: EdgeInsets.fromLTRB(
                       16,
-                      MediaQuery.paddingOf(context).top + 16,
                       16,
                       16,
+                      16 + MediaQuery.paddingOf(context).bottom,
                     ),
                     sliver: SliverPagedGrid(
                       key: wm.pagedGridKey,

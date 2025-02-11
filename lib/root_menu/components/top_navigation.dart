@@ -14,7 +14,7 @@ class TopNavigation extends StatelessWidget {
     required this.onSearch,
   });
 
-  static const breakpoint = Breakpoints.mediumAndUp;
+  static const Breakpoint breakpoint = Breakpoints.mediumAndUp;
 
   final String? query;
 
@@ -40,11 +40,14 @@ class TopNavigation extends StatelessWidget {
             );
             final middle = LayoutId(id: _SlotId.middle, child: searchBar);
 
-            return CustomMultiChildLayout(
-              delegate: _LayoutDelegate(
-                height: searchBar.preferredSize.height,
+            return SafeArea(
+              bottom: false,
+              child: CustomMultiChildLayout(
+                delegate: _LayoutDelegate(
+                  height: searchBar.preferredSize.height,
+                ),
+                children: [leading, middle],
               ),
-              children: [leading, middle],
             );
           },
         ),

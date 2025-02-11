@@ -9,6 +9,8 @@ class PrimaryNavigation extends StatelessWidget {
     required this.destinations,
   });
 
+  static const Breakpoint breakpoint = Breakpoints.mediumAndUp;
+
   final int currentIndex;
 
   final ValueChanged<int> onDestinationSelected;
@@ -23,7 +25,7 @@ class PrimaryNavigation extends StatelessWidget {
       alignment: Alignment.topLeft,
       child: SlotLayout(
         config: {
-          Breakpoints.mediumAndUp: SlotLayout.from(
+          breakpoint: SlotLayout.from(
             key: const Key('Primary Navigation Medium and Up'),
             builder: (context) => SafeArea(
               right: false,

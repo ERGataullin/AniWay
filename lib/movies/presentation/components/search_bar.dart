@@ -55,13 +55,14 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
   @override
   Widget build(BuildContext context) {
     final AppBarTheme appBarTheme = AppBarTheme.of(context);
-    return SafeArea(
-      child: ConditionalWrapper(
-        condition: appBarTheme.systemOverlayStyle != null,
-        wrapper: (context, child) => AnnotatedRegion(
-          value: appBarTheme.systemOverlayStyle!,
-          child: child,
-        ),
+    return ConditionalWrapper(
+      condition: appBarTheme.systemOverlayStyle != null,
+      wrapper: (context, child) => AnnotatedRegion(
+        value: appBarTheme.systemOverlayStyle!,
+        child: child,
+      ),
+      child: SafeArea(
+        bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(MoviesSearchBar.margin),
           child: ListenableBuilder(

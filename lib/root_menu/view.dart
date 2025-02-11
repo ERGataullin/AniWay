@@ -4,6 +4,7 @@ import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/root_menu/components/bottom_navigation.dart';
 import 'package:app/root_menu/components/primary_navigation.dart';
 import 'package:app/root_menu/components/top_navigation.dart';
+import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart' hide Drawer;
 
 enum _SlotId {
@@ -44,7 +45,15 @@ class RootMenuView extends StatelessWidget {
         children: [
           LayoutId(
             id: _SlotId.body,
-            child: child,
+            child: Builder(
+              builder: (context) => MediaQuery.removePadding(
+                removeLeft: RootMenu.hasPrimaryNavigation(context),
+                removeTop: RootMenu.hasTopNavigation(context),
+                removeBottom: RootMenu.hasBottomNavigation(context),
+                context: context,
+                child: child,
+              ),
+            ),
           ),
           LayoutId(
             id: _SlotId.primaryNavigation,

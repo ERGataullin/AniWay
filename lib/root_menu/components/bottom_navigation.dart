@@ -9,6 +9,8 @@ class BottomNavigation extends StatelessWidget {
     required this.destinations,
   });
 
+  static const Breakpoint breakpoint = Breakpoints.small;
+
   final int currentIndex;
 
   final ValueChanged<int> onDestinationSelected;
@@ -23,7 +25,7 @@ class BottomNavigation extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: SlotLayout(
         config: {
-          Breakpoints.small: SlotLayout.from(
+          breakpoint: SlotLayout.from(
             key: const Key('Bottom Navigation Small'),
             builder: (context) => AdaptiveScaffold.standardBottomNavigationBar(
               currentIndex: currentIndex,
