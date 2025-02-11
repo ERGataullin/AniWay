@@ -122,10 +122,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_adaptive_scaffold
-      sha256: "8c515a2cb8abb3a567f8e77f10b33f47bb6fcadfe31f62364e0aca36280cdf93"
+      sha256: f044e1022702c15bf543d18faf137eed43a6d878b10ba30488a914532410d19c
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.1"
+    version: "0.3.1+1"
   flutter_lints:
     dependency: "direct dev"
     description:
