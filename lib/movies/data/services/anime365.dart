@@ -2,14 +2,15 @@ import 'dart:ui';
 
 import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
+import 'package:app/movies/data/services/service.dart';
 import 'package:app/movies/domain/models/episode.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/movie_type.dart';
+import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/up_next.dart';
 import 'package:app/movies/domain/models/watch_list_element.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
-import 'package:app/movies/movies.dart';
 import 'package:app/player/player.dart';
 
 class MoviesServiceAnime365 implements MoviesService {

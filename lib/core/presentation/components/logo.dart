@@ -27,7 +27,7 @@ class Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle effectiveStyle = switch (style) {
-      null => TextTheme.of(context).displayLarge!,
+      null => TextTheme.of(context).displaySmall!,
       final TextStyle style => style,
     }
         .copyWith(

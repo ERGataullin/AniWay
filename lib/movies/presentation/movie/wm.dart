@@ -1,9 +1,10 @@
 import 'package:app/core/core.dart';
+import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/episode.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
-import 'package:app/movies/movies.dart';
 import 'package:app/movies/presentation/movie/model.dart';
+import 'package:app/movies/presentation/movie/widget.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';

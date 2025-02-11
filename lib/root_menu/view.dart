@@ -1,17 +1,26 @@
 import 'dart:math';
 
-import 'package:app/root_menu/components/bottom_bar.dart';
-import 'package:app/root_menu/components/drawer.dart';
-import 'package:app/root_menu/components/rail.dart';
+import 'package:app/movies/presentation/components/search_bar.dart';
+import 'package:app/root_menu/components/bottom_navigation.dart';
+import 'package:app/root_menu/components/primary_navigation.dart';
+import 'package:app/root_menu/components/top_navigation.dart';
 import 'package:flutter/material.dart' hide Drawer;
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
-class RootMenu extends StatefulWidget {
-  const RootMenu({
+enum _SlotId {
+  body,
+  primaryNavigation,
+  topNavigation,
+  bottomNavigation,
+}
+
+class RootMenuView extends StatelessWidget {
+  const RootMenuView({
     super.key,
     this.currentIndex = 0,
     required this.onDestinationSelected,
     required this.destinations,
+    this.query,
+    required this.onSearch,
     required this.child,
   });
 
@@ -21,85 +30,44 @@ class RootMenu extends StatefulWidget {
 
   final List<NavigationDestination> destinations;
 
+  final String? query;
+
+  final OnMoviesSearch onSearch;
+
   final Widget child;
-
-  @override
-  State<RootMenu> createState() => _RootMenuState();
-}
-
-class _RootMenuState extends State<RootMenu> {
-  static const Breakpoint _bottomBarBreakpoint = Breakpoints.small;
-
-  static const Breakpoint _railBreakpoint = Breakpoints.mediumAndUp;
-
-  static const Breakpoint _drawerBreakpoint = Breakpoints.largeAndUp;
-
-  Breakpoint _breakpoint = Breakpoints.standard;
-
-  EdgeInsets get _bodyPadding {
-    final EdgeInsets mediaQueryPadding = MediaQuery.paddingOf(context);
-    return <Breakpoint, EdgeInsets>{
-      _bottomBarBreakpoint: mediaQueryPadding.copyWith(
-        bottom: BottomBar.getHeight(context),
-      ),
-      _railBreakpoint: mediaQueryPadding.copyWith(
-        left: Rail.getWidth(context),
-      ),
-      _drawerBreakpoint: mediaQueryPadding.copyWith(
-        left: Drawer.getWidth(context),
-      ),
-    }[_breakpoint]!;
-  }
-
-  @override
-  void didChangeDependencies() {
-    _breakpoint = Breakpoint.activeBreakpointIn(
-      context,
-      [
-        _bottomBarBreakpoint,
-        _railBreakpoint,
-        _drawerBreakpoint,
-      ],
-    )!;
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: CustomMultiChildLayout(
+        delegate: _LayoutDelegate(),
         children: [
-          _BodyContainer(
-            padding: _bodyPadding,
-            child: widget.child,
+          LayoutId(
+            id: _SlotId.body,
+            child: child,
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: {
-                  _bottomBarBreakpoint: BottomBar(
-                    currentIndex: widget.currentIndex,
-                    onDestinationSelected: widget.onDestinationSelected,
-                    destinations: widget.destinations,
-                  ),
-                }[_breakpoint] ??
-                const SizedBox(width: double.infinity),
+          LayoutId(
+            id: _SlotId.primaryNavigation,
+            child: PrimaryNavigation(
+              currentIndex: currentIndex,
+              onDestinationSelected: onDestinationSelected,
+              destinations: destinations,
+            ),
           ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: <Breakpoint, WidgetBuilder>{
-                  _railBreakpoint: (context) => Rail(
-                        currentIndex: widget.currentIndex,
-                        onDestinationSelected: widget.onDestinationSelected,
-                        destinations: widget.destinations,
-                      ),
-                  _drawerBreakpoint: (context) => Drawer(
-                        currentIndex: widget.currentIndex,
-                        onDestinationSelected: widget.onDestinationSelected,
-                        destinations: widget.destinations,
-                      ),
-                }[_breakpoint]
-                    ?.call(context) ??
-                const SizedBox(height: double.infinity),
+          LayoutId(
+            id: _SlotId.topNavigation,
+            child: TopNavigation(
+              query: query,
+              onSearch: onSearch,
+            ),
+          ),
+          LayoutId(
+            id: _SlotId.bottomNavigation,
+            child: BottomNavigation(
+              currentIndex: currentIndex,
+              onDestinationSelected: onDestinationSelected,
+              destinations: destinations,
+            ),
           ),
         ],
       ),
@@ -107,52 +75,66 @@ class _RootMenuState extends State<RootMenu> {
   }
 }
 
-class _BodyContainer extends StatelessWidget {
-  const _BodyContainer({
-    required this.padding,
-    required this.child,
-  });
-
-  static const double _maxWidth = 1200;
-
-  final EdgeInsets padding;
-
-  final Widget child;
+class _LayoutDelegate extends MultiChildLayoutDelegate {
+  @override
+  bool shouldRelayout(_LayoutDelegate oldDelegate) {
+    return false;
+  }
 
   @override
-  Widget build(BuildContext context) {
-    final MediaQueryData mediaQuery = MediaQuery.of(context);
-    // Левый и правый отступы для ограничения ширины.
-    final double paddingHorizontalWidthLimit =
-        (mediaQuery.size.width - _maxWidth) / 2;
-    // Левый отступ под основное навигационное меню.
-    final double paddingPrimaryNavigation = padding.left;
-    // Левый отступ для ограничения ширины и под основное навигационное меню.
-    final double paddingLeft = max(
-      paddingPrimaryNavigation,
-      paddingHorizontalWidthLimit,
+  void performLayout(Size size) {
+    final Size topNavigationSize = layoutChild(
+      _SlotId.topNavigation,
+      BoxConstraints(
+        minWidth: size.width,
+        maxWidth: size.width,
+        maxHeight: size.height,
+      ),
     );
-    // Насколько левый отступ превзошёл отступ для ограничения ширины
-    // (если основное меню шире).
-    final double paddingLeftOverwidth =
-        paddingLeft - paddingHorizontalWidthLimit;
-    // Правый отступ для ограничения ширины, учитывающий итоговый левый отступ.
-    final double paddingRight = max(
-      paddingHorizontalWidthLimit - paddingLeftOverwidth,
-      mediaQuery.padding.right,
+    positionChild(_SlotId.topNavigation, Offset.zero);
+
+    final Size bottomNavigationSize = layoutChild(
+      _SlotId.bottomNavigation,
+      BoxConstraints(
+        minWidth: size.width,
+        maxWidth: size.width,
+        maxHeight: size.height - topNavigationSize.height,
+      ),
     );
-    final paddingResult = EdgeInsets.fromLTRB(
-      max(paddingLeft, mediaQuery.padding.left),
-      max(padding.top, mediaQuery.padding.top),
-      max(paddingRight, mediaQuery.padding.right),
-      max(padding.bottom, mediaQuery.padding.bottom),
+    positionChild(
+      _SlotId.bottomNavigation,
+      Offset(0, size.height - bottomNavigationSize.height),
     );
 
-    return MediaQuery(
-      data: mediaQuery.copyWith(
-        padding: paddingResult,
+    final Size primaryNavigationSize = layoutChild(
+      _SlotId.primaryNavigation,
+      BoxConstraints(
+        maxWidth: size.width,
+        maxHeight: size.height -
+            topNavigationSize.height -
+            bottomNavigationSize.height,
       ),
-      child: child,
+    );
+    positionChild(
+      _SlotId.primaryNavigation,
+      Offset(0, topNavigationSize.height),
+    );
+
+    final Size bodySize = layoutChild(
+      _SlotId.body,
+      BoxConstraints(
+        maxWidth: size.width - primaryNavigationSize.width,
+        maxHeight: size.height -
+            topNavigationSize.height -
+            bottomNavigationSize.height,
+      ),
+    );
+    positionChild(
+      _SlotId.body,
+      Offset(
+        max(primaryNavigationSize.width, (size.width - bodySize.width) / 2),
+        topNavigationSize.height,
+      ),
     );
   }
 }

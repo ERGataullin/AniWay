@@ -3,6 +3,7 @@ import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/domain/models/movie_card.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/home/wm.dart';
+import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -37,38 +38,46 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
       value: wm,
       builder: (context, __) => ShimmerScope(
         child: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const SizedBox(
-              height: 24,
-              child: FittedBox(
-                child: Logo(primary: false),
-              ),
-            ),
-          ),
-          body: ListenableBuilder(
-            listenable: wm.loading,
-            builder: (context, __) => AnimatedSwitcher(
-              switchInCurve: Easing.emphasizedDecelerate,
-              switchOutCurve: Easing.emphasizedAccelerate.flipped,
-              duration: Durations.medium4,
-              reverseDuration: Durations.short4,
-              layoutBuilder: (currentChild, previousChildren) => Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  ...previousChildren,
-                  if (currentChild != null) currentChild,
-                ],
-              ),
-              child: wm.loading.value
-                  ? const Center(
-                      key: ValueKey('Loader'),
-                      child: CircularProgressIndicator.adaptive(),
-                    )
-                  : const _Content(key: ValueKey('Content')),
-            ),
-          ),
+          appBar: RootMenu.hasTopNavigation(context)
+              ? null
+              : AppBar(
+                  centerTitle: true,
+                  title: const FittedBox(
+                    child: Logo(primary: false),
+                  ),
+                ),
+          body: const _Body(),
         ),
+      ),
+    );
+  }
+}
+
+class _Body extends StatelessWidget {
+  const _Body();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: context.wm.loading,
+      builder: (context, __) => AnimatedSwitcher(
+        switchInCurve: Easing.emphasizedDecelerate,
+        switchOutCurve: Easing.emphasizedAccelerate.flipped,
+        duration: Durations.medium4,
+        reverseDuration: Durations.short4,
+        layoutBuilder: (currentChild, previousChildren) => Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            ...previousChildren,
+            if (currentChild != null) currentChild,
+          ],
+        ),
+        child: context.wm.loading.value
+            ? const Center(
+                key: ValueKey('Loader'),
+                child: CircularProgressIndicator.adaptive(),
+              )
+            : const _Content(key: ValueKey('Content')),
       ),
     );
   }

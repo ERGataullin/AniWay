@@ -1,7 +1,14 @@
 import 'package:app/auth/auth.dart';
 import 'package:app/l10n/l10n.dart';
-import 'package:app/movies/movies.dart';
-import 'package:app/root_menu/root_menu.dart';
+import 'package:app/movies/domain/models/movies_order.dart';
+import 'package:app/movies/presentation/components/movie_player/widget.dart';
+import 'package:app/movies/presentation/episodes/widget.dart';
+import 'package:app/movies/presentation/home/widget.dart';
+import 'package:app/movies/presentation/movie/widget.dart';
+import 'package:app/movies/presentation/search/widget.dart';
+import 'package:app/movies/presentation/up_next/widget.dart';
+import 'package:app/root_menu/container.dart';
+import 'package:app/root_menu/view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -60,17 +67,14 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }
 
   ShellRouteBase _buildRootMenu() {
+    final GoRoute search = _buildSearch();
     return StatefulShellRoute(
       branches: [
         StatefulShellBranch(
-          routes: [
-            _buildHome(),
-          ],
+          routes: [_buildHome()],
         ),
         StatefulShellBranch(
-          routes: [
-            _buildSearch(),
-          ],
+          routes: [search],
         ),
       ],
       navigatorContainerBuilder: (context, navigationShell, children) =>
@@ -78,7 +82,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
         currentIndex: navigationShell.currentIndex,
         children: children,
       ),
-      builder: (context, state, navigationShell) => RootMenu(
+      builder: (context, state, navigationShell) => RootMenuView(
         currentIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) => navigationShell.goBranch(
           index,
@@ -96,6 +100,13 @@ class AppRouter implements RouterConfig<RouteMatchList> {
             label: _l10n.searchPageTitle,
           ),
         ],
+        query: state.uri.queryParameters['query'],
+        onSearch: (query) => context.goNamed(
+          search.name!,
+          queryParameters: {
+            if (query.isNotEmpty) 'query': query,
+          },
+        ),
         child: navigationShell,
       ),
     );
@@ -171,16 +182,25 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       path: path,
       routes: [movieRoute],
       builder: (context, state) => MoviesSearchWidget(
+        isOngoing: bool.tryParse(
+          state.uri.queryParameters['isOngoing'] ?? '',
+        ),
+        query: state.uri.queryParameters['query'],
         order: switch (state.uri.queryParameters['order']) {
           final String order => MoviesOrder.valueOf(order),
           _ => MoviesOrder.byPopularity,
         },
-        isOngoing: bool.tryParse(
-          state.uri.queryParameters['isOngoing'] ?? '',
+        onSearch: (query) => context.goNamed(
+          name,
+          queryParameters: {
+            if (query.isNotEmpty) 'query': query,
+          },
         ),
         onMoviePressed: (id) => context.goNamed(
           movieRoute.name!,
-          pathParameters: {'movieId': id.toString()},
+          pathParameters: {
+            'movieId': id.toString(),
+          },
         ),
       ),
     );
@@ -239,9 +259,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       name: _Routes.episodes(parent: parent),
       path: 'episodes',
       builder: (context, state) => EpisodesWidget(
-        movieId: int.parse(
-          state.pathParameters['movieId']!,
-        ),
+        movieId: int.parse(state.pathParameters['movieId']!),
         onEpisodePressed: (episodeId) => context.pushNamed(
           _Routes.moviePlayer,
           pathParameters: {'movieId': state.pathParameters['movieId']!},

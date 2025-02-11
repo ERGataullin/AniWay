@@ -89,6 +89,7 @@ extension _AppOverrides on ThemeData {
           ),
         ),
         dividerTheme: dividerTheme.copyWith(
+          space: 0,
           thickness: 1,
           color: colorScheme.outlineVariant,
         ),
@@ -96,12 +97,35 @@ extension _AppOverrides on ThemeData {
           border: const OutlineInputBorder(),
         ),
         navigationDrawerTheme: navigationDrawerTheme.copyWith(
-          elevation: 1,
-          shadowColor: colorScheme.shadow,
+          backgroundColor: colorScheme.surface,
         ),
         navigationRailTheme: navigationRailTheme.copyWith(
           labelType: NavigationRailLabelType.all,
+          selectedIconTheme: IconThemeData(
+            size: 24,
+            color: colorScheme.onSecondaryContainer,
+          ),
+          selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+            color: colorScheme.onSurface,
+          ),
+          unselectedIconTheme: IconThemeData(
+            size: 24,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          unselectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
           backgroundColor: colorScheme.surface,
+        ),
+        searchBarTheme: searchBarTheme.copyWith(
+          elevation: const WidgetStatePropertyAll(0),
+          textCapitalization: TextCapitalization.sentences,
+          constraints: const BoxConstraints(
+            minWidth: 360,
+            maxWidth: 720,
+            minHeight: 56,
+            maxHeight: 56,
+          ),
         ),
       );
 }
