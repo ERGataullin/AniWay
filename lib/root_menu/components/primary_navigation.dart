@@ -27,12 +27,12 @@ class PrimaryNavigation extends StatelessWidget {
         config: {
           breakpoint: SlotLayout.from(
             key: const Key('Primary Navigation Medium and Up'),
-            builder: (context) => SafeArea(
-              right: false,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AdaptiveScaffold.standardNavigationRail(
+            builder: (context) => Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SafeArea(
+                  right: false,
+                  child: AdaptiveScaffold.standardNavigationRail(
                     labelType: null,
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     width: 80,
@@ -42,9 +42,9 @@ class PrimaryNavigation extends StatelessWidget {
                         .map(AdaptiveScaffold.toRailDestination)
                         .toList(growable: false),
                   ),
-                  const VerticalDivider(),
-                ],
-              ),
+                ),
+                const VerticalDivider(),
+              ],
             ),
           ),
           Breakpoints.largeAndUp: SlotLayout.from(
