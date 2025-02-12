@@ -1,8 +1,5 @@
 # FVM related
-.fvm/flutter_sdk
-.fvm/release
-.fvm/version
-.fvm/versions/*
+.fvm/
 
 # Miscellaneous
 *.class
