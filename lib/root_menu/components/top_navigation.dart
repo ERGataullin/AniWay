@@ -45,7 +45,10 @@ class TopNavigation extends StatelessWidget {
                   title: Theme(
                     data: theme,
                     child: CustomMultiChildLayout(
-                      delegate: _LayoutDelegate(height: appBarHeight),
+                      delegate: _LayoutDelegate(
+                        spacing: 24,
+                        height: appBarHeight,
+                      ),
                       children: [
                         LayoutId(
                           id: _SlotId.leading,
@@ -72,13 +75,18 @@ class TopNavigation extends StatelessWidget {
 }
 
 class _LayoutDelegate extends MultiChildLayoutDelegate {
-  _LayoutDelegate({required this.height});
+  _LayoutDelegate({
+    this.spacing = 0,
+    required this.height,
+  });
+
+  final double spacing;
 
   final double height;
 
   @override
   bool shouldRelayout(_LayoutDelegate oldDelegate) {
-    return false;
+    return spacing != oldDelegate.spacing || height != oldDelegate.height;
   }
 
   @override
@@ -93,6 +101,8 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
 
   @override
   void performLayout(Size size) {
+    double occupiedWidth = 0;
+
     final Size leadingSize = layoutChild(
       _SlotId.leading,
       BoxConstraints(
@@ -104,18 +114,24 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
       _SlotId.leading,
       Offset(0, (size.height - leadingSize.height) / 2),
     );
+    occupiedWidth += leadingSize.width;
+
+    occupiedWidth += spacing;
 
     final Size middleSize = layoutChild(
       _SlotId.middle,
       BoxConstraints(
-        maxWidth: size.width - leadingSize.width,
+        maxWidth: size.width - occupiedWidth,
         maxHeight: size.height,
       ),
     );
     positionChild(
       _SlotId.middle,
       Offset(
-        max(leadingSize.width, (size.width - middleSize.width) / 2),
+        max(
+          occupiedWidth,
+          (size.width - middleSize.width) / 2,
+        ),
         (size.height - middleSize.height) / 2,
       ),
     );
