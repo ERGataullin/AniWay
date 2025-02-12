@@ -22,7 +22,15 @@ class AdaptiveImageBuilder extends StatefulWidget {
 class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
   num _imageWidth = -1;
 
+  double _breakpointWidth = -1;
+
   ImageProvider<Object>? _imageProvider;
+
+  @override
+  void didUpdateWidget(covariant AdaptiveImageBuilder oldWidget) {
+    if (widget.image != oldWidget.image) _updateImage();
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +59,15 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
 
     final double physicalPixelsWidth =
         constraints.maxWidth * MediaQuery.devicePixelRatioOf(context);
-    final double breakpointWidth = physicalPixelsWidth * .9;
-    if (breakpointWidth <= _imageWidth) return;
+    _breakpointWidth = physicalPixelsWidth * .9;
+    if (_breakpointWidth <= _imageWidth) return;
+    _updateImage();
+  }
 
+  void _updateImage() {
     final MapEntry<num, Uri> imageEntry =
         widget.image!.resolutionsUris.entries.firstWhere(
-      (entry) => entry.key >= breakpointWidth,
+      (entry) => entry.key >= _breakpointWidth,
       orElse: () => widget.image!.resolutionsUris.entries.last,
     );
     _imageProvider = NetworkImage(
