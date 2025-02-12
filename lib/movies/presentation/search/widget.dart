@@ -4,7 +4,6 @@ import 'package:app/movies/movies.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/movies/presentation/search/wm.dart';
-import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
 
 class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
@@ -35,14 +34,12 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
       child: ShimmerScope(
         child: ListenableBuilder(
           listenable: wm.query,
-          builder: (context, body) => Scaffold(
+          builder: (context, body) => PageLayout(
             extendBodyBehindAppBar: true,
-            appBar: RootMenu.hasTopNavigation(context)
-                ? null
-                : MoviesSearchBar(
-                    query: wm.query.value,
-                    onSearch: onSearch,
-                  ),
+            appBar: MoviesSearchBar(
+              query: wm.query.value,
+              onSearch: onSearch,
+            ),
             body: body,
           ),
           child: SafeArea(
@@ -55,7 +52,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                   builder: (context) => SliverPadding(
                     padding: EdgeInsets.fromLTRB(
                       16,
-                      16,
+                      16 + MediaQuery.paddingOf(context).top,
                       16,
                       16 + MediaQuery.paddingOf(context).bottom,
                     ),

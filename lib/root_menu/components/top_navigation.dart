@@ -27,26 +27,41 @@ class TopNavigation extends StatelessWidget {
         breakpoint: SlotLayout.from(
           key: const Key('Top Navigation Medium and Up'),
           builder: (context) {
-            final searchBar = MoviesSearchBar(
-              query: query,
-              onSearch: onSearch,
-            );
-            final leading = LayoutId(
-              id: _SlotId.leading,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12 + 16),
-                child: Logo(enableRedirect: true),
-              ),
-            );
-            final middle = LayoutId(id: _SlotId.middle, child: searchBar);
+            final ThemeData theme = Theme.of(context);
+            final ColorScheme colorScheme = theme.colorScheme;
+            final double appBarHeight =
+                theme.appBarTheme.toolbarHeight ?? kToolbarHeight;
 
-            return SafeArea(
-              bottom: false,
-              child: CustomMultiChildLayout(
-                delegate: _LayoutDelegate(
-                  height: searchBar.preferredSize.height,
+            return SizedBox(
+              height: appBarHeight,
+              child: Theme(
+                data: theme.copyWith(
+                  colorScheme: colorScheme.copyWith(
+                    surfaceContainer: colorScheme.surfaceContainerLowest,
+                  ),
                 ),
-                children: [leading, middle],
+                child: AppBar(
+                  centerTitle: true,
+                  title: Theme(
+                    data: theme,
+                    child: CustomMultiChildLayout(
+                      delegate: _LayoutDelegate(height: appBarHeight),
+                      children: [
+                        LayoutId(
+                          id: _SlotId.leading,
+                          child: const Logo(enableRedirect: false),
+                        ),
+                        LayoutId(
+                          id: _SlotId.middle,
+                          child: MoviesSearchBar(
+                            query: query,
+                            onSearch: onSearch,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             );
           },

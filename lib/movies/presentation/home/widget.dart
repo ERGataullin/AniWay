@@ -3,7 +3,6 @@ import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/domain/models/movie_card.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/home/wm.dart';
-import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -37,15 +36,13 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
     return Provider<IHomeWM>.value(
       value: wm,
       builder: (context, __) => ShimmerScope(
-        child: Scaffold(
-          appBar: RootMenu.hasTopNavigation(context)
-              ? null
-              : AppBar(
-                  centerTitle: true,
-                  title: const FittedBox(
-                    child: Logo(primary: false),
-                  ),
-                ),
+        child: PageLayout(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const FittedBox(
+              child: Logo(primary: false),
+            ),
+          ),
           body: const _Body(),
         ),
       ),

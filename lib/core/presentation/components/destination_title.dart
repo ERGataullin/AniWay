@@ -33,11 +33,12 @@ class DestinationTitle extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Expanded(
+            Flexible(
+              fit: FlexFit.loose,
               child: Link(
                 uri: uri,
                 builder: (context, followLink) => ConditionalWrapper(
-                  condition: followLink != null,
+                  condition: true,
                   wrapper: (context, child) => MouseRegion(
                     cursor: WidgetStateMouseCursor.clickable,
                     child: GestureDetector(
@@ -46,6 +47,7 @@ class DestinationTitle extends StatelessWidget {
                     ),
                   ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Flexible(
                         child: Text(

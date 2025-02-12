@@ -23,6 +23,7 @@ export 'presentation/components/image/adaptive_image_builder.dart';
 export 'presentation/components/image/fade_in_image_builder.dart';
 export 'presentation/components/logo.dart';
 export 'presentation/components/menu.dart';
+export 'presentation/components/page_layout.dart';
 export 'presentation/components/shimmer/delegate.dart';
 export 'presentation/components/shimmer/scope.dart';
 export 'presentation/components/shimmer/shimmer.dart';

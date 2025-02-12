@@ -82,6 +82,10 @@ class Themes {
 
 extension _AppOverrides on ThemeData {
   ThemeData get appOverrides => copyWith(
+        appBarTheme: appBarTheme.copyWith(
+          scrolledUnderElevation: 3,
+          toolbarHeight: 64,
+        ),
         cardTheme: cardTheme.copyWith(
           margin: EdgeInsets.zero,
           shape: const RoundedRectangleBorder(
@@ -92,6 +96,9 @@ extension _AppOverrides on ThemeData {
           space: 0,
           thickness: 1,
           color: colorScheme.outlineVariant,
+        ),
+        drawerTheme: drawerTheme.copyWith(
+          width: 360,
         ),
         inputDecorationTheme: inputDecorationTheme.copyWith(
           border: const OutlineInputBorder(),
