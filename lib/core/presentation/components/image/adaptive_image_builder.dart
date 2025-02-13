@@ -48,12 +48,6 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
   }
 
   void _handleConstraintsChanged(BoxConstraints constraints) {
-    if (widget.image == null) {
-      _imageProvider = null;
-      _imageWidth = -1;
-      return;
-    }
-
     final double physicalPixelsWidth =
         constraints.maxWidth * MediaQuery.devicePixelRatioOf(context);
     _breakpointWidth = physicalPixelsWidth * .9;
@@ -62,11 +56,12 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
   }
 
   void _updateImage() {
-    final MapEntry<num, Uri> imageEntry = widget.image!.resolutionsUris.entries
-        .firstWhere(
-          (entry) => entry.key >= _breakpointWidth,
-          orElse: () => widget.image!.resolutionsUris.entries.last,
-        );
+    final MapEntry<num, Uri> imageEntry =
+        widget.image!.resolutionsUris.entries.firstWhere(
+      (entry) => entry.key >= _breakpointWidth,
+      orElse: () => widget.image!.resolutionsUris.entries.last,
+    );
+    
     _imageProvider = NetworkImage(
       context
           .read<NetworkService>()
