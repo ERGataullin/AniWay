@@ -9,10 +9,7 @@ class DebugPrintErrorHandler implements ErrorHandler {
 
   @override
   void handleError(Object error, {StackTrace? stackTrace}) {
-    debugPrintStack(
-      label: error.toString(),
-      stackTrace: stackTrace,
-    );
+    debugPrintStack(label: error.toString(), stackTrace: stackTrace);
   }
 
   @override

@@ -12,10 +12,8 @@ abstract interface class IUpNextModel implements ElementaryModel {
 }
 
 class UpNextModel extends ElementaryModel implements IUpNextModel {
-  UpNextModel({
-    super.errorHandler,
-    required MoviesRepository repository,
-  }) : _repository = repository;
+  UpNextModel({super.errorHandler, required MoviesRepository repository})
+    : _repository = repository;
 
   final MoviesRepository _repository;
 

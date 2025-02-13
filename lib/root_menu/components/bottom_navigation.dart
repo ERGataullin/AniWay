@@ -27,11 +27,12 @@ class BottomNavigation extends StatelessWidget {
         config: {
           breakpoint: SlotLayout.from(
             key: const Key('Bottom Navigation Small'),
-            builder: (context) => AdaptiveScaffold.standardBottomNavigationBar(
-              currentIndex: currentIndex,
-              onDestinationSelected: onDestinationSelected,
-              destinations: destinations,
-            ),
+            builder:
+                (context) => AdaptiveScaffold.standardBottomNavigationBar(
+                  currentIndex: currentIndex,
+                  onDestinationSelected: onDestinationSelected,
+                  destinations: destinations,
+                ),
           ),
         },
       ),

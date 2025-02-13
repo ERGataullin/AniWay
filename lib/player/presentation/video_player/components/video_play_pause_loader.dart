@@ -2,10 +2,7 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoPlayPauseLoader extends StatefulWidget {
-  const VideoPlayPauseLoader({
-    super.key,
-    required this.videoController,
-  });
+  const VideoPlayPauseLoader({super.key, required this.videoController});
 
   final VideoController videoController;
 
@@ -52,20 +49,22 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
         switchInCurve: Easing.standard,
         switchOutCurve: Easing.standard.flipped,
         duration: Durations.medium2,
-        child: _loading
-            ? Builder(
-                builder: (context) => SizedBox.square(
-                  dimension: IconTheme.of(context).size,
-                  child: const Padding(
-                    padding: EdgeInsets.all(8),
-                    child: CircularProgressIndicator.adaptive(),
-                  ),
+        child:
+            _loading
+                ? Builder(
+                  builder:
+                      (context) => SizedBox.square(
+                        dimension: IconTheme.of(context).size,
+                        child: const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      ),
+                )
+                : AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  progress: _animation,
                 ),
-              )
-            : AnimatedIcon(
-                icon: AnimatedIcons.play_pause,
-                progress: _animation,
-              ),
       ),
     );
   }

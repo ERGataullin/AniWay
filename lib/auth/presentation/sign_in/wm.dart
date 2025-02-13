@@ -6,11 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 SignInWM signInWMFactory(BuildContext context) => SignInWM(
-      SignInModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<AuthRepository>(),
-      ),
-    );
+  SignInModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<AuthRepository>(),
+  ),
+);
 
 abstract interface class ISignInWM implements IWidgetModel {
   ValueListenable<bool> get obscurePassword;

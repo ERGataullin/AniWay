@@ -158,7 +158,7 @@ linter:
     prefer_typing_uninitialized_variables: true
     provide_deprecation_message: true
     recursive_getters: true
-    require_trailing_commas: true
+    require_trailing_commas: false
     sized_box_for_whitespace: true
     sized_box_shrink_expand: true
     slash_for_doc_comments: true

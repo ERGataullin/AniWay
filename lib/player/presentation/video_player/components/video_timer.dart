@@ -23,10 +23,7 @@ extension _DurationFormat on Duration {
 }
 
 class VideoTimer extends StatelessWidget {
-  const VideoTimer({
-    super.key,
-    required this.videoController,
-  });
+  const VideoTimer({super.key, required this.videoController});
 
   final VideoController videoController;
 
@@ -38,27 +35,25 @@ class VideoTimer extends StatelessWidget {
         videoController.position,
         videoController.duration,
       ]),
-      builder: (context, __) => RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: videoController.position.value.format(),
-              style: TextStyle(color: theme.colorScheme.onSurface),
-            ),
-            const TextSpan(text: ' / '),
-            TextSpan(text: videoController.duration.value.format()),
-          ],
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.secondary,
-            shadows: [
-              Shadow(
-                blurRadius: 16,
-                color: theme.colorScheme.shadow,
+      builder:
+          (context, __) => RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: videoController.position.value.format(),
+                  style: TextStyle(color: theme.colorScheme.onSurface),
+                ),
+                const TextSpan(text: ' / '),
+                TextSpan(text: videoController.duration.value.format()),
+              ],
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: theme.colorScheme.secondary,
+                shadows: [
+                  Shadow(blurRadius: 16, color: theme.colorScheme.shadow),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 }

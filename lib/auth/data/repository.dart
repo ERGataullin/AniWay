@@ -9,8 +9,8 @@ class AuthRepository implements Initable {
   AuthRepository({
     required AuthService authService,
     required CookieManager cookieManager,
-  })  : _authService = authService,
-        _cookieManager = cookieManager;
+  }) : _authService = authService,
+       _cookieManager = cookieManager;
 
   late final Computed<bool> signedIn = Computed(
     trigger: _cookieManager.cookie,
@@ -35,13 +35,7 @@ class AuthRepository implements Initable {
     signedIn.dispose();
   }
 
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) {
-    return _authService.signIn(
-      email: email,
-      password: password,
-    );
+  Future<void> signIn({required String email, required String password}) {
+    return _authService.signIn(email: email, password: password);
   }
 }

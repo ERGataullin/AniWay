@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ExpandableText extends StatefulWidget {
-  const ExpandableText(
-    this.data, {
-    super.key,
-  });
+  const ExpandableText(this.data, {super.key});
 
   final String data;
 
@@ -27,10 +24,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         final textPainter = TextPainter(
           maxLines: _breakpoint,
           textDirection: Directionality.of(context),
-          text: TextSpan(
-            text: widget.data,
-            style: style,
-          ),
+          text: TextSpan(text: widget.data, style: style),
         )..layout(maxWidth: constraints.maxWidth);
         final bool exceedsBreakpoint = textPainter.didExceedMaxLines;
         textPainter.dispose();
@@ -62,9 +56,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                   turns: _isExpanded ? 0.25 : -0.25,
                   child: const Icon(Icons.chevron_left_outlined),
                 ),
-                onPressed: () => setState(
-                  () => _isExpanded = !_isExpanded,
-                ),
+                onPressed: () => setState(() => _isExpanded = !_isExpanded),
               ),
           ],
         );

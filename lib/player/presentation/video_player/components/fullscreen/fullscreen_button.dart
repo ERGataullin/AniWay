@@ -19,10 +19,7 @@ abstract class FullscreenController implements ChangeNotifier {
 }
 
 class FullscreenButton extends StatelessWidget {
-  const FullscreenButton({
-    super.key,
-    required this.controller,
-  });
+  const FullscreenButton({super.key, required this.controller});
 
   final FullscreenController controller;
 
@@ -32,17 +29,18 @@ class FullscreenButton extends StatelessWidget {
       onPressed: controller.toggle,
       icon: ListenableBuilder(
         listenable: controller,
-        builder: (context, __) => AnimatedSwitcher(
-          switchInCurve: Easing.standard,
-          switchOutCurve: Easing.standard.flipped,
-          duration: Durations.medium2,
-          child: Icon(
-            controller.isFullscreen
-                ? Icons.fullscreen_exit_outlined
-                : Icons.fullscreen_outlined,
-            key: ValueKey(controller.isFullscreen),
-          ),
-        ),
+        builder:
+            (context, __) => AnimatedSwitcher(
+              switchInCurve: Easing.standard,
+              switchOutCurve: Easing.standard.flipped,
+              duration: Durations.medium2,
+              child: Icon(
+                controller.isFullscreen
+                    ? Icons.fullscreen_exit_outlined
+                    : Icons.fullscreen_outlined,
+                key: ValueKey(controller.isFullscreen),
+              ),
+            ),
       ),
     );
   }

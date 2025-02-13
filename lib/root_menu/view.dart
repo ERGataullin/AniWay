@@ -7,12 +7,7 @@ import 'package:app/root_menu/components/top_navigation.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart' hide Drawer;
 
-enum _SlotId {
-  body,
-  primaryNavigation,
-  topNavigation,
-  bottomNavigation,
-}
+enum _SlotId { body, primaryNavigation, topNavigation, bottomNavigation }
 
 class RootMenuView extends StatelessWidget {
   const RootMenuView({
@@ -46,13 +41,14 @@ class RootMenuView extends StatelessWidget {
           LayoutId(
             id: _SlotId.body,
             child: Builder(
-              builder: (context) => MediaQuery.removePadding(
-                removeLeft: RootMenu.hasPrimaryNavigation(context),
-                removeTop: RootMenu.hasTopNavigation(context),
-                removeBottom: RootMenu.hasBottomNavigation(context),
-                context: context,
-                child: child,
-              ),
+              builder:
+                  (context) => MediaQuery.removePadding(
+                    removeLeft: RootMenu.hasPrimaryNavigation(context),
+                    removeTop: RootMenu.hasTopNavigation(context),
+                    removeBottom: RootMenu.hasBottomNavigation(context),
+                    context: context,
+                    child: child,
+                  ),
             ),
           ),
           LayoutId(
@@ -65,10 +61,7 @@ class RootMenuView extends StatelessWidget {
           ),
           LayoutId(
             id: _SlotId.topNavigation,
-            child: TopNavigation(
-              query: query,
-              onSearch: onSearch,
-            ),
+            child: TopNavigation(query: query, onSearch: onSearch),
           ),
           LayoutId(
             id: _SlotId.bottomNavigation,
@@ -119,7 +112,8 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
       _SlotId.primaryNavigation,
       BoxConstraints(
         maxWidth: size.width,
-        maxHeight: size.height -
+        maxHeight:
+            size.height -
             topNavigationSize.height -
             bottomNavigationSize.height,
       ),
@@ -133,7 +127,8 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
       _SlotId.body,
       BoxConstraints(
         maxWidth: size.width - primaryNavigationSize.width,
-        maxHeight: size.height -
+        maxHeight:
+            size.height -
             topNavigationSize.height -
             bottomNavigationSize.height,
       ),

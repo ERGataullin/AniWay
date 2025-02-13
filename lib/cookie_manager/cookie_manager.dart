@@ -17,9 +17,8 @@ abstract class CookieManager implements Initable {
 }
 
 class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
-  CookieManagerImpl({
-    required StorageService storageService,
-  }) : _storageService = storageService;
+  CookieManagerImpl({required StorageService storageService})
+    : _storageService = storageService;
 
   static const String _effectiveCookieHeaderName =
       kIsWeb ? 'kaki' : HttpHeaders.cookieHeader;
@@ -75,9 +74,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
 
     cookie.value = {
       ...cookie.value,
-      ..._parseCookie(
-        data.headers[_effectiveSetCookieHeaderName],
-      ),
+      ..._parseCookie(data.headers[_effectiveSetCookieHeaderName]),
     };
 
     return data;
@@ -96,9 +93,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
         .map(Cookie.fromSetCookieValue)
         .toList(growable: false);
 
-    return {
-      for (final Cookie cookie in setCookieList) cookie.name: cookie,
-    };
+    return {for (final Cookie cookie in setCookieList) cookie.name: cookie};
   }
 
   void _handleCookieChanged() {

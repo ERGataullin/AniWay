@@ -13,11 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
-      VideoPlayerModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<PlayerRepository>(),
-      ),
-    );
+  VideoPlayerModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<PlayerRepository>(),
+  ),
+);
 
 abstract interface class IVideoPlayerWM implements IWidgetModel {
   ValueListenable<double> get maxScale;
@@ -97,30 +97,36 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final Computed<VoidCallback?> onPreviousPressed = Computed(
-    () => widget.onPreviousPressed == null
-        ? null
-        : () {
-            controlsVisibilityController.show();
-            widget.onPreviousPressed?.call();
-          },
+    () =>
+        widget.onPreviousPressed == null
+            ? null
+            : () {
+              controlsVisibilityController.show();
+              widget.onPreviousPressed?.call();
+            },
   );
 
   @override
   late final Computed<VoidCallback?> onNextPressed = Computed(
-    () => widget.onNextPressed == null
-        ? null
-        : () {
-            controlsVisibilityController.show();
-            widget.onNextPressed?.call();
-          },
+    () =>
+        widget.onNextPressed == null
+            ? null
+            : () {
+              controlsVisibilityController.show();
+              widget.onNextPressed?.call();
+            },
   );
 
   @override
   late final Map<ShortcutActivator, VoidCallback> shortcuts = {
-    const SingleActivator(LogicalKeyboardKey.arrowLeft): () => videoController
-        .seekTo(videoController.position.value - shortcutSeekDuration),
-    const SingleActivator(LogicalKeyboardKey.arrowRight): () => videoController
-        .seekTo(videoController.position.value + shortcutSeekDuration),
+    const SingleActivator(LogicalKeyboardKey.arrowLeft):
+        () => videoController.seekTo(
+          videoController.position.value - shortcutSeekDuration,
+        ),
+    const SingleActivator(LogicalKeyboardKey.arrowRight):
+        () => videoController.seekTo(
+          videoController.position.value + shortcutSeekDuration,
+        ),
     const SingleActivator(LogicalKeyboardKey.space): videoController.playPause,
   };
 
@@ -135,8 +141,9 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       ..video.addListener(_handleVideoChanged)
       ..videoDataSource.addListener(_handleVideoDataSourceChanged);
     if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
-      videoController.webElementQuery
-          .addListener(_updateFullscreenWebElementQuery);
+      videoController.webElementQuery.addListener(
+        _updateFullscreenWebElementQuery,
+      );
     }
     videoController
       ..loading.addListener(_updateControlsVisibility)
@@ -229,7 +236,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     if (videoController.loading.value) return;
 
     if (!_watched) {
-      _watched = videoController.position.value >=
+      _watched =
+          videoController.position.value >=
           videoController.duration.value - const Duration(minutes: 4);
       if (_watched) {
         widget.onWatched(model.translation.value!.id);
@@ -265,40 +273,44 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
           label: l10n.value.authorLabel,
           children: switch (model.translation.value) {
             final VideoTranslationData translation => _getTranslationMenuItems(
-                locale: translation.locale,
-              ),
+              locale: translation.locale,
+            ),
             _ => const [],
           },
         ),
         MenuItemData.group(
           icon: Icons.high_quality_outlined,
           label: l10n.value.videoQualityLabel,
-          children: model.video.value == null
-              ? const []
-              : model.video.value!.stream.keys
-                  .map(
-                    (quality) => MenuItemData.single(
-                      selected: quality == model.quality.value,
-                      label: l10n.value.videoQuality(quality),
-                      onSelected: () => model.setQuality(quality),
-                    ),
-                  )
-                  .toList(growable: false),
+          children:
+              model.video.value == null
+                  ? const []
+                  : model.video.value!.stream.keys
+                      .map(
+                        (quality) => MenuItemData.single(
+                          selected: quality == model.quality.value,
+                          label: l10n.value.videoQuality(quality),
+                          onSelected: () => model.setQuality(quality),
+                        ),
+                      )
+                      .toList(growable: false),
         ),
         MenuItemData.group(
           icon: Icons.speed_outlined,
           label: l10n.value.videoPlaybackSpeedLabel,
-          children: model.video.value == null
-              ? const []
-              : const <double>[.25, .5, .75, 1, 1.25, 1.5, 1.75, 2]
-                  .map(
-                    (speed) => MenuItemData.single(
-                      selected: speed == videoController.playbackSpeed.value,
-                      label: l10n.value.videoPlaybackSpeed(speed),
-                      onSelected: () => videoController.setPlaybackSpeed(speed),
-                    ),
-                  )
-                  .toList(growable: false),
+          children:
+              model.video.value == null
+                  ? const []
+                  : const <double>[.25, .5, .75, 1, 1.25, 1.5, 1.75, 2]
+                      .map(
+                        (speed) => MenuItemData.single(
+                          selected:
+                              speed == videoController.playbackSpeed.value,
+                          label: l10n.value.videoPlaybackSpeed(speed),
+                          onSelected:
+                              () => videoController.setPlaybackSpeed(speed),
+                        ),
+                      )
+                      .toList(growable: false),
         ),
       ],
     );
@@ -317,18 +329,15 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         videoController.webElementQuery.value;
   }
 
-  List<MenuItemData> _getTranslationMenuItems({
-    required Locale locale,
-  }) {
+  List<MenuItemData> _getTranslationMenuItems({required Locale locale}) {
     return model.translations.value[locale]
             ?.map(
               (translation) => MenuItemData.single(
                 selected: translation == model.translation.value,
                 label: translation.title,
                 trailing: switch (translation.qualityType) {
-                  VideoQualityType.bd ||
-                  VideoQualityType.dvd =>
-                    l10n.value.videoQualityType(translation.qualityType.name),
+                  VideoQualityType.bd || VideoQualityType.dvd => l10n.value
+                      .videoQualityType(translation.qualityType.name),
                   VideoQualityType.tv => null,
                 },
                 onSelected: () => model.setTranslation(translation),

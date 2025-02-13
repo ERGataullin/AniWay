@@ -1,11 +1,8 @@
 import 'package:app/core/core.dart';
 import 'package:flutter/material.dart';
 
-typedef ShimmerBuilder = Widget Function(
-  BuildContext context,
-  Gradient? gradient,
-  Widget? child,
-);
+typedef ShimmerBuilder =
+    Widget Function(BuildContext context, Gradient? gradient, Widget? child);
 
 class Shimmer extends StatelessWidget {
   const Shimmer({
@@ -30,19 +27,18 @@ class Shimmer extends StatelessWidget {
     final ShimmerScopeState shimmerScope = ShimmerScope.of(context);
     return ConditionalWrapper(
       condition: enabled && constraints != null,
-      wrapper: (context, child) => ConstrainedBox(
-        constraints: constraints!,
-        child: child,
-      ),
+      wrapper:
+          (context, child) =>
+              ConstrainedBox(constraints: constraints!, child: child),
       child: AnimatedBuilder(
         animation: shimmerScope.animation,
         builder: (_, __) {
           final renderBox = context.findRenderObject() as RenderBox?;
-          final (Color? color, Gradient? gradient) =
-              shimmerScope.createBackground(
-            colorScheme: ColorScheme.of(context),
-            shimmer: renderBox,
-          );
+          final (Color? color, Gradient? gradient) = shimmerScope
+              .createBackground(
+                colorScheme: ColorScheme.of(context),
+                shimmer: renderBox,
+              );
           return delegate.build(context, color, gradient, child);
         },
       ),

@@ -29,11 +29,10 @@ class _TapTracker {
     required this.entry,
     required Duration doubleTapMinTime,
     required this.gestureSettings,
-  })  : pointer = event.pointer,
-        _initialGlobalPosition = event.position,
-        initialButtons = event.buttons,
-        _doubleTapMinTimeCountdown =
-            _CountdownZoned(duration: doubleTapMinTime);
+  }) : pointer = event.pointer,
+       _initialGlobalPosition = event.position,
+       initialButtons = event.buttons,
+       _doubleTapMinTimeCountdown = _CountdownZoned(duration: doubleTapMinTime);
 
   final DeviceGestureSettings? gestureSettings;
   final int pointer;
@@ -81,9 +80,9 @@ class SeekGestureRecognizer extends GestureRecognizer {
     super.supportedDevices,
     AllowedButtonsFilter? allowedButtonsFilter,
   }) : super(
-          allowedButtonsFilter:
-              allowedButtonsFilter ?? _defaultButtonAcceptBehavior,
-        );
+         allowedButtonsFilter:
+             allowedButtonsFilter ?? _defaultButtonAcceptBehavior,
+       );
 
   // The default value for [allowedButtonsFilter].
   // Accept the input if, and only if, [kPrimaryButton] is pressed.
@@ -199,10 +198,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
           localPosition: event.localPosition,
           kind: getKindForPointer(event.pointer),
         );
-        invokeCallback<void>(
-          'onDoubleTapDown',
-          () => onSeekTapDown!(details),
-        );
+        invokeCallback<void>('onDoubleTapDown', () => onSeekTapDown!(details));
       }
     }
     _trackTap(event);
@@ -340,10 +336,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
         localPosition: event.localPosition,
         kind: getKindForPointer(tracker.pointer),
       );
-      invokeCallback<void>(
-        'onSeekTapUp',
-        () => onSeekTapUp!(details),
-      );
+      invokeCallback<void>('onSeekTapUp', () => onSeekTapUp!(details));
     }
   }
 

@@ -13,10 +13,8 @@ abstract interface class IMoviesSearchModel implements ElementaryModel {
 }
 
 class MoviesSearchModel extends ElementaryModel implements IMoviesSearchModel {
-  MoviesSearchModel({
-    super.errorHandler,
-    required MoviesRepository repository,
-  }) : _repository = repository;
+  MoviesSearchModel({super.errorHandler, required MoviesRepository repository})
+    : _repository = repository;
 
   final MoviesRepository _repository;
 

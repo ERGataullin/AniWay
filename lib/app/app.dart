@@ -15,11 +15,7 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 
   void run() {
-    runApp(
-      AppScope(
-        child: this,
-      ),
-    );
+    runApp(AppScope(child: this));
   }
 }
 
@@ -53,21 +49,23 @@ class _AppState extends State<App> {
     return !_initialized
         ? const SizedBox.shrink()
         : MaterialApp(
-            debugShowCheckedModeBanner: false,
-            supportedLocales: L10n.supportedLocales,
-            localizationsDelegates: L10n.localizationsDelegates,
-            title: 'AniWay',
-            theme: Themes.light,
-            darkTheme: Themes.dark,
-            builder: (context, __) => PlatformWrapper(
-              child: Router.withConfig(
-                config: _router ??= AppRouter(
-                  l10n: context.l10n,
-                  signedIn: context.read<AuthRepository>().signedIn,
+          debugShowCheckedModeBanner: false,
+          supportedLocales: L10n.supportedLocales,
+          localizationsDelegates: L10n.localizationsDelegates,
+          title: 'AniWay',
+          theme: Themes.light,
+          darkTheme: Themes.dark,
+          builder:
+              (context, __) => PlatformWrapper(
+                child: Router.withConfig(
+                  config:
+                      _router ??= AppRouter(
+                        l10n: context.l10n,
+                        signedIn: context.read<AuthRepository>().signedIn,
+                      ),
                 ),
               ),
-            ),
-          );
+        );
   }
 
   @override

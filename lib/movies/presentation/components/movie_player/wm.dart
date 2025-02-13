@@ -11,11 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 MoviePlayerWM moviePlayerWMFactory(BuildContext context) => MoviePlayerWM(
-      MoviePlayerModel(
-        context.read<ErrorHandler>(),
-        repository: context.read<MoviesRepository>(),
-      ),
-    );
+  MoviePlayerModel(
+    context.read<ErrorHandler>(),
+    repository: context.read<MoviesRepository>(),
+  ),
+);
 
 abstract interface class IMoviePlayerWM implements IWidgetModel {
   ValueListenable<String> get title;
@@ -67,10 +67,7 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    model.loadData(
-      movieId: widget.movieId,
-      episodeId: widget.initialEpisodeId,
-    );
+    model.loadData(movieId: widget.movieId, episodeId: widget.initialEpisodeId);
     if (!kIsWeb) {
       _lockOrientation();
     }

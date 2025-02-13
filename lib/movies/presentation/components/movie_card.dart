@@ -4,11 +4,7 @@ import 'package:app/movies/presentation/components/movie_score.dart';
 import 'package:flutter/material.dart';
 
 class MovieCard extends StatelessWidget {
-  const MovieCard(
-    this.data, {
-    super.key,
-    this.opacity,
-  });
+  const MovieCard(this.data, {super.key, this.opacity});
 
   static const gridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
     crossAxisSpacing: 8,
@@ -34,28 +30,32 @@ class MovieCard extends StatelessWidget {
           final themeTween = ThemeDataTween(
             begin: theme.copyWith(
               colorScheme: theme.colorScheme.copyWith(
-                surfaceContainerLow:
-                    theme.colorScheme.surfaceContainerLow.withValues(alpha: 0),
+                surfaceContainerLow: theme.colorScheme.surfaceContainerLow
+                    .withValues(alpha: 0),
                 surfaceContainerHighest: theme
-                    .colorScheme.surfaceContainerHighest
+                    .colorScheme
+                    .surfaceContainerHighest
                     .withValues(alpha: 0),
               ),
               textTheme: theme.textTheme.copyWith(
                 titleSmall: theme.textTheme.titleSmall?.copyWith(
-                  color:
-                      theme.textTheme.titleSmall?.color?.withValues(alpha: 0),
+                  color: theme.textTheme.titleSmall?.color?.withValues(
+                    alpha: 0,
+                  ),
                 ),
                 labelSmall: theme.textTheme.labelSmall?.copyWith(
-                  color:
-                      theme.textTheme.labelSmall?.color?.withValues(alpha: 0),
+                  color: theme.textTheme.labelSmall?.color?.withValues(
+                    alpha: 0,
+                  ),
                 ),
               ),
               cardColor: theme.cardColor.withValues(alpha: 0),
               cardTheme: theme.cardTheme.copyWith(
                 color: cardTheme.color?.withValues(alpha: 0),
                 shadowColor: cardTheme.shadowColor?.withValues(alpha: 0),
-                surfaceTintColor:
-                    cardTheme.surfaceTintColor?.withValues(alpha: 0),
+                surfaceTintColor: cardTheme.surfaceTintColor?.withValues(
+                  alpha: 0,
+                ),
                 elevation: 0,
               ),
             ),
@@ -64,10 +64,9 @@ class MovieCard extends StatelessWidget {
 
           return AnimatedBuilder(
             animation: opacity!,
-            builder: (context, __) => Theme(
-              data: themeTween.evaluate(opacity!),
-              child: child,
-            ),
+            builder:
+                (context, __) =>
+                    Theme(data: themeTween.evaluate(opacity!), child: child),
           );
         },
         child: Card(
@@ -78,12 +77,7 @@ class MovieCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: _Poster(
-                    opacity: opacity,
-                    image: data?.poster,
-                  ),
-                ),
+                Expanded(child: _Poster(opacity: opacity, image: data?.poster)),
                 _Footer(
                   data,
                   margin: const EdgeInsets.symmetric(
@@ -101,10 +95,7 @@ class MovieCard extends StatelessWidget {
 }
 
 class _Poster extends StatelessWidget {
-  const _Poster({
-    this.opacity,
-    this.image,
-  });
+  const _Poster({this.opacity, this.image});
 
   final Animation<double>? opacity;
 
@@ -114,38 +105,40 @@ class _Poster extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptiveImageBuilder(
       image: image,
-      builder: (context, fadeInOpacity, image, ____) => ListenableBuilder(
-        listenable: Listenable.merge([opacity, fadeInOpacity]),
-        builder: (context, _) => Shimmer(
-          enabled: fadeInOpacity.value != 1,
-          delegate: CustomShimmerDelegate(
-            (context, color, gradient, ___) => Ink(
-              decoration: ShapeDecoration(
-                shape: CardTheme.of(context).shape!,
-                color: color,
-                gradient: gradient,
-                image: image == null
-                    ? null
-                    : DecorationImage(
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.low,
-                        opacity: fadeInOpacity.value * (opacity?.value ?? 1),
-                        image: image,
+      builder:
+          (context, fadeInOpacity, image, ____) => ListenableBuilder(
+            listenable: Listenable.merge([opacity, fadeInOpacity]),
+            builder:
+                (context, _) => Shimmer(
+                  enabled: fadeInOpacity.value != 1,
+                  delegate: CustomShimmerDelegate(
+                    (context, color, gradient, ___) => Ink(
+                      decoration: ShapeDecoration(
+                        shape: CardTheme.of(context).shape!,
+                        color: color,
+                        gradient: gradient,
+                        image:
+                            image == null
+                                ? null
+                                : DecorationImage(
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.low,
+                                  opacity:
+                                      fadeInOpacity.value *
+                                      (opacity?.value ?? 1),
+                                  image: image,
+                                ),
                       ),
-              ),
-            ),
+                    ),
+                  ),
+                ),
           ),
-        ),
-      ),
     );
   }
 }
 
 class _Footer extends StatelessWidget {
-  const _Footer(
-    this.data, {
-    this.margin = EdgeInsets.zero,
-  });
+  const _Footer(this.data, {this.margin = EdgeInsets.zero});
 
   final EdgeInsets margin;
 
@@ -173,10 +166,7 @@ class _Footer extends StatelessWidget {
               enabled: data?.title == null,
               constraints: const BoxConstraints(minWidth: 128),
               delegate: shimmerDelegate,
-              child: Text(
-                data?.title ?? '',
-                style: textTheme.titleSmall,
-              ),
+              child: Text(data?.title ?? '', style: textTheme.titleSmall),
             ),
             const SizedBox(height: 2),
             Row(

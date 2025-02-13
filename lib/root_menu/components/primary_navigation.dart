@@ -27,45 +27,47 @@ class PrimaryNavigation extends StatelessWidget {
         config: {
           breakpoint: SlotLayout.from(
             key: const Key('Primary Navigation Medium and Up'),
-            builder: (context) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SafeArea(
-                  right: false,
-                  child: AdaptiveScaffold.standardNavigationRail(
-                    labelType: null,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    width: 80,
-                    selectedIndex: currentIndex,
-                    onDestinationSelected: onDestinationSelected,
-                    destinations: destinations
-                        .map(AdaptiveScaffold.toRailDestination)
-                        .toList(growable: false),
-                  ),
+            builder:
+                (context) => Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SafeArea(
+                      right: false,
+                      child: AdaptiveScaffold.standardNavigationRail(
+                        labelType: null,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        width: 80,
+                        selectedIndex: currentIndex,
+                        onDestinationSelected: onDestinationSelected,
+                        destinations: destinations
+                            .map(AdaptiveScaffold.toRailDestination)
+                            .toList(growable: false),
+                      ),
+                    ),
+                    const VerticalDivider(),
+                  ],
                 ),
-                const VerticalDivider(),
-              ],
-            ),
           ),
           Breakpoints.largeAndUp: SlotLayout.from(
             key: const Key('Primary Navigation Large and Up'),
-            builder: (context) => NavigationDrawer(
-              selectedIndex: currentIndex,
-              onDestinationSelected: onDestinationSelected,
-              children: [
-                const SizedBox(height: 16),
-                ...destinations.map(
-                  (destination) => NavigationDrawerDestination(
-                    key: destination.key,
-                    icon: destination.icon,
-                    selectedIcon: destination.selectedIcon,
-                    label: Text(destination.label),
-                    enabled: destination.enabled,
-                  ),
+            builder:
+                (context) => NavigationDrawer(
+                  selectedIndex: currentIndex,
+                  onDestinationSelected: onDestinationSelected,
+                  children: [
+                    const SizedBox(height: 16),
+                    ...destinations.map(
+                      (destination) => NavigationDrawerDestination(
+                        key: destination.key,
+                        icon: destination.icon,
+                        selectedIcon: destination.selectedIcon,
+                        label: Text(destination.label),
+                        enabled: destination.enabled,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-                const SizedBox(height: 16),
-              ],
-            ),
           ),
         },
       ),

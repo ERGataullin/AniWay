@@ -17,8 +17,8 @@ class MoviesServiceAnime365 implements MoviesService {
   MoviesServiceAnime365({
     required CookieManager cookieManager,
     required NetworkService networkService,
-  })  : _cookieManager = cookieManager,
-        _networkService = networkService;
+  }) : _cookieManager = cookieManager,
+       _networkService = networkService;
 
   final CookieManager _cookieManager;
 
@@ -54,8 +54,9 @@ class MoviesServiceAnime365 implements MoviesService {
       ),
     );
 
-    final anime365Data =
-        List<Json>.from(response.body['data']! as List<dynamic>);
+    final anime365Data = List<Json>.from(
+      response.body['data']! as List<dynamic>,
+    );
     final List<int> shikimoriIds = anime365Data
         .map((movieJson) => movieJson['myAnimeListId']! as int)
         .toList(growable: false);
@@ -89,35 +90,37 @@ class MoviesServiceAnime365 implements MoviesService {
     final Map<String, Json> shikimoriMovies = {
       for (final Json movie in shikimoriData) movie['id']! as String: movie,
     };
-    return anime365Data.map(
-      (movieJson) {
-        final shikimoriId = (movieJson['myAnimeListId']! as int).toString();
-        final shikimoriPoster =
-            shikimoriMovies[shikimoriId]!['poster']! as Json;
-        return MovieBaseData(
-          id: movieJson['id']! as int,
-          title: (movieJson['titles'] as Json?)?['ru'] as String? ??
-              movieJson['title']! as String,
-          poster: ImageData(
-            resolutionsUris: {
-              60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
-              120: Uri.parse(shikimoriPoster['miniAlt2xUrl']! as String),
-              160: Uri.parse(shikimoriPoster['previewAltUrl']! as String),
-              225: Uri.parse(shikimoriPoster['mainAltUrl']! as String),
-              320: Uri.parse(shikimoriPoster['previewAlt2xUrl']! as String),
-              450: Uri.parse(shikimoriPoster['mainAlt2xUrl']! as String),
-              double.infinity: Uri.parse(
-                shikimoriPoster['originalUrl']! as String,
-              ),
-            },
-          ),
-          type: _convertJsonToMovieType(movieJson['type']! as String),
-          score: movieJson['myAnimeListScore'] == '-1'
-              ? null
-              : double.parse(movieJson['myAnimeListScore']! as String),
-        );
-      },
-    ).toList(growable: false);
+    return anime365Data
+        .map((movieJson) {
+          final shikimoriId = (movieJson['myAnimeListId']! as int).toString();
+          final shikimoriPoster =
+              shikimoriMovies[shikimoriId]!['poster']! as Json;
+          return MovieBaseData(
+            id: movieJson['id']! as int,
+            title:
+                (movieJson['titles'] as Json?)?['ru'] as String? ??
+                movieJson['title']! as String,
+            poster: ImageData(
+              resolutionsUris: {
+                60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
+                120: Uri.parse(shikimoriPoster['miniAlt2xUrl']! as String),
+                160: Uri.parse(shikimoriPoster['previewAltUrl']! as String),
+                225: Uri.parse(shikimoriPoster['mainAltUrl']! as String),
+                320: Uri.parse(shikimoriPoster['previewAlt2xUrl']! as String),
+                450: Uri.parse(shikimoriPoster['mainAlt2xUrl']! as String),
+                double.infinity: Uri.parse(
+                  shikimoriPoster['originalUrl']! as String,
+                ),
+              },
+            ),
+            type: _convertJsonToMovieType(movieJson['type']! as String),
+            score:
+                movieJson['myAnimeListScore'] == '-1'
+                    ? null
+                    : double.parse(movieJson['myAnimeListScore']! as String),
+          );
+        })
+        .toList(growable: false);
   }
 
   @override
@@ -139,22 +142,24 @@ class MoviesServiceAnime365 implements MoviesService {
       ),
     );
     final Document document = parse(response.body);
-    final Element upNextCard = document.querySelector(
-      'div.body-container > '
-      'div.container.section > '
-      'div#m-index-personal-episodes',
-    )!;
-    final Element? pagerCard =
-        upNextCard.querySelector('div.pager.card > ul.pagination');
+    final Element upNextCard =
+        document.querySelector(
+          'div.body-container > '
+          'div.container.section > '
+          'div#m-index-personal-episodes',
+        )!;
+    final Element? pagerCard = upNextCard.querySelector(
+      'div.pager.card > ul.pagination',
+    );
     _upNextMaxPage = pagerCard == null ? 1 : pagerCard.children.length - 4;
-    final Element upNextItemsContainer = upNextCard.querySelector(
-      // Items card
-      // ignore: lines_longer_than_80_chars
-      'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
-
-      // Up next items
-      'div.row > div.items', // up next items
-    )!;
+    final Element upNextItemsContainer =
+        upNextCard.querySelector(
+          // Items card
+          // ignore: lines_longer_than_80_chars
+          'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
+          // Up next items
+          'div.row > div.items', // up next items
+        )!;
     final episodeNumberPattern = RegExp(r'\d+(\.\d)?');
     final tvEpisodeTitlePattern = RegExp(
       '^${episodeNumberPattern.pattern} серия\$',
@@ -177,92 +182,92 @@ class MoviesServiceAnime365 implements MoviesService {
     final musicEpisodeTitlePattern = RegExp(r'^Музыкальное видео$');
     final pvEpisodeTitlePattern = RegExp(r'^Проморолик$');
 
-    return upNextItemsContainer.children.map(
-      (itemElement) {
-        final Element a = itemElement.querySelector('a[href]')!;
-        final Uri hrefUri = Uri.parse(a.attributes['href']!);
+    return upNextItemsContainer.children
+        .map((itemElement) {
+          final Element a = itemElement.querySelector('a[href]')!;
+          final Uri hrefUri = Uri.parse(a.attributes['href']!);
 
-        final String moviePathSegment = hrefUri.pathSegments[1];
-        final int movieId = int.parse(
-          moviePathSegment.substring(
-            moviePathSegment.lastIndexOf('-') + 1,
-          ),
-        );
-        final String movieTitle = a.nodes[1].text!
-            .split(' ')
-            .where((part) => part.isNotEmpty)
-            .join(' ');
-        final String posterStyle = itemElement
-            .querySelector('div.circle[style]')!
-            .attributes['style']!;
-        const posterUrlPrefix = 'background-image: url(\'';
-        const posterUrlPostfix = '\');';
-        String posterUrl = posterStyle.substring(
-          posterStyle.indexOf(posterUrlPrefix) + posterUrlPrefix.length,
-        );
-        posterUrl = posterUrl
-            .substring(0, posterUrl.indexOf(posterUrlPostfix))
-            .replaceFirst('140x140.1.', '');
+          final String moviePathSegment = hrefUri.pathSegments[1];
+          final int movieId = int.parse(
+            moviePathSegment.substring(moviePathSegment.lastIndexOf('-') + 1),
+          );
+          final String movieTitle = a.nodes[1].text!
+              .split(' ')
+              .where((part) => part.isNotEmpty)
+              .join(' ');
+          final String posterStyle =
+              itemElement
+                  .querySelector('div.circle[style]')!
+                  .attributes['style']!;
+          const posterUrlPrefix = 'background-image: url(\'';
+          const posterUrlPostfix = '\');';
+          String posterUrl = posterStyle.substring(
+            posterStyle.indexOf(posterUrlPrefix) + posterUrlPrefix.length,
+          );
+          posterUrl = posterUrl
+              .substring(0, posterUrl.indexOf(posterUrlPostfix))
+              .replaceFirst('140x140.1.', '');
 
-        final String episodePathSegment = hrefUri.pathSegments[2];
-        final int episodeId = int.parse(
-          episodePathSegment.substring(
-            episodePathSegment.lastIndexOf('-') + 1,
-          ),
-        );
-        final String episodeTitle = a.children[0].text;
-        late final MovieType type;
-        if (tvEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.tv;
-        } else if (movieEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.movie;
-        } else if (ovaEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.ova;
-        } else if (onaEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.ona;
-        } else if (specialEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.special;
-        } else if (tvSpecialEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.tvSpecial;
-        } else if (musicEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.music;
-        } else if (pvEpisodeTitlePattern.hasMatch(episodeTitle)) {
-          type = MovieType.preview;
-        }
-
-        final Iterable<RegExpMatch> episodeNumberMatches =
-            episodeNumberPattern.allMatches(episodeTitle);
-        final num? episodeNumber = episodeNumberMatches.isEmpty
-            ? null
-            : num.parse(
-                episodeTitle.substring(
-                  episodeNumberMatches.single.start,
-                  episodeNumberMatches.single.end,
-                ),
-              );
-
-        return UpNextData(
-          movie: MovieBaseData(
-            id: movieId,
-            title: movieTitle,
-            poster: ImageData(
-              resolutionsUris: {
-                140: Uri.parse(posterUrl),
-                double.infinity: Uri.parse(
-                  posterUrl.replaceFirst('140x140.1.', ''),
-                ),
-              },
+          final String episodePathSegment = hrefUri.pathSegments[2];
+          final int episodeId = int.parse(
+            episodePathSegment.substring(
+              episodePathSegment.lastIndexOf('-') + 1,
             ),
-            type: type,
-          ),
-          episode: EpisodeData(
-            id: episodeId,
-            type: type,
-            number: episodeNumber,
-          ),
-        );
-      },
-    ).toList(growable: false);
+          );
+          final String episodeTitle = a.children[0].text;
+          late final MovieType type;
+          if (tvEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.tv;
+          } else if (movieEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.movie;
+          } else if (ovaEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.ova;
+          } else if (onaEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.ona;
+          } else if (specialEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.special;
+          } else if (tvSpecialEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.tvSpecial;
+          } else if (musicEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.music;
+          } else if (pvEpisodeTitlePattern.hasMatch(episodeTitle)) {
+            type = MovieType.preview;
+          }
+
+          final Iterable<RegExpMatch> episodeNumberMatches =
+              episodeNumberPattern.allMatches(episodeTitle);
+          final num? episodeNumber =
+              episodeNumberMatches.isEmpty
+                  ? null
+                  : num.parse(
+                    episodeTitle.substring(
+                      episodeNumberMatches.single.start,
+                      episodeNumberMatches.single.end,
+                    ),
+                  );
+
+          return UpNextData(
+            movie: MovieBaseData(
+              id: movieId,
+              title: movieTitle,
+              poster: ImageData(
+                resolutionsUris: {
+                  140: Uri.parse(posterUrl),
+                  double.infinity: Uri.parse(
+                    posterUrl.replaceFirst('140x140.1.', ''),
+                  ),
+                },
+              ),
+              type: type,
+            ),
+            episode: EpisodeData(
+              id: episodeId,
+              type: type,
+              number: episodeNumber,
+            ),
+          );
+        })
+        .toList(growable: false);
   }
 
   @override
@@ -272,7 +277,8 @@ class MoviesServiceAnime365 implements MoviesService {
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
-            'fields': 'url,titles,genres,posterUrl,numberOfEpisodes,episodes,'
+            'fields':
+                'url,titles,genres,posterUrl,numberOfEpisodes,episodes,'
                 'descriptions,myAnimeListId,myAnimeListScore',
           },
         ),
@@ -306,20 +312,23 @@ class MoviesServiceAnime365 implements MoviesService {
     );
     final shikimoriData =
         ((shikimoriResponse.body['data']! as Json)['animes']! as List<dynamic>)
-            .first as Json;
+                .first
+            as Json;
     final shikimoriPoster = shikimoriData['poster']! as Json;
     final Map<num, Json> shikimoriEpisodePreviews =
         switch (shikimoriData['videos']) {
-      final List<dynamic> videosJsons => {
-          for (final Json videoJson in videosJsons
-              .where(
-                (videoJson) => (videoJson as Json)['kind'] == 'episode_preview',
-              )
-              .cast())
-            num.tryParse(videoJson['name']! as String) ?? -1: videoJson,
-        },
-      _ => const {},
-    };
+          final List<dynamic> videosJsons => {
+            for (final Json videoJson
+                in videosJsons
+                    .where(
+                      (videoJson) =>
+                          (videoJson as Json)['kind'] == 'episode_preview',
+                    )
+                    .cast())
+              num.tryParse(videoJson['name']! as String) ?? -1: videoJson,
+          },
+          _ => const {},
+        };
 
     final Uri movieUri = Uri.parse(anime365Data['url']! as String);
     final List<String> genres = (anime365Data['genres']! as List<dynamic>)
@@ -333,8 +342,9 @@ class MoviesServiceAnime365 implements MoviesService {
     final List<EpisodeData> previewsAndEpisodes =
         anime365Data['episodes'] == null
             ? const []
-            : (anime365Data['episodes']! as List<dynamic>).cast<Json>().map(
-                (episodeJson) {
+            : (anime365Data['episodes']! as List<dynamic>)
+                .cast<Json>()
+                .map((episodeJson) {
                   final num number = num.parse(
                     episodeJson['episodeInt']! as String,
                   );
@@ -349,16 +359,17 @@ class MoviesServiceAnime365 implements MoviesService {
                       episodeJson['episodeType']! as String,
                     ),
                     number: number,
-                    preview: previewUrl == null
-                        ? null
-                        : ImageData(
-                            resolutionsUris: {
-                              double.infinity: Uri.parse(previewUrl),
-                            },
-                          ),
+                    preview:
+                        previewUrl == null
+                            ? null
+                            : ImageData(
+                              resolutionsUris: {
+                                double.infinity: Uri.parse(previewUrl),
+                              },
+                            ),
                   );
-                },
-              ).toList(growable: false);
+                })
+                .toList(growable: false);
     final poster = ImageData(
       resolutionsUris: {
         60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
@@ -388,9 +399,10 @@ class MoviesServiceAnime365 implements MoviesService {
         final List<dynamic> jsons => (jsons.first as Json)['value']! as String,
         _ => null,
       },
-      score: anime365Data['myAnimeListScore'] == '-1'
-          ? null
-          : double.parse(anime365Data['myAnimeListScore']! as String),
+      score:
+          anime365Data['myAnimeListScore'] == '-1'
+              ? null
+              : double.parse(anime365Data['myAnimeListScore']! as String),
     );
   }
 
@@ -400,9 +412,7 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(
         uri: Uri(
           path: '/api/episodes/$episodeId',
-          queryParameters: {
-            'fields': 'translations',
-          },
+          queryParameters: {'fields': 'translations'},
         ),
         method: RequestMethod.get,
       ),
@@ -441,9 +451,7 @@ class MoviesServiceAnime365 implements MoviesService {
   Future<VideoData> getTranslationVideo(Object translationId) async {
     final ResponseData<Json> response = await _networkService.request(
       RequestData(
-        uri: Uri(
-          path: '/api/translations/embed/$translationId',
-        ),
+        uri: Uri(path: '/api/translations/embed/$translationId'),
         method: RequestMethod.get,
       ),
     );
@@ -477,9 +485,7 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(
         uri: Uri(path: '/translations/watched/$translationId'),
         method: RequestMethod.post,
-        body: {
-          'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
-        },
+        body: {'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded},
       ),
     );
   }
@@ -487,62 +493,60 @@ class MoviesServiceAnime365 implements MoviesService {
   @override
   Future<WatchListElementData> getWatchStatusDetails(Uri movieUri) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(
-        uri: movieUri,
-        method: RequestMethod.get,
-      ),
+      RequestData(uri: movieUri, method: RequestMethod.get),
     );
     final Document document = parse(response.body);
     final Element bodyContainer = document.querySelector('div.body-container')!;
-    final Element animeListForm = bodyContainer.querySelector(
-      'div.animelist_one_series > form#yw2',
-    )!;
+    final Element animeListForm =
+        bodyContainer.querySelector('div.animelist_one_series > form#yw2')!;
 
-    final String? status = animeListForm
-        .querySelector('select#UsersRates_status > option[selected="selected"]')
-        ?.text;
+    final String? status =
+        animeListForm
+            .querySelector(
+              'select#UsersRates_status > option[selected="selected"]',
+            )
+            ?.text;
 
-    final String? scoreValue = animeListForm
-        .querySelector(
-          'select#UsersRates_score > option[selected="selected"]',
-        )
-        ?.attributes['value'];
+    final String? scoreValue =
+        animeListForm
+            .querySelector(
+              'select#UsersRates_score > option[selected="selected"]',
+            )
+            ?.attributes['value'];
     final int? score = scoreValue == null ? null : int.parse(scoreValue);
 
-    final String? watchedEpisodesCountValue = animeListForm
-        .querySelector(
-          'input#UsersRates_episodes',
-        )
-        ?.attributes['value'];
-    final int watchedEpisodesCount = watchedEpisodesCountValue == null
-        ? 0
-        : int.parse(watchedEpisodesCountValue);
+    final String? watchedEpisodesCountValue =
+        animeListForm
+            .querySelector('input#UsersRates_episodes')
+            ?.attributes['value'];
+    final int watchedEpisodesCount =
+        watchedEpisodesCountValue == null
+            ? 0
+            : int.parse(watchedEpisodesCountValue);
 
-    final String? episodesCountValue = animeListForm
-        .querySelector(
-          'input#UsersRates_episodes',
-        )
-        ?.attributes['max'];
+    final String? episodesCountValue =
+        animeListForm
+            .querySelector('input#UsersRates_episodes')
+            ?.attributes['max'];
     final int? episodesCount =
         episodesCountValue == null ? null : int.parse(episodesCountValue);
 
     return status == null
         ? const WatchListElementData(status: WatchStatus.none)
         : WatchListElementData(
-            status: switch (status) {
-              'Запланировано' => WatchStatus.planned,
-              'Смотрю' => WatchStatus.watching,
-              'Просмотрено' => WatchStatus.completed,
-              'Отложено' => WatchStatus.onHold,
-              'Брошено' => WatchStatus.dropped,
-              final Object? unsupported => throw UnsupportedError(
-                  'Unsupported movie status: $unsupported',
-                ),
-            },
-            score: score,
-            watchedEpisodesCount: watchedEpisodesCount,
-            episodesCount: episodesCount,
-          );
+          status: switch (status) {
+            'Запланировано' => WatchStatus.planned,
+            'Смотрю' => WatchStatus.watching,
+            'Просмотрено' => WatchStatus.completed,
+            'Отложено' => WatchStatus.onHold,
+            'Брошено' => WatchStatus.dropped,
+            final Object? unsupported =>
+              throw UnsupportedError('Unsupported movie status: $unsupported'),
+          },
+          score: score,
+          watchedEpisodesCount: watchedEpisodesCount,
+          episodesCount: episodesCount,
+        );
   }
 
   MovieType _convertJsonToMovieType(String json) {
@@ -556,9 +560,8 @@ class MoviesServiceAnime365 implements MoviesService {
       'cm' => MovieType.ad,
       'music' => MovieType.music,
       'preview' || 'pv' => MovieType.preview,
-      final Object? unsupported => throw UnsupportedError(
-          'Unsupported movie type: $unsupported',
-        ),
+      final Object? unsupported =>
+        throw UnsupportedError('Unsupported movie type: $unsupported'),
     };
   }
 

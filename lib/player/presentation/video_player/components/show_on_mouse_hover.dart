@@ -26,9 +26,7 @@ class VisibilityController with ChangeNotifier {
     _hidingTimer?.cancel();
   }
 
-  void show({
-    bool autohide = true,
-  }) {
+  void show({bool autohide = true}) {
     if (_visible) {
       if (_hidingTimer == null) return;
       autohide ? _restartHidingTimer() : _cancelHidingTimer();
@@ -39,9 +37,7 @@ class VisibilityController with ChangeNotifier {
     }
   }
 
-  void hide({
-    bool immediately = false,
-  }) {
+  void hide({bool immediately = false}) {
     if (immediately) {
       _cancelHidingTimer();
       _visible = false;
@@ -51,23 +47,17 @@ class VisibilityController with ChangeNotifier {
     }
   }
 
-  void toggle({
-    bool autohide = true,
-    bool immediately = false,
-  }) {
+  void toggle({bool autohide = true, bool immediately = false}) {
     _visible ? hide(immediately: immediately) : show(autohide: autohide);
   }
 
   void _restartHidingTimer() {
     _hidingTimer?.cancel();
-    _hidingTimer = Timer(
-      _hidingGap,
-      () {
-        _visible = false;
-        notifyListeners();
-        _hidingTimer = null;
-      },
-    );
+    _hidingTimer = Timer(_hidingGap, () {
+      _visible = false;
+      notifyListeners();
+      _hidingTimer = null;
+    });
   }
 
   void _cancelHidingTimer() {
@@ -91,19 +81,21 @@ class ShowOnMouseHover extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: controller,
-      builder: (context, __) => MouseRegion(
-        hitTestBehavior: HitTestBehavior.translucent,
-        cursor: controller.visible
-            ? SystemMouseCursors.basic
-            : SystemMouseCursors.none,
-        onHover: (event) {
-          if (event.kind.accurate) controller.show();
-        },
-        child: AnimatedVisibility.emphasized(
-          visible: controller.visible,
-          child: child,
-        ),
-      ),
+      builder:
+          (context, __) => MouseRegion(
+            hitTestBehavior: HitTestBehavior.translucent,
+            cursor:
+                controller.visible
+                    ? SystemMouseCursors.basic
+                    : SystemMouseCursors.none,
+            onHover: (event) {
+              if (event.kind.accurate) controller.show();
+            },
+            child: AnimatedVisibility.emphasized(
+              visible: controller.visible,
+              child: child,
+            ),
+          ),
     );
   }
 }

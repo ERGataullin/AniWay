@@ -8,23 +8,17 @@ class AuthServiceAnime365 implements AuthService {
   AuthServiceAnime365({
     required NetworkService networkService,
     required CookieManager cookieManager,
-  })  : _networkService = networkService,
-        _cookieManager = cookieManager;
+  }) : _networkService = networkService,
+       _cookieManager = cookieManager;
 
   final NetworkService _networkService;
 
   final CookieManager _cookieManager;
 
   @override
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     await _networkService.request<void>(
-      RequestData(
-        uri: Uri(path: '/users/login'),
-        method: RequestMethod.get,
-      ),
+      RequestData(uri: Uri(path: '/users/login'), method: RequestMethod.get),
     );
 
     await _networkService.request<void>(

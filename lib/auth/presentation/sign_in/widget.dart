@@ -25,9 +25,7 @@ class SignInWidget extends ElementaryWidget<ISignInWM> {
             child: AutofillGroup(
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 720,
-                  ),
+                  constraints: const BoxConstraints(maxWidth: 720),
                   child: const SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -60,12 +58,7 @@ class _Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      height: 256,
-      child: FittedBox(
-        child: Logo.short(),
-      ),
-    );
+    return const SizedBox(height: 256, child: FittedBox(child: Logo.short()));
   }
 }
 
@@ -79,14 +72,9 @@ class _EmailField extends StatelessWidget {
       autofocus: true,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
-      autofillHints: const [
-        AutofillHints.username,
-        AutofillHints.email,
-      ],
+      autofillHints: const [AutofillHints.username, AutofillHints.email],
       validator: context.wm.handleValidateEmail,
-      decoration: InputDecoration(
-        label: Text(context.l10n.emailLabel),
-      ),
+      decoration: InputDecoration(label: Text(context.l10n.emailLabel)),
     );
   }
 }
@@ -98,24 +86,25 @@ class _PasswordField extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.obscurePassword,
-      builder: (context, __) => TextFormField(
-        controller: context.wm.passwordController,
-        autofocus: true,
-        obscureText: context.wm.obscurePassword.value,
-        textInputAction: TextInputAction.done,
-        keyboardType: TextInputType.visiblePassword,
-        autofillHints: const [AutofillHints.password],
-        onFieldSubmitted: context.wm.handlePasswordSubmitted,
-        decoration: InputDecoration(
-          label: Text(context.l10n.passwordLabel),
-          suffixIcon: IconButton(
-            onPressed: context.wm.handlePasswordVisibilityPressed,
-            isSelected: !context.wm.obscurePassword.value,
-            icon: const Icon(Icons.visibility_off_outlined),
-            selectedIcon: const Icon(Icons.visibility_outlined),
+      builder:
+          (context, __) => TextFormField(
+            controller: context.wm.passwordController,
+            autofocus: true,
+            obscureText: context.wm.obscurePassword.value,
+            textInputAction: TextInputAction.done,
+            keyboardType: TextInputType.visiblePassword,
+            autofillHints: const [AutofillHints.password],
+            onFieldSubmitted: context.wm.handlePasswordSubmitted,
+            decoration: InputDecoration(
+              label: Text(context.l10n.passwordLabel),
+              suffixIcon: IconButton(
+                onPressed: context.wm.handlePasswordVisibilityPressed,
+                isSelected: !context.wm.obscurePassword.value,
+                icon: const Icon(Icons.visibility_off_outlined),
+                selectedIcon: const Icon(Icons.visibility_outlined),
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 }
@@ -129,20 +118,22 @@ class _SubmitButton extends StatelessWidget {
       onPressed: context.wm.handleSubmitPressed,
       child: ListenableBuilder(
         listenable: context.wm.loading,
-        builder: (context, __) => AnimatedSwitcher(
-          switchInCurve: Easing.standard,
-          switchOutCurve: Easing.standard.flipped,
-          duration: Durations.medium2,
-          child: context.wm.loading.value
-              ? SizedBox.square(
-                  dimension: IconTheme.of(context).size,
-                  child: const CircularProgressIndicator.adaptive(),
-                )
-              : ValueListenableBuilder(
-                  valueListenable: context.wm.submitLabel,
-                  builder: (context, label, ___) => Text(label),
-                ),
-        ),
+        builder:
+            (context, __) => AnimatedSwitcher(
+              switchInCurve: Easing.standard,
+              switchOutCurve: Easing.standard.flipped,
+              duration: Durations.medium2,
+              child:
+                  context.wm.loading.value
+                      ? SizedBox.square(
+                        dimension: IconTheme.of(context).size,
+                        child: const CircularProgressIndicator.adaptive(),
+                      )
+                      : ValueListenableBuilder(
+                        valueListenable: context.wm.submitLabel,
+                        builder: (context, label, ___) => Text(label),
+                      ),
+            ),
       ),
     );
   }

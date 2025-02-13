@@ -8,11 +8,10 @@ extension PointerDevicesAccuracy on PointerDeviceKind {
       PointerDeviceKind.values.where((device) => !device.accurate).toSet();
 
   bool get accurate => switch (this) {
-        PointerDeviceKind.mouse || PointerDeviceKind.trackpad => true,
-        PointerDeviceKind.touch ||
-        PointerDeviceKind.stylus ||
-        PointerDeviceKind.invertedStylus ||
-        PointerDeviceKind.unknown =>
-          false,
-      };
+    PointerDeviceKind.mouse || PointerDeviceKind.trackpad => true,
+    PointerDeviceKind.touch ||
+    PointerDeviceKind.stylus ||
+    PointerDeviceKind.invertedStylus ||
+    PointerDeviceKind.unknown => false,
+  };
 }

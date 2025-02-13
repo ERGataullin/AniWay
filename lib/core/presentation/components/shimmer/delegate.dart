@@ -19,7 +19,8 @@ class CustomShimmerDelegate implements ShimmerDelegate {
     Color? color,
     Gradient? gradient,
     Widget? child,
-  ) builder;
+  )
+  builder;
 
   @override
   Widget build(
@@ -33,9 +34,8 @@ class CustomShimmerDelegate implements ShimmerDelegate {
 }
 
 class DecoratedBoxShimmerDelegate implements ShimmerDelegate {
-  const DecoratedBoxShimmerDelegate({
-    this.decoration = const BoxDecoration(),
-  }) : assert(decoration is BoxDecoration || decoration is ShapeDecoration);
+  const DecoratedBoxShimmerDelegate({this.decoration = const BoxDecoration()})
+    : assert(decoration is BoxDecoration || decoration is ShapeDecoration);
 
   final Decoration decoration;
 
@@ -50,17 +50,18 @@ class DecoratedBoxShimmerDelegate implements ShimmerDelegate {
       position: DecorationPosition.foreground,
       decoration: switch (decoration) {
         final BoxDecoration boxDecoration => boxDecoration.copyWith(
-            color: color,
-            gradient: gradient,
-          ),
+          color: color,
+          gradient: gradient,
+        ),
         final ShapeDecoration shapeDecoration => ShapeDecoration(
-            color: color,
-            gradient: gradient,
-            image: shapeDecoration.image,
-            shadows: shapeDecoration.shadows,
-            shape: shapeDecoration.shape,
-          ),
-        _ => throw UnimplementedError(
+          color: color,
+          gradient: gradient,
+          image: shapeDecoration.image,
+          shadows: shapeDecoration.shadows,
+          shape: shapeDecoration.shape,
+        ),
+        _ =>
+          throw UnimplementedError(
             'tried using a $DecoratedBoxShimmerDelegate with '
             'an unsupported decoration type',
           ),

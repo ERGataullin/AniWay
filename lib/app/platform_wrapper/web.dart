@@ -6,10 +6,7 @@ extension _CSSStyleValue on web.CSSStyleValue {
 }
 
 class PlatformWrapper extends StatefulWidget {
-  const PlatformWrapper({
-    super.key,
-    required this.child,
-  });
+  const PlatformWrapper({super.key, required this.child});
 
   final Widget child;
 
@@ -23,14 +20,16 @@ class _PlatformWrapperState extends State<PlatformWrapper> {
   static const _rightInsetProperty = '--safe-area-insets-right';
   static const _bottomInsetProperty = '--safe-area-insets-bottom';
 
-  final _style = web.HTMLStyleElement()
-    ..id = 'web-media-query'
-    ..text = ':root { '
-        '$_leftInsetProperty: env(safe-area-inset-left); '
-        '$_topInsetProperty: env(safe-area-inset-top); '
-        '$_rightInsetProperty: env(safe-area-inset-right); '
-        '$_bottomInsetProperty: env(safe-area-inset-bottom); '
-        '}';
+  final _style =
+      web.HTMLStyleElement()
+        ..id = 'web-media-query'
+        ..text =
+            ':root { '
+            '$_leftInsetProperty: env(safe-area-inset-left); '
+            '$_topInsetProperty: env(safe-area-inset-top); '
+            '$_rightInsetProperty: env(safe-area-inset-right); '
+            '$_bottomInsetProperty: env(safe-area-inset-bottom); '
+            '}';
 
   @override
   void initState() {

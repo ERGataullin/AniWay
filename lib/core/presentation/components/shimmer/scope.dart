@@ -3,10 +3,7 @@ import 'package:app/core/presentation/components/shimmer/scope_animation_control
 import 'package:flutter/material.dart';
 
 class ShimmerScope extends StatefulWidget {
-  const ShimmerScope({
-    super.key,
-    required this.child,
-  });
+  const ShimmerScope({super.key, required this.child});
 
   static ShimmerScopeState of(BuildContext context) {
     return context
@@ -74,10 +71,7 @@ class ShimmerScopeState extends State<ShimmerScope>
 
   @override
   Widget build(BuildContext context) {
-    return _ShimmerScopeInheritedState(
-      state: this,
-      child: widget.child,
-    );
+    return _ShimmerScopeInheritedState(state: this, child: widget.child);
   }
 
   void _handleHasClientsChanged() {
@@ -141,11 +135,7 @@ class _SlidingGradientTransform extends GradientTransform {
       ..setIdentity()
       // Увеличиваем градиент с размеров шиммера
       // до размеров скоупа, чтобы иметь единый градиент на весь скоуп.
-      ..scale(
-        widthMultiplier,
-        heightMultiplier,
-        0,
-      )
+      ..scale(widthMultiplier, heightMultiplier, 0)
       // Смещаем начало координат так, чтобы им стала позиция шиммера с учётом
       // прогресса слайда.
       ..setTranslationRaw(

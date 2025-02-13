@@ -16,8 +16,8 @@ class MenuItemData {
     required this.label,
     required this.children,
     this.onSelected,
-  })  : enabled = children.length > 0,
-        trailing = null;
+  }) : enabled = children.length > 0,
+       trailing = null;
 
   const MenuItemData.raw({
     this.enabled = true,
@@ -53,14 +53,13 @@ class MenuItemData {
     String? trailing,
     VoidCallback? onSelected,
     List<MenuItemData>? children,
-  }) =>
-      MenuItemData.raw(
-        enabled: enabled ?? this.enabled,
-        selected: selected ?? this.selected,
-        icon: icon ?? this.icon,
-        label: label ?? this.label,
-        trailing: trailing ?? this.trailing,
-        onSelected: onSelected ?? this.onSelected,
-        children: children ?? this.children,
-      );
+  }) => MenuItemData.raw(
+    enabled: enabled ?? this.enabled,
+    selected: selected ?? this.selected,
+    icon: icon ?? this.icon,
+    label: label ?? this.label,
+    trailing: trailing ?? this.trailing,
+    onSelected: onSelected ?? this.onSelected,
+    children: children ?? this.children,
+  );
 }

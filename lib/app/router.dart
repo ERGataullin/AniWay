@@ -14,11 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter implements RouterConfig<RouteMatchList> {
-  AppRouter({
-    required L10n l10n,
-    required ValueListenable<bool> signedIn,
-  })  : _l10n = l10n,
-        _signedIn = signedIn;
+  AppRouter({required L10n l10n, required ValueListenable<bool> signedIn})
+    : _l10n = l10n,
+      _signedIn = signedIn;
 
   final L10n _l10n;
 
@@ -29,17 +27,13 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   late final _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
     refreshListenable: _signedIn,
-    routes: [
-      _buildSignIn(),
-      _buildRootMenu(),
-      _buildMoviePlayer(),
-    ],
+    routes: [_buildSignIn(), _buildRootMenu(), _buildMoviePlayer()],
     redirect: (context, state) {
       return _signedIn.value && state.topRoute?.name == _Routes.signIn
           ? state.namedLocation(_Routes.home)
           : !_signedIn.value
-              ? state.namedLocation(_Routes.signIn)
-              : null;
+          ? state.namedLocation(_Routes.signIn)
+          : null;
     },
   );
 
@@ -70,45 +64,42 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     final GoRoute search = _buildSearch();
     return StatefulShellRoute(
       branches: [
-        StatefulShellBranch(
-          routes: [_buildHome()],
-        ),
-        StatefulShellBranch(
-          routes: [search],
-        ),
+        StatefulShellBranch(routes: [_buildHome()]),
+        StatefulShellBranch(routes: [search]),
       ],
-      navigatorContainerBuilder: (context, navigationShell, children) =>
-          RootMenuContainer(
-        currentIndex: navigationShell.currentIndex,
-        children: children,
-      ),
-      builder: (context, state, navigationShell) => RootMenuView(
-        currentIndex: navigationShell.currentIndex,
-        onDestinationSelected: (index) => navigationShell.goBranch(
-          index,
-          initialLocation: index == navigationShell.currentIndex,
-        ),
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home),
-            label: _l10n.homePageTitle,
+      navigatorContainerBuilder:
+          (context, navigationShell, children) => RootMenuContainer(
+            currentIndex: navigationShell.currentIndex,
+            children: children,
           ),
-          NavigationDestination(
-            icon: const Icon(Icons.search_outlined),
-            selectedIcon: const Icon(Icons.search),
-            label: _l10n.searchPageTitle,
+      builder:
+          (context, state, navigationShell) => RootMenuView(
+            currentIndex: navigationShell.currentIndex,
+            onDestinationSelected:
+                (index) => navigationShell.goBranch(
+                  index,
+                  initialLocation: index == navigationShell.currentIndex,
+                ),
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(Icons.home),
+                label: _l10n.homePageTitle,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.search_outlined),
+                selectedIcon: const Icon(Icons.search),
+                label: _l10n.searchPageTitle,
+              ),
+            ],
+            query: state.uri.queryParameters['query'],
+            onSearch:
+                (query) => context.goNamed(
+                  search.name!,
+                  queryParameters: {if (query.isNotEmpty) 'query': query},
+                ),
+            child: navigationShell,
           ),
-        ],
-        query: state.uri.queryParameters['query'],
-        onSearch: (query) => context.goNamed(
-          search.name!,
-          queryParameters: {
-            if (query.isNotEmpty) 'query': query,
-          },
-        ),
-        child: navigationShell,
-      ),
     );
   }
 
@@ -116,93 +107,88 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       name: _Routes.moviePlayer,
       path: '/movies/:movieId/player',
-      pageBuilder: (context, state) => MaterialPage(
-        fullscreenDialog: true,
-        child: MoviePlayerWidget(
-          movieId: int.parse(state.pathParameters['movieId']!),
-          initialEpisodeId: switch (state.uri.queryParameters['episodeId']) {
-            final String episodeIdQuery => int.tryParse(episodeIdQuery),
-            _ => null,
-          },
-        ),
-      ),
+      pageBuilder:
+          (context, state) => MaterialPage(
+            fullscreenDialog: true,
+            child: MoviePlayerWidget(
+              movieId: int.parse(state.pathParameters['movieId']!),
+              initialEpisodeId: switch (state
+                  .uri
+                  .queryParameters['episodeId']) {
+                final String episodeIdQuery => int.tryParse(episodeIdQuery),
+                _ => null,
+              },
+            ),
+          ),
     );
   }
 
   GoRoute _buildHome() {
     final GoRoute upNext = _buildUpNext();
-    final GoRoute search = _buildSearch(
-      path: 'movies',
-      parent: _Routes.home,
-    );
+    final GoRoute search = _buildSearch(path: 'movies', parent: _Routes.home);
     final GoRoute movie = _buildMovie(parent: _Routes.home);
     return GoRoute(
       name: _Routes.home,
       path: '/',
       routes: [upNext, search, movie],
-      builder: (context, state) => HomeWidget(
-        upNextUri: Uri.parse(state.namedLocation(upNext.name!)),
-        onUpNextPressed: (movieId, episodeId) => context.pushNamed(
-          _Routes.moviePlayer,
-          pathParameters: {'movieId': movieId.toString()},
-          queryParameters: {'episodeId': episodeId.toString()},
-        ),
-        ongoingsUri: Uri.parse(
-          state.namedLocation(
-            search.name!,
-            queryParameters: {
-              'isOngoing': true.toString(),
-            },
+      builder:
+          (context, state) => HomeWidget(
+            upNextUri: Uri.parse(state.namedLocation(upNext.name!)),
+            onUpNextPressed:
+                (movieId, episodeId) => context.pushNamed(
+                  _Routes.moviePlayer,
+                  pathParameters: {'movieId': movieId.toString()},
+                  queryParameters: {'episodeId': episodeId.toString()},
+                ),
+            ongoingsUri: Uri.parse(
+              state.namedLocation(
+                search.name!,
+                queryParameters: {'isOngoing': true.toString()},
+              ),
+            ),
+            popularsUri: Uri.parse(
+              state.namedLocation(
+                search.name!,
+                queryParameters: {'order': MoviesOrder.byPopularity.name},
+              ),
+            ),
+            onMoviePressed:
+                (id) => context.goNamed(
+                  movie.name!,
+                  pathParameters: {'movieId': id.toString()},
+                ),
           ),
-        ),
-        popularsUri: Uri.parse(
-          state.namedLocation(
-            search.name!,
-            queryParameters: {
-              'order': MoviesOrder.byPopularity.name,
-            },
-          ),
-        ),
-        onMoviePressed: (id) => context.goNamed(
-          movie.name!,
-          pathParameters: {'movieId': id.toString()},
-        ),
-      ),
     );
   }
 
-  GoRoute _buildSearch({
-    String path = '/search',
-    String? parent,
-  }) {
+  GoRoute _buildSearch({String path = '/search', String? parent}) {
     final String name = _Routes.search(parent: parent);
     final GoRoute movieRoute = _buildMovie(parent: name);
     return GoRoute(
       name: name,
       path: path,
       routes: [movieRoute],
-      builder: (context, state) => MoviesSearchWidget(
-        isOngoing: bool.tryParse(
-          state.uri.queryParameters['isOngoing'] ?? '',
-        ),
-        query: state.uri.queryParameters['query'],
-        order: switch (state.uri.queryParameters['order']) {
-          final String order => MoviesOrder.valueOf(order),
-          _ => MoviesOrder.byPopularity,
-        },
-        onSearch: (query) => context.goNamed(
-          name,
-          queryParameters: {
-            if (query.isNotEmpty) 'query': query,
-          },
-        ),
-        onMoviePressed: (id) => context.goNamed(
-          movieRoute.name!,
-          pathParameters: {
-            'movieId': id.toString(),
-          },
-        ),
-      ),
+      builder:
+          (context, state) => MoviesSearchWidget(
+            isOngoing: bool.tryParse(
+              state.uri.queryParameters['isOngoing'] ?? '',
+            ),
+            query: state.uri.queryParameters['query'],
+            order: switch (state.uri.queryParameters['order']) {
+              final String order => MoviesOrder.valueOf(order),
+              _ => MoviesOrder.byPopularity,
+            },
+            onSearch:
+                (query) => context.goNamed(
+                  name,
+                  queryParameters: {if (query.isNotEmpty) 'query': query},
+                ),
+            onMoviePressed:
+                (id) => context.goNamed(
+                  movieRoute.name!,
+                  pathParameters: {'movieId': id.toString()},
+                ),
+          ),
     );
   }
 
@@ -212,25 +198,28 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       name: _Routes.movie(parent: parent),
       path: 'movies/:movieId',
       routes: [episodesRoute],
-      builder: (context, state) => MovieWidget(
-        movieId: int.parse(state.pathParameters['movieId']!),
-        episodesUri: Uri.parse(
-          state.namedLocation(
-            episodesRoute.name!,
-            pathParameters: {'movieId': state.pathParameters['movieId']!},
+      builder:
+          (context, state) => MovieWidget(
+            movieId: int.parse(state.pathParameters['movieId']!),
+            episodesUri: Uri.parse(
+              state.namedLocation(
+                episodesRoute.name!,
+                pathParameters: {'movieId': state.pathParameters['movieId']!},
+              ),
+            ),
+            onPlayPressed:
+                (episodeId) => context.pushNamed(
+                  _Routes.moviePlayer,
+                  pathParameters: {'movieId': state.pathParameters['movieId']!},
+                  queryParameters: {'episodeId': episodeId.toString()},
+                ),
+            onEpisodePressed:
+                (episodeId) => context.pushNamed(
+                  _Routes.moviePlayer,
+                  pathParameters: {'movieId': state.pathParameters['movieId']!},
+                  queryParameters: {'episodeId': episodeId.toString()},
+                ),
           ),
-        ),
-        onPlayPressed: (episodeId) => context.pushNamed(
-          _Routes.moviePlayer,
-          pathParameters: {'movieId': state.pathParameters['movieId']!},
-          queryParameters: {'episodeId': episodeId.toString()},
-        ),
-        onEpisodePressed: (episodeId) => context.pushNamed(
-          _Routes.moviePlayer,
-          pathParameters: {'movieId': state.pathParameters['movieId']!},
-          queryParameters: {'episodeId': episodeId.toString()},
-        ),
-      ),
     );
   }
 
@@ -240,17 +229,20 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       name: _Routes.upNext,
       path: 'up-next',
       routes: [movieRoute],
-      builder: (context, state) => UpNextWidget(
-        onItemPressed: (movieId, episodeId) => context.pushNamed(
-          _Routes.moviePlayer,
-          pathParameters: {'movieId': movieId.toString()},
-          queryParameters: {'episodeId': episodeId.toString()},
-        ),
-        onItemLongPressed: (movieId, __) => context.pushNamed(
-          movieRoute.name!,
-          pathParameters: {'movieId': movieId.toString()},
-        ),
-      ),
+      builder:
+          (context, state) => UpNextWidget(
+            onItemPressed:
+                (movieId, episodeId) => context.pushNamed(
+                  _Routes.moviePlayer,
+                  pathParameters: {'movieId': movieId.toString()},
+                  queryParameters: {'episodeId': episodeId.toString()},
+                ),
+            onItemLongPressed:
+                (movieId, __) => context.pushNamed(
+                  movieRoute.name!,
+                  pathParameters: {'movieId': movieId.toString()},
+                ),
+          ),
     );
   }
 
@@ -258,14 +250,16 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     return GoRoute(
       name: _Routes.episodes(parent: parent),
       path: 'episodes',
-      builder: (context, state) => EpisodesWidget(
-        movieId: int.parse(state.pathParameters['movieId']!),
-        onEpisodePressed: (episodeId) => context.pushNamed(
-          _Routes.moviePlayer,
-          pathParameters: {'movieId': state.pathParameters['movieId']!},
-          queryParameters: {'episodeId': episodeId.toString()},
-        ),
-      ),
+      builder:
+          (context, state) => EpisodesWidget(
+            movieId: int.parse(state.pathParameters['movieId']!),
+            onEpisodePressed:
+                (episodeId) => context.pushNamed(
+                  _Routes.moviePlayer,
+                  pathParameters: {'movieId': state.pathParameters['movieId']!},
+                  queryParameters: {'episodeId': episodeId.toString()},
+                ),
+          ),
     );
   }
 }

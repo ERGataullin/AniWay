@@ -37,43 +37,37 @@ class DestinationTitle extends StatelessWidget {
               fit: FlexFit.loose,
               child: Link(
                 uri: uri,
-                builder: (context, followLink) => ConditionalWrapper(
-                  condition: true,
-                  wrapper: (context, child) => MouseRegion(
-                    cursor: WidgetStateMouseCursor.clickable,
-                    child: GestureDetector(
-                      onTap: followLink,
-                      child: child,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          title,
-                          style: titleStyle,
-                        ),
+                builder:
+                    (context, followLink) => ConditionalWrapper(
+                      condition: true,
+                      wrapper:
+                          (context, child) => MouseRegion(
+                            cursor: WidgetStateMouseCursor.clickable,
+                            child: GestureDetector(
+                              onTap: followLink,
+                              child: child,
+                            ),
+                          ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(child: Text(title, style: titleStyle)),
+                          if (followLink != null)
+                            Icon(
+                              Icons.chevron_right_outlined,
+                              size: titleStyle.fontSize! * titleStyle.height!,
+                              weight: titleStyle.fontWeight?.value.toDouble(),
+                              color: titleStyle.color!.withValues(alpha: .6),
+                              shadows: titleStyle.shadows,
+                              applyTextScaling: true,
+                            ),
+                        ],
                       ),
-                      if (followLink != null)
-                        Icon(
-                          Icons.chevron_right_outlined,
-                          size: titleStyle.fontSize! * titleStyle.height!,
-                          weight: titleStyle.fontWeight?.value.toDouble(),
-                          color: titleStyle.color!.withValues(alpha: .6),
-                          shadows: titleStyle.shadows,
-                          applyTextScaling: true,
-                        ),
-                    ],
-                  ),
-                ),
+                    ),
               ),
             ),
             if (trailing != null)
-              DefaultTextStyle(
-                style: trailingStyle,
-                child: trailing!,
-              ),
+              DefaultTextStyle(style: trailingStyle, child: trailing!),
           ],
         ),
       ),

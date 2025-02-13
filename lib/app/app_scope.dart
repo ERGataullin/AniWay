@@ -20,28 +20,25 @@ class AppScope extends InheritedWidget {
     required super.child,
   }) {
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
-    this.networkService = networkService ??
+    this.networkService =
+        networkService ??
         HttpService(
-          baseUri: kIsWeb
-              ? ProxiedUri(
-                  proxy: Uri(
-                    scheme: 'https',
-                    host: 'aniway.fun',
-                  ),
-                  original: Uri(
-                    scheme: 'https',
-                    host: 'smotret-anime.online',
-                  ),
-                )
-              : Uri(
-                  scheme: 'https',
-                  host: 'smotret-anime.online',
-                ),
+          baseUri:
+              kIsWeb
+                  ? ProxiedUri(
+                    proxy: Uri(scheme: 'https', host: 'aniway.fun'),
+                    original: Uri(
+                      scheme: 'https',
+                      host: 'smotret-anime.online',
+                    ),
+                  )
+                  : Uri(scheme: 'https', host: 'smotret-anime.online'),
         );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
         cookieManager ?? CookieManagerImpl(storageService: this.storageService);
-    this.authService = authService ??
+    this.authService =
+        authService ??
         AuthRepository(
           authService: AuthServiceAnime365(
             networkService: this.networkService,
@@ -49,17 +46,20 @@ class AppScope extends InheritedWidget {
           ),
           cookieManager: this.cookieManager,
         );
-    this.moviesRepository = moviesRepository ??
+    this.moviesRepository =
+        moviesRepository ??
         MoviesRepository(
           moviesService: MoviesServiceAnime365(
             cookieManager: this.cookieManager,
             networkService: this.networkService,
           ),
         );
-    this.playerRepository = playerRepository ??
+    this.playerRepository =
+        playerRepository ??
         PlayerRepository(
-          playerService:
-              LocalPlayerService(storageService: this.storageService),
+          playerService: LocalPlayerService(
+            storageService: this.storageService,
+          ),
         );
   }
 
@@ -89,17 +89,17 @@ class AppScope extends InheritedWidget {
 
   @override
   Widget get child => MultiProvider(
-        providers: [
-          Provider<ErrorHandler>.value(value: errorHandler),
-          Provider<NetworkService>.value(value: networkService),
-          Provider<StorageService>.value(value: storageService),
-          Provider<CookieManager>.value(value: cookieManager),
-          Provider<AuthRepository>.value(value: authService),
-          Provider<MoviesRepository>.value(value: moviesRepository),
-          Provider<PlayerRepository>.value(value: playerRepository),
-        ],
-        child: super.child,
-      );
+    providers: [
+      Provider<ErrorHandler>.value(value: errorHandler),
+      Provider<NetworkService>.value(value: networkService),
+      Provider<StorageService>.value(value: storageService),
+      Provider<CookieManager>.value(value: cookieManager),
+      Provider<AuthRepository>.value(value: authService),
+      Provider<MoviesRepository>.value(value: moviesRepository),
+      Provider<PlayerRepository>.value(value: playerRepository),
+    ],
+    child: super.child,
+  );
 
   static AppScope of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<AppScope>()!;

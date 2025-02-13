@@ -2,9 +2,8 @@ import 'package:app/core/core.dart';
 import 'package:app/player/player.dart';
 
 class LocalPlayerService implements PlayerService {
-  const LocalPlayerService({
-    required StorageService storageService,
-  }) : _storageService = storageService;
+  const LocalPlayerService({required StorageService storageService})
+    : _storageService = storageService;
 
   static const _collection = 'player';
 

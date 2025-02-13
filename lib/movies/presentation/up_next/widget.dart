@@ -20,37 +20,31 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
   Widget build(IUpNextWM wm) {
     return ShimmerScope(
       child: Builder(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text(context.l10n.upNextTitle),
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomScrollView(
-                controller: wm.scrollController,
-                slivers: [
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 16),
-                  ),
-                  SliverPagedGrid(
-                    key: wm.pagedGridKey,
+        builder:
+            (context) => Scaffold(
+              appBar: AppBar(title: Text(context.l10n.upNextTitle)),
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: CustomScrollView(
                     controller: wm.scrollController,
-                    gridDelegate: MovieCard.gridDelegate,
-                    onLoadPage: wm.handleLoadPage,
-                    itemBuilder: (context, movie, animation) => MovieCard(
-                      movie,
-                      opacity: animation,
-                    ),
+                    slivers: [
+                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                      SliverPagedGrid(
+                        key: wm.pagedGridKey,
+                        controller: wm.scrollController,
+                        gridDelegate: MovieCard.gridDelegate,
+                        onLoadPage: wm.handleLoadPage,
+                        itemBuilder:
+                            (context, movie, animation) =>
+                                MovieCard(movie, opacity: animation),
+                      ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                    ],
                   ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 16),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
       ),
     );
   }

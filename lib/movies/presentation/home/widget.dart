@@ -35,17 +35,16 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   Widget build(IHomeWM wm) {
     return Provider<IHomeWM>.value(
       value: wm,
-      builder: (context, __) => ShimmerScope(
-        child: PageLayout(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const FittedBox(
-              child: Logo(primary: false),
+      builder:
+          (context, __) => ShimmerScope(
+            child: PageLayout(
+              appBar: AppBar(
+                centerTitle: true,
+                title: const FittedBox(child: Logo(primary: false)),
+              ),
+              body: const _Body(),
             ),
           ),
-          body: const _Body(),
-        ),
-      ),
     );
   }
 }
@@ -57,25 +56,28 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.loading,
-      builder: (context, __) => AnimatedSwitcher(
-        switchInCurve: Easing.emphasizedDecelerate,
-        switchOutCurve: Easing.emphasizedAccelerate.flipped,
-        duration: Durations.medium4,
-        reverseDuration: Durations.short4,
-        layoutBuilder: (currentChild, previousChildren) => Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            ...previousChildren,
-            if (currentChild != null) currentChild,
-          ],
-        ),
-        child: context.wm.loading.value
-            ? const Center(
-                key: ValueKey('Loader'),
-                child: CircularProgressIndicator.adaptive(),
-              )
-            : const _Content(key: ValueKey('Content')),
-      ),
+      builder:
+          (context, __) => AnimatedSwitcher(
+            switchInCurve: Easing.emphasizedDecelerate,
+            switchOutCurve: Easing.emphasizedAccelerate.flipped,
+            duration: Durations.medium4,
+            reverseDuration: Durations.short4,
+            layoutBuilder:
+                (currentChild, previousChildren) => Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                ),
+            child:
+                context.wm.loading.value
+                    ? const Center(
+                      key: ValueKey('Loader'),
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                    : const _Content(key: ValueKey('Content')),
+          ),
     );
   }
 }
@@ -93,33 +95,34 @@ class _Content extends StatelessWidget {
         removeBottom: true,
         context: context,
         child: LayoutBuilder(
-          builder: (context, constraints) => SingleChildScrollView(
-            primary: true,
-            padding: EdgeInsets.only(
-              top: 16 + safeAreaPadding.top,
-              bottom: 16 + safeAreaPadding.bottom,
-            ),
-            child: Column(
-              spacing: 16,
-              children: [
-                _Category(
-                  title: context.l10n.upNextTitle,
-                  uri: context.wm.upNextUri,
-                  movies: context.wm.upNextItems,
+          builder:
+              (context, constraints) => SingleChildScrollView(
+                primary: true,
+                padding: EdgeInsets.only(
+                  top: 16 + safeAreaPadding.top,
+                  bottom: 16 + safeAreaPadding.bottom,
                 ),
-                _Category(
-                  title: context.l10n.ongoingsTitle,
-                  uri: context.wm.ongoingsUri,
-                  movies: context.wm.ongoingItems,
+                child: Column(
+                  spacing: 16,
+                  children: [
+                    _Category(
+                      title: context.l10n.upNextTitle,
+                      uri: context.wm.upNextUri,
+                      movies: context.wm.upNextItems,
+                    ),
+                    _Category(
+                      title: context.l10n.ongoingsTitle,
+                      uri: context.wm.ongoingsUri,
+                      movies: context.wm.ongoingItems,
+                    ),
+                    _Category(
+                      title: context.l10n.popularsTitle,
+                      uri: context.wm.popularsUri,
+                      movies: context.wm.popularItems,
+                    ),
+                  ],
                 ),
-                _Category(
-                  title: context.l10n.popularsTitle,
-                  uri: context.wm.popularsUri,
-                  movies: context.wm.popularItems,
-                ),
-              ],
-            ),
-          ),
+              ),
         ),
       ),
     );
@@ -145,26 +148,16 @@ class _Category extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DestinationTitle(
-          title,
-          uri: uri,
-          margin: marginHorizontal,
-        ),
+        DestinationTitle(title, uri: uri, margin: marginHorizontal),
         const SizedBox(height: 8),
-        _Movies(
-          margin: marginHorizontal,
-          movies: movies,
-        ),
+        _Movies(margin: marginHorizontal, movies: movies),
       ],
     );
   }
 }
 
 class _Movies extends StatelessWidget {
-  const _Movies({
-    this.margin = EdgeInsets.zero,
-    required this.movies,
-  });
+  const _Movies({this.margin = EdgeInsets.zero, required this.movies});
 
   final EdgeInsets margin;
 
@@ -177,19 +170,20 @@ class _Movies extends StatelessWidget {
       height: 128 + 64 + 32,
       child: ValueListenableBuilder(
         valueListenable: movies,
-        builder: (context, movies, ___) => ListView.separated(
-          clipBehavior: Clip.none,
-          scrollDirection: Axis.horizontal,
-          itemCount: movies.length,
-          padding: margin.add(
-            EdgeInsets.only(
-              left: safeAreaPadding.left,
-              right: safeAreaPadding.right,
+        builder:
+            (context, movies, ___) => ListView.separated(
+              clipBehavior: Clip.none,
+              scrollDirection: Axis.horizontal,
+              itemCount: movies.length,
+              padding: margin.add(
+                EdgeInsets.only(
+                  left: safeAreaPadding.left,
+                  right: safeAreaPadding.right,
+                ),
+              ),
+              separatorBuilder: (context, __) => const SizedBox(width: 8),
+              itemBuilder: (context, index) => MovieCard(movies[index]),
             ),
-          ),
-          separatorBuilder: (context, __) => const SizedBox(width: 8),
-          itemBuilder: (context, index) => MovieCard(movies[index]),
-        ),
       ),
     );
   }

@@ -12,16 +12,15 @@ Future<void> showModalMenuBottomSheet({
       isScrollControlled: true,
       modalBarrierColor: Theme.of(context).bottomSheetTheme.modalBarrierColor,
       showDragHandle: true,
-      builder: (context) => MenuWidget(
-        items: items
-            .map(
-              (item) => _popOnSelectedProxyMapper(
-                context: context,
-                item: item,
-              ),
-            )
-            .toList(growable: false),
-      ),
+      builder:
+          (context) => MenuWidget(
+            items: items
+                .map(
+                  (item) =>
+                      _popOnSelectedProxyMapper(context: context, item: item),
+                )
+                .toList(growable: false),
+          ),
     ),
   );
 }
@@ -32,27 +31,20 @@ MenuItemData _popOnSelectedProxyMapper({
 }) {
   return item.copyWith(
     children: item.children
-        .map(
-          (item) => _popOnSelectedProxyMapper(
-            context: context,
-            item: item,
-          ),
-        )
+        .map((item) => _popOnSelectedProxyMapper(context: context, item: item))
         .toList(growable: false),
-    onSelected: item.hasChildren
-        ? item.onSelected
-        : () {
-            Navigator.pop(context);
-            item.onSelected?.call();
-          },
+    onSelected:
+        item.hasChildren
+            ? item.onSelected
+            : () {
+              Navigator.pop(context);
+              item.onSelected?.call();
+            },
   );
 }
 
 class MenuWidget extends StatefulWidget {
-  const MenuWidget({
-    super.key,
-    required this.items,
-  });
+  const MenuWidget({super.key, required this.items});
 
   final List<MenuItemData> items;
 
@@ -99,11 +91,9 @@ class _SelectionWidgetState extends State<MenuWidget> {
   }
 
   Widget _buildItem(BuildContext context, MenuItemData item) {
-    final MenuItemData? selectedChild =
-        item.children.cast<MenuItemData?>().singleWhere(
-              (item) => item!.selected,
-              orElse: () => null,
-            );
+    final MenuItemData? selectedChild = item.children
+        .cast<MenuItemData?>()
+        .singleWhere((item) => item!.selected, orElse: () => null);
 
     return ListTile(
       dense: true,
@@ -111,35 +101,37 @@ class _SelectionWidgetState extends State<MenuWidget> {
       selected: item.selected,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       onTap: () => _handleItemSelected(item),
-      leading: item.icon == null
-          ? item.selected
-              ? const Icon(Icons.done_outlined)
-              : const SizedBox.shrink()
-          : Icon(item.icon),
+      leading:
+          item.icon == null
+              ? item.selected
+                  ? const Icon(Icons.done_outlined)
+                  : const SizedBox.shrink()
+              : Icon(item.icon),
       title: Text(
         item.label,
         maxLines: 1,
         softWrap: false,
         overflow: TextOverflow.fade,
       ),
-      trailing: item.hasChildren
-          ? Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (selectedChild != null)
-                  SizedBox(
-                    width: 32,
-                    child: Text(
-                      selectedChild.label,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
+      trailing:
+          item.hasChildren
+              ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (selectedChild != null)
+                    SizedBox(
+                      width: 32,
+                      child: Text(
+                        selectedChild.label,
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
-                  ),
-                const Icon(Icons.chevron_right_outlined),
-              ],
-            )
-          : item.trailing == null
+                  const Icon(Icons.chevron_right_outlined),
+                ],
+              )
+              : item.trailing == null
               ? null
               : Text(item.trailing!),
     );

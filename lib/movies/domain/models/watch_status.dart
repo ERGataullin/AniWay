@@ -1,8 +1,1 @@
-enum WatchStatus {
-  planned,
-  watching,
-  completed,
-  onHold,
-  dropped,
-  none;
-}
+enum WatchStatus { planned, watching, completed, onHold, dropped, none }

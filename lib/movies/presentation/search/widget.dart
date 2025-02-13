@@ -34,14 +34,15 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
       child: ShimmerScope(
         child: ListenableBuilder(
           listenable: wm.query,
-          builder: (context, body) => PageLayout(
-            extendBodyBehindAppBar: true,
-            appBar: MoviesSearchBar(
-              query: wm.query.value,
-              onSearch: onSearch,
-            ),
-            body: body,
-          ),
+          builder:
+              (context, body) => PageLayout(
+                extendBodyBehindAppBar: true,
+                appBar: MoviesSearchBar(
+                  query: wm.query.value,
+                  onSearch: onSearch,
+                ),
+                body: body,
+              ),
           child: SafeArea(
             top: false,
             bottom: false,
@@ -49,24 +50,24 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
               controller: wm.scrollController,
               slivers: [
                 Builder(
-                  builder: (context) => SliverPadding(
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      16 + MediaQuery.paddingOf(context).top,
-                      16,
-                      16 + MediaQuery.paddingOf(context).bottom,
-                    ),
-                    sliver: SliverPagedGrid(
-                      key: wm.pagedGridKey,
-                      controller: wm.scrollController,
-                      gridDelegate: MovieCard.gridDelegate,
-                      onLoadPage: wm.handleLoadPage,
-                      itemBuilder: (context, movie, animation) => MovieCard(
-                        movie,
-                        opacity: animation,
+                  builder:
+                      (context) => SliverPadding(
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          16 + MediaQuery.paddingOf(context).top,
+                          16,
+                          16 + MediaQuery.paddingOf(context).bottom,
+                        ),
+                        sliver: SliverPagedGrid(
+                          key: wm.pagedGridKey,
+                          controller: wm.scrollController,
+                          gridDelegate: MovieCard.gridDelegate,
+                          onLoadPage: wm.handleLoadPage,
+                          itemBuilder:
+                              (context, movie, animation) =>
+                                  MovieCard(movie, opacity: animation),
+                        ),
                       ),
-                    ),
-                  ),
                 ),
               ],
             ),

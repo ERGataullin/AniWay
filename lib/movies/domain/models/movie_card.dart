@@ -19,34 +19,33 @@ class MovieCardData {
     required L10n l10n,
     required VoidCallback onPressed,
     VoidCallback? onLongPressed,
-  }) =>
-      MovieCardData(
-        poster: upNext.movie.poster,
-        title: upNext.movie.title,
-        subtitle: upNext.episode.number == null
+  }) => MovieCardData(
+    poster: upNext.movie.poster,
+    title: upNext.movie.title,
+    subtitle:
+        upNext.episode.number == null
             ? l10n.movieType(upNext.episode.type.name)
             : l10n.movieEpisode(
-                upNext.episode.type.name,
-                upNext.episode.number!,
-              ),
-        onPressed: onPressed,
-        onLongPressed: onLongPressed,
-      );
+              upNext.episode.type.name,
+              upNext.episode.number!,
+            ),
+    onPressed: onPressed,
+    onLongPressed: onLongPressed,
+  );
 
   factory MovieCardData.fromMovie(
     MovieBaseData movie, {
     required L10n l10n,
     required VoidCallback onPressed,
     VoidCallback? onLongPressed,
-  }) =>
-      MovieCardData(
-        poster: movie.poster,
-        title: movie.title,
-        subtitle: l10n.movieType(movie.type.name),
-        score: movie.score,
-        onPressed: onPressed,
-        onLongPressed: onLongPressed,
-      );
+  }) => MovieCardData(
+    poster: movie.poster,
+    title: movie.title,
+    subtitle: l10n.movieType(movie.type.name),
+    score: movie.score,
+    onPressed: onPressed,
+    onLongPressed: onLongPressed,
+  );
 
   final ImageData poster;
 
