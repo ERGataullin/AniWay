@@ -44,10 +44,9 @@ class _ScalableState extends State<Scalable> {
       onScaleEnd: _handleScaleEnd,
       child: ListenableBuilder(
         listenable: _scale,
-        builder: (context, __) => Transform.scale(
-          scale: _scale.value,
-          child: widget.child,
-        ),
+        builder:
+            (context, _) =>
+                Transform.scale(scale: _scale.value, child: widget.child),
       ),
     );
   }

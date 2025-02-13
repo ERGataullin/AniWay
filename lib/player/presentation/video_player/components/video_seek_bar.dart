@@ -26,36 +26,42 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
       widget.videoController.position,
       widget.videoController.duration,
     ]),
-    () => widget.videoController.duration.value == Duration.zero
-        ? 0
-        : widget.videoController.position.value.inSeconds /
-            widget.videoController.duration.value.inSeconds,
+    () =>
+        widget.videoController.duration.value == Duration.zero
+            ? 0
+            : widget.videoController.position.value.inSeconds /
+                widget.videoController.duration.value.inSeconds,
   );
 
-  bool _isMouse = false;
+  var _isMouse = false;
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() {
-        _isMouse = true;
-      }),
-      onExit: (_) => setState(() {
-        _isMouse = false;
-      }),
+      onEnter:
+          (_) => setState(() {
+            _isMouse = true;
+          }),
+      onExit:
+          (_) => setState(() {
+            _isMouse = false;
+          }),
       child: ListenableBuilder(
         listenable: _value,
-        builder: (context, __) => Slider.adaptive(
-          value: _value.value,
-          allowedInteraction: _isMouse
-              ? SliderInteraction.tapAndSlide
-              : SliderInteraction.slideOnly,
-          onChangeStart: widget.onPositionChangeStart,
-          onChangeEnd: widget.onPositionChangeEnd,
-          onChanged: (position) => widget.videoController.seekTo(
-            widget.videoController.duration.value * position,
-          ),
-        ),
+        builder:
+            (context, _) => Slider.adaptive(
+              value: _value.value,
+              allowedInteraction:
+                  _isMouse
+                      ? SliderInteraction.tapAndSlide
+                      : SliderInteraction.slideOnly,
+              onChangeStart: widget.onPositionChangeStart,
+              onChangeEnd: widget.onPositionChangeEnd,
+              onChanged:
+                  (position) => widget.videoController.seekTo(
+                    widget.videoController.duration.value * position,
+                  ),
+            ),
       ),
     );
   }

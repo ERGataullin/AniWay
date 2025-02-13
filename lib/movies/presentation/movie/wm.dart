@@ -10,11 +10,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
-      MovieModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<MoviesRepository>(),
-      ),
-    );
+  MovieModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<MoviesRepository>(),
+  ),
+);
 
 abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<bool> get loading;
@@ -111,9 +111,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   @override
   void initWidgetModel() {
     super.initWidgetModel();
-    model.loadData(
-      movieId: widget.movieId,
-    );
+    model.loadData(movieId: widget.movieId);
   }
 
   @override

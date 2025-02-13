@@ -10,9 +10,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-SeekAreaWM seekAreaWMFactory(BuildContext context) => SeekAreaWM(
-      SeekAreaModel(errorHandler: context.read<ErrorHandler>()),
-    );
+SeekAreaWM seekAreaWMFactory(BuildContext context) =>
+    SeekAreaWM(SeekAreaModel(errorHandler: context.read<ErrorHandler>()));
 
 abstract interface class ISeekAreaWM implements IWidgetModel {
   ValueListenable<Map<Type, GestureRecognizerFactory>> get gestures;
@@ -33,7 +32,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     implements ISeekAreaWM {
   SeekAreaWM(super._model);
 
-  static const int _iconsCount = 3;
+  static const _iconsCount = 3;
 
   @override
   final GlobalKey materialChildKey = GlobalKey();
@@ -44,23 +43,26 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
       _videoController.position,
       _videoController.duration,
     ]),
-    () => model.canSeek(
-      seekType: widget.type,
-      position: _videoController.position.value,
-      duration: _videoController.duration.value,
-    )
-        ? {
-            SeekGestureRecognizer:
-                GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
-              SeekGestureRecognizer.new,
-              (instance) => instance
-                ..supportedDevices = PointerDevicesAccuracy.inaccurateDevices
-                ..onSeekTapUp = _handleSeekTapUp
-                ..onSeekTapCancel = _handleSeekTapCancel
-                ..gestureSettings = _gestureSettings,
-            ),
-          }
-        : const {},
+    () =>
+        model.canSeek(
+              seekType: widget.type,
+              position: _videoController.position.value,
+              duration: _videoController.duration.value,
+            )
+            ? {
+              SeekGestureRecognizer:
+                  GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
+                    SeekGestureRecognizer.new,
+                    (instance) =>
+                        instance
+                          ..supportedDevices =
+                              PointerDevicesAccuracy.inaccurateDevices
+                          ..onSeekTapUp = _handleSeekTapUp
+                          ..onSeekTapCancel = _handleSeekTapCancel
+                          ..gestureSettings = _gestureSettings,
+                  ),
+            }
+            : const {},
   );
 
   @override

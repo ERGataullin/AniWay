@@ -22,10 +22,7 @@ sealed class VideoController {
 
   ValueListenable<String?> get webElementQuery;
 
-  Future<void> setDataSource(
-    Uri? uri, {
-    bool saveState = false,
-  });
+  Future<void> setDataSource(Uri? uri, {bool saveState = false});
 
   Future<void> play();
 
@@ -69,10 +66,7 @@ class VideoPlayerController extends VideoController {
   ValueListenable<video_player.VideoPlayerController?> get inner => _inner;
 
   @override
-  Future<void> setDataSource(
-    Uri? uri, {
-    bool saveState = false,
-  }) async {
+  Future<void> setDataSource(Uri? uri, {bool saveState = false}) async {
     await _inner.value?.pause();
     _inner.value
       ?..removeListener(_handleInnerValueChanged)
@@ -147,7 +141,8 @@ class VideoPlayerController extends VideoController {
   }
 
   void _handleInnerValueChanged() {
-    final video_player.VideoPlayerValue value = _inner.value?.value ??
+    final video_player.VideoPlayerValue value =
+        _inner.value?.value ??
         const video_player.VideoPlayerValue(duration: Duration.zero);
 
     position.value = value.position;

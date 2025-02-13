@@ -29,22 +29,23 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWM> {
           wm.onPreviousPressed,
           wm.onNextPressed,
         ]),
-        builder: (context, __) => VideoPlayerWidget(
-          title: wm.title.value,
-          subtitle: switch (wm.episode.value) {
-            final EpisodeData episode => context.l10n.movieEpisode(
-                episode.type.name,
-                episode.number!,
-              ),
-            _ => '',
-          },
-          translations: wm.translations.value,
-          videoResolver: wm.handleResolveVideo,
-          onPreviousPressed: wm.onPreviousPressed.value,
-          onNextPressed: wm.onNextPressed.value,
-          onWatched: wm.handleWatched,
-          onFinished: wm.handleFinished,
-        ),
+        builder:
+            (context, _) => VideoPlayerWidget(
+              title: wm.title.value,
+              subtitle: switch (wm.episode.value) {
+                final EpisodeData episode => context.l10n.movieEpisode(
+                  episode.type.name,
+                  episode.number!,
+                ),
+                _ => '',
+              },
+              translations: wm.translations.value,
+              videoResolver: wm.handleResolveVideo,
+              onPreviousPressed: wm.onPreviousPressed.value,
+              onNextPressed: wm.onNextPressed.value,
+              onWatched: wm.handleWatched,
+              onFinished: wm.handleFinished,
+            ),
       ),
     );
   }

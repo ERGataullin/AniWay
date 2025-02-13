@@ -10,13 +10,12 @@ import 'package:app/player/player.dart';
 import 'package:flutter/foundation.dart';
 
 class MoviesRepository implements Initable {
-  MoviesRepository({
-    required MoviesService moviesService,
-  }) : _moviesService = moviesService;
+  MoviesRepository({required MoviesService moviesService})
+    : _moviesService = moviesService;
 
   final MoviesService _moviesService;
 
-  final _upNextChanges = ValueNotifier(0);
+  final _upNextChanges = ValueNotifier<int>(0);
 
   Listenable get upNextChanges => _upNextChanges;
 

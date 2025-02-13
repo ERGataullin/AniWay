@@ -2,13 +2,9 @@ import 'package:app/core/core.dart';
 import 'package:flutter/material.dart';
 
 class MovieScore extends StatelessWidget {
-  const MovieScore(
-    this.score, {
-    super.key,
-    this.textStyle,
-  });
+  const MovieScore(this.score, {super.key, this.textStyle});
 
-  static final NumberFormat _scoreFormat = NumberFormat('#0.0');
+  static final _scoreFormat = NumberFormat('#0.0');
 
   final double? score;
 
@@ -42,10 +38,7 @@ class MovieScore extends StatelessWidget {
             shadows: effectiveTextStyle.shadows,
           ),
           const SizedBox(width: 4),
-          Text(
-            _scoreFormat.format(score ?? 0),
-            style: effectiveTextStyle,
-          ),
+          Text(_scoreFormat.format(score ?? 0), style: effectiveTextStyle),
         ],
       ),
     );

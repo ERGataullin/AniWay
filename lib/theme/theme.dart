@@ -7,7 +7,7 @@ mixin ThemeWMMixin<W extends ElementaryWidget, M extends ElementaryModel>
     on WidgetModel<W, M> {
   late final ValueNotifier<ThemeData> _theme;
 
-  bool _initialized = false;
+  var _initialized = false;
 
   ValueListenable<ThemeData> get theme => _theme;
 
@@ -33,22 +33,24 @@ mixin ThemeWMMixin<W extends ElementaryWidget, M extends ElementaryModel>
 class Themes {
   Themes._();
 
-  static final ThemeData light = ThemeData(
-    appBarTheme: const AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
-      ),
-    ),
-  ).appOverrides;
+  static final ThemeData light =
+      ThemeData(
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.light,
+          ),
+        ),
+      ).appOverrides;
 
-  static final ThemeData dark = ThemeData(
-    brightness: Brightness.dark,
-    appBarTheme: const AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.dark,
-      ),
-    ),
-  ).appOverrides;
+  static final ThemeData dark =
+      ThemeData(
+        brightness: Brightness.dark,
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.dark,
+          ),
+        ),
+      ).appOverrides;
 
   static final ThemeData videoPlayer = ThemeData.from(
     colorScheme: ColorScheme(
@@ -73,68 +75,64 @@ class Themes {
       allowedInteraction: SliderInteraction.slideOnly,
       overlayShape: SliderComponentShape.noOverlay,
       trackShape: const _VideoPlayerSliderTrackShape(),
-      thumbShape: const _VideoPlayerSliderThumbShape(
-        thumbRadius: 8,
-      ),
+      thumbShape: const _VideoPlayerSliderThumbShape(thumbRadius: 8),
     ),
   );
 }
 
 extension _AppOverrides on ThemeData {
   ThemeData get appOverrides => copyWith(
-        appBarTheme: appBarTheme.copyWith(
-          scrolledUnderElevation: 3,
-          toolbarHeight: 64,
-        ),
-        cardTheme: cardTheme.copyWith(
-          margin: EdgeInsets.zero,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
-        ),
-        dividerTheme: dividerTheme.copyWith(
-          space: 0,
-          thickness: 1,
-          color: colorScheme.outlineVariant,
-        ),
-        drawerTheme: drawerTheme.copyWith(
-          width: 360,
-        ),
-        inputDecorationTheme: inputDecorationTheme.copyWith(
-          border: const OutlineInputBorder(),
-        ),
-        navigationDrawerTheme: navigationDrawerTheme.copyWith(
-          backgroundColor: colorScheme.surface,
-        ),
-        navigationRailTheme: navigationRailTheme.copyWith(
-          labelType: NavigationRailLabelType.all,
-          selectedIconTheme: IconThemeData(
-            size: 24,
-            color: colorScheme.onSecondaryContainer,
-          ),
-          selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
-            color: colorScheme.onSurface,
-          ),
-          unselectedIconTheme: IconThemeData(
-            size: 24,
-            color: colorScheme.onSurfaceVariant,
-          ),
-          unselectedLabelTextStyle: textTheme.labelMedium!.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
-          backgroundColor: colorScheme.surface,
-        ),
-        searchBarTheme: searchBarTheme.copyWith(
-          elevation: const WidgetStatePropertyAll(0),
-          textCapitalization: TextCapitalization.sentences,
-          constraints: const BoxConstraints(
-            minWidth: 360,
-            maxWidth: 720,
-            minHeight: 56,
-            maxHeight: 56,
-          ),
-        ),
-      );
+    appBarTheme: appBarTheme.copyWith(
+      scrolledUnderElevation: 3,
+      toolbarHeight: 64,
+    ),
+    cardTheme: cardTheme.copyWith(
+      margin: EdgeInsets.zero,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+    ),
+    dividerTheme: dividerTheme.copyWith(
+      space: 0,
+      thickness: 1,
+      color: colorScheme.outlineVariant,
+    ),
+    drawerTheme: drawerTheme.copyWith(width: 360),
+    inputDecorationTheme: inputDecorationTheme.copyWith(
+      border: const OutlineInputBorder(),
+    ),
+    navigationDrawerTheme: navigationDrawerTheme.copyWith(
+      backgroundColor: colorScheme.surface,
+    ),
+    navigationRailTheme: navigationRailTheme.copyWith(
+      labelType: NavigationRailLabelType.all,
+      selectedIconTheme: IconThemeData(
+        size: 24,
+        color: colorScheme.onSecondaryContainer,
+      ),
+      selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+        color: colorScheme.onSurface,
+      ),
+      unselectedIconTheme: IconThemeData(
+        size: 24,
+        color: colorScheme.onSurfaceVariant,
+      ),
+      unselectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+        color: colorScheme.onSurfaceVariant,
+      ),
+      backgroundColor: colorScheme.surface,
+    ),
+    searchBarTheme: searchBarTheme.copyWith(
+      elevation: const WidgetStatePropertyAll(0),
+      textCapitalization: TextCapitalization.sentences,
+      constraints: const BoxConstraints(
+        minWidth: 360,
+        maxWidth: 720,
+        minHeight: 56,
+        maxHeight: 56,
+      ),
+    ),
+  );
 }
 
 class _VideoPlayerSliderTrackShape extends RoundedRectSliderTrackShape {
@@ -159,12 +157,8 @@ class _VideoPlayerSliderTrackShape extends RoundedRectSliderTrackShape {
 }
 
 class _VideoPlayerSliderThumbShape extends RoundSliderThumbShape {
-  const _VideoPlayerSliderThumbShape({
-    required double thumbRadius,
-  }) : super(
-          enabledThumbRadius: thumbRadius,
-          disabledThumbRadius: thumbRadius,
-        );
+  const _VideoPlayerSliderThumbShape({required double thumbRadius})
+    : super(enabledThumbRadius: thumbRadius, disabledThumbRadius: thumbRadius);
 
   @override
   void paint(

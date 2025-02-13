@@ -39,12 +39,9 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
         _handleConstraintsChanged(constraints);
         return FadeInImageBuilder(
           image: _imageProvider,
-          builder: (context, opacity, image, ____) => widget.builder(
-            context,
-            opacity,
-            image,
-            widget.child,
-          ),
+          builder:
+              (context, opacity, image, _) =>
+                  widget.builder(context, opacity, image, widget.child),
         );
       },
     );
@@ -59,17 +56,12 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
   }
 
   void _updateImage() {
-    if (widget.image == null) {
-      _imageProvider = null;
-      _imageWidth = -1;
-      return;
-    }
-
     final MapEntry<num, Uri> imageEntry =
         widget.image!.resolutionsUris.entries.firstWhere(
       (entry) => entry.key >= _breakpointWidth,
       orElse: () => widget.image!.resolutionsUris.entries.last,
     );
+    
     _imageProvider = NetworkImage(
       context
           .read<NetworkService>()

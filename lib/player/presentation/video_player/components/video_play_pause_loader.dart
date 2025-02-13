@@ -2,10 +2,7 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoPlayPauseLoader extends StatefulWidget {
-  const VideoPlayPauseLoader({
-    super.key,
-    required this.videoController,
-  });
+  const VideoPlayPauseLoader({super.key, required this.videoController});
 
   final VideoController videoController;
 
@@ -15,19 +12,19 @@ class VideoPlayPauseLoader extends StatefulWidget {
 
 class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController = AnimationController(
+  late final _animationController = AnimationController(
     vsync: this,
     duration: Durations.medium2,
     value: widget.videoController.playing.value ? 1 : 0,
   );
 
-  late final CurvedAnimation _animation = CurvedAnimation(
+  late final _animation = CurvedAnimation(
     parent: _animationController,
     curve: Easing.standard,
     reverseCurve: Easing.standard.flipped,
   );
 
-  bool _loading = false;
+  var _loading = false;
 
   @override
   void initState() {
@@ -52,20 +49,22 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
         switchInCurve: Easing.standard,
         switchOutCurve: Easing.standard.flipped,
         duration: Durations.medium2,
-        child: _loading
-            ? Builder(
-                builder: (context) => SizedBox.square(
-                  dimension: IconTheme.of(context).size,
-                  child: const Padding(
-                    padding: EdgeInsets.all(8),
-                    child: CircularProgressIndicator.adaptive(),
-                  ),
+        child:
+            _loading
+                ? Builder(
+                  builder:
+                      (context) => SizedBox.square(
+                        dimension: IconTheme.of(context).size,
+                        child: const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      ),
+                )
+                : AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  progress: _animation,
                 ),
-              )
-            : AnimatedIcon(
-                icon: AnimatedIcons.play_pause,
-                progress: _animation,
-              ),
       ),
     );
   }

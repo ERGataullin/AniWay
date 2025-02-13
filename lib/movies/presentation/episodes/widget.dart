@@ -26,29 +26,29 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
       value: wm,
       child: ShimmerScope(
         child: ListenableBuilder(
-          listenable: Listenable.merge([
-            wm.tabController,
-            wm.tabsTexts,
-          ]),
-          builder: (context, __) => Scaffold(
-            appBar: AppBar(
-              title: Text(context.l10n.episodesLabel),
-              bottom: wm.tabController.value == null
-                  ? null
-                  : TabBar(
-                      controller: wm.tabController.value,
-                      isScrollable: true,
-                      tabs: wm.tabsTexts.value
-                          .map((text) => Tab(text: text))
-                          .toList(growable: false),
-                    ),
-            ),
-            body: wm.tabController.value == null
-                ? const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  )
-                : const _Episodes(),
-          ),
+          listenable: Listenable.merge([wm.tabController, wm.tabsTexts]),
+          builder:
+              (context, _) => Scaffold(
+                appBar: AppBar(
+                  title: Text(context.l10n.episodesLabel),
+                  bottom:
+                      wm.tabController.value == null
+                          ? null
+                          : TabBar(
+                            controller: wm.tabController.value,
+                            isScrollable: true,
+                            tabs: wm.tabsTexts.value
+                                .map((text) => Tab(text: text))
+                                .toList(growable: false),
+                          ),
+                ),
+                body:
+                    wm.tabController.value == null
+                        ? const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                        : const _Episodes(),
+              ),
         ),
       ),
     );
@@ -62,28 +62,31 @@ class _Episodes extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.tabsEpisodes,
-      builder: (context, __) => TabBarView(
-        controller: context.wm.tabController.value,
-        children: context.wm.tabsEpisodes.value
-            .map(
-              (episodes) => GridView.builder(
-                clipBehavior: Clip.none,
-                padding: const EdgeInsets.all(16),
-                itemCount: episodes.length,
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  childAspectRatio: 16 / 10,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  maxCrossAxisExtent: 128 + 64,
-                ),
-                itemBuilder: (context, index) => EpisodeCard(
-                  episodes[index],
-                  onPressed: context.wm.handleEpisodePressed,
-                ),
-              ),
-            )
-            .toList(growable: false),
-      ),
+      builder:
+          (context, _) => TabBarView(
+            controller: context.wm.tabController.value,
+            children: context.wm.tabsEpisodes.value
+                .map(
+                  (episodes) => GridView.builder(
+                    clipBehavior: Clip.none,
+                    padding: const EdgeInsets.all(16),
+                    itemCount: episodes.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                          childAspectRatio: 16 / 10,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                          maxCrossAxisExtent: 128 + 64,
+                        ),
+                    itemBuilder:
+                        (context, index) => EpisodeCard(
+                          episodes[index],
+                          onPressed: context.wm.handleEpisodePressed,
+                        ),
+                  ),
+                )
+                .toList(growable: false),
+          ),
     );
   }
 }

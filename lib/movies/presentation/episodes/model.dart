@@ -8,16 +8,12 @@ abstract interface class IEpisodesModel implements ElementaryModel {
 
   ValueListenable<MovieDetailsData?> get movie;
 
-  void loadData({
-    required int movieId,
-  });
+  void loadData({required int movieId});
 }
 
 class EpisodesModel extends ElementaryModel implements IEpisodesModel {
-  EpisodesModel({
-    super.errorHandler,
-    required MoviesRepository repository,
-  }) : _repository = repository;
+  EpisodesModel({super.errorHandler, required MoviesRepository repository})
+    : _repository = repository;
 
   final MoviesRepository _repository;
 
@@ -28,9 +24,7 @@ class EpisodesModel extends ElementaryModel implements IEpisodesModel {
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
   @override
-  Future<void> loadData({
-    required int movieId,
-  }) async {
+  Future<void> loadData({required int movieId}) async {
     loading.value = true;
     movie.value = await _repository.getMovie(movieId);
     loading.value = false;

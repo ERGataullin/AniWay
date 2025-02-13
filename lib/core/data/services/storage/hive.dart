@@ -11,11 +11,12 @@ class HiveService implements StorageService {
   Future<void> init() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    final String? storagePath = kIsWeb
-        ? null
-        : await path_provider
-            .getApplicationDocumentsDirectory()
-            .then((directory) => directory.path);
+    final String? storagePath =
+        kIsWeb
+            ? null
+            : await path_provider.getApplicationDocumentsDirectory().then(
+              (directory) => directory.path,
+            );
 
     Hive.init(storagePath);
   }

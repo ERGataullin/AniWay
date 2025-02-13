@@ -1,12 +1,13 @@
 import 'package:app/core/core.dart';
 import 'package:flutter/material.dart';
 
-typedef FadeInImageBuilderDelegate = Widget Function(
-  BuildContext context,
-  Animation<double> opacity,
-  ImageProvider<Object>? image,
-  Widget? child,
-);
+typedef FadeInImageBuilderDelegate =
+    Widget Function(
+      BuildContext context,
+      Animation<double> opacity,
+      ImageProvider<Object>? image,
+      Widget? child,
+    );
 
 class FadeInImageBuilder extends StatefulWidget {
   const FadeInImageBuilder({
@@ -29,37 +30,35 @@ class FadeInImageBuilder extends StatefulWidget {
 class _FadeInImageBuilderState extends State<FadeInImageBuilder>
     with SingleTickerProviderStateMixin {
   late final DisposableBuildContext<_FadeInImageBuilderState>
-      _scrollAwareContext;
+  _scrollAwareContext;
 
   late final ImageStreamListener _imageStreamListener;
 
-  late final AnimationController _opacityController =
-      AnimationController(vsync: this);
+  late final _opacityController = AnimationController(vsync: this);
 
-  late final Computed<ImageProvider<Object>?> _imageProvider = Computed(
-    () {
-      return widget.image == null
-          ? null
-          : ScrollAwareImageProvider(
-              context: _scrollAwareContext,
-              imageProvider: widget.image!,
-            );
-    },
-  );
+  late final Computed<ImageProvider<Object>?> _imageProvider = Computed(() {
+    return widget.image == null
+        ? null
+        : ScrollAwareImageProvider(
+          context: _scrollAwareContext,
+          imageProvider: widget.image!,
+        );
+  });
 
   late final Computed<ImageStream?> _imageStream = Computed(
     trigger: _imageProvider,
     onDisposeValue: (value) => value?.removeListener(_imageStreamListener),
     () {
-      final ImageConfiguration configuration =
-          createLocalImageConfiguration(context);
+      final ImageConfiguration configuration = createLocalImageConfiguration(
+        context,
+      );
       final ImageStream? stream = _imageProvider.value?.resolve(configuration);
 
       return stream?..addListener(_imageStreamListener);
     },
   );
 
-  bool _animateSyncLoad = false;
+  var _animateSyncLoad = false;
 
   ImageInfo? _imageInfo;
 
@@ -96,12 +95,13 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: _imageProvider,
-      builder: (context, __) => widget.builder(
-        context,
-        _opacityController,
-        _imageProvider.value,
-        widget.child,
-      ),
+      builder:
+          (context, _) => widget.builder(
+            context,
+            _opacityController,
+            _imageProvider.value,
+            widget.child,
+          ),
     );
   }
 
@@ -121,9 +121,10 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
       ..reset()
       ..animateTo(
         _opacityController.upperBound,
-        duration: synchronousCall && !_animateSyncLoad
-            ? Duration.zero
-            : Durations.medium1,
+        duration:
+            synchronousCall && !_animateSyncLoad
+                ? Duration.zero
+                : Durations.medium1,
         curve: Easing.standardDecelerate,
       );
   }

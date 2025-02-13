@@ -6,11 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 SignInWM signInWMFactory(BuildContext context) => SignInWM(
-      SignInModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<AuthRepository>(),
-      ),
-    );
+  SignInModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<AuthRepository>(),
+  ),
+);
 
 abstract interface class ISignInWM implements IWidgetModel {
   ValueListenable<bool> get obscurePassword;
@@ -52,10 +52,10 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   );
 
   @override
-  final TextEditingController emailController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
-  final TextEditingController passwordController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   final ImageProvider logo = const AssetImage('assets/images/logo.webp');

@@ -11,7 +11,7 @@ class FullscreenControllerPlatform
     }
   }
 
-  bool _isFullscreen = false;
+  var _isFullscreen = false;
 
   @override
   bool get isFullscreen {

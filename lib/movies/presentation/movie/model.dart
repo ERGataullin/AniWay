@@ -13,16 +13,12 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<int?> get nextEpisodeId;
 
-  void loadData({
-    required int movieId,
-  });
+  void loadData({required int movieId});
 }
 
 class MovieModel extends ElementaryModel implements IMovieModel {
-  MovieModel({
-    super.errorHandler,
-    required MoviesRepository repository,
-  }) : _repository = repository;
+  MovieModel({super.errorHandler, required MoviesRepository repository})
+    : _repository = repository;
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
@@ -31,8 +27,9 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
   @override
-  final ValueNotifier<WatchListElementData?> watchStatusDetails =
-      ValueNotifier(null);
+  final ValueNotifier<WatchListElementData?> watchStatusDetails = ValueNotifier(
+    null,
+  );
 
   @override
   late final Computed<int?> nextEpisodeId = Computed(
@@ -58,9 +55,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   final MoviesRepository _repository;
 
   @override
-  Future<void> loadData({
-    required int movieId,
-  }) async {
+  Future<void> loadData({required int movieId}) async {
     try {
       loading.value = true;
       movie.value = await _repository.getMovie(movieId);

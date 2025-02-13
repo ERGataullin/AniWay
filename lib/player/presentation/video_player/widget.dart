@@ -64,10 +64,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
             body: Stack(
               clipBehavior: Clip.none,
               fit: StackFit.expand,
-              children: [
-                _Gestures(child: _Player()),
-                _Controls(),
-              ],
+              children: [_Gestures(child: _Player()), _Controls()],
             ),
           ),
         ),
@@ -77,9 +74,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
 }
 
 class _Gestures extends StatelessWidget {
-  const _Gestures({
-    required this.child,
-  });
+  const _Gestures({required this.child});
 
   final Widget child;
 
@@ -98,11 +93,12 @@ class _Gestures extends StatelessWidget {
                 context.wm.maxScale,
                 context.wm.scaleAnchors,
               ]),
-              builder: (context, __) => Scalable(
-                maxScale: context.wm.maxScale.value,
-                anchors: context.wm.scaleAnchors.value,
-                child: child,
-              ),
+              builder:
+                  (context, _) => Scalable(
+                    maxScale: context.wm.maxScale.value,
+                    anchors: context.wm.scaleAnchors.value,
+                    child: child,
+                  ),
             ),
             GestureDetector(
               supportedDevices: PointerDevicesAccuracy.accurateDevices,
@@ -125,10 +121,7 @@ class _Gestures extends StatelessWidget {
     );
   }
 
-  Widget _buildSeekArea(
-    BuildContext context, {
-    required SeekType type,
-  }) {
+  Widget _buildSeekArea(BuildContext context, {required SeekType type}) {
     return Expanded(
       child: SeekAreaWidget(
         videoController: context.wm.videoController,
@@ -144,9 +137,7 @@ class _Player extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: ColorScheme.of(context).surface,
-      ),
+      decoration: BoxDecoration(color: ColorScheme.of(context).surface),
       child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
@@ -154,31 +145,34 @@ class _Player extends StatelessWidget {
           Center(
             child: ListenableBuilder(
               listenable: context.wm.videoController.aspectRatio,
-              builder: (context, __) => AspectRatio(
-                aspectRatio: context.wm.videoController.aspectRatio.value,
-                child: switch (context.wm.videoController) {
-                  final VideoPlayerController videoPlayerController =>
-                    ListenableBuilder(
-                      listenable: videoPlayerController.inner,
-                      builder: (context, __) =>
-                          videoPlayerController.inner.value == null
-                              ? const SizedBox.shrink()
-                              : video_player.VideoPlayer(
-                                  videoPlayerController.inner.value!,
-                                ),
-                    ),
-                },
-              ),
+              builder:
+                  (context, _) => AspectRatio(
+                    aspectRatio: context.wm.videoController.aspectRatio.value,
+                    child: switch (context.wm.videoController) {
+                      final VideoPlayerController videoPlayerController =>
+                        ListenableBuilder(
+                          listenable: videoPlayerController.inner,
+                          builder:
+                              (context, _) =>
+                                  videoPlayerController.inner.value == null
+                                      ? const SizedBox.shrink()
+                                      : video_player.VideoPlayer(
+                                        videoPlayerController.inner.value!,
+                                      ),
+                        ),
+                    },
+                  ),
             ),
           ),
           ListenableBuilder(
             listenable: context.wm.controlsVisibilityController,
-            builder: (context, __) => AnimatedVisibility.emphasized(
-              visible: context.wm.controlsVisibilityController.visible,
-              child: const DecoratedBox(
-                decoration: BoxDecoration(color: Colors.black54),
-              ),
-            ),
+            builder:
+                (context, _) => AnimatedVisibility.emphasized(
+                  visible: context.wm.controlsVisibilityController.visible,
+                  child: const DecoratedBox(
+                    decoration: BoxDecoration(color: Colors.black54),
+                  ),
+                ),
           ),
         ],
       ),
@@ -277,10 +271,7 @@ class _Controls extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  const _Title(
-    this.data, {
-    this.style,
-  });
+  const _Title(this.data, {this.style});
 
   final ValueListenable<String> data;
 
@@ -290,16 +281,13 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String>(
       valueListenable: data,
-      builder: (context, data, ___) => AnimatedSwitcher(
-        switchInCurve: Easing.standard,
-        switchOutCurve: Easing.standard.flipped,
-        duration: Durations.medium2,
-        child: Text(
-          data,
-          key: Key(data),
-          style: style,
-        ),
-      ),
+      builder:
+          (context, data, _) => AnimatedSwitcher(
+            switchInCurve: Easing.standard,
+            switchOutCurve: Easing.standard.flipped,
+            duration: Durations.medium2,
+            child: Text(data, key: Key(data), style: style),
+          ),
     );
   }
 }
@@ -311,19 +299,17 @@ class _MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.onMenuPressed,
-      builder: (context, __) => IconButton(
-        icon: const Icon(Icons.settings_outlined),
-        onPressed: context.wm.onMenuPressed.value,
-      ),
+      builder:
+          (context, _) => IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: context.wm.onMenuPressed.value,
+          ),
     );
   }
 }
 
 class _SkipButton extends StatelessWidget {
-  const _SkipButton({
-    required this.onPressed,
-    required this.icon,
-  });
+  const _SkipButton({required this.onPressed, required this.icon});
 
   final ValueListenable<VoidCallback?> onPressed;
 
@@ -333,16 +319,17 @@ class _SkipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: onPressed,
-      builder: (context, __) => IconButton.filledTonal(
-        iconSize: 36,
-        onPressed: onPressed.value,
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            ColorScheme.of(context).secondaryContainer,
+      builder:
+          (context, _) => IconButton.filledTonal(
+            iconSize: 36,
+            onPressed: onPressed.value,
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(
+                ColorScheme.of(context).secondaryContainer,
+              ),
+            ),
+            icon: icon,
           ),
-        ),
-        icon: icon,
-      ),
     );
   }
 }

@@ -39,7 +39,7 @@ class AnimatedVisibility extends StatefulWidget {
 
 class _AnimatedVisibilityState extends State<AnimatedVisibility>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
+  late final _controller = AnimationController(
     vsync: this,
     value: _animationTarget,
     duration: Duration.zero,
@@ -75,10 +75,7 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: _ignorePointer,
-      child: FadeTransition(
-        opacity: _controller,
-        child: widget.child,
-      ),
+      child: FadeTransition(opacity: _controller, child: widget.child),
     );
   }
 
@@ -93,14 +90,14 @@ class _AnimatedVisibilityState extends State<AnimatedVisibility>
 
     target > _controller.value
         ? _controller.animateTo(
-            target,
-            curve: widget.fadeInCurve,
-            duration: widget.fadeInDuration,
-          )
+          target,
+          curve: widget.fadeInCurve,
+          duration: widget.fadeInDuration,
+        )
         : _controller.animateBack(
-            target,
-            curve: widget.fadeOutCurve.flipped,
-            duration: widget.fadeOutDuration,
-          );
+          target,
+          curve: widget.fadeOutCurve.flipped,
+          duration: widget.fadeOutDuration,
+        );
   }
 }

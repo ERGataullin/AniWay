@@ -10,11 +10,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 EpisodesWM episodesWMFactory(BuildContext context) => EpisodesWM(
-      EpisodesModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<MoviesRepository>(),
-      ),
-    );
+  EpisodesModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<MoviesRepository>(),
+  ),
+);
 
 abstract interface class IEpisodesWM implements IWidgetModel {
   ValueListenable<bool> get loading;
@@ -33,34 +33,32 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
     implements IEpisodesWM {
   EpisodesWM(super._model);
 
-  static const int _groupSize = 24;
+  static const _groupSize = 24;
 
   @override
   ValueListenable<bool> get loading => model.loading;
 
   @override
   late final Computed<TabController?> tabController = Computed(
-    () => _episodes.value.isEmpty
-        ? null
-        : TabController(
-            length: (_episodes.value.length / _groupSize).ceil(),
-            vsync: this,
-          ),
+    () =>
+        _episodes.value.isEmpty
+            ? null
+            : TabController(
+              length: (_episodes.value.length / _groupSize).ceil(),
+              vsync: this,
+            ),
   );
 
   @override
   late final Computed<List<String>> tabsTexts = Computed(
     trigger: _episodes,
-    () => List.generate(
-      (_episodes.value.length / _groupSize).ceil(),
-      (index) {
-        final List<EpisodeData> tabEpisodes = tabsEpisodes.value[index];
-        return context.l10n.range(
-          tabEpisodes.first.number ?? 0,
-          tabEpisodes.last.number ?? 0,
-        );
-      },
-    ),
+    () => List.generate((_episodes.value.length / _groupSize).ceil(), (index) {
+      final List<EpisodeData> tabEpisodes = tabsEpisodes.value[index];
+      return context.l10n.range(
+        tabEpisodes.first.number ?? 0,
+        tabEpisodes.last.number ?? 0,
+      );
+    }),
   );
 
   late final Computed<List<EpisodeData>> _episodes = Computed(
@@ -71,19 +69,16 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   @override
   late final Computed<List<List<EpisodeData>>> tabsEpisodes = Computed(
     trigger: _episodes,
-    () => List.generate(
-      (_episodes.value.length / _groupSize).ceil(),
-      (index) {
-        final int startIndex = index * _groupSize;
-        final int endIndex = math.min(
-          _episodes.value.length - 1,
-          index * _groupSize + _groupSize - 1,
-        );
-        return _episodes.value
-            .getRange(startIndex, endIndex + 1)
-            .toList(growable: false);
-      },
-    ),
+    () => List.generate((_episodes.value.length / _groupSize).ceil(), (index) {
+      final int startIndex = index * _groupSize;
+      final int endIndex = math.min(
+        _episodes.value.length - 1,
+        index * _groupSize + _groupSize - 1,
+      );
+      return _episodes.value
+          .getRange(startIndex, endIndex + 1)
+          .toList(growable: false);
+    }),
   );
 
   @override

@@ -26,10 +26,7 @@ class PageLayout extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: extendBodyBehindAppBar,
       appBar: RootMenu.hasTopNavigation(context) ? null : appBar,
-      body: _WindowTopCentered(
-        constraints: constraints,
-        child: body,
-      ),
+      body: _WindowTopCentered(constraints: constraints, child: body),
     );
   }
 }
@@ -66,14 +63,14 @@ class _RenderWindowTopCentered extends RenderShiftedBox {
   _RenderWindowTopCentered({
     required Size windowSize,
     BoxConstraints childConstraints = const BoxConstraints(),
-  })  : _windowSize = windowSize,
-        _childConstraints = childConstraints,
-        super(null);
+  }) : _windowSize = windowSize,
+       _childConstraints = childConstraints,
+       super(null);
 
   @override
   bool get sizedByParent => true;
 
-  bool _isFirstFrame = true;
+  var _isFirstFrame = true;
 
   Offset _globalOffset = Offset.zero;
 
@@ -100,10 +97,7 @@ class _RenderWindowTopCentered extends RenderShiftedBox {
   void performLayout() {
     final RenderBox? child = this.child;
     if (child == null) return;
-    child.layout(
-      constraints.enforce(_childConstraints),
-      parentUsesSize: true,
-    );
+    child.layout(constraints.enforce(_childConstraints), parentUsesSize: true);
 
     if (_isFirstFrame) return;
 

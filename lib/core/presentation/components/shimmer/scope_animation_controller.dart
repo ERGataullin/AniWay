@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class ShimmerScopeAnimationController extends AnimationController {
-  ShimmerScopeAnimationController({
-    super.value,
-    required super.vsync,
-  }) : super.unbounded();
+  ShimmerScopeAnimationController({super.value, required super.vsync})
+    : super.unbounded();
 
   final Set<VoidCallback> _listeners = {};
 

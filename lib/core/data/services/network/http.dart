@@ -5,9 +5,7 @@ import 'package:app/core/core.dart';
 import 'package:http/http.dart';
 
 class HttpService implements NetworkService {
-  HttpService({
-    required this.baseUri,
-  }) : _client = Client();
+  HttpService({required this.baseUri}) : _client = Client();
 
   @override
   final Uri baseUri;
@@ -29,9 +27,9 @@ class HttpService implements NetworkService {
 
   @override
   Future<ResponseData<T>> request<T>(RequestData data) {
-    return _interceptRequest(data)
-        .then<ResponseData<T>>(_request)
-        .then(_interceptResponse);
+    return _interceptRequest(
+      data,
+    ).then<ResponseData<T>>(_request).then(_interceptResponse);
   }
 
   @override
@@ -49,15 +47,12 @@ class HttpService implements NetworkService {
   Future<ResponseData<T>> _request<T>(RequestData data) async {
     final Uri uri = baseUri.resolveUri(data.uri);
     final Response httpResponse = await switch (data.method) {
-      RequestMethod.get => _client.get(
-          uri,
-          headers: data.headers,
-        ),
+      RequestMethod.get => _client.get(uri, headers: data.headers),
       RequestMethod.post => _client.post(
-          uri,
-          headers: data.headers,
-          body: data.body,
-        ),
+        uri,
+        headers: data.headers,
+        body: data.body,
+      ),
       _ => throw UnimplementedError(),
     };
 

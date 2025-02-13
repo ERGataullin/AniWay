@@ -10,11 +10,11 @@ import 'package:app/movies/presentation/search/widget.dart';
 import 'package:flutter/material.dart';
 
 MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
-      MoviesSearchModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<MoviesRepository>(),
-      ),
-    );
+  MoviesSearchModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<MoviesRepository>(),
+  ),
+);
 
 abstract interface class IMoviesSearchWM implements IWidgetModel {
   Computed<String?> get query;

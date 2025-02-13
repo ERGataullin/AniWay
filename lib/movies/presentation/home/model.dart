@@ -17,10 +17,8 @@ abstract interface class IHomeModel implements ElementaryModel {
 }
 
 class HomeModel extends ElementaryModel implements IHomeModel {
-  HomeModel({
-    super.errorHandler,
-    required MoviesRepository repository,
-  }) : _repository = repository;
+  HomeModel({super.errorHandler, required MoviesRepository repository})
+    : _repository = repository;
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
@@ -32,17 +30,16 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   final ValueNotifier<List<MovieBaseData>> ongoings = ValueNotifier(const []);
 
   @override
-  final ValueNotifier<List<MovieBaseData>> populars = ValueNotifier(
-    const [],
-  );
+  final ValueNotifier<List<MovieBaseData>> populars = ValueNotifier(const []);
 
   final MoviesRepository _repository;
 
   @override
   Future<void> refresh() async {
     final Future<List<UpNextData>> newUpNextFuture = _repository.getUpNext();
-    final Future<List<MovieBaseData>> newOngoingFuture =
-        _repository.getMovies(isOngoing: true);
+    final Future<List<MovieBaseData>> newOngoingFuture = _repository.getMovies(
+      isOngoing: true,
+    );
     final Future<List<MovieBaseData>> newPopularFuture =
         _repository.getMovies();
 

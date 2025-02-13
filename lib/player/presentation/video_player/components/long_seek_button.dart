@@ -19,7 +19,7 @@ class LongSeekButton extends StatefulWidget {
 }
 
 class _LongSeekButtonState extends State<LongSeekButton> {
-  static const Duration _step = Duration(minutes: 1, seconds: 30);
+  static const _step = Duration(minutes: 1, seconds: 30);
 
   late final Duration _duration = switch (widget.type) {
     SeekType.rewind => -_step,
@@ -35,9 +35,9 @@ class _LongSeekButtonState extends State<LongSeekButton> {
     trigger: switch (widget.type) {
       SeekType.rewind => _videoController.position,
       SeekType.fastForward => Listenable.merge([
-          _videoController.position,
-          _videoController.duration,
-        ]),
+        _videoController.position,
+        _videoController.duration,
+      ]),
     },
   );
 
@@ -48,18 +48,23 @@ class _LongSeekButtonState extends State<LongSeekButton> {
     return ListenableBuilder(
       listenable: _canSeek,
       child: switch (widget.type) {
-        SeekType.rewind =>
-          const Icon(Icons.keyboard_double_arrow_left_outlined),
-        SeekType.fastForward =>
-          const Icon(Icons.keyboard_double_arrow_right_outlined),
+        SeekType.rewind => const Icon(
+          Icons.keyboard_double_arrow_left_outlined,
+        ),
+        SeekType.fastForward => const Icon(
+          Icons.keyboard_double_arrow_right_outlined,
+        ),
       },
-      builder: (context, icon) => IconButton(
-        onPressed: !_canSeek.value
-            ? null
-            : () => _videoController
-                .seekTo(_videoController.position.value + _duration),
-        icon: icon!,
-      ),
+      builder:
+          (context, icon) => IconButton(
+            onPressed:
+                !_canSeek.value
+                    ? null
+                    : () => _videoController.seekTo(
+                      _videoController.position.value + _duration,
+                    ),
+            icon: icon!,
+          ),
     );
   }
 

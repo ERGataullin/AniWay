@@ -7,9 +7,9 @@ class Computed<T> with ChangeNotifier implements ValueListenable<T> {
     this._onCompute, {
     Listenable? trigger,
     OnDisposeValue<T>? onDisposeValue,
-  })  : _trigger = trigger,
-        _onDisposeValue = onDisposeValue,
-        _value = _onCompute() {
+  }) : _trigger = trigger,
+       _onDisposeValue = onDisposeValue,
+       _value = _onCompute() {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }

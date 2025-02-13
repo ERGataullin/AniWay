@@ -8,11 +8,7 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 enum _SlotId { leading, middle }
 
 class TopNavigation extends StatelessWidget {
-  const TopNavigation({
-    super.key,
-    this.query,
-    required this.onSearch,
-  });
+  const TopNavigation({super.key, this.query, required this.onSearch});
 
   static const Breakpoint breakpoint = Breakpoints.mediumAndUp;
 
@@ -75,10 +71,7 @@ class TopNavigation extends StatelessWidget {
 }
 
 class _LayoutDelegate extends MultiChildLayoutDelegate {
-  _LayoutDelegate({
-    this.spacing = 0,
-    required this.height,
-  });
+  _LayoutDelegate({this.spacing = 0, required this.height});
 
   final double spacing;
 
@@ -91,12 +84,7 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
 
   @override
   Size getSize(BoxConstraints constraints) {
-    return constraints
-        .copyWith(
-          minHeight: height,
-          maxHeight: height,
-        )
-        .biggest;
+    return constraints.copyWith(minHeight: height, maxHeight: height).biggest;
   }
 
   @override
@@ -105,10 +93,7 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
 
     final Size leadingSize = layoutChild(
       _SlotId.leading,
-      BoxConstraints(
-        maxWidth: size.width,
-        maxHeight: size.height,
-      ),
+      BoxConstraints(maxWidth: size.width, maxHeight: size.height),
     );
     positionChild(
       _SlotId.leading,
@@ -128,10 +113,7 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
     positionChild(
       _SlotId.middle,
       Offset(
-        max(
-          occupiedWidth,
-          (size.width - middleSize.width) / 2,
-        ),
+        max(occupiedWidth, (size.width - middleSize.width) / 2),
         (size.height - middleSize.height) / 2,
       ),
     );

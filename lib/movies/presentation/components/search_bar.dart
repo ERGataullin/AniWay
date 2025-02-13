@@ -7,11 +7,7 @@ import 'package:flutter/material.dart';
 typedef OnMoviesSearch = void Function(String query);
 
 class MoviesSearchBar extends StatefulWidget implements PreferredSizeWidget {
-  const MoviesSearchBar({
-    super.key,
-    this.query,
-    required this.onSearch,
-  });
+  const MoviesSearchBar({super.key, this.query, required this.onSearch});
 
   static const double margin = 8;
 
@@ -57,34 +53,38 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
     final AppBarTheme appBarTheme = AppBarTheme.of(context);
     return ConditionalWrapper(
       condition: appBarTheme.systemOverlayStyle != null,
-      wrapper: (context, child) => AnnotatedRegion(
-        value: appBarTheme.systemOverlayStyle!,
-        child: child,
-      ),
+      wrapper:
+          (context, child) => AnnotatedRegion(
+            value: appBarTheme.systemOverlayStyle!,
+            child: child,
+          ),
       child: SafeArea(
         bottom: false,
         child: Padding(
           padding: const EdgeInsets.all(MoviesSearchBar.margin),
           child: ListenableBuilder(
             listenable: _controller,
-            builder: (context, __) => SearchBar(
-              controller: _controller,
-              hintText: context.l10n.searchPageTitle,
-              leading: Navigator.canPop(context)
-                  ? const BackButton()
-                  : const IconButton(
-                      onPressed: null,
-                      icon: Icon(Icons.search_outlined),
-                    ),
-              trailing: _controller.text.isEmpty
-                  ? null
-                  : [
-                      IconButton(
-                        onPressed: _controller.clear,
-                        icon: const Icon(Icons.clear_outlined),
-                      ),
-                    ],
-            ),
+            builder:
+                (context, _) => SearchBar(
+                  controller: _controller,
+                  hintText: context.l10n.searchPageTitle,
+                  leading:
+                      Navigator.canPop(context)
+                          ? const BackButton()
+                          : const IconButton(
+                            onPressed: null,
+                            icon: Icon(Icons.search_outlined),
+                          ),
+                  trailing:
+                      _controller.text.isEmpty
+                          ? null
+                          : [
+                            IconButton(
+                              onPressed: _controller.clear,
+                              icon: const Icon(Icons.clear_outlined),
+                            ),
+                          ],
+                ),
           ),
         ),
       ),
@@ -94,9 +94,6 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
   void _handleControllerChanged() {
     if (_controller.text == (widget.query ?? '')) return;
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(
-      _debounce,
-      () => widget.onSearch(_controller.text),
-    );
+    _debounceTimer = Timer(_debounce, () => widget.onSearch(_controller.text));
   }
 }

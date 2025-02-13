@@ -33,25 +33,22 @@ class SeekAreaWidget extends ElementaryWidget<ISeekAreaWM> {
         children: [
           ListenableBuilder(
             listenable: wm.shape,
-            builder: (context, child) => Material(
-              type: MaterialType.transparency,
-              shape: wm.shape.value,
-              child: child,
-            ),
+            builder:
+                (context, child) => Material(
+                  type: MaterialType.transparency,
+                  shape: wm.shape.value,
+                  child: child,
+                ),
             child: Column(
               key: wm.materialChildKey,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                _Icons(),
-                _Value(),
-              ],
+              children: const [_Icons(), _Value()],
             ),
           ),
           ListenableBuilder(
             listenable: wm.gestures,
-            builder: (context, __) => RawGestureDetector(
-              gestures: wm.gestures.value,
-            ),
+            builder:
+                (context, _) => RawGestureDetector(gestures: wm.gestures.value),
           ),
         ],
       ),
@@ -65,10 +62,7 @@ class SeekAreaShapeBorder extends ContinuousRectangleBorder {
   final SeekType _type;
 
   @override
-  Path getOuterPath(
-    Rect rect, {
-    TextDirection? textDirection,
-  }) {
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
     final double leftX = switch (_type) {
       SeekType.rewind => 0,
       SeekType.fastForward => 64,
@@ -101,23 +95,23 @@ class _Icons extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: context.wm.iconsRotation,
-      builder: (context, rotation, indicators) => RotatedBox(
-        quarterTurns: rotation,
-        child: indicators,
-      ),
+      builder:
+          (context, rotation, indicators) =>
+              RotatedBox(quarterTurns: rotation, child: indicators),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: context.wm.iconsOpacities
             .map(
               (animation) => ValueListenableBuilder(
                 valueListenable: animation,
-                builder: (context, opacity, ___) => IgnorePointer(
-                  ignoring: opacity == 0,
-                  child: Opacity(
-                    opacity: opacity,
-                    child: const Icon(Icons.play_arrow_outlined),
-                  ),
-                ),
+                builder:
+                    (context, opacity, _) => IgnorePointer(
+                      ignoring: opacity == 0,
+                      child: Opacity(
+                        opacity: opacity,
+                        child: const Icon(Icons.play_arrow_outlined),
+                      ),
+                    ),
               ),
             )
             .toList(growable: false),
@@ -133,19 +127,20 @@ class _Value extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: context.wm.value,
-      builder: (context, value, ___) => AnimatedSwitcher(
-        switchInCurve: Easing.standardDecelerate,
-        switchOutCurve: Easing.standardAccelerate.flipped,
-        duration: Durations.medium1,
-        reverseDuration: Durations.short4,
-        child: Text(
-          value > 0 ? context.l10n.durationSeconds(value) : '',
-          key: ValueKey(value),
-          style: TextTheme.of(context).bodyLarge?.copyWith(
-            fontFeatures: const [FontFeature.tabularFigures()],
+      builder:
+          (context, value, _) => AnimatedSwitcher(
+            switchInCurve: Easing.standardDecelerate,
+            switchOutCurve: Easing.standardAccelerate.flipped,
+            duration: Durations.medium1,
+            reverseDuration: Durations.short4,
+            child: Text(
+              value > 0 ? context.l10n.durationSeconds(value) : '',
+              key: ValueKey(value),
+              style: TextTheme.of(context).bodyLarge?.copyWith(
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 }

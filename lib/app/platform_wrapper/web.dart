@@ -6,10 +6,7 @@ extension _CSSStyleValue on web.CSSStyleValue {
 }
 
 class PlatformWrapper extends StatefulWidget {
-  const PlatformWrapper({
-    super.key,
-    required this.child,
-  });
+  const PlatformWrapper({super.key, required this.child});
 
   final Widget child;
 
@@ -18,19 +15,21 @@ class PlatformWrapper extends StatefulWidget {
 }
 
 class _PlatformWrapperState extends State<PlatformWrapper> {
-  static const String _leftInsetProperty = '--safe-area-insets-left';
-  static const String _topInsetProperty = '--safe-area-insets-top';
-  static const String _rightInsetProperty = '--safe-area-insets-right';
-  static const String _bottomInsetProperty = '--safe-area-insets-bottom';
+  static const _leftInsetProperty = '--safe-area-insets-left';
+  static const _topInsetProperty = '--safe-area-insets-top';
+  static const _rightInsetProperty = '--safe-area-insets-right';
+  static const _bottomInsetProperty = '--safe-area-insets-bottom';
 
-  final web.HTMLStyleElement _style = web.HTMLStyleElement()
-    ..id = 'web-media-query'
-    ..text = ':root { '
-        '$_leftInsetProperty: env(safe-area-inset-left); '
-        '$_topInsetProperty: env(safe-area-inset-top); '
-        '$_rightInsetProperty: env(safe-area-inset-right); '
-        '$_bottomInsetProperty: env(safe-area-inset-bottom); '
-        '}';
+  final _style =
+      web.HTMLStyleElement()
+        ..id = 'web-media-query'
+        ..text =
+            ':root { '
+            '$_leftInsetProperty: env(safe-area-inset-left); '
+            '$_topInsetProperty: env(safe-area-inset-top); '
+            '$_rightInsetProperty: env(safe-area-inset-right); '
+            '$_bottomInsetProperty: env(safe-area-inset-bottom); '
+            '}';
 
   @override
   void initState() {

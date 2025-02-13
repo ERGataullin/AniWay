@@ -18,10 +18,7 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 
   ValueListenable<bool> get hasNextEpisode;
 
-  void loadData({
-    required int movieId,
-    int? episodeId,
-  });
+  void loadData({required int movieId, int? episodeId});
 
   void loadPreviousEpisode();
 
@@ -36,8 +33,8 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   MoviePlayerModel(
     ErrorHandler errorHandler, {
     required MoviesRepository repository,
-  })  : _repository = repository,
-        super(errorHandler: errorHandler);
+  }) : _repository = repository,
+       super(errorHandler: errorHandler);
 
   @override
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
@@ -46,8 +43,9 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   final ValueNotifier<EpisodeData?> episode = ValueNotifier(null);
 
   @override
-  final ValueNotifier<List<VideoTranslationData>> translations =
-      ValueNotifier(const []);
+  final ValueNotifier<List<VideoTranslationData>> translations = ValueNotifier(
+    const [],
+  );
 
   @override
   final ValueNotifier<bool> hasPreviousEpisode = ValueNotifier(false);
@@ -60,16 +58,14 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   late int _episodeIndex;
 
   @override
-  Future<void> loadData({
-    required int movieId,
-    int? episodeId,
-  }) async {
+  Future<void> loadData({required int movieId, int? episodeId}) async {
     movie.value = await _repository.getMovie(movieId);
-    _episodeIndex = episodeId == null
-        ? 0
-        : movie.value!.episodes.indexWhere(
-            (episode) => episode.id == episodeId,
-          );
+    _episodeIndex =
+        episodeId == null
+            ? 0
+            : movie.value!.episodes.indexWhere(
+              (episode) => episode.id == episodeId,
+            );
     if (_episodeIndex < 0) _episodeIndex = 0;
     _loadEpisode(index: _episodeIndex);
   }
@@ -104,9 +100,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
     super.dispose();
   }
 
-  Future<void> _loadEpisode({
-    required int index,
-  }) async {
+  Future<void> _loadEpisode({required int index}) async {
     translations.value = const [];
     _episodeIndex = index;
     episode.value = movie.value!.episodes[index];

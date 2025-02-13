@@ -13,7 +13,7 @@ enum RequestMethod {
   connect,
   options,
   trace,
-  patch;
+  patch,
 }
 
 abstract interface class NetworkService implements Initable {
@@ -57,20 +57,16 @@ class RequestData {
     RequestMethod? method,
     Headers? headers,
     Object? body,
-  }) =>
-      RequestData(
-        uri: uri ?? this.uri,
-        method: method ?? this.method,
-        headers: headers ?? this.headers,
-        body: body ?? this.body,
-      );
+  }) => RequestData(
+    uri: uri ?? this.uri,
+    method: method ?? this.method,
+    headers: headers ?? this.headers,
+    body: body ?? this.body,
+  );
 }
 
 class ResponseData<T> {
-  const ResponseData({
-    this.headers = const {},
-    required this.body,
-  });
+  const ResponseData({this.headers = const {}, required this.body});
 
   final Headers headers;
 

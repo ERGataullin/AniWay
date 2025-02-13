@@ -17,7 +17,7 @@ class RootMenuContainer extends StatefulWidget {
 }
 
 class _RootMenuContainerState extends State<RootMenuContainer> {
-  final CurveTween _animationCurveTween = CurveTween(
+  final _animationCurveTween = CurveTween(
     curve: Curves.easeInOutCubicEmphasized,
   );
 
@@ -29,12 +29,12 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
       duration: Durations.long2,
       layoutBuilder: _layoutBuilder,
       child: widget.children[widget.currentIndex],
-      transitionBuilder: (child, animation, secondaryAnimation) =>
-          FadeThroughTransition(
-        animation: animation.drive(_animationCurveTween),
-        secondaryAnimation: secondaryAnimation.drive(_animationCurveTween),
-        child: child,
-      ),
+      transitionBuilder:
+          (child, animation, secondaryAnimation) => FadeThroughTransition(
+            animation: animation.drive(_animationCurveTween),
+            secondaryAnimation: secondaryAnimation.drive(_animationCurveTween),
+            child: child,
+          ),
     );
   }
 

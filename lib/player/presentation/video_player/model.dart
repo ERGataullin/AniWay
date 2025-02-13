@@ -38,14 +38,13 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 }
 
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
-  VideoPlayerModel({
-    super.errorHandler,
-    required PlayerRepository repository,
-  }) : _repository = repository;
+  VideoPlayerModel({super.errorHandler, required PlayerRepository repository})
+    : _repository = repository;
 
   @override
-  final ValueNotifier<LocaledTranslations> translations =
-      ValueNotifier(const {});
+  final ValueNotifier<LocaledTranslations> translations = ValueNotifier(
+    const {},
+  );
 
   @override
   final ValueNotifier<VideoTranslationData?> translation = ValueNotifier(null);
@@ -66,7 +65,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   late VideoResolver _videoResolver;
 
-  bool _autoSelectQuality = true;
+  var _autoSelectQuality = true;
 
   Locale? _locale;
 
@@ -150,16 +149,18 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   Future<void> _handleTranslationChanged() async {
     _selectedTranslationLocale =
         translation.value?.locale ?? _selectedTranslationLocale;
-    _selectedTranslationAuthors = translation.value?.authors
+    _selectedTranslationAuthors =
+        translation.value?.authors
             .map((author) => author.toLowerCase())
             .toList(growable: false) ??
         _selectedTranslationAuthors;
     video.value = null;
     if (translation.value != null) {
       video.value = await _videoResolver(translation.value!.id);
-      quality.value = _autoSelectQuality
-          ? video.value!.stream.keys.first
-          : video.value!.stream.containsKey(quality.value)
+      quality.value =
+          _autoSelectQuality
+              ? video.value!.stream.keys.first
+              : video.value!.stream.containsKey(quality.value)
               ? quality.value
               : video.value!.stream.keys.first;
     }
@@ -185,7 +186,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     VideoTranslationData suitableTranslation = suitableLocaleTranslations.first;
     double suitability = 0;
     for (final translation in suitableLocaleTranslations) {
-      int translationSuitabilitySum = 0;
+      var translationSuitabilitySum = 0;
       for (final String author in translation.authors) {
         translationSuitabilitySum +=
             authorsSuitability[author.trim().toLowerCase()] ?? 0;

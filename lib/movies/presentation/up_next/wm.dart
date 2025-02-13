@@ -8,11 +8,11 @@ import 'package:app/movies/presentation/up_next/widget.dart';
 import 'package:flutter/widgets.dart';
 
 UpNextWM upNextWMFactory(BuildContext context) => UpNextWM(
-      UpNextModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<MoviesRepository>(),
-      ),
-    );
+  UpNextModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<MoviesRepository>(),
+  ),
+);
 
 abstract interface class IUpNextWM implements IWidgetModel {
   ScrollController get scrollController;
@@ -60,14 +60,9 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
     return MovieCardData.fromUpNext(
       upNext,
       l10n: l10n.value,
-      onPressed: () => widget.onItemPressed(
-        upNext.movie.id,
-        upNext.episode.id,
-      ),
-      onLongPressed: () => widget.onItemLongPressed(
-        upNext.movie.id,
-        upNext.episode.id,
-      ),
+      onPressed: () => widget.onItemPressed(upNext.movie.id, upNext.episode.id),
+      onLongPressed:
+          () => widget.onItemLongPressed(upNext.movie.id, upNext.episode.id),
     );
   }
 }

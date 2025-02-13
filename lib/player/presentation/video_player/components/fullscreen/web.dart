@@ -22,8 +22,9 @@ class FullscreenControllerPlatform
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }
-    _fullscreenSubscription =
-        _element.nonWebkitOnFullscreenChange.listen(_onFullscreenChanged);
+    _fullscreenSubscription = _element.nonWebkitOnFullscreenChange.listen(
+      _onFullscreenChanged,
+    );
   }
 
   Element _element;
@@ -41,9 +42,10 @@ class FullscreenControllerPlatform
 
   @override
   set webElementQuery(String? value) {
-    final Element newElement = value == null
-        ? document.documentElement!
-        : document.querySelector(value)!;
+    final Element newElement =
+        value == null
+            ? document.documentElement!
+            : document.querySelector(value)!;
 
     if (_element == newElement) {
       return;
@@ -51,8 +53,9 @@ class FullscreenControllerPlatform
 
     _element = newElement;
     _fullscreenSubscription.cancel();
-    _fullscreenSubscription =
-        _element.nonWebkitOnFullscreenChange.listen(_onFullscreenChanged);
+    _fullscreenSubscription = _element.nonWebkitOnFullscreenChange.listen(
+      _onFullscreenChanged,
+    );
   }
 
   @override

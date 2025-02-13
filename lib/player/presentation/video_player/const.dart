@@ -1,1 +1,1 @@
-const Duration shortcutSeekDuration = Duration(seconds: 10);
+const shortcutSeekDuration = Duration(seconds: 10);

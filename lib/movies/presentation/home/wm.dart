@@ -10,11 +10,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 HomeWM homeWMFactory(BuildContext context) => HomeWM(
-      HomeModel(
-        errorHandler: context.read<ErrorHandler>(),
-        repository: context.read<MoviesRepository>(),
-      ),
-    );
+  HomeModel(
+    errorHandler: context.read<ErrorHandler>(),
+    repository: context.read<MoviesRepository>(),
+  ),
+);
 
 abstract interface class IHomeWM implements IWidgetModel {
   ValueListenable<bool> get loading;
@@ -91,10 +91,8 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
     return MovieCardData.fromUpNext(
       upNext,
       l10n: l10n.value,
-      onPressed: () => widget.onUpNextPressed(
-        upNext.movie.id,
-        upNext.episode.id,
-      ),
+      onPressed:
+          () => widget.onUpNextPressed(upNext.movie.id, upNext.episode.id),
       onLongPressed: () => widget.onMoviePressed(upNext.movie.id),
     );
   }

@@ -1,24 +1,23 @@
 class ProxiedUri implements Uri {
-  ProxiedUri({
-    required this.proxy,
-    required this.original,
-  }) : proxied = Uri(
-          scheme: proxy.scheme,
-          userInfo: original.userInfo,
-          host: proxy.host,
-          port: proxy.port,
-          path: [
-            if (original.hasScheme) '${original.scheme}://',
-            original.host,
-            if (original.hasPort) ':${original.port}',
-            original.path,
-          ].join(),
-          queryParameters: {
-            ...proxy.queryParameters,
-            ...original.queryParameters,
-          },
-          fragment: original.fragment,
-        );
+  ProxiedUri({required this.proxy, required this.original})
+    : proxied = Uri(
+        scheme: proxy.scheme,
+        userInfo: original.userInfo,
+        host: proxy.host,
+        port: proxy.port,
+        path:
+            [
+              if (original.hasScheme) '${original.scheme}://',
+              original.host,
+              if (original.hasPort) ':${original.port}',
+              original.path,
+            ].join(),
+        queryParameters: {
+          ...proxy.queryParameters,
+          ...original.queryParameters,
+        },
+        fragment: original.fragment,
+      );
 
   final Uri proxy;
 
@@ -104,17 +103,16 @@ class ProxiedUri implements Uri {
     String? query,
     Map<String, Object?>? queryParameters,
     String? fragment,
-  }) =>
-      proxied.replace(
-        scheme: scheme,
-        userInfo: userInfo,
-        host: host,
-        path: path,
-        pathSegments: pathSegments,
-        query: query,
-        queryParameters: queryParameters,
-        fragment: fragment,
-      );
+  }) => proxied.replace(
+    scheme: scheme,
+    userInfo: userInfo,
+    host: host,
+    path: path,
+    pathSegments: pathSegments,
+    query: query,
+    queryParameters: queryParameters,
+    fragment: fragment,
+  );
 
   @override
   Uri resolve(String reference) {
@@ -127,12 +125,13 @@ class ProxiedUri implements Uri {
     final Uri originalResolved = original.resolveUri(reference);
     final proxiedReference = Uri(
       userInfo: originalResolved.userInfo,
-      path: [
-        if (originalResolved.hasScheme) '${originalResolved.scheme}://',
-        originalResolved.host,
-        if (originalResolved.hasPort) ':${originalResolved.port}',
-        originalResolved.path,
-      ].join(),
+      path:
+          [
+            if (originalResolved.hasScheme) '${originalResolved.scheme}://',
+            originalResolved.host,
+            if (originalResolved.hasPort) ':${originalResolved.port}',
+            originalResolved.path,
+          ].join(),
       query: [
         originalResolved.query,
         proxy.query,

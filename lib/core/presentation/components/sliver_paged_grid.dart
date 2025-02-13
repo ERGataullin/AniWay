@@ -5,11 +5,8 @@ import 'package:flutter/rendering.dart';
 
 typedef OnLoadPage<T> = Future<List<T>> Function(int page);
 
-typedef PagedGridItemBuilder<T> = Widget Function(
-  BuildContext context,
-  T item,
-  Animation<double> animation,
-);
+typedef PagedGridItemBuilder<T> =
+    Widget Function(BuildContext context, T item, Animation<double> animation);
 
 class SliverPagedGrid<T> extends StatefulWidget {
   const SliverPagedGrid({
@@ -52,13 +49,13 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
   ///
   /// Принимает значение `false`, если на запрос страницы был получен
   /// пустой список элементов.
-  bool _hasNextPage = true;
+  var _hasNextPage = true;
 
   /// Кол-во завершённых элементов (не плэйсхолдеров).
-  int _finishedItemsCount = 0;
+  var _finishedItemsCount = 0;
 
   /// Номер последней непустой полученной страницы.
-  int _page = 0;
+  var _page = 0;
 
   /// Выполняемый запрос страницы.
   Future<void>? _pendingPageRequest;
@@ -81,10 +78,12 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     );
     // Удаление лишних элементов, оставляя лишь необходимые для сохранения
     // резерва скролла, и замена оставшихся плэйсхолдерами.
-    final int placeholdersToKeep =
-        math.min(_viewportCapacity * 2, _items.length);
+    final int placeholdersToKeep = math.min(
+      _viewportCapacity * 2,
+      _items.length,
+    );
     _removeItems(from: placeholdersToKeep);
-    for (int i = 0; i < placeholdersToKeep; i++) {
+    for (var i = 0; i < placeholdersToKeep; i++) {
       _items[i].value = null;
     }
     _finishedItemsCount = 0;
@@ -128,11 +127,12 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
             _handleItemBuildCalled(index);
             return ListenableBuilder(
               listenable: _items[index],
-              builder: (context, __) => widget.itemBuilder(
-                context,
-                _items[index].value,
-                curveTween.animate(animation),
-              ),
+              builder:
+                  (context, _) => widget.itemBuilder(
+                    context,
+                    _items[index].value,
+                    curveTween.animate(animation),
+                  ),
             );
           },
         );
@@ -174,7 +174,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
       _items.length - _finishedItemsCount,
     );
     // Замена плэйсхолдеров.
-    for (int i = 0; i < placeholdersToReplace; i++) {
+    for (var i = 0; i < placeholdersToReplace; i++) {
       _items[i + _finishedItemsCount].value = pageItems[i];
     }
     // Добавление остальных элементов страницы.
@@ -195,13 +195,15 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
   /// Провеяет и создаёт резерв скролла, если в результате изменения
   /// констрэинтов он стал составлять менее 1 вьюпорта.
   void _handleConstraintsChanged(SliverConstraints constraints) {
-    _viewportCapacity = widget.gridDelegate
+    _viewportCapacity =
+        widget.gridDelegate
             .getLayout(constraints)
             .getMaxChildIndexForScrollOffset(
               widget.controller.position.viewportDimension,
             ) +
         1;
-    _crossAxisCount = widget.gridDelegate
+    _crossAxisCount =
+        widget.gridDelegate
             .getLayout(constraints)
             .getMaxChildIndexForScrollOffset(1) +
         1;
