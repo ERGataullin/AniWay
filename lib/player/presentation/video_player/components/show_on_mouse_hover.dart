@@ -12,9 +12,9 @@ class VisibilityController with ChangeNotifier {
     }
   }
 
-  static const Duration _hidingGap = Duration(seconds: 3);
+  static const _hidingGap = Duration(seconds: 3);
 
-  bool _visible = false;
+  var _visible = false;
 
   Timer? _hidingTimer;
 

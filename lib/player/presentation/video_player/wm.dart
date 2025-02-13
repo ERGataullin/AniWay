@@ -61,14 +61,13 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   VideoPlayerWM(super._model);
 
   @override
-  final VideoController videoController = VideoController.videoPlayer();
+  final videoController = VideoController.videoPlayer();
 
   @override
-  final VisibilityController controlsVisibilityController =
-      VisibilityController();
+  final controlsVisibilityController = VisibilityController();
 
   @override
-  final FullscreenController fullscreenController = FullscreenController();
+  final fullscreenController = FullscreenController();
 
   @override
   late final Computed<double> maxScale = Computed(
@@ -125,7 +124,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     const SingleActivator(LogicalKeyboardKey.space): videoController.playPause,
   };
 
-  bool _watched = false;
+  var _watched = false;
 
   @override
   void initWidgetModel() {

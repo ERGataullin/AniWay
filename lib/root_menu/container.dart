@@ -17,7 +17,7 @@ class RootMenuContainer extends StatefulWidget {
 }
 
 class _RootMenuContainerState extends State<RootMenuContainer> {
-  final CurveTween _animationCurveTween = CurveTween(
+  final _animationCurveTween = CurveTween(
     curve: Curves.easeInOutCubicEmphasized,
   );
 

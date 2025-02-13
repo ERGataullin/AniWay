@@ -66,7 +66,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   late VideoResolver _videoResolver;
 
-  bool _autoSelectQuality = true;
+  var _autoSelectQuality = true;
 
   Locale? _locale;
 

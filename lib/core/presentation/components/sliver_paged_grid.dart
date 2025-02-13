@@ -52,13 +52,13 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
   ///
   /// Принимает значение `false`, если на запрос страницы был получен
   /// пустой список элементов.
-  bool _hasNextPage = true;
+  var _hasNextPage = true;
 
   /// Кол-во завершённых элементов (не плэйсхолдеров).
-  int _finishedItemsCount = 0;
+  var _finishedItemsCount = 0;
 
   /// Номер последней непустой полученной страницы.
-  int _page = 0;
+  var _page = 0;
 
   /// Выполняемый запрос страницы.
   Future<void>? _pendingPageRequest;

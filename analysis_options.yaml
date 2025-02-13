@@ -119,6 +119,7 @@ linter:
     null_check_on_nullable_type_parameter: true
     null_closures: true
     omit_obvious_local_variable_types: true
+    omit_obvious_property_types: true
     only_throw_errors: true
     overridden_fields: true
     package_prefixed_library_names: true
@@ -165,6 +166,7 @@ linter:
     sort_constructors_first: true
     sort_unnamed_constructors_first: true
     specify_nonobvious_local_variable_types: true
+    specify_nonobvious_property_types: true
     tighten_type_of_initializing_formals: true
     type_annotate_public_apis: true
     type_init_formals: true

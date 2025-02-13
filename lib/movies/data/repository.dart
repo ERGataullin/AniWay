@@ -16,7 +16,7 @@ class MoviesRepository implements Initable {
 
   final MoviesService _moviesService;
 
-  final _upNextChanges = ValueNotifier(0);
+  final _upNextChanges = ValueNotifier<int>(0);
 
   Listenable get upNextChanges => _upNextChanges;
 

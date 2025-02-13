@@ -73,7 +73,7 @@ class _RenderWindowTopCentered extends RenderShiftedBox {
   @override
   bool get sizedByParent => true;
 
-  bool _isFirstFrame = true;
+  var _isFirstFrame = true;
 
   Offset _globalOffset = Offset.zero;
 

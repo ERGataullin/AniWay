@@ -52,10 +52,10 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   );
 
   @override
-  final TextEditingController emailController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
-  final TextEditingController passwordController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   final ImageProvider logo = const AssetImage('assets/images/logo.webp');

@@ -10,8 +10,7 @@ class MovieCard extends StatelessWidget {
     this.opacity,
   });
 
-  static const SliverGridDelegateWithMaxCrossAxisExtent gridDelegate =
-      SliverGridDelegateWithMaxCrossAxisExtent(
+  static const gridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
     crossAxisSpacing: 8,
     mainAxisSpacing: 8,
     childAspectRatio: 3 / 4,

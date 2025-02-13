@@ -20,7 +20,7 @@ class SignInModel extends ElementaryModel implements ISignInModel {
 
   final AuthRepository _repository;
 
-  final RegExp _emailRegExp = RegExp(
+  final _emailRegExp = RegExp(
     r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}"
     r'[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$',
   );

@@ -33,8 +33,7 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
 
   late final ImageStreamListener _imageStreamListener;
 
-  late final AnimationController _opacityController =
-      AnimationController(vsync: this);
+  late final _opacityController = AnimationController(vsync: this);
 
   late final Computed<ImageProvider<Object>?> _imageProvider = Computed(
     () {
@@ -59,7 +58,7 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
     },
   );
 
-  bool _animateSyncLoad = false;
+  var _animateSyncLoad = false;
 
   ImageInfo? _imageInfo;
 

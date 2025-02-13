@@ -39,7 +39,7 @@ class AnimatedVisibility extends StatefulWidget {
 
 class _AnimatedVisibilityState extends State<AnimatedVisibility>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
+  late final _controller = AnimationController(
     vsync: this,
     value: _animationTarget,
     duration: Duration.zero,

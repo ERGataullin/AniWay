@@ -26,7 +26,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
 
-  late final GoRouter _goRouter = GoRouter(
+  late final _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
     refreshListenable: _signedIn,
     routes: [
@@ -273,13 +273,13 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 class _Routes {
   const _Routes._();
 
-  static const String signIn = '/sign-in';
+  static const signIn = '/sign-in';
 
-  static const String home = '/home';
+  static const home = '/home';
 
-  static const String moviePlayer = '/movie-player';
+  static const moviePlayer = '/movie-player';
 
-  static const String upNext = '/up-next';
+  static const upNext = '/up-next';
 
   static String search({String? parent}) =>
       parent == null ? '/search' : '$parent/search';

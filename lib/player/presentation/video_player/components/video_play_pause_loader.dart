@@ -15,19 +15,19 @@ class VideoPlayPauseLoader extends StatefulWidget {
 
 class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController = AnimationController(
+  late final _animationController = AnimationController(
     vsync: this,
     duration: Durations.medium2,
     value: widget.videoController.playing.value ? 1 : 0,
   );
 
-  late final CurvedAnimation _animation = CurvedAnimation(
+  late final _animation = CurvedAnimation(
     parent: _animationController,
     curve: Easing.standard,
     reverseCurve: Easing.standard.flipped,
   );
 
-  bool _loading = false;
+  var _loading = false;
 
   @override
   void initState() {

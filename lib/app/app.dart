@@ -26,7 +26,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   AppRouter? _router;
 
-  bool _initialized = false;
+  var _initialized = false;
 
   @override
   void initState() {

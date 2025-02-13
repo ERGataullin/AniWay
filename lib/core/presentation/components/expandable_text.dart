@@ -13,11 +13,11 @@ class ExpandableText extends StatefulWidget {
 }
 
 class _ExpandableTextState extends State<ExpandableText> {
-  static const int _maxLinesCollapsed = 4;
+  static const _maxLinesCollapsed = 4;
 
-  static const int _breakpoint = 6;
+  static const _breakpoint = 6;
 
-  bool _isExpanded = false;
+  var _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {

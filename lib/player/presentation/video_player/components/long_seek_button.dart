@@ -19,7 +19,7 @@ class LongSeekButton extends StatefulWidget {
 }
 
 class _LongSeekButtonState extends State<LongSeekButton> {
-  static const Duration _step = Duration(minutes: 1, seconds: 30);
+  static const _step = Duration(minutes: 1, seconds: 30);
 
   late final Duration _duration = switch (widget.type) {
     SeekType.rewind => -_step,

@@ -6,9 +6,9 @@ class LocalPlayerService implements PlayerService {
     required StorageService storageService,
   }) : _storageService = storageService;
 
-  static const String _collection = 'player';
+  static const _collection = 'player';
 
-  static const String _personalizedTranslationAuthorsRatesKey =
+  static const _personalizedTranslationAuthorsRatesKey =
       'personalized_translation_authors_rates';
 
   final StorageService _storageService;

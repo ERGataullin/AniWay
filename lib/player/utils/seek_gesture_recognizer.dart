@@ -12,7 +12,7 @@ class _CountdownZoned {
     Timer(duration, _onTimeout);
   }
 
-  bool _timeout = false;
+  var _timeout = false;
 
   bool get timeout => _timeout;
 
@@ -42,7 +42,7 @@ class _TapTracker {
   final int initialButtons;
   final _CountdownZoned _doubleTapMinTimeCountdown;
 
-  bool _isTrackingPointer = false;
+  var _isTrackingPointer = false;
 
   void startTrackingPointer(PointerRoute route, Matrix4? transform) {
     if (!_isTrackingPointer) {
@@ -161,7 +161,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
 
   Timer? _doubleTapTimer;
   _TapTracker? _firstTap;
-  final Map<int, _TapTracker> _trackers = <int, _TapTracker>{};
+  final _trackers = <int, _TapTracker>{};
 
   @override
   bool isPointerAllowed(PointerDownEvent event) {

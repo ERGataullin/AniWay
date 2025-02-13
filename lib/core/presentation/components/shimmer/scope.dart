@@ -22,8 +22,7 @@ class ShimmerScope extends StatefulWidget {
 
 class ShimmerScopeState extends State<ShimmerScope>
     with SingleTickerProviderStateMixin {
-  late final ShimmerScopeAnimationController _animationController =
-      ShimmerScopeAnimationController(
+  late final _animationController = ShimmerScopeAnimationController(
     value: -0.5,
     vsync: this,
   );

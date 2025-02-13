@@ -6,7 +6,7 @@ mixin L10nWMMixin<W extends ElementaryWidget, M extends ElementaryModel>
     on WidgetModel<W, M> {
   late final ValueNotifier<L10n> _l10n;
 
-  bool _initialized = false;
+  var _initialized = false;
 
   ValueListenable<L10n> get l10n => _l10n;
 

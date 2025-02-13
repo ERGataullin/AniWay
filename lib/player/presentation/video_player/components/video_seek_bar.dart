@@ -32,7 +32,7 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
             widget.videoController.duration.value.inSeconds,
   );
 
-  bool _isMouse = false;
+  var _isMouse = false;
 
   @override
   Widget build(BuildContext context) {

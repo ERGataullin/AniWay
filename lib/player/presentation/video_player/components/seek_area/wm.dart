@@ -33,7 +33,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
     implements ISeekAreaWM {
   SeekAreaWM(super._model);
 
-  static const int _iconsCount = 3;
+  static const _iconsCount = 3;
 
   @override
   final GlobalKey materialChildKey = GlobalKey();

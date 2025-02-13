@@ -7,7 +7,7 @@ mixin ThemeWMMixin<W extends ElementaryWidget, M extends ElementaryModel>
     on WidgetModel<W, M> {
   late final ValueNotifier<ThemeData> _theme;
 
-  bool _initialized = false;
+  var _initialized = false;
 
   ValueListenable<ThemeData> get theme => _theme;
 

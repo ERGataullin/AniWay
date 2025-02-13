@@ -8,7 +8,7 @@ class MovieScore extends StatelessWidget {
     this.textStyle,
   });
 
-  static final NumberFormat _scoreFormat = NumberFormat('#0.0');
+  static final _scoreFormat = NumberFormat('#0.0');
 
   final double? score;
 
