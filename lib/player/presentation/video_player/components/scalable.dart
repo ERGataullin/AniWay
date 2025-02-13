@@ -45,7 +45,7 @@ class _ScalableState extends State<Scalable> {
       child: ListenableBuilder(
         listenable: _scale,
         builder:
-            (context, __) =>
+            (context, _) =>
                 Transform.scale(scale: _scale.value, child: widget.child),
       ),
     );

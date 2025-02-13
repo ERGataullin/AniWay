@@ -36,7 +36,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
     return Provider<IHomeWM>.value(
       value: wm,
       builder:
-          (context, __) => ShimmerScope(
+          (context, _) => ShimmerScope(
             child: PageLayout(
               appBar: AppBar(
                 centerTitle: true,
@@ -57,7 +57,7 @@ class _Body extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.loading,
       builder:
-          (context, __) => AnimatedSwitcher(
+          (context, _) => AnimatedSwitcher(
             switchInCurve: Easing.emphasizedDecelerate,
             switchOutCurve: Easing.emphasizedAccelerate.flipped,
             duration: Durations.medium4,
@@ -171,7 +171,7 @@ class _Movies extends StatelessWidget {
       child: ValueListenableBuilder(
         valueListenable: movies,
         builder:
-            (context, movies, ___) => ListView.separated(
+            (context, movies, _) => ListView.separated(
               clipBehavior: Clip.none,
               scrollDirection: Axis.horizontal,
               itemCount: movies.length,
@@ -181,7 +181,7 @@ class _Movies extends StatelessWidget {
                   right: safeAreaPadding.right,
                 ),
               ),
-              separatorBuilder: (context, __) => const SizedBox(width: 8),
+              separatorBuilder: (context, _) => const SizedBox(width: 8),
               itemBuilder: (context, index) => MovieCard(movies[index]),
             ),
       ),

@@ -128,7 +128,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
             return ListenableBuilder(
               listenable: _items[index],
               builder:
-                  (context, __) => widget.itemBuilder(
+                  (context, _) => widget.itemBuilder(
                     context,
                     _items[index].value,
                     curveTween.animate(animation),

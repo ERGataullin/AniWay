@@ -30,7 +30,7 @@ class FullscreenButton extends StatelessWidget {
       icon: ListenableBuilder(
         listenable: controller,
         builder:
-            (context, __) => AnimatedSwitcher(
+            (context, _) => AnimatedSwitcher(
               switchInCurve: Easing.standard,
               switchOutCurve: Easing.standard.flipped,
               duration: Durations.medium2,

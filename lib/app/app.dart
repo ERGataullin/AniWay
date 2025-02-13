@@ -56,7 +56,7 @@ class _AppState extends State<App> {
           theme: Themes.light,
           darkTheme: Themes.dark,
           builder:
-              (context, __) => PlatformWrapper(
+              (context, _) => PlatformWrapper(
                 child: Router.withConfig(
                   config:
                       _router ??= AppRouter(

@@ -94,7 +94,7 @@ class _Gestures extends StatelessWidget {
                 context.wm.scaleAnchors,
               ]),
               builder:
-                  (context, __) => Scalable(
+                  (context, _) => Scalable(
                     maxScale: context.wm.maxScale.value,
                     anchors: context.wm.scaleAnchors.value,
                     child: child,
@@ -146,14 +146,14 @@ class _Player extends StatelessWidget {
             child: ListenableBuilder(
               listenable: context.wm.videoController.aspectRatio,
               builder:
-                  (context, __) => AspectRatio(
+                  (context, _) => AspectRatio(
                     aspectRatio: context.wm.videoController.aspectRatio.value,
                     child: switch (context.wm.videoController) {
                       final VideoPlayerController videoPlayerController =>
                         ListenableBuilder(
                           listenable: videoPlayerController.inner,
                           builder:
-                              (context, __) =>
+                              (context, _) =>
                                   videoPlayerController.inner.value == null
                                       ? const SizedBox.shrink()
                                       : video_player.VideoPlayer(
@@ -167,7 +167,7 @@ class _Player extends StatelessWidget {
           ListenableBuilder(
             listenable: context.wm.controlsVisibilityController,
             builder:
-                (context, __) => AnimatedVisibility.emphasized(
+                (context, _) => AnimatedVisibility.emphasized(
                   visible: context.wm.controlsVisibilityController.visible,
                   child: const DecoratedBox(
                     decoration: BoxDecoration(color: Colors.black54),
@@ -282,7 +282,7 @@ class _Title extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: data,
       builder:
-          (context, data, ___) => AnimatedSwitcher(
+          (context, data, _) => AnimatedSwitcher(
             switchInCurve: Easing.standard,
             switchOutCurve: Easing.standard.flipped,
             duration: Durations.medium2,
@@ -300,7 +300,7 @@ class _MenuButton extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.onMenuPressed,
       builder:
-          (context, __) => IconButton(
+          (context, _) => IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: context.wm.onMenuPressed.value,
           ),
@@ -320,7 +320,7 @@ class _SkipButton extends StatelessWidget {
     return ListenableBuilder(
       listenable: onPressed,
       builder:
-          (context, __) => IconButton.filledTonal(
+          (context, _) => IconButton.filledTonal(
             iconSize: 36,
             onPressed: onPressed.value,
             style: ButtonStyle(

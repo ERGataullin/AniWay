@@ -30,7 +30,7 @@ class MoviePlayerWidget extends ElementaryWidget<IMoviePlayerWM> {
           wm.onNextPressed,
         ]),
         builder:
-            (context, __) => VideoPlayerWidget(
+            (context, _) => VideoPlayerWidget(
               title: wm.title.value,
               subtitle: switch (wm.episode.value) {
                 final EpisodeData episode => context.l10n.movieEpisode(

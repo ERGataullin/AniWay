@@ -65,7 +65,7 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
           child: ListenableBuilder(
             listenable: _controller,
             builder:
-                (context, __) => SearchBar(
+                (context, _) => SearchBar(
                   controller: _controller,
                   hintText: context.l10n.searchPageTitle,
                   leading:

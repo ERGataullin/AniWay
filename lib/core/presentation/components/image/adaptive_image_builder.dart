@@ -40,7 +40,7 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
         return FadeInImageBuilder(
           image: _imageProvider,
           builder:
-              (context, opacity, image, ____) =>
+              (context, opacity, image, _) =>
                   widget.builder(context, opacity, image, widget.child),
         );
       },

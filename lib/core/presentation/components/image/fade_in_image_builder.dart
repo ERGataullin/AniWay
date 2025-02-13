@@ -96,7 +96,7 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
     return ListenableBuilder(
       listenable: _imageProvider,
       builder:
-          (context, __) => widget.builder(
+          (context, _) => widget.builder(
             context,
             _opacityController,
             _imageProvider.value,

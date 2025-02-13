@@ -82,7 +82,7 @@ class ShowOnMouseHover extends StatelessWidget {
     return ListenableBuilder(
       listenable: controller,
       builder:
-          (context, __) => MouseRegion(
+          (context, _) => MouseRegion(
             hitTestBehavior: HitTestBehavior.translucent,
             cursor:
                 controller.visible

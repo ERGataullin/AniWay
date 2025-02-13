@@ -65,7 +65,7 @@ class MovieCard extends StatelessWidget {
           return AnimatedBuilder(
             animation: opacity!,
             builder:
-                (context, __) =>
+                (context, _) =>
                     Theme(data: themeTween.evaluate(opacity!), child: child),
           );
         },
@@ -106,13 +106,13 @@ class _Poster extends StatelessWidget {
     return AdaptiveImageBuilder(
       image: image,
       builder:
-          (context, fadeInOpacity, image, ____) => ListenableBuilder(
+          (context, fadeInOpacity, image, _) => ListenableBuilder(
             listenable: Listenable.merge([opacity, fadeInOpacity]),
             builder:
                 (context, _) => Shimmer(
                   enabled: fadeInOpacity.value != 1,
                   delegate: CustomShimmerDelegate(
-                    (context, color, gradient, ___) => Ink(
+                    (context, color, gradient, _) => Ink(
                       decoration: ShapeDecoration(
                         shape: CardTheme.of(context).shape!,
                         color: color,

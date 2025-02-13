@@ -87,7 +87,7 @@ class _PasswordField extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.obscurePassword,
       builder:
-          (context, __) => TextFormField(
+          (context, _) => TextFormField(
             controller: context.wm.passwordController,
             autofocus: true,
             obscureText: context.wm.obscurePassword.value,
@@ -119,7 +119,7 @@ class _SubmitButton extends StatelessWidget {
       child: ListenableBuilder(
         listenable: context.wm.loading,
         builder:
-            (context, __) => AnimatedSwitcher(
+            (context, _) => AnimatedSwitcher(
               switchInCurve: Easing.standard,
               switchOutCurve: Easing.standard.flipped,
               duration: Durations.medium2,
@@ -131,7 +131,7 @@ class _SubmitButton extends StatelessWidget {
                       )
                       : ValueListenableBuilder(
                         valueListenable: context.wm.submitLabel,
-                        builder: (context, label, ___) => Text(label),
+                        builder: (context, label, _) => Text(label),
                       ),
             ),
       ),

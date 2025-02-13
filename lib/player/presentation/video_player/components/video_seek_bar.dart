@@ -49,7 +49,7 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
       child: ListenableBuilder(
         listenable: _value,
         builder:
-            (context, __) => Slider.adaptive(
+            (context, _) => Slider.adaptive(
               value: _value.value,
               allowedInteraction:
                   _isMouse

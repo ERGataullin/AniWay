@@ -36,7 +36,7 @@ class VideoTimer extends StatelessWidget {
         videoController.duration,
       ]),
       builder:
-          (context, __) => RichText(
+          (context, _) => RichText(
             text: TextSpan(
               children: [
                 TextSpan(

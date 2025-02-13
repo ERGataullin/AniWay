@@ -40,7 +40,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
         child: ListenableBuilder(
           listenable: Listenable.merge([wm.loading, wm.episodes]),
           builder:
-              (context, __) => Scaffold(
+              (context, _) => Scaffold(
                 body: CustomScrollView(
                   primary: true,
                   slivers: [
@@ -100,7 +100,7 @@ class _AppBar extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.loading,
       builder:
-          (context, __) => SliverAppBar.large(
+          (context, _) => SliverAppBar.large(
             pinned: true,
             expandedHeight:
                 context.wm.loading.value
@@ -140,7 +140,7 @@ class _AppBarFlexibleSpace extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.loading,
       builder:
-          (context, __) =>
+          (context, _) =>
               context.wm.loading.value
                   ? const SizedBox.shrink()
                   : DefaultTextStyle(
@@ -183,7 +183,7 @@ class _WatchStatusButton extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.watchStatus,
       builder:
-          (context, __) => ConditionalWrapper(
+          (context, _) => ConditionalWrapper(
             condition: !_AppBar.isScrolledUnder(context),
             wrapper:
                 (context, child) => IconTheme(
@@ -240,7 +240,7 @@ class _PosterFaded extends StatelessWidget {
         child: ListenableBuilder(
           listenable: context.wm.poster,
           builder:
-              (context, __) => AdaptiveImageBuilder(
+              (context, _) => AdaptiveImageBuilder(
                 image: context.wm.poster.value!,
                 builder:
                     (context, opacity, image, _) =>
@@ -266,7 +266,7 @@ class _Score extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.score,
       builder:
-          (context, __) => switch (context.wm.score.value) {
+          (context, _) => switch (context.wm.score.value) {
             null => const SizedBox.shrink(),
             final double score => MovieScore(
               score,
@@ -284,7 +284,7 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.title,
-      builder: (context, __) => Text(context.wm.title.value),
+      builder: (context, _) => Text(context.wm.title.value),
     );
   }
 }
@@ -297,7 +297,7 @@ class _Genres extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.genres,
       builder:
-          (context, __) => Text(
+          (context, _) => Text(
             context.wm.genres.value.join('\u{00A0}· '),
             style: TextTheme.primaryOf(context).labelLarge,
           ),
@@ -315,7 +315,7 @@ class _Description extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.description,
       builder:
-          (context, __) => switch (context.wm.description.value) {
+          (context, _) => switch (context.wm.description.value) {
             final String description when description.isNotEmpty => Padding(
               padding:
                   EdgeInsets.only(top: marginTop) +
@@ -338,7 +338,7 @@ class _Episodes extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.episodes,
       builder:
-          (context, __) =>
+          (context, _) =>
               context.wm.episodes.value.isEmpty
                   ? const SizedBox.shrink()
                   : Padding(
@@ -349,7 +349,7 @@ class _Episodes extends StatelessWidget {
                         ListenableBuilder(
                           listenable: context.wm.episodesUri,
                           builder:
-                              (context, __) => DestinationTitle(
+                              (context, _) => DestinationTitle(
                                 context.l10n.episodesLabel,
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 16,
@@ -367,7 +367,7 @@ class _Episodes extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             itemCount: context.wm.episodes.value.length,
                             separatorBuilder:
-                                (context, __) => const SizedBox(width: 8),
+                                (context, _) => const SizedBox(width: 8),
                             itemBuilder:
                                 (context, index) =>
                                     _Episode(context.wm.episodes.value[index]),
@@ -388,7 +388,7 @@ class _EpisodesCount extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.episodesCount,
       builder:
-          (context, __) => Text(switch (context.wm.episodesCount.value) {
+          (context, _) => Text(switch (context.wm.episodesCount.value) {
             final int episodesCount => context.l10n.xOfY(
               min(context.wm.episodes.value.length, episodesCount),
               episodesCount,

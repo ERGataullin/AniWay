@@ -48,8 +48,7 @@ class SeekAreaWidget extends ElementaryWidget<ISeekAreaWM> {
           ListenableBuilder(
             listenable: wm.gestures,
             builder:
-                (context, __) =>
-                    RawGestureDetector(gestures: wm.gestures.value),
+                (context, _) => RawGestureDetector(gestures: wm.gestures.value),
           ),
         ],
       ),
@@ -106,7 +105,7 @@ class _Icons extends StatelessWidget {
               (animation) => ValueListenableBuilder(
                 valueListenable: animation,
                 builder:
-                    (context, opacity, ___) => IgnorePointer(
+                    (context, opacity, _) => IgnorePointer(
                       ignoring: opacity == 0,
                       child: Opacity(
                         opacity: opacity,
@@ -129,7 +128,7 @@ class _Value extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: context.wm.value,
       builder:
-          (context, value, ___) => AnimatedSwitcher(
+          (context, value, _) => AnimatedSwitcher(
             switchInCurve: Easing.standardDecelerate,
             switchOutCurve: Easing.standardAccelerate.flipped,
             duration: Durations.medium1,

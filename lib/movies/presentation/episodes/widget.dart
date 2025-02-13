@@ -28,7 +28,7 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
         child: ListenableBuilder(
           listenable: Listenable.merge([wm.tabController, wm.tabsTexts]),
           builder:
-              (context, __) => Scaffold(
+              (context, _) => Scaffold(
                 appBar: AppBar(
                   title: Text(context.l10n.episodesLabel),
                   bottom:
@@ -63,7 +63,7 @@ class _Episodes extends StatelessWidget {
     return ListenableBuilder(
       listenable: context.wm.tabsEpisodes,
       builder:
-          (context, __) => TabBarView(
+          (context, _) => TabBarView(
             controller: context.wm.tabController.value,
             children: context.wm.tabsEpisodes.value
                 .map(

@@ -35,26 +35,25 @@ class EpisodeCard extends StatelessWidget {
                       : AdaptiveImageBuilder(
                         image: data.preview,
                         builder:
-                            (context, opacity, image, ____) =>
-                                ListenableBuilder(
-                                  listenable: opacity,
-                                  builder:
-                                      (context, __) => Shimmer(
-                                        enabled: opacity.value < 1,
-                                        delegate: DecoratedBoxShimmerDelegate(
-                                          decoration: ShapeDecoration(
-                                            shape: CardTheme.of(context).shape!,
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              filterQuality: FilterQuality.low,
-                                              opacity: opacity.value,
-                                              image: image!,
-                                            ),
-                                          ),
+                            (context, opacity, image, _) => ListenableBuilder(
+                              listenable: opacity,
+                              builder:
+                                  (context, _) => Shimmer(
+                                    enabled: opacity.value < 1,
+                                    delegate: DecoratedBoxShimmerDelegate(
+                                      decoration: ShapeDecoration(
+                                        shape: CardTheme.of(context).shape!,
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.low,
+                                          opacity: opacity.value,
+                                          image: image!,
                                         ),
-                                        child: const SizedBox.expand(),
                                       ),
-                                ),
+                                    ),
+                                    child: const SizedBox.expand(),
+                                  ),
+                            ),
                       ),
             ),
           ),
