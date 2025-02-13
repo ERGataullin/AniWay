@@ -8,7 +8,6 @@
             "flutterMode": "debug",
             "program": "lib/main.dart",
             "args": [
-                "--web-renderer=canvaskit",
                 "--web-port=8008",
             ]
         },
@@ -19,7 +18,6 @@
             "flutterMode": "profile",
             "program": "lib/main.dart",
             "args": [
-                "--web-renderer=canvaskit",
                 "--web-port=8008",
             ]
         },
@@ -30,7 +28,6 @@
             "flutterMode": "release",
             "program": "lib/main.dart",
             "args": [
-                "--web-renderer=canvaskit",
                 "--web-port=8008",
             ]
         }
