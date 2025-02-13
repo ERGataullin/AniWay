@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/root_menu/components/bottom_navigation.dart';
 import 'package:app/root_menu/components/primary_navigation.dart';
 import 'package:app/root_menu/components/top_navigation.dart';
+import 'package:app/root_menu/destination.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart' hide Drawer;
 
@@ -24,7 +26,7 @@ class RootMenuView extends StatelessWidget {
 
   final ValueChanged<int> onDestinationSelected;
 
-  final List<NavigationDestination> destinations;
+  final List<RootMenuDestination> destinations;
 
   final String? query;
 
@@ -34,6 +36,23 @@ class RootMenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<NavigationDestination> navigationDestinations = destinations
+        .map(
+          (destination) => switch (destination) {
+            RootMenuDestination.home => NavigationDestination(
+              label: context.l10n.homePageTitle,
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home),
+            ),
+            RootMenuDestination.search => NavigationDestination(
+              label: context.l10n.searchPageTitle,
+              icon: const Icon(Icons.search_outlined),
+              selectedIcon: const Icon(Icons.search),
+            ),
+          },
+        )
+        .toList(growable: false);
+
     return Scaffold(
       body: CustomMultiChildLayout(
         delegate: _LayoutDelegate(),
@@ -56,7 +75,7 @@ class RootMenuView extends StatelessWidget {
             child: PrimaryNavigation(
               currentIndex: currentIndex,
               onDestinationSelected: onDestinationSelected,
-              destinations: destinations,
+              destinations: navigationDestinations,
             ),
           ),
           LayoutId(
@@ -68,7 +87,7 @@ class RootMenuView extends StatelessWidget {
             child: BottomNavigation(
               currentIndex: currentIndex,
               onDestinationSelected: onDestinationSelected,
-              destinations: destinations,
+              destinations: navigationDestinations,
             ),
           ),
         ],

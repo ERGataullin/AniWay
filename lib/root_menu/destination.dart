@@ -1,0 +1,1 @@
+enum RootMenuDestination { home, search }

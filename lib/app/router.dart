@@ -1,5 +1,4 @@
 import 'package:app/auth/auth.dart';
-import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/presentation/components/movie_player/widget.dart';
 import 'package:app/movies/presentation/episodes/widget.dart';
@@ -8,32 +7,37 @@ import 'package:app/movies/presentation/movie/widget.dart';
 import 'package:app/movies/presentation/search/widget.dart';
 import 'package:app/movies/presentation/up_next/widget.dart';
 import 'package:app/root_menu/container.dart';
+import 'package:app/root_menu/destination.dart';
 import 'package:app/root_menu/view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter implements RouterConfig<RouteMatchList> {
-  AppRouter({required L10n l10n, required ValueListenable<bool> signedIn})
-    : _l10n = l10n,
-      _signedIn = signedIn;
-
-  final L10n _l10n;
+  AppRouter({required ValueListenable<bool> signedIn}) : _signedIn = signedIn;
 
   final ValueListenable<bool> _signedIn;
 
-  final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
+  final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
   late final _goRouter = GoRouter(
     navigatorKey: _rootNavigatorKey,
     refreshListenable: _signedIn,
     routes: [_buildSignIn(), _buildRootMenu(), _buildMoviePlayer()],
     redirect: (context, state) {
-      return _signedIn.value && state.topRoute?.name == _Routes.signIn
-          ? state.namedLocation(_Routes.home)
-          : !_signedIn.value
-          ? state.namedLocation(_Routes.signIn)
-          : null;
+      const referrerKey = 'referrer';
+      final String? route = state.topRoute?.name;
+      return switch (_signedIn.value) {
+        false when route != _Routes.signIn => state.namedLocation(
+          _Routes.signIn,
+          queryParameters: {referrerKey: state.matchedLocation},
+        ),
+        false => null,
+        true when route == _Routes.signIn =>
+          state.uri.queryParameters[referrerKey] ??
+              state.namedLocation(_Routes.home),
+        true => null,
+      };
     },
   );
 
@@ -80,18 +84,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
                   index,
                   initialLocation: index == navigationShell.currentIndex,
                 ),
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.home_outlined),
-                selectedIcon: const Icon(Icons.home),
-                label: _l10n.homePageTitle,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.search_outlined),
-                selectedIcon: const Icon(Icons.search),
-                label: _l10n.searchPageTitle,
-              ),
-            ],
+            destinations: RootMenuDestination.values,
             query: state.uri.queryParameters['query'],
             onSearch:
                 (query) => context.goNamed(
@@ -264,9 +257,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   }
 }
 
-class _Routes {
-  const _Routes._();
-
+abstract class _Routes {
   static const signIn = '/sign-in';
 
   static const home = '/home';
