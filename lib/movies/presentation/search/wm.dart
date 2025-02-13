@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
+import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
 import 'package:app/movies/domain/models/movie_card.dart';
-import 'package:app/movies/movies.dart';
 import 'package:app/movies/presentation/search/model.dart';
+import 'package:app/movies/presentation/search/widget.dart';
 import 'package:flutter/material.dart';
 
 MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
@@ -16,15 +17,13 @@ MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
     );
 
 abstract interface class IMoviesSearchWM implements IWidgetModel {
-  SearchController get queryController;
+  Computed<String?> get query;
 
   ScrollController get scrollController;
 
   Key? get pagedGridKey;
 
   Future<List<MovieCardData>> handleLoadPage(int page);
-
-  void handleClearPressed();
 }
 
 class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
@@ -32,58 +31,33 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
     implements IMoviesSearchWM {
   MoviesSearchWM(super._model);
 
-  static const Duration _queryDebounceInterval = Durations.medium2;
-
   @override
-  final SearchController queryController = SearchController();
+  late final Computed<String?> query = Computed(() => widget.query);
 
   @override
   final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
       GlobalKey();
 
-  String _query = '';
-
-  Timer? _queryDebounceTimer;
-
   @override
   ScrollController get scrollController => PrimaryScrollController.of(context);
-
-  @override
-  void initWidgetModel() {
-    super.initWidgetModel();
-    queryController.addListener(_handleQueryChanged);
-  }
 
   @override
   Future<List<MovieCardData>> handleLoadPage(int page) async {
     final List<MovieBaseData> movies = await model.loadPage(
       page: page,
-      query: queryController.text,
+      query: widget.query,
       isOngoing: widget.isOngoing,
     );
     return movies.map(_moviePreviewFromMovie).toList(growable: false);
   }
 
   @override
-  void handleClearPressed() {
-    queryController.clear();
-  }
-
-  @override
-  void dispose() {
-    _queryDebounceTimer?.cancel();
-    queryController.dispose();
-    super.dispose();
-  }
-
-  void _handleQueryChanged() {
-    if (_query == queryController.text) return;
-    _query = queryController.text;
-    _queryDebounceTimer?.cancel();
-    _queryDebounceTimer = Timer(
-      _queryDebounceInterval,
-      () => pagedGridKey.currentState?.reset(),
-    );
+  void didUpdateWidget(MoviesSearchWidget oldWidget) {
+    if (widget.query != oldWidget.query) {
+      query.update();
+      pagedGridKey.currentState?.reset();
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   MovieCardData _moviePreviewFromMovie(MovieBaseData movie) {

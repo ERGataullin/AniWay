@@ -1,7 +1,7 @@
 import 'package:app/core/core.dart';
+import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_list_element.dart';
-import 'package:app/movies/movies.dart';
 import 'package:flutter/foundation.dart';
 
 abstract interface class IMovieModel implements ElementaryModel {

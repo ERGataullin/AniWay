@@ -1,5 +1,5 @@
+import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
-import 'package:app/movies/movies.dart';
 import 'package:elementary/elementary.dart';
 import 'package:flutter/foundation.dart';
 

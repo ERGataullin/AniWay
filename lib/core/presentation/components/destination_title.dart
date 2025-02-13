@@ -30,19 +30,31 @@ class DestinationTitle extends StatelessWidget {
       child: Padding(
         padding: margin,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Link(
-              uri: uri,
-              builder: (context, followLink) => MouseRegion(
-                cursor: WidgetStateMouseCursor.clickable,
-                child: GestureDetector(
-                  onTap: followLink,
+            Flexible(
+              fit: FlexFit.loose,
+              child: Link(
+                uri: uri,
+                builder: (context, followLink) => ConditionalWrapper(
+                  condition: true,
+                  wrapper: (context, child) => MouseRegion(
+                    cursor: WidgetStateMouseCursor.clickable,
+                    child: GestureDetector(
+                      onTap: followLink,
+                      child: child,
+                    ),
+                  ),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(title, style: titleStyle),
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: titleStyle,
+                        ),
+                      ),
                       if (followLink != null)
                         Icon(
                           Icons.chevron_right_outlined,

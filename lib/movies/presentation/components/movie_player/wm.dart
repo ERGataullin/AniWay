@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:app/core/core.dart';
+import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/episode.dart';
-import 'package:app/movies/movies.dart';
 import 'package:app/movies/presentation/components/movie_player/model.dart';
+import 'package:app/movies/presentation/components/movie_player/widget.dart';
 import 'package:app/player/player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

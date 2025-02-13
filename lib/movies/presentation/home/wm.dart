@@ -1,10 +1,11 @@
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
+import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
 import 'package:app/movies/domain/models/movie_card.dart';
 import 'package:app/movies/domain/models/up_next.dart';
-import 'package:app/movies/movies.dart';
 import 'package:app/movies/presentation/home/model.dart';
+import 'package:app/movies/presentation/home/widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
