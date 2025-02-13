@@ -108,7 +108,7 @@ class AppScope extends InheritedWidget {
   @override
   bool updateShouldNotify(AppScope oldWidget) {
     if (dependencies.length != oldWidget.dependencies.length) return true;
-    for (int i = 0; i < dependencies.length; i++) {
+    for (var i = 0; i < dependencies.length; i++) {
       if (dependencies[i] != oldWidget.dependencies[i]) return true;
     }
     return false;

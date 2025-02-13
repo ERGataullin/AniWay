@@ -84,7 +84,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     final int placeholdersToKeep =
         math.min(_viewportCapacity * 2, _items.length);
     _removeItems(from: placeholdersToKeep);
-    for (int i = 0; i < placeholdersToKeep; i++) {
+    for (var i = 0; i < placeholdersToKeep; i++) {
       _items[i].value = null;
     }
     _finishedItemsCount = 0;
@@ -174,7 +174,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
       _items.length - _finishedItemsCount,
     );
     // Замена плэйсхолдеров.
-    for (int i = 0; i < placeholdersToReplace; i++) {
+    for (var i = 0; i < placeholdersToReplace; i++) {
       _items[i + _finishedItemsCount].value = pageItems[i];
     }
     // Добавление остальных элементов страницы.
