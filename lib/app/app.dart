@@ -60,7 +60,6 @@ class _AppState extends State<App> {
                 child: Router.withConfig(
                   config:
                       _router ??= AppRouter(
-                        l10n: context.l10n,
                         signedIn: context.read<AuthRepository>().signedIn,
                       ),
                 ),
