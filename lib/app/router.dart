@@ -18,10 +18,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   final ValueListenable<bool> _signedIn;
 
-  final _rootNavigatorKey = GlobalKey<NavigatorState>();
-
   late final _goRouter = GoRouter(
-    navigatorKey: _rootNavigatorKey,
     refreshListenable: _signedIn,
     routes: [_buildSignIn(), _buildRootMenu(), _buildMoviePlayer()],
     redirect: (context, state) {

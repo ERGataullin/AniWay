@@ -33,24 +33,10 @@ mixin ThemeWMMixin<W extends ElementaryWidget, M extends ElementaryModel>
 class Themes {
   Themes._();
 
-  static final ThemeData light =
-      ThemeData(
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarBrightness: Brightness.light,
-          ),
-        ),
-      ).appOverrides;
+  static final ThemeData light = ThemeData().appOverrides;
 
   static final ThemeData dark =
-      ThemeData(
-        brightness: Brightness.dark,
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarBrightness: Brightness.dark,
-          ),
-        ),
-      ).appOverrides;
+      ThemeData(brightness: Brightness.dark).appOverrides;
 
   static final ThemeData videoPlayer = ThemeData.from(
     colorScheme: ColorScheme(
@@ -71,6 +57,8 @@ class Themes {
     splashColor: const Color(0x66C8C8C8),
     appBarTheme: const AppBarTheme(centerTitle: false),
     sliderTheme: SliderThemeData(
+      // ignore: deprecated_member_use
+      year2023: false,
       trackHeight: 4,
       allowedInteraction: SliderInteraction.slideOnly,
       overlayShape: SliderComponentShape.noOverlay,
@@ -85,6 +73,7 @@ extension _AppOverrides on ThemeData {
     appBarTheme: appBarTheme.copyWith(
       scrolledUnderElevation: 3,
       toolbarHeight: 64,
+      systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: brightness),
     ),
     cardTheme: cardTheme.copyWith(
       margin: EdgeInsets.zero,
@@ -92,6 +81,7 @@ extension _AppOverrides on ThemeData {
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     ),
+    progressIndicatorTheme: progressIndicatorTheme.copyWith(year2023: false),
     dividerTheme: dividerTheme.copyWith(
       space: 0,
       thickness: 1,
