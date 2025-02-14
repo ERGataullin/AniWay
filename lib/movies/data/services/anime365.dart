@@ -204,9 +204,10 @@ class MoviesServiceAnime365 implements MoviesService {
           String posterUrl = posterStyle.substring(
             posterStyle.indexOf(posterUrlPrefix) + posterUrlPrefix.length,
           );
-          posterUrl = posterUrl
-              .substring(0, posterUrl.indexOf(posterUrlPostfix))
-              .replaceFirst('140x140.1.', '');
+          posterUrl = posterUrl.substring(
+            0,
+            posterUrl.indexOf(posterUrlPostfix),
+          );
 
           final String episodePathSegment = hrefUri.pathSegments[2];
           final int episodeId = int.parse(
