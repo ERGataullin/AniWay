@@ -40,11 +40,8 @@ class MoviesServiceAnime365 implements MoviesService {
         uri: Uri(
           path: '/api/series',
           queryParameters: {
-            'fields':
-                'id,titles,title,type,myAnimeListId,myAnimeListScore,'
-                'posterUrl,posterUrlSmall',
+            'fields': 'id,titles,title,type,myAnimeListId,myAnimeListScore',
             'order': _convertMoviesOrderToJson(order),
-            'isActive': 1,
             if (isOngoing != null) 'isAiring': isOngoing ? 1 : 0,
             if (query?.isNotEmpty ?? false) 'query': query,
             if (limit != null) 'limit': limit,
@@ -61,7 +58,6 @@ class MoviesServiceAnime365 implements MoviesService {
       response.body['data']! as List<dynamic>,
     );
     final List<int> shikimoriIds = anime365Data
-        .where((movieJson) => movieJson['myAnimeListId'] != 0)
         .map((movieJson) => movieJson['myAnimeListId']! as int)
         .toList(growable: false);
     final ResponseData<Json> shikimoriResponse = await _networkService.request(
@@ -96,46 +92,26 @@ class MoviesServiceAnime365 implements MoviesService {
     };
     return anime365Data
         .map((movieJson) {
-          final Json? shikimoriPoster = switch (movieJson['myAnimeListId']) {
-            final int id when id > 0 =>
-              shikimoriMovies[id.toString()]?['poster'] as Json?,
-            _ => null,
-          };
+          final shikimoriId = (movieJson['myAnimeListId']! as int).toString();
+          final shikimoriPoster =
+              shikimoriMovies[shikimoriId]!['poster']! as Json;
           return MovieBaseData(
             id: movieJson['id']! as int,
             title:
                 (movieJson['titles'] as Json?)?['ru'] as String? ??
                 movieJson['title']! as String,
             poster: ImageData(
-              resolutionsUris:
-                  shikimoriPoster == null
-                      ? {
-                        140: Uri.parse(movieJson['posterUrlSmall']! as String),
-                        double.infinity: Uri.parse(
-                          movieJson['posterUrl']! as String,
-                        ),
-                      }
-                      : {
-                        60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
-                        120: Uri.parse(
-                          shikimoriPoster['miniAlt2xUrl']! as String,
-                        ),
-                        160: Uri.parse(
-                          shikimoriPoster['previewAltUrl']! as String,
-                        ),
-                        225: Uri.parse(
-                          shikimoriPoster['mainAltUrl']! as String,
-                        ),
-                        320: Uri.parse(
-                          shikimoriPoster['previewAlt2xUrl']! as String,
-                        ),
-                        450: Uri.parse(
-                          shikimoriPoster['mainAlt2xUrl']! as String,
-                        ),
-                        double.infinity: Uri.parse(
-                          shikimoriPoster['originalUrl']! as String,
-                        ),
-                      },
+              resolutionsUris: {
+                60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
+                120: Uri.parse(shikimoriPoster['miniAlt2xUrl']! as String),
+                160: Uri.parse(shikimoriPoster['previewAltUrl']! as String),
+                225: Uri.parse(shikimoriPoster['mainAltUrl']! as String),
+                320: Uri.parse(shikimoriPoster['previewAlt2xUrl']! as String),
+                450: Uri.parse(shikimoriPoster['mainAlt2xUrl']! as String),
+                double.infinity: Uri.parse(
+                  shikimoriPoster['originalUrl']! as String,
+                ),
+              },
             ),
             type: _convertJsonToMovieType(movieJson['type']! as String),
             score:
@@ -454,7 +430,10 @@ class MoviesServiceAnime365 implements MoviesService {
         .map(
           (translationJson) => VideoTranslationData(
             id: translationJson['id']! as int,
-            title: translationJson['authorsSummary']! as String,
+            title: switch (translationJson['authorsSummary']) {
+              final String author when author.isNotEmpty => author,
+              _ => 'Неизвестный',
+            },
             type: VideoTranslationType.valueOf(
               translationJson['typeKind']! as String,
             ),
