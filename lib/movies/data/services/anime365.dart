@@ -454,7 +454,10 @@ class MoviesServiceAnime365 implements MoviesService {
         .map(
           (translationJson) => VideoTranslationData(
             id: translationJson['id']! as int,
-            title: translationJson['authorsSummary']! as String,
+            title: switch (translationJson['authorsSummary']) {
+              final String author when author.isNotEmpty => author,
+              _ => 'Неизвестный',
+            },
             type: VideoTranslationType.valueOf(
               translationJson['typeKind']! as String,
             ),
