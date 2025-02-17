@@ -1,5 +1,6 @@
 import 'package:app/movies/domain/models/movie_base.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
+import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/up_next.dart';
 import 'package:app/movies/domain/models/watch_list_element.dart';
@@ -15,6 +16,7 @@ abstract interface class MoviesService {
     bool? isOngoing,
     String? query,
     MoviesOrder order = MoviesOrder.byPopularity,
+    List<MovieType> typesExcluded = const [],
     List<WatchStatus> watchStatuses = const [],
   });
 

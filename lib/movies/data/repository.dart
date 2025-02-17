@@ -2,6 +2,7 @@ import 'package:app/core/core.dart';
 import 'package:app/movies/data/services/service.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
+import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/up_next.dart';
 import 'package:app/movies/domain/models/watch_list_element.dart';
@@ -33,6 +34,7 @@ class MoviesRepository implements Initable {
     bool? isOngoing,
     String? query,
     MoviesOrder order = MoviesOrder.byPopularity,
+    List<MovieType> typesExcluded = const [],
     List<WatchStatus> watchStatuses = const [],
   }) {
     return _moviesService.getMovies(
@@ -41,6 +43,7 @@ class MoviesRepository implements Initable {
       isOngoing: isOngoing,
       query: query,
       order: order,
+      typesExcluded: typesExcluded,
       watchStatuses: watchStatuses,
     );
   }

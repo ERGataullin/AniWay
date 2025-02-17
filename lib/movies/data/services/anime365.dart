@@ -33,8 +33,10 @@ class MoviesServiceAnime365 implements MoviesService {
     String? query,
     int? limit,
     int? offset,
+    List<MovieType> typesExcluded = const [],
     List<WatchStatus> watchStatuses = const [],
   }) async {
+    assert(typesExcluded.isEmpty || query == null);
     final ResponseData<Json> response = await _networkService.request<Json>(
       RequestData(
         uri: Uri(
@@ -46,6 +48,10 @@ class MoviesServiceAnime365 implements MoviesService {
             'order': _convertMoviesOrderToJson(order),
             'isActive': 1,
             if (isOngoing != null) 'isAiring': isOngoing ? 1 : 0,
+            if (typesExcluded.isNotEmpty)
+              'chips':
+                  'type!='
+                  '${typesExcluded.map(_convertMovieTypeToJson).join(',')}',
             if (query?.isNotEmpty ?? false) 'query': query,
             if (limit != null) 'limit': limit,
             if (offset != null) 'offset': offset,
@@ -144,13 +150,6 @@ class MoviesServiceAnime365 implements MoviesService {
                     : double.parse(movieJson['myAnimeListScore']! as String),
           );
         })
-        .where(
-          (movie) =>
-              !(isOngoing ?? false) ||
-              movie.type != MovieType.music &&
-                  movie.type != MovieType.ad &&
-                  movie.type != MovieType.preview,
-        )
         .toList(growable: false);
   }
 
@@ -597,6 +596,20 @@ class MoviesServiceAnime365 implements MoviesService {
       'preview' || 'pv' => MovieType.preview,
       final Object? unsupported =>
         throw UnsupportedError('Unsupported movie type: $unsupported'),
+    };
+  }
+
+  String _convertMovieTypeToJson(MovieType type) {
+    return switch (type) {
+      MovieType.tv => 'tv,tv_13,tv_24,tv_48',
+      MovieType.movie => 'movie',
+      MovieType.ova => 'ova',
+      MovieType.ona => 'ona',
+      MovieType.special => 'special',
+      MovieType.tvSpecial => 'tv_special',
+      MovieType.ad => 'cm',
+      MovieType.music => 'music',
+      MovieType.preview => 'preview,pv',
     };
   }
 
