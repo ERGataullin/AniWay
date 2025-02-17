@@ -144,6 +144,13 @@ class MoviesServiceAnime365 implements MoviesService {
                     : double.parse(movieJson['myAnimeListScore']! as String),
           );
         })
+        .where(
+          (movie) =>
+              !(isOngoing ?? false) ||
+              movie.type != MovieType.music &&
+                  movie.type != MovieType.ad &&
+                  movie.type != MovieType.preview,
+        )
         .toList(growable: false);
   }
 
