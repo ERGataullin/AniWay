@@ -1,6 +1,7 @@
 import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
+import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/up_next.dart';
 import 'package:flutter/foundation.dart';
 
@@ -39,6 +40,7 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     final Future<List<UpNextData>> newUpNextFuture = _repository.getUpNext();
     final Future<List<MovieBaseData>> newOngoingFuture = _repository.getMovies(
       isOngoing: true,
+      typesExcluded: const [MovieType.ad, MovieType.music, MovieType.preview],
     );
     final Future<List<MovieBaseData>> newPopularFuture =
         _repository.getMovies();
