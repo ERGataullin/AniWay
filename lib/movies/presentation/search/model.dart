@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
+import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:elementary/elementary.dart';
 
 abstract interface class IMoviesSearchModel implements ElementaryModel {
@@ -9,6 +10,7 @@ abstract interface class IMoviesSearchModel implements ElementaryModel {
     required int page,
     String? query,
     bool? isOngoing,
+    List<MovieType> typesExcluded = const [],
   });
 }
 
@@ -23,11 +25,13 @@ class MoviesSearchModel extends ElementaryModel implements IMoviesSearchModel {
     required int page,
     String? query,
     bool? isOngoing,
+    List<MovieType> typesExcluded = const [],
   }) {
     return _repository.getMovies(
       page: page,
       query: query,
       isOngoing: isOngoing,
+      typesExcluded: typesExcluded,
     );
   }
 }

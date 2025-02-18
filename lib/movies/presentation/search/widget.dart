@@ -1,4 +1,5 @@
 import 'package:app/core/core.dart';
+import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/movies.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
@@ -12,6 +13,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
     this.isOngoing,
     this.query,
     this.order = MoviesOrder.byPopularity,
+    this.typesExcluded = const [],
     required this.onSearch,
     required this.onMoviePressed,
     WidgetModelFactory wmFactory = moviesSearchWMFactory,
@@ -22,6 +24,8 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   final String? query;
 
   final MoviesOrder order;
+
+  final List<MovieType> typesExcluded;
 
   final OnMoviesSearch onSearch;
 

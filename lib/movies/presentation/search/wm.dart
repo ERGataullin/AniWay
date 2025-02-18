@@ -47,6 +47,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
       page: page,
       query: widget.query,
       isOngoing: widget.isOngoing,
+      typesExcluded: widget.typesExcluded,
     );
     return movies.map(_moviePreviewFromMovie).toList(growable: false);
   }
