@@ -136,7 +136,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
                 search.name!,
                 queryParameters: {
                   'isOngoing': true.toString(),
-                  'typesExcluded': [
+                  'typesExcluded': const [
                     MovieType.ad,
                     MovieType.music,
                     MovieType.preview,
