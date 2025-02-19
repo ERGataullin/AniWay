@@ -136,10 +136,10 @@ class AppRouter implements RouterConfig<RouteMatchList> {
                 search.name!,
                 queryParameters: {
                   'isOngoing': true.toString(),
-                  'typesExcluded': const [
-                    MovieType.ad,
-                    MovieType.music,
-                    MovieType.preview,
+                  'typesExcluded': [
+                    MovieType.ad.name,
+                    MovieType.music.name,
+                    MovieType.preview.name,
                   ].join(','),
                 },
               ),
