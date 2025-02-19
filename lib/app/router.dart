@@ -1,4 +1,5 @@
 import 'package:app/auth/auth.dart';
+import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/presentation/components/movie_player/widget.dart';
 import 'package:app/movies/presentation/episodes/widget.dart';
@@ -133,7 +134,14 @@ class AppRouter implements RouterConfig<RouteMatchList> {
             ongoingsUri: Uri.parse(
               state.namedLocation(
                 search.name!,
-                queryParameters: {'isOngoing': true.toString()},
+                queryParameters: {
+                  'isOngoing': true.toString(),
+                  'typesExcluded': const [
+                    MovieType.ad,
+                    MovieType.music,
+                    MovieType.preview,
+                  ].join(','),
+                },
               ),
             ),
             popularsUri: Uri.parse(
@@ -168,6 +176,12 @@ class AppRouter implements RouterConfig<RouteMatchList> {
               final String order => MoviesOrder.valueOf(order),
               _ => MoviesOrder.byPopularity,
             },
+            typesExcluded:
+                state.uri.queryParameters['typesExcluded']
+                    ?.split(',')
+                    .map(MovieType.values.byName)
+                    .toList(growable: false) ??
+                const [],
             onSearch:
                 (query) => context.goNamed(
                   name,
