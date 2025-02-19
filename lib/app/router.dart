@@ -136,7 +136,11 @@ class AppRouter implements RouterConfig<RouteMatchList> {
                 search.name!,
                 queryParameters: {
                   'isOngoing': true.toString(),
-                  'typesExcluded': 'ad,music,preview',
+                  'typesExcluded': [
+                    MovieType.ad,
+                    MovieType.music,
+                    MovieType.preview,
+                  ].join(','),
                 },
               ),
             ),
@@ -173,12 +177,11 @@ class AppRouter implements RouterConfig<RouteMatchList> {
               _ => MoviesOrder.byPopularity,
             },
             typesExcluded:
-                state.uri.queryParameters['typesExcluded'] == null
-                    ? const []
-                    : state.uri.queryParameters['typesExcluded']!
-                        .split(',')
-                        .map((value) => MovieType.values.byName(value))
-                        .toList(),
+                state.uri.queryParameters['typesExcluded']
+                    ?.split(',')
+                    .map((value) => MovieType.values.byName(value))
+                    .toList() ??
+                const [],
             onSearch:
                 (query) => context.goNamed(
                   name,
