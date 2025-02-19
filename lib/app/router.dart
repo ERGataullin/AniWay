@@ -179,8 +179,8 @@ class AppRouter implements RouterConfig<RouteMatchList> {
             typesExcluded:
                 state.uri.queryParameters['typesExcluded']
                     ?.split(',')
-                    .map((value) => MovieType.values.byName(value))
-                    .toList() ??
+                    .map(MovieType.values.byName)
+                    .toList(growable: false) ??
                 const [],
             onSearch:
                 (query) => context.goNamed(
