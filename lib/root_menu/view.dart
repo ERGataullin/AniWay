@@ -7,11 +7,12 @@ import 'package:app/root_menu/components/primary_navigation.dart';
 import 'package:app/root_menu/components/top_navigation.dart';
 import 'package:app/root_menu/destination.dart';
 import 'package:app/root_menu/root_menu.dart';
-import 'package:flutter/material.dart' hide Drawer;
+import 'package:flutter/material.dart';
 
-enum _SlotId { body, primaryNavigation, topNavigation, bottomNavigation }
-
-class RootMenuView extends StatelessWidget {
+/// Главное меню.
+///
+/// Адаптируется к размерам доступного пространства.
+class RootMenuView extends StatefulWidget {
   const RootMenuView({
     super.key,
     this.currentIndex = 0,
@@ -35,8 +36,95 @@ class RootMenuView extends StatelessWidget {
   final Widget child;
 
   @override
+  State<RootMenuView> createState() => _RootMenuViewState();
+}
+
+class _RootMenuViewState extends State<RootMenuView> {
+  final GlobalKey _primaryKey = GlobalKey();
+
+  final GlobalKey _topKey = GlobalKey();
+
+  final GlobalKey _bottomKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
-    final List<NavigationDestination> navigationDestinations = destinations
+    final List<NavigationDestination> navigationDestinations =
+        _buildDestinations(context);
+    return Scaffold(
+      body: RootMenuScope(
+        primaryNavigationKey: _primaryKey,
+        topNavigationKey: _topKey,
+        bottomNavigationKey: _bottomKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TopNavigation(
+              key: _topKey,
+              query: widget.query,
+              onSearch: widget.onSearch,
+            ),
+            Flexible(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  PrimaryNavigation(
+                    key: _primaryKey,
+                    currentIndex: widget.currentIndex,
+                    onDestinationSelected: widget.onDestinationSelected,
+                    destinations: navigationDestinations,
+                  ),
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        final MediaQueryData mediaQuery = MediaQuery.of(
+                          context,
+                        );
+                        final Size topSize = TopNavigation.sizeFor(context);
+                        final Size primarySize = PrimaryNavigation.sizeFor(
+                          context,
+                        );
+                        final Size bottomSize = BottomNavigation.sizeFor(
+                          context,
+                        );
+                        return MediaQuery(
+                          data: mediaQuery.copyWith(
+                            padding: mediaQuery.padding.copyWith(
+                              left: max(
+                                0,
+                                mediaQuery.padding.left - primarySize.width,
+                              ),
+                              top: max(
+                                0,
+                                mediaQuery.padding.top - topSize.height,
+                              ),
+                              bottom: max(
+                                0,
+                                mediaQuery.padding.bottom - bottomSize.height,
+                              ),
+                            ),
+                          ),
+                          child: widget.child,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            BottomNavigation(
+              key: _bottomKey,
+              currentIndex: widget.currentIndex,
+              onDestinationSelected: widget.onDestinationSelected,
+              destinations: navigationDestinations,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<NavigationDestination> _buildDestinations(BuildContext context) {
+    return widget.destinations
         .map(
           (destination) => switch (destination) {
             RootMenuDestination.home => NavigationDestination(
@@ -52,112 +140,5 @@ class RootMenuView extends StatelessWidget {
           },
         )
         .toList(growable: false);
-
-    return Scaffold(
-      body: CustomMultiChildLayout(
-        delegate: _LayoutDelegate(),
-        children: [
-          LayoutId(
-            id: _SlotId.body,
-            child: Builder(
-              builder:
-                  (context) => MediaQuery.removePadding(
-                    removeLeft: RootMenu.hasPrimaryNavigation(context),
-                    removeTop: RootMenu.hasTopNavigation(context),
-                    removeBottom: RootMenu.hasBottomNavigation(context),
-                    context: context,
-                    child: child,
-                  ),
-            ),
-          ),
-          LayoutId(
-            id: _SlotId.primaryNavigation,
-            child: PrimaryNavigation(
-              currentIndex: currentIndex,
-              onDestinationSelected: onDestinationSelected,
-              destinations: navigationDestinations,
-            ),
-          ),
-          LayoutId(
-            id: _SlotId.topNavigation,
-            child: TopNavigation(query: query, onSearch: onSearch),
-          ),
-          LayoutId(
-            id: _SlotId.bottomNavigation,
-            child: BottomNavigation(
-              currentIndex: currentIndex,
-              onDestinationSelected: onDestinationSelected,
-              destinations: navigationDestinations,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _LayoutDelegate extends MultiChildLayoutDelegate {
-  @override
-  bool shouldRelayout(_LayoutDelegate oldDelegate) {
-    return false;
-  }
-
-  @override
-  void performLayout(Size size) {
-    final Size topNavigationSize = layoutChild(
-      _SlotId.topNavigation,
-      BoxConstraints(
-        minWidth: size.width,
-        maxWidth: size.width,
-        maxHeight: size.height,
-      ),
-    );
-    positionChild(_SlotId.topNavigation, Offset.zero);
-
-    final Size bottomNavigationSize = layoutChild(
-      _SlotId.bottomNavigation,
-      BoxConstraints(
-        minWidth: size.width,
-        maxWidth: size.width,
-        maxHeight: size.height - topNavigationSize.height,
-      ),
-    );
-    positionChild(
-      _SlotId.bottomNavigation,
-      Offset(0, size.height - bottomNavigationSize.height),
-    );
-
-    final Size primaryNavigationSize = layoutChild(
-      _SlotId.primaryNavigation,
-      BoxConstraints(
-        maxWidth: size.width,
-        maxHeight:
-            size.height -
-            topNavigationSize.height -
-            bottomNavigationSize.height,
-      ),
-    );
-    positionChild(
-      _SlotId.primaryNavigation,
-      Offset(0, topNavigationSize.height),
-    );
-
-    final Size bodySize = layoutChild(
-      _SlotId.body,
-      BoxConstraints(
-        maxWidth: size.width - primaryNavigationSize.width,
-        maxHeight:
-            size.height -
-            topNavigationSize.height -
-            bottomNavigationSize.height,
-      ),
-    );
-    positionChild(
-      _SlotId.body,
-      Offset(
-        max(primaryNavigationSize.width, (size.width - bodySize.width) / 2),
-        topNavigationSize.height,
-      ),
-    );
   }
 }

@@ -9,13 +9,30 @@ class BottomNavigation extends StatelessWidget {
     required this.destinations,
   });
 
-  static const Breakpoint breakpoint = Breakpoints.small;
+  static const Breakpoint _breakpoint = Breakpoints.small;
 
   final int currentIndex;
 
   final ValueChanged<int> onDestinationSelected;
 
   final List<NavigationDestination> destinations;
+
+  static Size sizeFor(BuildContext context) {
+    final Breakpoint? breakpoint = Breakpoint.activeBreakpointIn(
+      context,
+      const [_breakpoint],
+    );
+    return switch (breakpoint) {
+      null => Size.zero,
+      _breakpoint => Size.fromHeight(
+        NavigationBarTheme.of(context).height ?? 80,
+      ),
+      _ =>
+        throw UnsupportedError(
+          'tried getting size for an unsupported breakpoint',
+        ),
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +42,7 @@ class BottomNavigation extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: SlotLayout(
         config: {
-          breakpoint: SlotLayout.from(
+          _breakpoint: SlotLayout.from(
             key: const Key('Bottom Navigation Small'),
             builder:
                 (context) => AdaptiveScaffold.standardBottomNavigationBar(

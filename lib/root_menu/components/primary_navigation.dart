@@ -9,13 +9,34 @@ class PrimaryNavigation extends StatelessWidget {
     required this.destinations,
   });
 
-  static const Breakpoint breakpoint = Breakpoints.mediumAndUp;
+  static const Breakpoint _railBreakpoint = Breakpoints.mediumAndUp;
+
+  static const Breakpoint _drawerBreakpoint = Breakpoints.largeAndUp;
 
   final int currentIndex;
 
   final ValueChanged<int> onDestinationSelected;
 
   final List<NavigationDestination> destinations;
+
+  static Size sizeFor(BuildContext context) {
+    final Breakpoint? breakpoint = Breakpoint.activeBreakpointIn(
+      context,
+      const [_railBreakpoint, _drawerBreakpoint],
+    );
+    return switch (breakpoint) {
+      null => Size.zero,
+      _railBreakpoint => Size.fromWidth(
+        NavigationRailTheme.of(context).minWidth! +
+            DividerTheme.of(context).thickness!,
+      ),
+      _drawerBreakpoint => Size.fromWidth(DrawerTheme.of(context).width!),
+      _ =>
+        throw UnsupportedError(
+          'tried getting size for an unsupported breakpoint',
+        ),
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +46,8 @@ class PrimaryNavigation extends StatelessWidget {
       alignment: Alignment.topLeft,
       child: SlotLayout(
         config: {
-          breakpoint: SlotLayout.from(
-            key: const Key('Primary Navigation Medium and Up'),
+          _railBreakpoint: SlotLayout.from(
+            key: const Key('Rail'),
             builder:
                 (context) => Row(
                   mainAxisSize: MainAxisSize.min,
@@ -36,7 +57,7 @@ class PrimaryNavigation extends StatelessWidget {
                       child: AdaptiveScaffold.standardNavigationRail(
                         labelType: null,
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        width: 80,
+                        width: NavigationRailTheme.of(context).minWidth!,
                         selectedIndex: currentIndex,
                         onDestinationSelected: onDestinationSelected,
                         destinations: destinations
@@ -48,8 +69,8 @@ class PrimaryNavigation extends StatelessWidget {
                   ],
                 ),
           ),
-          Breakpoints.largeAndUp: SlotLayout.from(
-            key: const Key('Primary Navigation Large and Up'),
+          _drawerBreakpoint: SlotLayout.from(
+            key: const Key('Drawer'),
             builder:
                 (context) => NavigationDrawer(
                   selectedIndex: currentIndex,
