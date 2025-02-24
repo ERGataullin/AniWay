@@ -9,6 +9,7 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8008",
+                "--web-browser-flag=--disable-web-security",
             ]
         },
         {
@@ -19,6 +20,7 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8008",
+                "--web-browser-flag=--disable-web-security",
             ]
         },
         {
@@ -29,6 +31,7 @@
             "program": "lib/main.dart",
             "args": [
                 "--web-port=8008",
+                "--web-browser-flag=--disable-web-security",
             ]
         }
     ]

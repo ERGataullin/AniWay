@@ -10,26 +10,42 @@ enum _SlotId { leading, middle }
 class TopNavigation extends StatelessWidget {
   const TopNavigation({super.key, this.query, required this.onSearch});
 
-  static const Breakpoint breakpoint = Breakpoints.mediumAndUp;
+  static const Breakpoint _breakpoint = Breakpoints.mediumAndUp;
 
   final String? query;
 
   final OnMoviesSearch onSearch;
 
+  static Size sizeFor(BuildContext context) {
+    final Breakpoint? breakpoint = Breakpoint.activeBreakpointIn(
+      context,
+      const [_breakpoint],
+    );
+    return switch (breakpoint) {
+      null => Size.zero,
+      _breakpoint => Size.fromHeight(
+        AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight,
+      ),
+      _ =>
+        throw UnsupportedError(
+          'tried getting size for an unsupported breakpoint',
+        ),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return SlotLayout(
       config: {
-        breakpoint: SlotLayout.from(
+        _breakpoint: SlotLayout.from(
           key: const Key('Top Navigation Medium and Up'),
           builder: (context) {
             final ThemeData theme = Theme.of(context);
             final ColorScheme colorScheme = theme.colorScheme;
-            final double appBarHeight =
-                theme.appBarTheme.toolbarHeight ?? kToolbarHeight;
+            final Size size = sizeFor(context);
 
             return SizedBox(
-              height: appBarHeight,
+              height: size.height,
               child: Theme(
                 data: theme.copyWith(
                   colorScheme: colorScheme.copyWith(
@@ -41,14 +57,11 @@ class TopNavigation extends StatelessWidget {
                   title: Theme(
                     data: theme,
                     child: CustomMultiChildLayout(
-                      delegate: _LayoutDelegate(
-                        spacing: 24,
-                        height: appBarHeight,
-                      ),
+                      delegate: _LayoutDelegate(spacing: 24, size: size),
                       children: [
                         LayoutId(
                           id: _SlotId.leading,
-                          child: const Logo(enableRedirect: false),
+                          child: const Logo(enableRedirect: true),
                         ),
                         LayoutId(
                           id: _SlotId.middle,
@@ -71,20 +84,20 @@ class TopNavigation extends StatelessWidget {
 }
 
 class _LayoutDelegate extends MultiChildLayoutDelegate {
-  _LayoutDelegate({this.spacing = 0, required this.height});
+  _LayoutDelegate({this.spacing = 0, required this.size});
 
   final double spacing;
 
-  final double height;
+  final Size size;
 
   @override
   bool shouldRelayout(_LayoutDelegate oldDelegate) {
-    return spacing != oldDelegate.spacing || height != oldDelegate.height;
+    return spacing != oldDelegate.spacing;
   }
 
   @override
   Size getSize(BoxConstraints constraints) {
-    return constraints.copyWith(minHeight: height, maxHeight: height).biggest;
+    return size;
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:app/movies/movies.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/movies/presentation/search/wm.dart';
+import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
 
 class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
@@ -39,17 +40,18 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
         child: ListenableBuilder(
           listenable: wm.query,
           builder:
-              (context, body) => PageLayout(
+              (context, body) => Scaffold(
                 extendBodyBehindAppBar: true,
-                appBar: MoviesSearchBar(
-                  query: wm.query.value,
-                  onSearch: onSearch,
-                ),
+                appBar:
+                    RootMenuScope.of(context).hasTopNavigation
+                        ? null
+                        : MoviesSearchBar(
+                          query: wm.query.value,
+                          onSearch: onSearch,
+                        ),
                 body: body,
               ),
-          child: SafeArea(
-            top: false,
-            bottom: false,
+          child: ConstrainedContent(
             child: CustomScrollView(
               controller: wm.scrollController,
               slivers: [

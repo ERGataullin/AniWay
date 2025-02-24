@@ -20,11 +20,10 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   CookieManagerImpl({required StorageService storageService})
     : _storageService = storageService;
 
-  static const String _effectiveCookieHeaderName =
-      kIsWeb ? 'kaki' : HttpHeaders.cookieHeader;
+  static const String _effectiveCookieHeaderName = HttpHeaders.cookieHeader;
 
   static const String _effectiveSetCookieHeaderName =
-      kIsWeb ? 'set-kaki' : HttpHeaders.setCookieHeader;
+      HttpHeaders.setCookieHeader;
 
   static final Pattern _setCookieSplitter = RegExp(
     r'[ \t]*,[ \t]*(?=['

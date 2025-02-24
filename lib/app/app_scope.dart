@@ -4,7 +4,6 @@ import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/data/services/anime365.dart';
 import 'package:app/player/player.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class AppScope extends InheritedWidget {
@@ -23,16 +22,7 @@ class AppScope extends InheritedWidget {
     this.networkService =
         networkService ??
         HttpService(
-          baseUri:
-              kIsWeb
-                  ? ProxiedUri(
-                    proxy: Uri(scheme: 'https', host: 'aniway.fun'),
-                    original: Uri(
-                      scheme: 'https',
-                      host: 'smotret-anime.online',
-                    ),
-                  )
-                  : Uri(scheme: 'https', host: 'smotret-anime.online'),
+          baseUri: Uri(scheme: 'https', host: 'smotret-anime.online'),
         );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
