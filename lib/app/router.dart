@@ -22,21 +22,21 @@ class AppRouter implements RouterConfig<RouteMatchList> {
   late final _goRouter = GoRouter(
     refreshListenable: _signedIn,
     routes: [_buildSignIn(), _buildRootMenu(), _buildMoviePlayer()],
-    redirect: (context, state) {
-      const referrerKey = 'referrer';
-      final String? route = state.topRoute?.name;
-      return switch (_signedIn.value) {
-        false when route != _Routes.signIn => state.namedLocation(
-          _Routes.signIn,
-          queryParameters: {referrerKey: state.matchedLocation},
-        ),
-        false => null,
-        true when route == _Routes.signIn =>
-          state.uri.queryParameters[referrerKey] ??
-              state.namedLocation(_Routes.home),
-        true => null,
-      };
-    },
+    // redirect: (context, state) {
+    //   const referrerKey = 'referrer';
+    //   final String? route = state.topRoute?.name;
+    //   return switch (_signedIn.value) {
+    //     false when route != _Routes.signIn => state.namedLocation(
+    //       _Routes.signIn,
+    //       queryParameters: {referrerKey: state.matchedLocation},
+    //     ),
+    //     false => null,
+    //     true when route == _Routes.signIn =>
+    //       state.uri.queryParameters[referrerKey] ??
+    //           state.namedLocation(_Routes.home),
+    //     true => null,
+    //   };
+    // },
   );
 
   @override

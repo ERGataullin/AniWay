@@ -85,7 +85,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
   }
 
   CookieMap _parseCookie(String? setCookie) {
-    if (setCookie == null) return const {};
+    if (setCookie == null || setCookie.isEmpty) return const {};
 
     final List<Cookie> setCookieList = setCookie
         .split(_setCookieSplitter)

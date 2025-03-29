@@ -5,9 +5,10 @@ import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/presentation/movie/model.dart';
 import 'package:app/movies/presentation/movie/widget.dart';
+import 'package:app/movies/presentation/watch_list/widget.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
   MovieModel(
@@ -36,6 +37,8 @@ abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<int?> get episodesCount;
 
   ValueListenable<List<EpisodeData>> get episodes;
+
+  Future<void> handleWatchListPressed(BuildContext context);
 
   void handlePlayPressed();
 
@@ -118,6 +121,18 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   void didUpdateWidget(MovieWidget oldWidget) {
     episodesUri.update();
     super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Future<void> handleWatchListPressed(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder:
+          (context) => WatchListWidget(
+            movieId: widget.movieId,
+            watchListElementData: model.watchStatusDetails.value!,
+          ),
+    );
   }
 
   @override

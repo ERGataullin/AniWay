@@ -583,6 +583,29 @@ class MoviesServiceAnime365 implements MoviesService {
         );
   }
 
+  @override
+  Future<void> saveWatchStatus({
+    required int movieId,
+    required WatchStatus status,
+    required int score,
+    required int episodes,
+    required String comment,
+  }) async {
+    await _networkService.request<void>(
+      RequestData(
+        uri: Uri(path: '/catalog/$movieId'),
+        method: RequestMethod.post,
+        body: {
+          'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
+          'UsersRates[status]': 1,
+          'UsersRates[score]': 10,
+          'UsersRates[episodes]': 10,
+          'UsersRates[comment]': '',
+        },
+      ),
+    );
+  }
+
   MovieType _convertJsonToMovieType(String json) {
     return switch (json) {
       'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
