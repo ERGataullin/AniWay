@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
-import 'package:app/movies/domain/models/watch_list_element.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/watch_list/wm.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,8 @@ class WatchListWidget extends ElementaryWidget<IWatchListWM> {
   }) : super(wmFactory);
 
   final int movieId;
-  final WatchListElementData watchListElementData;
+
+  final WatchStatusDetails watchListElementData;
 
   @override
   Widget build(IWatchListWM wm) {
@@ -80,7 +81,7 @@ class WatchListWidget extends ElementaryWidget<IWatchListWM> {
 class _Status extends StatelessWidget {
   const _Status({required this.watchListElementData});
 
-  final WatchListElementData watchListElementData;
+  final WatchStatusDetails watchListElementData;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +90,7 @@ class _Status extends StatelessWidget {
       requestFocusOnTap: false,
       label: Text(context.l10n.watchStatusLabel),
       initialSelection: watchListElementData.status,
-      onSelected: (value) => context.wm.handleSelectedValue(value),
+      onSelected: (value) => context.wm.handleSelectedValue(value!),
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
       ),
@@ -186,7 +187,7 @@ class _Scoring extends StatelessWidget {
 class _Episodes extends StatelessWidget {
   const _Episodes({required this.watchListElementData});
 
-  final WatchListElementData watchListElementData;
+  final WatchStatusDetails watchListElementData;
 
   @override
   Widget build(BuildContext context) {

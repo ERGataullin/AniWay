@@ -51,7 +51,12 @@ class HttpService implements NetworkService {
       RequestMethod.post => _client.post(
         uri,
         headers: data.headers,
-        body: data.body,
+        body: switch (data.body) {
+          final Json json => json.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ),
+          _ => data.body,
+        },
       ),
       _ => throw UnimplementedError(),
     };

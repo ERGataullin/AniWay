@@ -1,7 +1,7 @@
 import 'package:app/movies/domain/models/watch_status.dart';
 
-class WatchListElementData {
-  const WatchListElementData({
+class WatchStatusDetails {
+  const WatchStatusDetails({
     required this.status,
     this.score,
     this.watchedEpisodesCount = 0,

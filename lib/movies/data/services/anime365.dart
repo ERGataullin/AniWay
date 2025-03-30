@@ -9,8 +9,8 @@ import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/up_next.dart';
-import 'package:app/movies/domain/models/watch_list_element.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/player/player.dart';
 
 class MoviesServiceAnime365 implements MoviesService {
@@ -525,7 +525,7 @@ class MoviesServiceAnime365 implements MoviesService {
   }
 
   @override
-  Future<WatchListElementData> getWatchStatusDetails(Uri movieUri) async {
+  Future<WatchStatusDetails> getWatchStatusDetails(Uri movieUri) async {
     final ResponseData<String> response = await _networkService.request(
       RequestData(uri: movieUri, method: RequestMethod.get),
     );
@@ -566,8 +566,8 @@ class MoviesServiceAnime365 implements MoviesService {
         episodesCountValue == null ? null : int.parse(episodesCountValue);
 
     return status == null
-        ? const WatchListElementData(status: WatchStatus.none)
-        : WatchListElementData(
+        ? const WatchStatusDetails(status: WatchStatus.none)
+        : WatchStatusDetails(
           status: switch (status) {
             'Запланировано' => WatchStatus.planned,
             'Смотрю' => WatchStatus.watching,
@@ -593,14 +593,17 @@ class MoviesServiceAnime365 implements MoviesService {
   }) async {
     await _networkService.request<void>(
       RequestData(
-        uri: Uri(path: '/catalog/$movieId'),
+        uri: Uri(
+          path: '/animelist/edit/$movieId',
+          queryParameters: const {'mode': 'mini'},
+        ),
         method: RequestMethod.post,
         body: {
           'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
-          'UsersRates[status]': 1,
-          'UsersRates[score]': 10,
-          'UsersRates[episodes]': 10,
-          'UsersRates[comment]': '',
+          'UsersRates[status]': _convertWatchStatusToJson(status),
+          'UsersRates[score]': score,
+          'UsersRates[episodes]': episodes,
+          'UsersRates[comment]': comment,
         },
       ),
     );

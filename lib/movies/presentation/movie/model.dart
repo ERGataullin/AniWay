@@ -1,7 +1,7 @@
 import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
-import 'package:app/movies/domain/models/watch_list_element.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:flutter/foundation.dart';
 
 abstract interface class IMovieModel implements ElementaryModel {
@@ -9,7 +9,7 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<MovieDetailsData?> get movie;
 
-  ValueListenable<WatchListElementData?> get watchStatusDetails;
+  ValueListenable<WatchStatusDetails?> get watchStatusDetails;
 
   ValueListenable<int?> get nextEpisodeId;
 
@@ -27,7 +27,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
 
   @override
-  final ValueNotifier<WatchListElementData?> watchStatusDetails = ValueNotifier(
+  final ValueNotifier<WatchStatusDetails?> watchStatusDetails = ValueNotifier(
     null,
   );
 

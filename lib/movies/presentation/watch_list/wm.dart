@@ -1,7 +1,7 @@
 import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
-import 'package:app/movies/domain/models/watch_list_element.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/watch_list/model.dart';
 import 'package:app/movies/presentation/watch_list/widget.dart';
 import 'package:app/theme/theme.dart';
@@ -16,15 +16,15 @@ WatchListWM watchListWMFactory(BuildContext context) => WatchListWM(
 );
 
 abstract interface class IWatchListWM implements IWidgetModel {
-  WatchListElementData get watchListelementData;
-
   TextEditingController get episodesController;
 
   TextEditingController get commentController;
 
   ValueListenable<int?> get score;
 
-  void handleSelectedValue(WatchStatus? status);
+  WatchStatusDetails get watchListelementData;
+
+  void handleSelectedValue(WatchStatus status);
 
   void handleScorePressed(int score);
 
@@ -36,7 +36,7 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
     implements IWatchListWM {
   WatchListWM(super._model);
   @override
-  WatchListElementData get watchListelementData => widget.watchListElementData;
+  WatchStatusDetails get watchListelementData => widget.watchListElementData;
 
   @override
   final episodesController = TextEditingController();
@@ -47,10 +47,10 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
   @override
   final ValueNotifier<int?> score = ValueNotifier(null);
 
-  WatchStatus? _selectedStatus;
+  WatchStatus _selectedStatus = WatchStatus.planned;
 
   @override
-  void handleSelectedValue(WatchStatus? status) {
+  void handleSelectedValue(WatchStatus status) {
     _selectedStatus = status;
   }
 
@@ -74,10 +74,10 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
   Future<void> _submit() async {
     await model.saveWatchStatus(
       movieId: widget.movieId,
-      status: WatchStatus.planned,
-      score: 5,
-      episodes: 10,
-      comment: '1',
+      status: _selectedStatus,
+      score: score.value!,
+      episodes: int.parse(episodesController.text),
+      comment: commentController.text,
     );
   }
 }
