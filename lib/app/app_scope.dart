@@ -21,7 +21,9 @@ class AppScope extends InheritedWidget {
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
     this.networkService =
         networkService ??
-        HttpService(baseUri: Uri(scheme: 'https', host: 'smotret-anime.org'));
+        HttpService(
+          baseUri: Uri(scheme: 'https', host: 'smotret-anime.online'),
+        );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
         cookieManager ?? CookieManagerImpl(storageService: this.storageService);
