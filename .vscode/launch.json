@@ -13,6 +13,18 @@
             ]
         },
         {
+            "name": "Debug (mocked)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--web-port=8008",
+                "--web-browser-flag=--disable-web-security",
+                "--dart-define=USE_MOCKS=true"
+            ]
+        },
+        {
             "name": "Profile",
             "request": "launch",
             "type": "dart",
