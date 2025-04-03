@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
+import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/watch_list/wm.dart';
@@ -14,12 +15,12 @@ extension _WatchListContext on BuildContext {
 class WatchListWidget extends ElementaryWidget<IWatchListWM> {
   const WatchListWidget({
     super.key,
-    required this.movieId,
+    required this.movie,
     required this.watchListElementData,
     WidgetModelFactory wmFactory = watchListWMFactory,
   }) : super(wmFactory);
 
-  final int movieId;
+  final MovieDetailsData movie;
 
   final WatchStatusDetails watchListElementData;
 
@@ -27,61 +28,66 @@ class WatchListWidget extends ElementaryWidget<IWatchListWM> {
   Widget build(IWatchListWM wm) {
     return Provider<IWatchListWM>.value(
       value: wm,
-      child: Builder(
-        builder: (context) {
-          return Dialog.fullscreen(
-            child: Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                  onPressed: Navigator.of(context).pop,
-                  icon: const Icon(Icons.close),
-                ),
-                title: Text(context.l10n.watchStatusAdd),
-                actions: [
-                  TextButton(
-                    onPressed: context.wm.handleSavePressed,
-                    child: Text(context.l10n.save),
-                  ),
-                ],
-              ),
-              body: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  spacing: 32,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      spacing: 8,
-                      children: [
-                        Expanded(
-                          child: _Status(
-                            watchListElementData: watchListElementData,
+      child: Dialog.fullscreen(
+        child: ListenableBuilder(
+          listenable: wm.loading,
+          builder:
+              (context, _) =>
+                  wm.loading.value
+                      ? const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      )
+                      : Scaffold(
+                        appBar: AppBar(
+                          leading: IconButton(
+                            onPressed: Navigator.of(context).pop,
+                            icon: const Icon(Icons.close),
+                          ),
+                          title: Text(context.l10n.watchStatusAdd),
+                          actions: [
+                            TextButton(
+                              onPressed:
+                                  context.wm.currentStatus == WatchStatus.none
+                                      ? null
+                                      : context.wm.handleDeletePressed,
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.redAccent,
+                              ),
+                              child: Text(context.l10n.delete),
+                            ),
+                            TextButton(
+                              onPressed: context.wm.handleSavePressed,
+                              child: Text(context.l10n.save),
+                            ),
+                          ],
+                        ),
+                        body: const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            spacing: 32,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  Expanded(child: _Status()),
+                                  Expanded(child: _Episodes()),
+                                ],
+                              ),
+                              _Scoring(),
+                              _Comment(),
+                            ],
                           ),
                         ),
-                        Expanded(
-                          child: _Episodes(
-                            watchListElementData: watchListElementData,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const _Scoring(),
-                    const _Comment(),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+                      ),
+        ),
       ),
     );
   }
 }
 
 class _Status extends StatelessWidget {
-  const _Status({required this.watchListElementData});
-
-  final WatchStatusDetails watchListElementData;
+  const _Status();
 
   @override
   Widget build(BuildContext context) {
@@ -89,12 +95,12 @@ class _Status extends StatelessWidget {
       expandedInsets: EdgeInsets.zero,
       requestFocusOnTap: false,
       label: Text(context.l10n.watchStatusLabel),
-      initialSelection: watchListElementData.status,
+      initialSelection: context.wm.status,
       onSelected: (value) => context.wm.handleSelectedValue(value!),
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
       ),
-      dropdownMenuEntries: WatchStatus.values
+      dropdownMenuEntries: context.wm.statuses
           .map(
             (status) => DropdownMenuEntry(
               value: status,
@@ -185,9 +191,7 @@ class _Scoring extends StatelessWidget {
 }
 
 class _Episodes extends StatelessWidget {
-  const _Episodes({required this.watchListElementData});
-
-  final WatchStatusDetails watchListElementData;
+  const _Episodes();
 
   @override
   Widget build(BuildContext context) {
@@ -195,10 +199,12 @@ class _Episodes extends StatelessWidget {
       controller: context.wm.episodesController,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        hintText: '${watchListElementData.watchedEpisodesCount}',
         floatingLabelBehavior: FloatingLabelBehavior.always,
         label: Text(context.l10n.episodesWatchedLabel),
-        suffixText: context.l10n.ofY(watchListElementData.episodesCount ?? 0),
+        suffixText:
+            context.wm.episodesCount == null
+                ? ''
+                : context.l10n.ofY(context.wm.episodesCount!),
       ),
     );
   }

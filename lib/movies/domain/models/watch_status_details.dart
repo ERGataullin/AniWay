@@ -5,7 +5,7 @@ class WatchStatusDetails {
     required this.status,
     this.score,
     this.watchedEpisodesCount = 0,
-    this.episodesCount,
+    this.comment,
   });
 
   final WatchStatus status;
@@ -14,5 +14,5 @@ class WatchStatusDetails {
 
   final int watchedEpisodesCount;
 
-  final int? episodesCount;
+  final String? comment;
 }

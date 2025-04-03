@@ -30,11 +30,11 @@ abstract interface class MoviesService {
 
   Future<void> saveTranslationWatched(int translationId);
 
-  Future<WatchStatusDetails?> getWatchStatusDetails(Uri movieUri);
+  Future<WatchStatusDetails> getWatchStatusDetails(Uri movieUri);
 
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus status,
+    required WatchStatus? status,
     required int score,
     required int episodes,
     required String comment,

@@ -9,7 +9,7 @@ abstract interface class IMovieModel implements ElementaryModel {
 
   ValueListenable<MovieDetailsData?> get movie;
 
-  ValueListenable<WatchStatusDetails?> get watchStatusDetails;
+  ValueNotifier<WatchStatusDetails?> get watchStatusDetails;
 
   ValueListenable<int?> get nextEpisodeId;
 

@@ -5,7 +5,7 @@ import 'package:elementary/elementary.dart';
 abstract interface class IWatchListModel implements ElementaryModel {
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus status,
+    required WatchStatus? status,
     required int score,
     required int episodes,
     required String comment,
@@ -21,7 +21,7 @@ class WatchListModel extends ElementaryModel implements IWatchListModel {
   @override
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus status,
+    required WatchStatus? status,
     required int score,
     required int episodes,
     required String comment,

@@ -558,12 +558,8 @@ class MoviesServiceAnime365 implements MoviesService {
             ? 0
             : int.parse(watchedEpisodesCountValue);
 
-    final String? episodesCountValue =
-        animeListForm
-            .querySelector('input#UsersRates_episodes')
-            ?.attributes['max'];
-    final int? episodesCount =
-        episodesCountValue == null ? null : int.parse(episodesCountValue);
+    final String? commentValue =
+        animeListForm.querySelector('textarea#UsersRates_comment')?.innerHtml;
 
     return status == null
         ? const WatchStatusDetails(status: WatchStatus.none)
@@ -579,14 +575,14 @@ class MoviesServiceAnime365 implements MoviesService {
           },
           score: score,
           watchedEpisodesCount: watchedEpisodesCount,
-          episodesCount: episodesCount,
+          comment: commentValue,
         );
   }
 
   @override
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus status,
+    required WatchStatus? status,
     required int score,
     required int episodes,
     required String comment,
@@ -649,7 +645,7 @@ class MoviesServiceAnime365 implements MoviesService {
     };
   }
 
-  int _convertWatchStatusToJson(WatchStatus watchStatus) {
+  int _convertWatchStatusToJson(WatchStatus? watchStatus) {
     return switch (watchStatus) {
       WatchStatus.planned => 0,
       WatchStatus.watching => 1,
@@ -657,6 +653,7 @@ class MoviesServiceAnime365 implements MoviesService {
       WatchStatus.onHold => 3,
       WatchStatus.dropped => 4,
       WatchStatus.none => -1,
+      null => 99,
     };
   }
 }

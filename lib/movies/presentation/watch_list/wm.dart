@@ -22,11 +22,21 @@ abstract interface class IWatchListWM implements IWidgetModel {
 
   ValueListenable<int?> get score;
 
-  WatchStatusDetails get watchListelementData;
+  ValueListenable<bool> get loading;
+
+  WatchStatus get status;
+
+  WatchStatus get currentStatus;
+
+  List<WatchStatus> get statuses;
+
+  int? get episodesCount;
 
   void handleSelectedValue(WatchStatus status);
 
   void handleScorePressed(int score);
+
+  void handleDeletePressed();
 
   void handleSavePressed();
 }
@@ -35,8 +45,6 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
     with ThemeWMMixin
     implements IWatchListWM {
   WatchListWM(super._model);
-  @override
-  WatchStatusDetails get watchListelementData => widget.watchListElementData;
 
   @override
   final episodesController = TextEditingController();
@@ -47,7 +55,23 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
   @override
   final ValueNotifier<int?> score = ValueNotifier(null);
 
+  @override
+  final ValueNotifier<bool> loading = ValueNotifier(false);
+
   WatchStatus _selectedStatus = WatchStatus.planned;
+  @override
+  WatchStatus get status => _selectedStatus;
+
+  @override
+  WatchStatus get currentStatus => widget.watchListElementData.status;
+
+  @override
+  List<WatchStatus> get statuses => WatchStatus.values
+      .where((status) => status != WatchStatus.none)
+      .toList(growable: false);
+
+  @override
+  int? get episodesCount => widget.movie.episodesCount;
 
   @override
   void handleSelectedValue(WatchStatus status) {
@@ -60,24 +84,55 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
   }
 
   @override
+  void handleDeletePressed() {
+    _submit(isDelete: true);
+    Navigator.pop(context, const WatchStatusDetails(status: WatchStatus.none));
+  }
+
+  @override
   void handleSavePressed() {
     _submit();
+    Navigator.pop(
+      context,
+      WatchStatusDetails(
+        status: status,
+        score: score.value,
+        watchedEpisodesCount: int.parse(episodesController.text),
+        comment: commentController.text,
+      ),
+    );
   }
 
   @override
   void initWidgetModel() {
-    //episodesController.text =
-    //    widget.watchListElementData?.watchedEpisodesCount.toString() ?? '';
+    _selectedStatus = switch (widget.watchListElementData.status) {
+      WatchStatus.none => WatchStatus.planned,
+      final WatchStatus status => status,
+    };
+    episodesController.text =
+        '${widget.watchListElementData.watchedEpisodesCount}';
+    score.value = widget.watchListElementData.score;
+    commentController.text = widget.watchListElementData.comment ?? '';
     super.initWidgetModel();
   }
 
-  Future<void> _submit() async {
+  @override
+  void dispose() {
+    episodesController.dispose();
+    score.dispose();
+    commentController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit({bool isDelete = false}) async {
+    loading.value = true;
     await model.saveWatchStatus(
-      movieId: widget.movieId,
-      status: _selectedStatus,
+      movieId: widget.movie.id,
+      status: isDelete ? null : _selectedStatus,
       score: score.value!,
       episodes: int.parse(episodesController.text),
       comment: commentController.text,
     );
+    loading.value = false;
   }
 }

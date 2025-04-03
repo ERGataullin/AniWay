@@ -3,6 +3,7 @@ import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/episode.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/movie/model.dart';
 import 'package:app/movies/presentation/movie/widget.dart';
 import 'package:app/movies/presentation/watch_list/widget.dart';
@@ -124,15 +125,16 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
-  Future<void> handleWatchListPressed(BuildContext context) {
-    return showDialog<void>(
+  Future<void> handleWatchListPressed(BuildContext context) async {
+    final WatchStatusDetails? newStatus = await showDialog<WatchStatusDetails?>(
       context: context,
       builder:
           (context) => WatchListWidget(
-            movieId: widget.movieId,
+            movie: model.movie.value!,
             watchListElementData: model.watchStatusDetails.value!,
           ),
     );
+    if (newStatus != null) model.watchStatusDetails.value = newStatus;
   }
 
   @override

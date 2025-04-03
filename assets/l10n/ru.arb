@@ -10,6 +10,7 @@
     },
     "authorLabel": "Автор",
     "commentLabel": "Комментарий",
+    "delete": "Удалить",
     "durationSeconds": "{seconds} секунд",
     "@durationSeconds": {
         "placeholders": {
