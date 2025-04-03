@@ -1,8 +1,10 @@
 import 'package:app/auth/auth.dart';
+import 'package:app/auth/data/services/mock.dart';
 import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/data/services/anime365.dart';
+import 'package:app/movies/data/services/mock.dart';
 import 'package:app/player/player.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,6 +20,7 @@ class AppScope extends InheritedWidget {
     PlayerRepository? playerRepository,
     required super.child,
   }) {
+    const useMocks = bool.fromEnvironment('USE_MOCKS');
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
     this.networkService =
         networkService ??
@@ -30,19 +33,25 @@ class AppScope extends InheritedWidget {
     this.authService =
         authService ??
         AuthRepository(
-          authService: AuthServiceAnime365(
-            networkService: this.networkService,
-            cookieManager: this.cookieManager,
-          ),
+          authService:
+              useMocks
+                  ? AuthServiceMock(cookieManager: this.cookieManager)
+                  : AuthServiceAnime365(
+                    networkService: this.networkService,
+                    cookieManager: this.cookieManager,
+                  ),
           cookieManager: this.cookieManager,
         );
     this.moviesRepository =
         moviesRepository ??
         MoviesRepository(
-          moviesService: MoviesServiceAnime365(
-            cookieManager: this.cookieManager,
-            networkService: this.networkService,
-          ),
+          moviesService:
+              useMocks
+                  ? const MoviesServiceMock()
+                  : MoviesServiceAnime365(
+                    cookieManager: this.cookieManager,
+                    networkService: this.networkService,
+                  ),
         );
     this.playerRepository =
         playerRepository ??

@@ -23,7 +23,7 @@ class _PlatformWrapperState extends State<PlatformWrapper> {
   final _style =
       web.HTMLStyleElement()
         ..id = 'web-media-query'
-        ..text =
+        ..textContent =
             ':root { '
             '$_leftInsetProperty: env(safe-area-inset-left); '
             '$_topInsetProperty: env(safe-area-inset-top); '
