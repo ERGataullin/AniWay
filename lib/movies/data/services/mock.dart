@@ -8,8 +8,8 @@ import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/up_next.dart';
-import 'package:app/movies/domain/models/watch_list_element.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/player/player.dart';
 
 class MoviesServiceMock implements MoviesService {
@@ -380,14 +380,24 @@ class MoviesServiceMock implements MoviesService {
   }
 
   @override
-  Future<WatchListElementData> getWatchStatusDetails(Uri movieUri) async {
+  Future<WatchStatusDetails> getWatchStatusDetails(Uri movieUri) async {
     await _delay();
-    return const WatchListElementData(
+    return const WatchStatusDetails(
       status: WatchStatus.watching,
       score: 8,
       watchedEpisodesCount: 3,
-      episodesCount: 10,
     );
+  }
+
+  @override
+  Future<void> saveWatchStatus({
+    required int movieId,
+    required WatchStatus? status,
+    required int score,
+    required int episodes,
+    required String comment,
+  }) async {
+    await _delay();
   }
 
   Future<void> _delay() {
