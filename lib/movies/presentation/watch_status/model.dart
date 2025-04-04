@@ -1,14 +1,11 @@
 import 'package:app/movies/data/repository.dart';
-import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:elementary/elementary.dart';
 
 abstract interface class IWatchListModel implements ElementaryModel {
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus? status,
-    required int score,
-    required int episodes,
-    required String comment,
+    required WatchStatusDetails watchStatusDetails,
   });
 }
 
@@ -21,17 +18,11 @@ class WatchListModel extends ElementaryModel implements IWatchListModel {
   @override
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus? status,
-    required int score,
-    required int episodes,
-    required String comment,
+    required WatchStatusDetails watchStatusDetails,
   }) async {
     await _repository.saveWatchStatus(
       movieId: movieId,
-      status: status,
-      score: score,
-      episodes: episodes,
-      comment: comment,
+      watchStatusDetails: watchStatusDetails,
     );
   }
 }

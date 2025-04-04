@@ -383,19 +383,16 @@ class MoviesServiceMock implements MoviesService {
   Future<WatchStatusDetails> getWatchStatusDetails(Uri movieUri) async {
     await _delay();
     return const WatchStatusDetails(
-      status: WatchStatus.watching,
+      WatchStatus.watching,
       score: 8,
-      watchedEpisodesCount: 3,
+      episodesCount: 3,
     );
   }
 
   @override
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus? status,
-    required int score,
-    required int episodes,
-    required String comment,
+    required WatchStatusDetails watchStatusDetails,
   }) async {
     await _delay();
   }

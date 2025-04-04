@@ -6,7 +6,7 @@ import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/movie/model.dart';
 import 'package:app/movies/presentation/movie/widget.dart';
-import 'package:app/movies/presentation/watch_list/widget.dart';
+import 'package:app/movies/presentation/watch_status/widget.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<List<EpisodeData>> get episodes;
 
-  Future<void> handleWatchListPressed(BuildContext context);
+  Future<void> handleWatchStatusPressed(BuildContext context);
 
   void handlePlayPressed();
 
@@ -125,13 +125,13 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
-  Future<void> handleWatchListPressed(BuildContext context) async {
+  Future<void> handleWatchStatusPressed(BuildContext context) async {
     final WatchStatusDetails? newStatus = await showDialog<WatchStatusDetails?>(
       context: context,
       builder:
-          (context) => WatchListWidget(
+          (context) => WatchStatusWidget(
             movie: model.movie.value!,
-            watchListElementData: model.watchStatusDetails.value!,
+            statusDetails: model.watchStatusDetails.value!,
           ),
     );
     if (newStatus != null) model.watchStatusDetails.value = newStatus;

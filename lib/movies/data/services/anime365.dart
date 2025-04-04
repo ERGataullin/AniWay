@@ -561,31 +561,27 @@ class MoviesServiceAnime365 implements MoviesService {
     final String? commentValue =
         animeListForm.querySelector('textarea#UsersRates_comment')?.innerHtml;
 
-    return status == null
-        ? const WatchStatusDetails(status: WatchStatus.none)
-        : WatchStatusDetails(
-          status: switch (status) {
-            'Запланировано' => WatchStatus.planned,
-            'Смотрю' => WatchStatus.watching,
-            'Просмотрено' => WatchStatus.completed,
-            'Отложено' => WatchStatus.onHold,
-            'Брошено' => WatchStatus.dropped,
-            final Object? unsupported =>
-              throw UnsupportedError('Unsupported movie status: $unsupported'),
-          },
-          score: score,
-          watchedEpisodesCount: watchedEpisodesCount,
-          comment: commentValue,
-        );
+    return WatchStatusDetails(
+      switch (status) {
+        'Запланировано' => WatchStatus.planned,
+        'Смотрю' => WatchStatus.watching,
+        'Просмотрено' => WatchStatus.completed,
+        'Отложено' => WatchStatus.onHold,
+        'Брошено' => WatchStatus.dropped,
+        null => WatchStatus.none,
+        final Object? unsupported =>
+          throw UnsupportedError('Unsupported movie status: $unsupported'),
+      },
+      score: score,
+      episodesCount: watchedEpisodesCount,
+      comment: commentValue,
+    );
   }
 
   @override
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus? status,
-    required int score,
-    required int episodes,
-    required String comment,
+    required WatchStatusDetails watchStatusDetails,
   }) async {
     await _networkService.request<void>(
       RequestData(
@@ -596,10 +592,12 @@ class MoviesServiceAnime365 implements MoviesService {
         method: RequestMethod.post,
         body: {
           'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
-          'UsersRates[status]': _convertWatchStatusToJson(status),
-          'UsersRates[score]': score,
-          'UsersRates[episodes]': episodes,
-          'UsersRates[comment]': comment,
+          'UsersRates[status]': _convertWatchStatusToJson(
+            watchStatusDetails.status,
+          ),
+          'UsersRates[score]': watchStatusDetails.score,
+          'UsersRates[episodes]': watchStatusDetails.episodesCount,
+          'UsersRates[comment]': watchStatusDetails.comment,
         },
       ),
     );
@@ -645,15 +643,14 @@ class MoviesServiceAnime365 implements MoviesService {
     };
   }
 
-  int _convertWatchStatusToJson(WatchStatus? watchStatus) {
+  int _convertWatchStatusToJson(WatchStatus watchStatus) {
     return switch (watchStatus) {
       WatchStatus.planned => 0,
       WatchStatus.watching => 1,
       WatchStatus.completed => 2,
       WatchStatus.onHold => 3,
       WatchStatus.dropped => 4,
-      WatchStatus.none => -1,
-      null => 99,
+      WatchStatus.none => 99,
     };
   }
 }

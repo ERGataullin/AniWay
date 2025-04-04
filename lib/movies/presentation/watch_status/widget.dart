@@ -5,82 +5,105 @@ import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
-import 'package:app/movies/presentation/watch_list/wm.dart';
+import 'package:app/movies/presentation/watch_status/wm.dart';
 import 'package:flutter/material.dart';
 
-extension _WatchListContext on BuildContext {
-  IWatchListWM get wm => read<IWatchListWM>();
+extension _WatchStatusContext on BuildContext {
+  IWatchStatusWM get wm => read<IWatchStatusWM>();
 }
 
-class WatchListWidget extends ElementaryWidget<IWatchListWM> {
-  const WatchListWidget({
+class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
+  const WatchStatusWidget({
     super.key,
     required this.movie,
-    required this.watchListElementData,
-    WidgetModelFactory wmFactory = watchListWMFactory,
+    required this.statusDetails,
+    WidgetModelFactory wmFactory = watchStatusWMFactory,
   }) : super(wmFactory);
 
   final MovieDetailsData movie;
 
-  final WatchStatusDetails watchListElementData;
+  final WatchStatusDetails statusDetails;
 
   @override
-  Widget build(IWatchListWM wm) {
-    return Provider<IWatchListWM>.value(
+  Widget build(IWatchStatusWM wm) {
+    return Provider<IWatchStatusWM>.value(
       value: wm,
       child: Dialog.fullscreen(
         child: ListenableBuilder(
           listenable: wm.loading,
           builder:
               (context, _) =>
-                  wm.loading.value
-                      ? const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                      : Scaffold(
-                        appBar: AppBar(
-                          leading: IconButton(
-                            onPressed: Navigator.of(context).pop,
-                            icon: const Icon(Icons.close),
-                          ),
-                          title: Text(context.l10n.watchStatusAdd),
-                          actions: [
-                            TextButton(
-                              onPressed:
-                                  context.wm.currentStatus == WatchStatus.none
-                                      ? null
-                                      : context.wm.handleDeletePressed,
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.redAccent,
-                              ),
-                              child: Text(context.l10n.delete),
-                            ),
-                            TextButton(
-                              onPressed: context.wm.handleSavePressed,
-                              child: Text(context.l10n.save),
-                            ),
-                          ],
-                        ),
-                        body: const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            spacing: 32,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                spacing: 8,
-                                children: [
-                                  Expanded(child: _Status()),
-                                  Expanded(child: _Episodes()),
-                                ],
-                              ),
-                              _Scoring(),
-                              _Comment(),
-                            ],
-                          ),
-                        ),
-                      ),
+                  wm.loading.value ? const _Loader() : const Content(),
         ),
+      ),
+    );
+  }
+}
+
+class _Loader extends StatelessWidget {
+  const _Loader();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator.adaptive());
+  }
+}
+
+class Content extends StatelessWidget {
+  const Content({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: Navigator.of(context).pop,
+          icon: const Icon(Icons.close),
+        ),
+        title: Text(context.l10n.watchStatusAdd),
+        actions: [
+          TextButton(
+            onPressed:
+                context.wm.currentStatus == WatchStatus.none
+                    ? null
+                    : context.wm.handleDeletePressed,
+            style: TextButton.styleFrom(
+              foregroundColor: ColorScheme.of(context).error,
+            ),
+            child: Text(context.l10n.delete),
+          ),
+          TextButton(
+            onPressed: context.wm.handleSavePressed,
+            child: Text(context.l10n.save),
+          ),
+        ],
+      ),
+      body: const _Body(),
+    );
+  }
+}
+
+class _Body extends StatelessWidget {
+  const _Body();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        spacing: 32,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            spacing: 8,
+            children: [
+              Expanded(child: _Status()),
+              Expanded(child: _Episodes()),
+            ],
+          ),
+          _Scoring(),
+          _Comment(),
+        ],
       ),
     );
   }
@@ -201,10 +224,10 @@ class _Episodes extends StatelessWidget {
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,
         label: Text(context.l10n.episodesWatchedLabel),
-        suffixText:
-            context.wm.episodesCount == null
-                ? ''
-                : context.l10n.ofY(context.wm.episodesCount!),
+        suffixText: switch (context.wm.episodesCountTotal) {
+          null => null,
+          final int episodesCount => context.l10n.ofY(episodesCount),
+        },
       ),
     );
   }
@@ -215,18 +238,14 @@ class _Comment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          maxLines: 8,
-          controller: context.wm.commentController,
-          keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(
-            alignLabelWithHint: true,
-            labelText: context.l10n.commentLabel,
-          ),
-        ),
-      ],
+    return TextFormField(
+      maxLines: 8,
+      controller: context.wm.commentController,
+      keyboardType: TextInputType.multiline,
+      decoration: InputDecoration(
+        alignLabelWithHint: true,
+        labelText: context.l10n.commentLabel,
+      ),
     );
   }
 }

@@ -2,20 +2,20 @@ import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
-import 'package:app/movies/presentation/watch_list/model.dart';
-import 'package:app/movies/presentation/watch_list/widget.dart';
+import 'package:app/movies/presentation/watch_status/model.dart';
+import 'package:app/movies/presentation/watch_status/widget.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-WatchListWM watchListWMFactory(BuildContext context) => WatchListWM(
+WatchStatusWM watchStatusWMFactory(BuildContext context) => WatchStatusWM(
   WatchListModel(
     errorHandler: context.read<ErrorHandler>(),
     repository: context.read<MoviesRepository>(),
   ),
 );
 
-abstract interface class IWatchListWM implements IWidgetModel {
+abstract interface class IWatchStatusWM implements IWidgetModel {
   TextEditingController get episodesController;
 
   TextEditingController get commentController;
@@ -30,7 +30,7 @@ abstract interface class IWatchListWM implements IWidgetModel {
 
   List<WatchStatus> get statuses;
 
-  int? get episodesCount;
+  int? get episodesCountTotal;
 
   void handleSelectedValue(WatchStatus status);
 
@@ -41,10 +41,10 @@ abstract interface class IWatchListWM implements IWidgetModel {
   void handleSavePressed();
 }
 
-class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
+class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchListModel>
     with ThemeWMMixin
-    implements IWatchListWM {
-  WatchListWM(super._model);
+    implements IWatchStatusWM {
+  WatchStatusWM(super._model);
 
   @override
   final episodesController = TextEditingController();
@@ -63,7 +63,7 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
   WatchStatus get status => _selectedStatus;
 
   @override
-  WatchStatus get currentStatus => widget.watchListElementData.status;
+  WatchStatus get currentStatus => widget.statusDetails.status;
 
   @override
   List<WatchStatus> get statuses => WatchStatus.values
@@ -71,7 +71,7 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
       .toList(growable: false);
 
   @override
-  int? get episodesCount => widget.movie.episodesCount;
+  int? get episodesCountTotal => widget.movie.episodesCount;
 
   @override
   void handleSelectedValue(WatchStatus status) {
@@ -85,19 +85,26 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
 
   @override
   void handleDeletePressed() {
-    _submit(isDelete: true);
-    Navigator.pop(context, const WatchStatusDetails(status: WatchStatus.none));
+    _submit(const WatchStatusDetails(WatchStatus.none));
+    Navigator.pop(context, const WatchStatusDetails(WatchStatus.none));
   }
 
   @override
   void handleSavePressed() {
-    _submit();
+    _submit(
+      WatchStatusDetails(
+        _selectedStatus,
+        score: score.value,
+        episodesCount: int.parse(episodesController.text),
+        comment: commentController.text,
+      ),
+    );
     Navigator.pop(
       context,
       WatchStatusDetails(
-        status: status,
+        status,
         score: score.value,
-        watchedEpisodesCount: int.parse(episodesController.text),
+        episodesCount: int.parse(episodesController.text),
         comment: commentController.text,
       ),
     );
@@ -105,33 +112,30 @@ class WatchListWM extends WidgetModel<WatchListWidget, IWatchListModel>
 
   @override
   void initWidgetModel() {
-    _selectedStatus = switch (widget.watchListElementData.status) {
+    _selectedStatus = switch (widget.statusDetails.status) {
       WatchStatus.none => WatchStatus.planned,
       final WatchStatus status => status,
     };
-    episodesController.text =
-        '${widget.watchListElementData.watchedEpisodesCount}';
-    score.value = widget.watchListElementData.score;
-    commentController.text = widget.watchListElementData.comment ?? '';
+    episodesController.text = '${widget.statusDetails.episodesCount}';
+    score.value = widget.statusDetails.score;
+    commentController.text = widget.statusDetails.comment ?? '';
     super.initWidgetModel();
   }
 
   @override
   void dispose() {
+    loading.dispose();
     episodesController.dispose();
     score.dispose();
     commentController.dispose();
     super.dispose();
   }
 
-  Future<void> _submit({bool isDelete = false}) async {
+  Future<void> _submit(WatchStatusDetails watchStatusDetails) async {
     loading.value = true;
     await model.saveWatchStatus(
       movieId: widget.movie.id,
-      status: isDelete ? null : _selectedStatus,
-      score: score.value!,
-      episodes: int.parse(episodesController.text),
-      comment: commentController.text,
+      watchStatusDetails: watchStatusDetails,
     );
     loading.value = false;
   }

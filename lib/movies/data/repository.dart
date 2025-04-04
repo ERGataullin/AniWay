@@ -75,17 +75,11 @@ class MoviesRepository implements Initable {
 
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatus? status,
-    required int score,
-    required int episodes,
-    required String comment,
+    required WatchStatusDetails watchStatusDetails,
   }) {
     return _moviesService.saveWatchStatus(
       movieId: movieId,
-      status: status,
-      score: score,
-      episodes: episodes,
-      comment: comment,
+      watchStatusDetails: watchStatusDetails,
     );
   }
 }

@@ -36,7 +36,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
     trigger: Listenable.merge([movie, watchStatusDetails]),
     () {
       final int watchedEpisodesCount =
-          watchStatusDetails.value?.watchedEpisodesCount ?? 0;
+          watchStatusDetails.value?.episodesCount ?? 0;
       return watchedEpisodesCount >= movie.value!.episodes.length
           ? null
           : movie.value?.episodes
