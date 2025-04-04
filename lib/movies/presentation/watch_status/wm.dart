@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 WatchStatusWM watchStatusWMFactory(BuildContext context) => WatchStatusWM(
-  WatchListModel(
+  WatchStatusModel(
     errorHandler: context.read<ErrorHandler>(),
     repository: context.read<MoviesRepository>(),
   ),
@@ -32,7 +32,7 @@ abstract interface class IWatchStatusWM implements IWidgetModel {
 
   int? get episodesCountTotal;
 
-  void handleSelectedValue(WatchStatus status);
+  void handleStatusSelected(WatchStatus status);
 
   void handleScorePressed(int score);
 
@@ -41,7 +41,7 @@ abstract interface class IWatchStatusWM implements IWidgetModel {
   void handleSavePressed();
 }
 
-class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchListModel>
+class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
     with ThemeWMMixin
     implements IWatchStatusWM {
   WatchStatusWM(super._model);
@@ -58,9 +58,9 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchListModel>
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
 
-  WatchStatus _selectedStatus = WatchStatus.planned;
+  WatchStatus _status = WatchStatus.planned;
   @override
-  WatchStatus get status => _selectedStatus;
+  WatchStatus get status => _status;
 
   @override
   WatchStatus get currentStatus => widget.statusDetails.status;
@@ -74,8 +74,8 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchListModel>
   int? get episodesCountTotal => widget.movie.episodesCount;
 
   @override
-  void handleSelectedValue(WatchStatus status) {
-    _selectedStatus = status;
+  void handleStatusSelected(WatchStatus status) {
+    _status = status;
   }
 
   @override
@@ -85,34 +85,40 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchListModel>
 
   @override
   void handleDeletePressed() {
-    _submit(const WatchStatusDetails(WatchStatus.none));
-    Navigator.pop(context, const WatchStatusDetails(WatchStatus.none));
+    _submit(const WatchStatusDetails(WatchStatus.none)).then((_) {
+      if (context.mounted) {
+        Navigator.pop(context, const WatchStatusDetails(WatchStatus.none));
+      }
+    });
   }
 
   @override
   void handleSavePressed() {
     _submit(
       WatchStatusDetails(
-        _selectedStatus,
+        _status,
         score: score.value,
         episodesCount: int.parse(episodesController.text),
         comment: commentController.text,
       ),
-    );
-    Navigator.pop(
-      context,
-      WatchStatusDetails(
-        status,
-        score: score.value,
-        episodesCount: int.parse(episodesController.text),
-        comment: commentController.text,
-      ),
-    );
+    ).then((_) {
+      if (context.mounted) {
+        Navigator.pop(
+          context,
+          WatchStatusDetails(
+            status,
+            score: score.value,
+            episodesCount: int.parse(episodesController.text),
+            comment: commentController.text,
+          ),
+        );
+      }
+    });
   }
 
   @override
   void initWidgetModel() {
-    _selectedStatus = switch (widget.statusDetails.status) {
+    _status = switch (widget.statusDetails.status) {
       WatchStatus.none => WatchStatus.planned,
       final WatchStatus status => status,
     };
@@ -133,10 +139,7 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchListModel>
 
   Future<void> _submit(WatchStatusDetails watchStatusDetails) async {
     loading.value = true;
-    await model.saveWatchStatus(
-      movieId: widget.movie.id,
-      watchStatusDetails: watchStatusDetails,
-    );
+    await model.save(movieId: widget.movie.id, status: watchStatusDetails);
     loading.value = false;
   }
 }

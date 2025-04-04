@@ -69,17 +69,17 @@ class MoviesRepository implements Initable {
     _upNextChanges.value++;
   }
 
-  Future<WatchStatusDetails> getWatchStatusDetails(Uri movieUri) {
+  Future<WatchStatusDetails> getWatchStatus(Uri movieUri) {
     return _moviesService.getWatchStatusDetails(movieUri);
   }
 
   Future<void> saveWatchStatus({
     required int movieId,
-    required WatchStatusDetails watchStatusDetails,
+    required WatchStatusDetails status,
   }) {
     return _moviesService.saveWatchStatus(
       movieId: movieId,
-      watchStatusDetails: watchStatusDetails,
+      watchStatusDetails: status,
     );
   }
 }

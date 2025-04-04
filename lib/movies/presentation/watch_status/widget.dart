@@ -33,19 +33,14 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
           listenable: wm.loading,
           builder:
               (context, _) =>
-                  wm.loading.value ? const _Loader() : const Content(),
+                  wm.loading.value
+                      ? const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      )
+                      : const Content(),
         ),
       ),
     );
-  }
-}
-
-class _Loader extends StatelessWidget {
-  const _Loader();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator.adaptive());
   }
 }
 
@@ -101,7 +96,7 @@ class _Body extends StatelessWidget {
               Expanded(child: _Episodes()),
             ],
           ),
-          _Scoring(),
+          _Score(),
           _Comment(),
         ],
       ),
@@ -119,7 +114,7 @@ class _Status extends StatelessWidget {
       requestFocusOnTap: false,
       label: Text(context.l10n.watchStatusLabel),
       initialSelection: context.wm.status,
-      onSelected: (value) => context.wm.handleSelectedValue(value!),
+      onSelected: (value) => context.wm.handleStatusSelected(value!),
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
       ),
@@ -135,8 +130,8 @@ class _Status extends StatelessWidget {
   }
 }
 
-class _Scoring extends StatelessWidget {
-  const _Scoring();
+class _Score extends StatelessWidget {
+  const _Score();
 
   @override
   Widget build(BuildContext context) {
@@ -167,41 +162,7 @@ class _Scoring extends StatelessWidget {
                   itemsCount,
                   (index) => SizedBox.square(
                     dimension: size,
-                    child: ListenableBuilder(
-                      listenable: context.wm.score,
-                      builder:
-                          (context, _) => Ink(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color:
-                                  index + 1 == context.wm.score.value
-                                      ? ColorScheme.of(context).inversePrimary
-                                      : ColorScheme.of(
-                                        context,
-                                      ).secondaryContainer,
-                            ),
-                            child: InkWell(
-                              onTap:
-                                  () =>
-                                      context.wm.handleScorePressed(index + 1),
-                              customBorder: const CircleBorder(),
-                              child: FittedBox(
-                                child: Text(
-                                  '${index + 1}',
-                                  style: TextTheme.of(
-                                    context,
-                                  ).displaySmall?.copyWith(
-                                    fontFamily: 'Alvida',
-                                    color:
-                                        ColorScheme.of(
-                                          context,
-                                        ).onSecondaryContainer,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                    ),
+                    child: _ScoreItem(index),
                   ),
                 ),
               );
@@ -209,6 +170,42 @@ class _Scoring extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ScoreItem extends StatelessWidget {
+  const _ScoreItem(this.index);
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: context.wm.score,
+      builder:
+          (context, _) => Ink(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color:
+                  index + 1 == context.wm.score.value
+                      ? ColorScheme.of(context).inversePrimary
+                      : ColorScheme.of(context).secondaryContainer,
+            ),
+            child: InkWell(
+              onTap: () => context.wm.handleScorePressed(index + 1),
+              customBorder: const CircleBorder(),
+              child: FittedBox(
+                child: Text(
+                  '${index + 1}',
+                  style: TextTheme.of(context).displaySmall?.copyWith(
+                    fontFamily: 'Alvida',
+                    color: ColorScheme.of(context).onSecondaryContainer,
+                  ),
+                ),
+              ),
+            ),
+          ),
     );
   }
 }

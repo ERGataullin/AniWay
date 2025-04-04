@@ -35,17 +35,16 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   late final Computed<int?> nextEpisodeId = Computed(
     trigger: Listenable.merge([movie, watchStatusDetails]),
     () {
-      final int watchedEpisodesCount =
-          watchStatusDetails.value?.episodesCount ?? 0;
-      return watchedEpisodesCount >= movie.value!.episodes.length
+      final int episodesCount = watchStatusDetails.value?.episodesCount ?? 0;
+      return episodesCount >= movie.value!.episodes.length
           ? null
           : movie.value?.episodes
               .getRange(
-                watchedEpisodesCount == 0 ? 0 : watchedEpisodesCount - 1,
+                episodesCount == 0 ? 0 : episodesCount - 1,
                 movie.value!.episodes.length,
               )
               .firstWhere(
-                (episode) => episode.number! > watchedEpisodesCount,
+                (episode) => episode.number! > episodesCount,
                 orElse: () => movie.value!.episodes.first,
               )
               .id;
@@ -59,7 +58,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
     try {
       loading.value = true;
       movie.value = await _repository.getMovie(movieId);
-      watchStatusDetails.value = await _repository.getWatchStatusDetails(
+      watchStatusDetails.value = await _repository.getWatchStatus(
         movie.value!.uri,
       );
     } finally {
