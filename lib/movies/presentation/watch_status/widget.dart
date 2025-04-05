@@ -29,17 +29,19 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
   Widget build(IWatchStatusWM wm) {
     return Provider<IWatchStatusWM>.value(
       value: wm,
-      child: SlotLayout(
-        config: <Breakpoint, SlotLayoutConfig>{
-          Breakpoints.small: SlotLayout.from(
-            key: const Key('Body Small'),
-            builder: (_) => const _ContentSmall(),
-          ),
-          Breakpoints.mediumAndUp: SlotLayout.from(
-            key: const Key('Medium'),
-            builder: (_) => const _ContentMediumAndUp(),
-          ),
-        },
+      child: Form(
+        child: SlotLayout(
+          config: <Breakpoint, SlotLayoutConfig>{
+            Breakpoints.small: SlotLayout.from(
+              key: const Key('Body Small'),
+              builder: (_) => const _ContentSmall(),
+            ),
+            Breakpoints.mediumAndUp: SlotLayout.from(
+              key: const Key('Medium'),
+              builder: (_) => const _ContentMediumAndUp(),
+            ),
+          },
+        ),
       ),
     );
   }

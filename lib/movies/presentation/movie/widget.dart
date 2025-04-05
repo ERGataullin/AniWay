@@ -190,29 +190,17 @@ class _WatchStatusButton extends StatelessWidget {
                   data: Theme.of(context).primaryIconTheme,
                   child: child,
                 ),
-            child: AnimatedSize(
-              duration: Durations.short3,
-              curve: Easing.standard,
-              child: AnimatedSwitcher(
-                switchInCurve: Easing.standardAccelerate,
-                switchOutCurve: Easing.standardDecelerate,
-                duration: Durations.short3,
-                reverseDuration: Durations.short3,
-                child: IconButton(
-                  key: ValueKey(context.wm.watchStatus.value),
-                  onPressed: () => context.wm.handleWatchStatusPressed(context),
-                  isSelected: context.wm.watchStatus.value != WatchStatus.none,
-                  tooltip: switch (context.wm.watchStatus.value) {
-                    null => null,
-                    WatchStatus.none => context.l10n.watchStatusAdd,
-                    final WatchStatus other => context.l10n.watchStatus(
-                      other.name,
-                    ),
-                  },
-                  icon: const Icon(Icons.library_add_outlined),
-                  selectedIcon: const Icon(Icons.library_add_check_outlined),
-                ),
-              ),
+            child: IconButton(
+              key: ValueKey(context.wm.watchStatus.value),
+              onPressed: () => context.wm.handleWatchStatusPressed(context),
+              isSelected: context.wm.watchStatus.value != WatchStatus.none,
+              tooltip: switch (context.wm.watchStatus.value) {
+                null => null,
+                WatchStatus.none => context.l10n.watchStatusAdd,
+                final WatchStatus other => context.l10n.watchStatus(other.name),
+              },
+              icon: const Icon(Icons.library_add_outlined),
+              selectedIcon: const Icon(Icons.library_add_check_outlined),
             ),
           ),
     );
