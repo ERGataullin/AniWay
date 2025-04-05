@@ -97,5 +97,8 @@ extension _AppOverrides on ThemeData {
         maxHeight: 56,
       ),
     ),
+    colorScheme: colorScheme.copyWith(
+      // surfaceContainerHighest: Colors.amberAccent,
+    ),
   );
 }

@@ -7,6 +7,7 @@ import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/watch_status/wm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _WatchStatusContext on BuildContext {
   IWatchStatusWM get wm => read<IWatchStatusWM>();
@@ -28,52 +29,133 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
   Widget build(IWatchStatusWM wm) {
     return Provider<IWatchStatusWM>.value(
       value: wm,
-      child: Dialog.fullscreen(
-        child: ListenableBuilder(
-          listenable: wm.loading,
-          builder:
-              (context, _) =>
-                  wm.loading.value
-                      ? const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                      : const Content(),
+      child: SlotLayout(
+        config: <Breakpoint, SlotLayoutConfig>{
+          Breakpoints.small: SlotLayout.from(
+            key: const Key('Body Small'),
+            builder: (_) => const _ContentSmall(),
+          ),
+          Breakpoints.mediumAndUp: SlotLayout.from(
+            key: const Key('Medium'),
+            builder: (_) => const _ContentMediumAndUp(),
+          ),
+        },
+      ),
+    );
+  }
+}
+
+class _ContentSmall extends StatelessWidget {
+  const _ContentSmall();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog.fullscreen(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.close),
+          ),
+          title: Text(context.l10n.watchStatusAdd),
+          actions: [
+            TextButton(
+              onPressed:
+                  context.wm.currentStatus == WatchStatus.none
+                      ? null
+                      : context.wm.handleDeletePressed,
+              style: TextButton.styleFrom(
+                foregroundColor: ColorScheme.of(context).error,
+              ),
+              child: Text(context.l10n.delete),
+            ),
+            TextButton(
+              onPressed: context.wm.handleSavePressed,
+              child: Text(context.l10n.save),
+            ),
+            const SizedBox(width: 16),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          child: ListenableBuilder(
+            listenable: context.wm.loading,
+            builder:
+                (context, _) =>
+                    context.wm.loading.value
+                        ? const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                        : const _Body(),
+          ),
         ),
       ),
     );
   }
 }
 
-class Content extends StatelessWidget {
-  const Content({super.key});
+class _ContentMediumAndUp extends StatelessWidget {
+  const _ContentMediumAndUp();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: Navigator.of(context).pop,
-          icon: const Icon(Icons.close),
+    return Dialog(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: ListenableBuilder(
+          listenable: context.wm.loading,
+          builder:
+              (context, _) =>
+                  context.wm.loading.value
+                      ? const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      )
+                      : Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              context.l10n.watchStatusAdd,
+                              style: TextTheme.of(context).headlineSmall,
+                            ),
+                            const SizedBox(height: 16),
+                            const _Body(),
+                            const SizedBox(height: 24),
+                            const _Actions(),
+                          ],
+                        ),
+                      ),
         ),
-        title: Text(context.l10n.watchStatusAdd),
-        actions: [
-          TextButton(
-            onPressed:
-                context.wm.currentStatus == WatchStatus.none
-                    ? null
-                    : context.wm.handleDeletePressed,
-            style: TextButton.styleFrom(
-              foregroundColor: ColorScheme.of(context).error,
-            ),
-            child: Text(context.l10n.delete),
-          ),
-          TextButton(
-            onPressed: context.wm.handleSavePressed,
-            child: Text(context.l10n.save),
-          ),
-        ],
       ),
-      body: const _Body(),
+    );
+  }
+}
+
+class _Actions extends StatelessWidget {
+  const _Actions();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed:
+              context.wm.currentStatus == WatchStatus.none
+                  ? null
+                  : context.wm.handleDeletePressed,
+          style: TextButton.styleFrom(
+            foregroundColor: ColorScheme.of(context).error,
+          ),
+          child: Text(context.l10n.delete),
+        ),
+        TextButton(
+          onPressed: context.wm.handleSavePressed,
+          child: Text(context.l10n.save),
+        ),
+      ],
     );
   }
 }
@@ -83,23 +165,17 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        spacing: 32,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            spacing: 8,
-            children: [
-              Expanded(child: _Status()),
-              Expanded(child: _Episodes()),
-            ],
-          ),
-          _Score(),
-          _Comment(),
-        ],
-      ),
+    return const Column(
+      spacing: 32,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          spacing: 8,
+          children: [Expanded(child: _Status()), Expanded(child: _Episodes())],
+        ),
+        _Score(),
+        _Comment(),
+      ],
     );
   }
 }
@@ -190,7 +266,7 @@ class _ScoreItem extends StatelessWidget {
               color:
                   index + 1 == context.wm.score.value
                       ? ColorScheme.of(context).inversePrimary
-                      : ColorScheme.of(context).secondaryContainer,
+                      : ColorScheme.of(context).surfaceContainerHighest,
             ),
             child: InkWell(
               onTap: () => context.wm.handleScorePressed(index + 1),

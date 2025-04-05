@@ -70,7 +70,7 @@ class MoviesRepository implements Initable {
   }
 
   Future<WatchStatusDetails> getWatchStatus(Uri movieUri) {
-    return _moviesService.getWatchStatusDetails(movieUri);
+    return _moviesService.getWatchStatus(movieUri);
   }
 
   Future<void> saveWatchStatus({

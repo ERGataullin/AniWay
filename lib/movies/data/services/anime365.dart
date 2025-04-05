@@ -525,7 +525,7 @@ class MoviesServiceAnime365 implements MoviesService {
   }
 
   @override
-  Future<WatchStatusDetails> getWatchStatusDetails(Uri movieUri) async {
+  Future<WatchStatusDetails> getWatchStatus(Uri movieUri) async {
     final ResponseData<String> response = await _networkService.request(
       RequestData(uri: movieUri, method: RequestMethod.get),
     );

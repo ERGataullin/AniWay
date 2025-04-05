@@ -36,9 +36,9 @@ abstract interface class IWatchStatusWM implements IWidgetModel {
 
   void handleScorePressed(int score);
 
-  void handleDeletePressed();
+  Future<void> handleDeletePressed();
 
-  void handleSavePressed();
+  Future<void> handleSavePressed();
 }
 
 class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
@@ -84,36 +84,32 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   }
 
   @override
-  void handleDeletePressed() {
-    _submit(const WatchStatusDetails(WatchStatus.none)).then((_) {
-      if (context.mounted) {
-        Navigator.pop(context, const WatchStatusDetails(WatchStatus.none));
-      }
-    });
+  Future<void> handleDeletePressed() async {
+    await _submit(const WatchStatusDetails(WatchStatus.none));
+    if (!context.mounted) return;
+    Navigator.pop(context, const WatchStatusDetails(WatchStatus.none));
   }
 
   @override
-  void handleSavePressed() {
-    _submit(
+  Future<void> handleSavePressed() async {
+    await _submit(
       WatchStatusDetails(
         _status,
         score: score.value,
         episodesCount: int.parse(episodesController.text),
         comment: commentController.text,
       ),
-    ).then((_) {
-      if (context.mounted) {
-        Navigator.pop(
-          context,
-          WatchStatusDetails(
-            status,
-            score: score.value,
-            episodesCount: int.parse(episodesController.text),
-            comment: commentController.text,
-          ),
-        );
-      }
-    });
+    );
+    if (!context.mounted) return;
+    Navigator.pop(
+      context,
+      WatchStatusDetails(
+        status,
+        score: score.value,
+        episodesCount: int.parse(episodesController.text),
+        comment: commentController.text,
+      ),
+    );
   }
 
   @override

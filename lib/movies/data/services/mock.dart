@@ -380,7 +380,7 @@ class MoviesServiceMock implements MoviesService {
   }
 
   @override
-  Future<WatchStatusDetails> getWatchStatusDetails(Uri movieUri) async {
+  Future<WatchStatusDetails> getWatchStatus(Uri movieUri) async {
     await _delay();
     return const WatchStatusDetails(
       WatchStatus.watching,
