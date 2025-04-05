@@ -7,6 +7,7 @@ import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/watch_status/wm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _WatchStatusContext on BuildContext {
@@ -30,6 +31,8 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
     return Provider<IWatchStatusWM>.value(
       value: wm,
       child: Form(
+        key: wm.formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SlotLayout(
           config: <Breakpoint, SlotLayoutConfig>{
             Breakpoints.small: SlotLayout.from(
@@ -60,23 +63,7 @@ class _ContentSmall extends StatelessWidget {
             icon: const Icon(Icons.close),
           ),
           title: Text(context.l10n.watchStatusAdd),
-          actions: [
-            TextButton(
-              onPressed:
-                  context.wm.currentStatus == WatchStatus.none
-                      ? null
-                      : context.wm.handleDeletePressed,
-              style: TextButton.styleFrom(
-                foregroundColor: ColorScheme.of(context).error,
-              ),
-              child: Text(context.l10n.delete),
-            ),
-            TextButton(
-              onPressed: context.wm.handleSavePressed,
-              child: Text(context.l10n.save),
-            ),
-            const SizedBox(width: 16),
-          ],
+          actions: const [_Actions(), SizedBox(width: 16)],
         ),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
@@ -172,6 +159,7 @@ class _Body extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
           children: [Expanded(child: _Status()), Expanded(child: _Episodes())],
         ),
@@ -296,6 +284,8 @@ class _Episodes extends StatelessWidget {
     return TextFormField(
       controller: context.wm.episodesController,
       keyboardType: TextInputType.number,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      validator: (value) => context.wm.printErrorText(value),
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,
         label: Text(context.l10n.episodesWatchedLabel),

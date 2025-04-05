@@ -16,6 +16,8 @@ WatchStatusWM watchStatusWMFactory(BuildContext context) => WatchStatusWM(
 );
 
 abstract interface class IWatchStatusWM implements IWidgetModel {
+  GlobalKey<FormState> get formKey;
+
   TextEditingController get episodesController;
 
   TextEditingController get commentController;
@@ -36,6 +38,8 @@ abstract interface class IWatchStatusWM implements IWidgetModel {
 
   void handleScorePressed(int score);
 
+  String? printErrorText(String? value);
+
   Future<void> handleDeletePressed();
 
   Future<void> handleSavePressed();
@@ -45,6 +49,9 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
     with ThemeWMMixin
     implements IWatchStatusWM {
   WatchStatusWM(super._model);
+
+  @override
+  final formKey = GlobalKey<FormState>();
 
   @override
   final episodesController = TextEditingController();
@@ -84,32 +91,37 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   }
 
   @override
+  String? printErrorText(String? value) {
+    if (value != null && value.isNotEmpty) {
+      return int.parse(value) > (episodesCountTotal ?? 0)
+          ? 'Введите правильное число'
+          : null;
+    } else {
+      return null;
+    }
+  }
+
+  @override
   Future<void> handleDeletePressed() async {
-    await _submit(const WatchStatusDetails(WatchStatus.none));
+    const status = WatchStatusDetails(WatchStatus.none);
+    await _submit(status);
     if (!context.mounted) return;
-    Navigator.pop(context, const WatchStatusDetails(WatchStatus.none));
+    Navigator.pop(context, status);
   }
 
   @override
   Future<void> handleSavePressed() async {
-    await _submit(
-      WatchStatusDetails(
-        _status,
-        score: score.value,
-        episodesCount: int.parse(episodesController.text),
-        comment: commentController.text,
-      ),
+    final status = WatchStatusDetails(
+      _status,
+      score: score.value,
+      episodesCount: int.parse(episodesController.text),
+      comment: commentController.text,
     );
-    if (!context.mounted) return;
-    Navigator.pop(
-      context,
-      WatchStatusDetails(
-        status,
-        score: score.value,
-        episodesCount: int.parse(episodesController.text),
-        comment: commentController.text,
-      ),
-    );
+    if (formKey.currentState!.validate()) {
+      await _submit(status);
+      if (!context.mounted) return;
+      Navigator.pop(context, status);
+    }
   }
 
   @override
