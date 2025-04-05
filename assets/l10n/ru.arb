@@ -20,7 +20,7 @@
         }
     },
     "episodesLabel": "Список серий",
-    "episodesWatchedLabel": "Просмотрено эпизодов",
+    "episodesWatchedLabel": "Просмотрено серий",
     "emailLabel": "Электронная почта",
     "emailValidationError": "Неверный адрес электронной почты",
     "homePageTitle": "Главная",
@@ -107,7 +107,7 @@
         }
     },
     "watchStatusAdd": "Добавить в список",
-    "watchStatusEpisodesError": "Должно быть не более {episodesCountTotal}",
+    "watchStatusEpisodesError": "Не более {episodesCountTotal} серий",
     "@watchStatusEpisodesError": {
         "placeholders": {
             "episodesCountTotal": {

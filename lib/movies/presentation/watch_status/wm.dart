@@ -83,8 +83,9 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
 
   @override
   String? validateEpisodes(String? value) {
+    if (episodesCountTotal == null) return null;
     if (value?.isEmpty ?? true) return null;
-    return int.parse(value!) > (episodesCountTotal ?? 0)
+    return int.parse(value!) > episodesCountTotal!
         ? context.l10n.watchStatusEpisodesError(episodesCountTotal!)
         : null;
   }

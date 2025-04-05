@@ -329,6 +329,7 @@ class MoviesServiceMock implements MoviesService {
         },
       ),
       previews: const [],
+      episodesCount: 10,
       episodes: List.generate(
         10,
         (index) => EpisodeData(id: id, type: MovieType.tv, number: index + 1),
