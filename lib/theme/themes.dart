@@ -59,7 +59,11 @@ extension _AppOverrides on ThemeData {
     ),
     drawerTheme: drawerTheme.copyWith(width: 360),
     inputDecorationTheme: inputDecorationTheme.copyWith(
-      border: const OutlineInputBorder(),
+      filled: true,
+      border: const UnderlineInputBorder(borderSide: BorderSide.none),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(width: 2, color: colorScheme.primary),
+      ),
     ),
     navigationDrawerTheme: navigationDrawerTheme.copyWith(
       backgroundColor: colorScheme.surface,

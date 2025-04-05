@@ -3,11 +3,13 @@ import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/episode.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/movies/presentation/movie/model.dart';
 import 'package:app/movies/presentation/movie/widget.dart';
+import 'package:app/movies/presentation/watch_status/widget.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 MovieWM movieWMFactory(BuildContext context) => MovieWM(
   MovieModel(
@@ -36,6 +38,8 @@ abstract interface class IMovieWM implements IWidgetModel {
   ValueListenable<int?> get episodesCount;
 
   ValueListenable<List<EpisodeData>> get episodes;
+
+  Future<void> handleWatchStatusPressed(BuildContext context);
 
   void handlePlayPressed();
 
@@ -118,6 +122,19 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   void didUpdateWidget(MovieWidget oldWidget) {
     episodesUri.update();
     super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Future<void> handleWatchStatusPressed(BuildContext context) async {
+    final WatchStatusDetails? newStatus = await showDialog<WatchStatusDetails?>(
+      context: context,
+      builder:
+          (context) => WatchStatusWidget(
+            movie: model.movie.value!,
+            statusDetails: model.watchStatusDetails.value!,
+          ),
+    );
+    if (newStatus != null) model.watchStatusDetails.value = newStatus;
   }
 
   @override

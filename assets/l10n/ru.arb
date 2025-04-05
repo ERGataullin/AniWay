@@ -9,7 +9,8 @@
         }
     },
     "authorLabel": "Автор",
-    "@authorLabel": {},
+    "commentLabel": "Комментарий",
+    "delete": "Удалить",
     "durationSeconds": "{seconds} секунд",
     "@durationSeconds": {
         "placeholders": {
@@ -19,15 +20,11 @@
         }
     },
     "episodesLabel": "Список серий",
-    "@episodesLabel": {},
+    "episodesWatchedLabel": "Просмотрено серий",
     "emailLabel": "Электронная почта",
-    "@emailLabel": {},
     "emailValidationError": "Неверный адрес электронной почты",
-    "@emailValidationError": {},
     "homePageTitle": "Главная",
-    "@homePageTitle": {},
     "languageLabel": "Язык",
-    "@languageLabel": {},
     "languageTitle": "{type, select, ja{Японский} en{Английский} ru{Русский} other{Неизвестный язык}}",
     "@languageTitle": {
         "placeholders": {
@@ -55,16 +52,21 @@
             }
         }
     },
+    "ofY": "из {y}",
+    "@ofY": {
+        "placeholders": {
+            "y": {
+                "type": "num"
+            }
+        }
+    },
     "ongoingsTitle": "Cейчас выходят",
-    "@ongoingsTitle": {},
     "passwordLabel": "Пароль",
-    "@passwordLabel": {},
     "popularsTitle": "Популярное",
-    "@popularsTitle": {},
+    "save": "Сохранить",
+    "score": "Оценка",
     "signInSubmitLabel": "Войти через Anime365",
-    "@signInSubmitLabel": {},
     "searchPageTitle": "Поиск",
-    "@searchPageTitle": {},
     "range": "{start}-{end}",
     "@range": {
         "placeholders": {
@@ -77,9 +79,7 @@
         }
     },
     "upNextTitle": "К просмотру",
-    "@upNextTitle": {},
     "videoPlaybackSpeedLabel": "Скорость воспроизведения",
-    "@videoPlaybackSpeedLabel": {},
     "videoPlaybackSpeed": "{speed, plural, =1{Обычная} other{{speed}}}",
     "@videoPlaybackSpeed": {
         "placeholders": {
@@ -89,9 +89,7 @@
         }
     },
     "videoPlayLabel": "Смотреть",
-    "@videoPlayLabel": {},
     "videoQualityLabel": "Качество",
-    "@videoQualityLabel": {},
     "videoQuality": "{quality}p",
     "@videoQuality": {
         "placeholders": {
@@ -109,8 +107,16 @@
         }
     },
     "watchStatusAdd": "Добавить в список",
-    "@watchStatusAdd": {},
-    "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{В библиотеке отсутствует} other{Неизвестный статус}}",
+    "watchStatusEpisodesError": "Не более {episodesCountTotal} серий",
+    "@watchStatusEpisodesError": {
+        "placeholders": {
+            "episodesCountTotal": {
+                "type": "num"
+            }
+        }
+    },
+    "watchStatusLabel": "Статус",
+    "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{Отстутвует в списке} other{Неизвестный статус}}",
     "@watchStatus": {
         "placeholders": {
             "type": {

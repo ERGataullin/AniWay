@@ -5,8 +5,8 @@ import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/up_next.dart';
-import 'package:app/movies/domain/models/watch_list_element.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/player/player.dart';
 import 'package:flutter/foundation.dart';
 
@@ -69,7 +69,17 @@ class MoviesRepository implements Initable {
     _upNextChanges.value++;
   }
 
-  Future<WatchListElementData?> getWatchStatusDetails(Uri movieUri) {
-    return _moviesService.getWatchStatusDetails(movieUri);
+  Future<WatchStatusDetails> getWatchStatus(Uri movieUri) {
+    return _moviesService.getWatchStatus(movieUri);
+  }
+
+  Future<void> saveWatchStatus({
+    required int movieId,
+    required WatchStatusDetails status,
+  }) {
+    return _moviesService.saveWatchStatus(
+      movieId: movieId,
+      watchStatusDetails: status,
+    );
   }
 }

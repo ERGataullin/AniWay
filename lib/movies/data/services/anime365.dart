@@ -9,8 +9,8 @@ import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/up_next.dart';
-import 'package:app/movies/domain/models/watch_list_element.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
+import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/player/player.dart';
 
 class MoviesServiceAnime365 implements MoviesService {
@@ -525,7 +525,7 @@ class MoviesServiceAnime365 implements MoviesService {
   }
 
   @override
-  Future<WatchListElementData> getWatchStatusDetails(Uri movieUri) async {
+  Future<WatchStatusDetails> getWatchStatus(Uri movieUri) async {
     final ResponseData<String> response = await _networkService.request(
       RequestData(uri: movieUri, method: RequestMethod.get),
     );
@@ -558,29 +558,49 @@ class MoviesServiceAnime365 implements MoviesService {
             ? 0
             : int.parse(watchedEpisodesCountValue);
 
-    final String? episodesCountValue =
-        animeListForm
-            .querySelector('input#UsersRates_episodes')
-            ?.attributes['max'];
-    final int? episodesCount =
-        episodesCountValue == null ? null : int.parse(episodesCountValue);
+    final String? commentValue =
+        animeListForm.querySelector('textarea#UsersRates_comment')?.innerHtml;
 
-    return status == null
-        ? const WatchListElementData(status: WatchStatus.none)
-        : WatchListElementData(
-          status: switch (status) {
-            'Запланировано' => WatchStatus.planned,
-            'Смотрю' => WatchStatus.watching,
-            'Просмотрено' => WatchStatus.completed,
-            'Отложено' => WatchStatus.onHold,
-            'Брошено' => WatchStatus.dropped,
-            final Object? unsupported =>
-              throw UnsupportedError('Unsupported movie status: $unsupported'),
-          },
-          score: score,
-          watchedEpisodesCount: watchedEpisodesCount,
-          episodesCount: episodesCount,
-        );
+    return WatchStatusDetails(
+      switch (status) {
+        'Запланировано' => WatchStatus.planned,
+        'Смотрю' => WatchStatus.watching,
+        'Просмотрено' => WatchStatus.completed,
+        'Отложено' => WatchStatus.onHold,
+        'Брошено' => WatchStatus.dropped,
+        null => WatchStatus.none,
+        final Object? unsupported =>
+          throw UnsupportedError('Unsupported movie status: $unsupported'),
+      },
+      score: score,
+      episodesCount: watchedEpisodesCount,
+      comment: commentValue,
+    );
+  }
+
+  @override
+  Future<void> saveWatchStatus({
+    required int movieId,
+    required WatchStatusDetails watchStatusDetails,
+  }) async {
+    await _networkService.request<void>(
+      RequestData(
+        uri: Uri(
+          path: '/animelist/edit/$movieId',
+          queryParameters: const {'mode': 'mini'},
+        ),
+        method: RequestMethod.post,
+        body: {
+          'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
+          'UsersRates[status]': _convertWatchStatusToJson(
+            watchStatusDetails.status,
+          ),
+          'UsersRates[score]': watchStatusDetails.score,
+          'UsersRates[episodes]': watchStatusDetails.episodesCount,
+          'UsersRates[comment]': watchStatusDetails.comment,
+        },
+      ),
+    );
   }
 
   MovieType _convertJsonToMovieType(String json) {
@@ -630,7 +650,7 @@ class MoviesServiceAnime365 implements MoviesService {
       WatchStatus.completed => 2,
       WatchStatus.onHold => 3,
       WatchStatus.dropped => 4,
-      WatchStatus.none => -1,
+      WatchStatus.none => 99,
     };
   }
 }
