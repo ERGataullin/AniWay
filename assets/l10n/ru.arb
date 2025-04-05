@@ -107,6 +107,14 @@
         }
     },
     "watchStatusAdd": "Добавить в список",
+    "watchStatusEpisodesError": "Должно быть не более {episodesCountTotal}",
+    "@watchStatusEpisodesError": {
+        "placeholders": {
+            "episodesCountTotal": {
+                "type": "num"
+            }
+        }
+    },
     "watchStatusLabel": "Статус",
     "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{Отстутвует в списке} other{Неизвестный статус}}",
     "@watchStatus": {

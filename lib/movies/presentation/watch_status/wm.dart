@@ -1,4 +1,5 @@
 import 'package:app/core/core.dart';
+import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
@@ -34,11 +35,11 @@ abstract interface class IWatchStatusWM implements IWidgetModel {
 
   int? get episodesCountTotal;
 
+  String? validateEpisodes(String? value);
+
   void handleStatusSelected(WatchStatus status);
 
   void handleScorePressed(int score);
-
-  String? printErrorText(String? value);
 
   Future<void> handleDeletePressed();
 
@@ -81,6 +82,14 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   int? get episodesCountTotal => widget.movie.episodesCount;
 
   @override
+  String? validateEpisodes(String? value) {
+    if (value?.isEmpty ?? true) return null;
+    return int.parse(value!) > (episodesCountTotal ?? 0)
+        ? context.l10n.watchStatusEpisodesError(episodesCountTotal!)
+        : null;
+  }
+
+  @override
   void handleStatusSelected(WatchStatus status) {
     _status = status;
   }
@@ -88,17 +97,6 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   @override
   void handleScorePressed(int score) {
     this.score.value = score;
-  }
-
-  @override
-  String? printErrorText(String? value) {
-    if (value != null && value.isNotEmpty) {
-      return int.parse(value) > (episodesCountTotal ?? 0)
-          ? 'Введите правильное число'
-          : null;
-    } else {
-      return null;
-    }
   }
 
   @override

@@ -191,7 +191,6 @@ class _WatchStatusButton extends StatelessWidget {
                   child: child,
                 ),
             child: IconButton(
-              key: ValueKey(context.wm.watchStatus.value),
               onPressed: () => context.wm.handleWatchStatusPressed(context),
               isSelected: context.wm.watchStatus.value != WatchStatus.none,
               tooltip: switch (context.wm.watchStatus.value) {

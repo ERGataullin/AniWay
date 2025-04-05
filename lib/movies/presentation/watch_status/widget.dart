@@ -65,18 +65,9 @@ class _ContentSmall extends StatelessWidget {
           title: Text(context.l10n.watchStatusAdd),
           actions: const [_Actions(), SizedBox(width: 16)],
         ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: ListenableBuilder(
-            listenable: context.wm.loading,
-            builder:
-                (context, _) =>
-                    context.wm.loading.value
-                        ? const Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                        : const _Body(),
-          ),
+        body: const Padding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
+          child: _MaybeLoader(child: _Fields()),
         ),
       ),
     );
@@ -91,33 +82,44 @@ class _ContentMediumAndUp extends StatelessWidget {
     return Dialog(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 560),
-        child: ListenableBuilder(
-          listenable: context.wm.loading,
-          builder:
-              (context, _) =>
-                  context.wm.loading.value
-                      ? const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                      : Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              context.l10n.watchStatusAdd,
-                              style: TextTheme.of(context).headlineSmall,
-                            ),
-                            const SizedBox(height: 16),
-                            const _Body(),
-                            const SizedBox(height: 24),
-                            const _Actions(),
-                          ],
-                        ),
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: _MaybeLoader(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.l10n.watchStatusAdd,
+                  style: TextTheme.of(context).headlineSmall,
+                ),
+                const SizedBox(height: 16),
+                const _Fields(),
+                const SizedBox(height: 24),
+                const _Actions(),
+              ],
+            ),
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _MaybeLoader extends StatelessWidget {
+  const _MaybeLoader({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: context.wm.loading,
+      builder:
+          (context, _) =>
+              context.wm.loading.value
+                  ? const Center(child: CircularProgressIndicator.adaptive())
+                  : child,
     );
   }
 }
@@ -149,8 +151,8 @@ class _Actions extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
-  const _Body();
+class _Fields extends StatelessWidget {
+  const _Fields();
 
   @override
   Widget build(BuildContext context) {
@@ -285,9 +287,10 @@ class _Episodes extends StatelessWidget {
       controller: context.wm.episodesController,
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      validator: (value) => context.wm.printErrorText(value),
+      validator: (value) => context.wm.validateEpisodes(value),
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.always,
+        hintText: '0',
         label: Text(context.l10n.episodesWatchedLabel),
         suffixText: switch (context.wm.episodesCountTotal) {
           null => null,
