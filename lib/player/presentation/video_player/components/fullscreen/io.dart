@@ -7,7 +7,7 @@ class FullscreenControllerPlatform
     with ChangeNotifier
     implements FullscreenController {
   FullscreenControllerPlatform() {
-    ServicesBinding.instance.keyboard.addHandler(_onKey);
+    ServicesBinding.instance.keyboard.addHandler(_handlePressedKey);
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }
@@ -65,7 +65,7 @@ class FullscreenControllerPlatform
     return _isFullscreen ? exit() : request();
   }
 
-  bool _onKey(KeyEvent event) {
+  bool _handlePressedKey(KeyEvent event) {
     if (!_isFullscreen) return false;
     if (event is! KeyUpEvent) return false;
     if (event.physicalKey != PhysicalKeyboardKey.escape) return false;
