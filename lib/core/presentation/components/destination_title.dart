@@ -33,8 +33,7 @@ class DestinationTitle extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Flexible(
-              fit: FlexFit.loose,
+            Expanded(
               child: Link(
                 uri: uri,
                 builder:

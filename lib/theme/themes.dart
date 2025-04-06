@@ -97,5 +97,15 @@ extension _AppOverrides on ThemeData {
         maxHeight: 56,
       ),
     ),
+    tooltipTheme: tooltipTheme.copyWith(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      textStyle: textTheme.bodySmall!.copyWith(
+        color: colorScheme.onInverseSurface,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.inverseSurface,
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+      ),
+    ),
   );
 }
