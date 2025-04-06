@@ -65,7 +65,10 @@ class PrimaryNavigation extends StatelessWidget {
                             .toList(growable: false),
                       ),
                     ),
-                    const VerticalDivider(),
+                    SizedBox(
+                      width: DividerTheme.of(context).thickness!,
+                      child: const VerticalDivider(),
+                    ),
                   ],
                 ),
           ),
