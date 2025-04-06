@@ -15,17 +15,24 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter implements RouterConfig<RouteMatchList> {
-  AppRouter({required ValueListenable<bool> signedIn}) : _signedIn = signedIn;
+  AppRouter({required ValueListenable<bool> signedIn}) : _signedIn = signedIn {
+    GoRouter.optionURLReflectsImperativeAPIs = true;
+  }
 
   final ValueListenable<bool> _signedIn;
 
   late final _goRouter = GoRouter(
     refreshListenable: _signedIn,
-    routes: [_buildSignIn(), _buildRootMenu(), _buildMoviePlayer()],
+    routes: [
+      _RoutesBuilders.buildSignIn(),
+      _RoutesBuilders.buildMoviePlayer(),
+      _RoutesBuilders.buildRootMenu(),
+    ],
     redirect: (context, state) {
       const referrerKey = 'referrer';
       final String? route = state.topRoute?.name;
       return switch (_signedIn.value) {
+        _ when kIsWeb => null,
         false when route != _Routes.signIn => state.namedLocation(
           _Routes.signIn,
           queryParameters: {referrerKey: state.matchedLocation},
@@ -53,8 +60,27 @@ class AppRouter implements RouterConfig<RouteMatchList> {
 
   @override
   RouterDelegate<RouteMatchList> get routerDelegate => _goRouter.routerDelegate;
+}
 
-  GoRoute _buildSignIn() {
+abstract class _Routes {
+  static const signIn = '/sign-in';
+
+  static const home = '/home';
+
+  static const moviePlayer = '/movie-player';
+
+  static const upNext = '/up-next';
+
+  static String search({String? parent}) =>
+      parent == null ? '/search' : '$parent/search';
+
+  static String movie({required String parent}) => '$parent/movies/:movieId';
+
+  static String episodes({String? parent}) => '$parent/episodes';
+}
+
+abstract class _RoutesBuilders {
+  static GoRoute buildSignIn() {
     return GoRoute(
       name: _Routes.signIn,
       path: '/sign-in',
@@ -62,7 +88,27 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  ShellRouteBase _buildRootMenu() {
+  static GoRoute buildMoviePlayer() {
+    return GoRoute(
+      name: _Routes.moviePlayer,
+      path: '/movies/:movieId/player',
+      pageBuilder:
+          (context, state) => MaterialPage(
+            fullscreenDialog: true,
+            child: MoviePlayerWidget(
+              movieId: int.parse(state.pathParameters['movieId']!),
+              initialEpisodeId: switch (state
+                  .uri
+                  .queryParameters['episodeId']) {
+                final String episodeIdQuery => int.tryParse(episodeIdQuery),
+                _ => null,
+              },
+            ),
+          ),
+    );
+  }
+
+  static ShellRouteBase buildRootMenu() {
     final GoRoute search = _buildSearch();
     return StatefulShellRoute(
       branches: [
@@ -94,27 +140,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  GoRoute _buildMoviePlayer() {
-    return GoRoute(
-      name: _Routes.moviePlayer,
-      path: '/movies/:movieId/player',
-      pageBuilder:
-          (context, state) => MaterialPage(
-            fullscreenDialog: true,
-            child: MoviePlayerWidget(
-              movieId: int.parse(state.pathParameters['movieId']!),
-              initialEpisodeId: switch (state
-                  .uri
-                  .queryParameters['episodeId']) {
-                final String episodeIdQuery => int.tryParse(episodeIdQuery),
-                _ => null,
-              },
-            ),
-          ),
-    );
-  }
-
-  GoRoute _buildHome() {
+  static GoRoute _buildHome() {
     final GoRoute upNext = _buildUpNext();
     final GoRoute search = _buildSearch(path: 'movies', parent: _Routes.home);
     final GoRoute movie = _buildMovie(parent: _Routes.home);
@@ -151,7 +177,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
               ),
             ),
             onMoviePressed:
-                (id) => context.goNamed(
+                (id) => context.pushNamed(
                   movie.name!,
                   pathParameters: {'movieId': id.toString()},
                 ),
@@ -159,7 +185,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  GoRoute _buildSearch({String path = '/search', String? parent}) {
+  static GoRoute _buildSearch({String path = '/search', String? parent}) {
     final String name = _Routes.search(parent: parent);
     final GoRoute movieRoute = _buildMovie(parent: name);
     return GoRoute(
@@ -183,12 +209,12 @@ class AppRouter implements RouterConfig<RouteMatchList> {
                     .toList(growable: false) ??
                 const [],
             onSearch:
-                (query) => context.goNamed(
+                (query) => context.replaceNamed(
                   name,
                   queryParameters: {if (query.isNotEmpty) 'query': query},
                 ),
             onMoviePressed:
-                (id) => context.goNamed(
+                (id) => context.pushNamed(
                   movieRoute.name!,
                   pathParameters: {'movieId': id.toString()},
                 ),
@@ -196,7 +222,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  GoRoute _buildMovie({required String parent}) {
+  static GoRoute _buildMovie({required String parent}) {
     final GoRoute episodesRoute = _buildEpisodes(parent: parent);
     return GoRoute(
       name: _Routes.movie(parent: parent),
@@ -227,7 +253,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  GoRoute _buildUpNext() {
+  static GoRoute _buildUpNext() {
     final GoRoute movieRoute = _buildMovie(parent: _Routes.upNext);
     return GoRoute(
       name: _Routes.upNext,
@@ -250,7 +276,7 @@ class AppRouter implements RouterConfig<RouteMatchList> {
     );
   }
 
-  GoRoute _buildEpisodes({required String parent}) {
+  static GoRoute _buildEpisodes({required String parent}) {
     return GoRoute(
       name: _Routes.episodes(parent: parent),
       path: 'episodes',
@@ -266,21 +292,4 @@ class AppRouter implements RouterConfig<RouteMatchList> {
           ),
     );
   }
-}
-
-abstract class _Routes {
-  static const signIn = '/sign-in';
-
-  static const home = '/home';
-
-  static const moviePlayer = '/movie-player';
-
-  static const upNext = '/up-next';
-
-  static String search({String? parent}) =>
-      parent == null ? '/search' : '$parent/search';
-
-  static String movie({required String parent}) => '$parent/movies/:movieId';
-
-  static String episodes({String? parent}) => '$parent/episodes';
 }
