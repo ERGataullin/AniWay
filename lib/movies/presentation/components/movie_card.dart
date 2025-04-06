@@ -166,7 +166,10 @@ class _Footer extends StatelessWidget {
               enabled: data?.title == null,
               constraints: const BoxConstraints(minWidth: 128),
               delegate: shimmerDelegate,
-              child: Text(data?.title ?? '', style: textTheme.titleSmall),
+              child: Tooltip(
+                message: data?.title ?? '',
+                child: Text(data?.title ?? '', style: textTheme.titleSmall),
+              ),
             ),
             const SizedBox(height: 2),
             Row(

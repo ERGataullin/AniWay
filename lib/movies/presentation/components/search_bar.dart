@@ -38,7 +38,9 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
 
   @override
   void didUpdateWidget(covariant MoviesSearchBar oldWidget) {
-    if (widget.query != _controller.text) _controller.text = widget.query ?? '';
+    if (widget.query != _controller.text && widget.query?.isNotEmpty == true) {
+      _controller.text = widget.query ?? '';
+    }
     super.didUpdateWidget(oldWidget);
   }
 
