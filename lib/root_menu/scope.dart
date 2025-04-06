@@ -17,11 +17,12 @@ class RootMenuScope extends InheritedWidget {
 
   final GlobalKey bottomNavigationKey;
 
-  bool get hasTopNavigation =>
-      !TopNavigation.sizeFor(topNavigationKey.currentContext!).isEmpty;
-
   static RootMenuScope of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<RootMenuScope>()!;
+  }
+
+  bool hasTopNavigation(BuildContext context) {
+    return !TopNavigation.sizeFor(context).isEmpty;
   }
 
   @override

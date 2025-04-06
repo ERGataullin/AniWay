@@ -43,7 +43,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
               (context, body) => Scaffold(
                 extendBodyBehindAppBar: true,
                 appBar:
-                    RootMenuScope.of(context).hasTopNavigation
+                    RootMenuScope.of(context).hasTopNavigation(context)
                         ? null
                         : MoviesSearchBar(
                           query: wm.query.value,
