@@ -11,6 +11,7 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
   VideoPlayerModel(
@@ -147,7 +148,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     }
     videoController
       ..loading.addListener(_updateControlsVisibility)
-      ..playing.addListener(_updateControlsVisibility)
+      ..playing.addListener(_handlePlayingChanged)
       ..position.addListener(_handlePositionDurationChanged)
       ..duration.addListener(_handlePositionDurationChanged);
     title.update();
@@ -201,7 +202,9 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void handlePopInvoked(bool didPop, [Object? result]) {
-    if (didPop) fullscreenController.exit();
+    if (!didPop) return;
+    fullscreenController.exit();
+    WakelockPlus.disable();
   }
 
   @override
@@ -230,6 +233,11 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       saveState: true,
     );
     if (model.videoDataSource.value != null) await videoController.play();
+  }
+
+  void _handlePlayingChanged() {
+    _updateControlsVisibility();
+    WakelockPlus.toggle(enable: videoController.playing.value);
   }
 
   void _handlePositionDurationChanged() {
