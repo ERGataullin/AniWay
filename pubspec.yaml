@@ -37,6 +37,7 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
   flutter_native_splash: ^2.4.4
+  msix: ^3.16.8
 
 flutter:
   generate: true
@@ -45,3 +46,12 @@ flutter:
     - family: Alvida
       fonts:
         - asset: assets/fonts/alvida.ttf
+
+msix_config:
+  display_name: AniWay
+  publisher_display_name: AniWay
+  identity_name: fun.aniway.app
+  msix_version: 1.0.0.0
+  output_name: AniWay
+  trim_logo: false
+  logo_path: web\icons\Icon-512.png
