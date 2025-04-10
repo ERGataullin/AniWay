@@ -16,7 +16,7 @@ enum RequestMethod {
   patch,
 }
 
-abstract interface class NetworkService implements Initable {
+abstract interface class NetworkService with Initable {
   const NetworkService();
 
   Uri get baseUri;

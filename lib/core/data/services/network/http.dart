@@ -1,16 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:app/core/core.dart';
 import 'package:http/http.dart';
 
 class HttpService implements NetworkService {
-  HttpService({required this.baseUri}) : _client = Client();
+  HttpService({required this.baseUri, required String userAgent})
+    : _userAgent = userAgent,
+      _client = Client();
 
   @override
   final Uri baseUri;
 
   final Client _client;
+
+  final String _userAgent;
 
   final List<NetworkInterceptor> _interceptors = [];
 
@@ -46,11 +51,16 @@ class HttpService implements NetworkService {
 
   Future<ResponseData<T>> _request<T>(RequestData data) async {
     final Uri uri = baseUri.resolveUri(data.uri);
+    final Map<String, String> headers = {
+      ...data.headers,
+      HttpHeaders.userAgentHeader: _userAgent,
+    };
+
     final Response httpResponse = await switch (data.method) {
-      RequestMethod.get => _client.get(uri, headers: data.headers),
+      RequestMethod.get => _client.get(uri, headers: headers),
       RequestMethod.post => _client.post(
         uri,
-        headers: data.headers,
+        headers: headers,
         body: switch (data.body) {
           final Json json => json.map(
             (key, value) => MapEntry(key, value.toString()),

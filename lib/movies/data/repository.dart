@@ -10,7 +10,7 @@ import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:app/player/player.dart';
 import 'package:flutter/foundation.dart';
 
-class MoviesRepository implements Initable {
+class MoviesRepository with Initable {
   MoviesRepository({required MoviesService moviesService})
     : _moviesService = moviesService;
 
@@ -21,11 +21,9 @@ class MoviesRepository implements Initable {
   Listenable get upNextChanges => _upNextChanges;
 
   @override
-  void init() {}
-
-  @override
   void dispose() {
     _upNextChanges.dispose();
+    super.dispose();
   }
 
   Future<List<MovieBaseData>> getMovies({
