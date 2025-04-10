@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:app/core/core.dart';
 
-abstract interface class StorageService implements Initable {
+abstract interface class StorageService with Initable {
   const StorageService();
 
   Future<T> get<T>({

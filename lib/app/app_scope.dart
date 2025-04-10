@@ -26,10 +26,11 @@ class AppScope extends InheritedWidget {
         networkService ??
         HttpService(
           baseUri: Uri(scheme: 'https', host: 'smotret-anime.online'),
+          userAgent: 'AniWay',
         );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
-        cookieManager ?? CookieManagerImpl(storageService: this.storageService);
+        cookieManager ?? CookieManager(storageService: this.storageService);
     this.authService =
         authService ??
         AuthRepository(

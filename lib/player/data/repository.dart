@@ -1,17 +1,11 @@
 import 'package:app/core/core.dart';
 import 'package:app/player/player.dart';
 
-class PlayerRepository implements Initable {
+class PlayerRepository with Initable {
   const PlayerRepository({required PlayerService playerService})
     : _playerService = playerService;
 
   final PlayerService _playerService;
-
-  @override
-  void init() {}
-
-  @override
-  void dispose() {}
 
   Future<Map<String, int>> getPersonalizedTranslationAuthorsRates() {
     return _playerService.getPersonalizedTranslationAuthorsRates();

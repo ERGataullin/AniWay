@@ -5,7 +5,7 @@ import 'package:app/auth/auth.dart';
 import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
 
-class AuthRepository implements Initable {
+class AuthRepository with Initable {
   AuthRepository({
     required AuthService authService,
     required CookieManager cookieManager,
@@ -28,11 +28,9 @@ class AuthRepository implements Initable {
   final CookieManager _cookieManager;
 
   @override
-  void init() {}
-
-  @override
   void dispose() {
     signedIn.dispose();
+    super.dispose();
   }
 
   Future<void> signIn({required String email, required String password}) {

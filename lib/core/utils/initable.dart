@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-abstract interface class Initable {
+mixin Initable {
   @mustCallSuper
-  FutureOr<void> init();
+  FutureOr<void> init() {}
 
   @mustCallSuper
-  FutureOr<void> dispose();
+  FutureOr<void> dispose() {}
 }
