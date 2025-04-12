@@ -33,11 +33,6 @@ class HttpService implements NetworkService {
   }
 
   @override
-  List<int> getBytes(String data) {
-    return utf8.encode(data);
-  }
-
-  @override
   void dispose() {
     _client.close();
   }
