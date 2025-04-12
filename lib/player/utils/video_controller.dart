@@ -149,7 +149,7 @@ class VideoPlayerController extends VideoController {
     duration.value = value.duration;
     playbackSpeed.value = value.playbackSpeed;
     loading.value =
-        _inner.value == null || !value.isInitialized || value.isBuffering;
+        kIsWeb ? value.isBuffering : value.isBuffering && !value.isPlaying;
     playing.value = value.isPlaying;
     aspectRatio.value = value.aspectRatio;
   }
