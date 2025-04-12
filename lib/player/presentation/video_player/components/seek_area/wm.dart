@@ -170,6 +170,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   }
 
   Future<void> _handleSeekTapCancel() async {
+    if (!context.mounted) return;
     model.resetValue();
   }
 

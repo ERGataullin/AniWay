@@ -325,9 +325,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   void _updateControlsVisibility() {
-    videoController.loading.value &&
-                defaultTargetPlatform != TargetPlatform.iOS ||
-            !videoController.playing.value
+    videoController.loading.value
         ? controlsVisibilityController.show(autohide: false)
         : controlsVisibilityController.hide();
   }
