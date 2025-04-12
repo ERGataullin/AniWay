@@ -18,6 +18,7 @@ VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
     errorHandler: context.read<ErrorHandler>(),
     repository: context.read<PlayerRepository>(),
   ),
+  context.read<NetworkService>(),
 );
 
 abstract interface class IVideoPlayerWM implements IWidgetModel {
@@ -59,10 +60,11 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     with L10nWMMixin
     implements IVideoPlayerWM {
-  VideoPlayerWM(super._model);
+  VideoPlayerWM(super._model, NetworkService networkService)
+    : _networkService = networkService;
 
   @override
-  final videoController = VideoController.videoPlayer();
+  late final videoController = VideoController.videoPlayer(_networkService);
 
   @override
   final controlsVisibilityController = VisibilityController();
@@ -227,9 +229,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     _watched = false;
   }
 
+  final NetworkService _networkService;
+
   Future<void> _handleVideoDataSourceChanged() async {
     await videoController.setDataSource(
       model.videoDataSource.value,
+      subtitlesUri: model.video.value?.subtitlesUri,
       saveState: true,
     );
     if (model.videoDataSource.value != null) await videoController.play();

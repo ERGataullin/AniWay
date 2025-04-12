@@ -99,7 +99,6 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   void setTranslations(List<VideoTranslationData> value) {
     final translations = <Locale, List<VideoTranslationData>>{};
     for (final VideoTranslationData translation in value) {
-      if (translation.type == VideoTranslationType.sub) continue;
       translations[translation.locale] = [
         ...translations[translation.locale] ?? const [],
         translation,

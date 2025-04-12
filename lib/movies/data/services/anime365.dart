@@ -506,7 +506,7 @@ class MoviesServiceAnime365 implements MoviesService {
             (sourceJson['urls']! as List<dynamic>).first as String,
           ),
       },
-      subtitlesUri: switch (data['subtitlesUrl']) {
+      subtitlesUri: switch (data['subtitlesVttUrl']) {
         final String url => Uri.tryParse(url),
         _ => null,
       },

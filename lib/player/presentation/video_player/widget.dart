@@ -16,6 +16,7 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:video_player/video_player.dart' as video_player;
 
 extension _VideoPlayerContext on BuildContext {
@@ -163,6 +164,32 @@ class _Player extends StatelessWidget {
                     },
                   ),
             ),
+          ),
+          ListenableBuilder(
+            listenable:
+                (context.wm.videoController as VideoPlayerController).inner,
+            builder:
+                (context, _) => ListenableBuilder(
+                  listenable: Listenable.merge([
+                    (context.wm.videoController as VideoPlayerController)
+                        .inner
+                        .value,
+                  ]),
+                  builder: (context, _) {
+                    return switch ((context.wm.videoController
+                            as VideoPlayerController)
+                        .inner
+                        .value
+                        ?.value
+                        .caption
+                        .text) {
+                      final String caption => _CustomClosedCaption(
+                        text: caption,
+                      ),
+                      _ => const SizedBox.shrink(),
+                    };
+                  },
+                ),
           ),
           ListenableBuilder(
             listenable: context.wm.controlsVisibilityController,
@@ -330,6 +357,68 @@ class _SkipButton extends StatelessWidget {
             ),
             icon: icon,
           ),
+    );
+  }
+}
+
+class _CustomClosedCaption extends StatelessWidget {
+  const _CustomClosedCaption({this.text});
+
+  final String? text;
+
+  @override
+  Widget build(BuildContext context) {
+    final String? text = this.text;
+    if (text == null || text.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 24),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: SlotLayout(
+              config: <Breakpoint, SlotLayoutConfig>{
+                Breakpoints.standard: SlotLayout.from(
+                  key: const Key('Caption Standard'),
+                  builder:
+                      (_) => Text(
+                        text,
+                        style: TextTheme.of(
+                          context,
+                        ).displaySmall!.copyWith(fontSize: 22),
+                      ),
+                ),
+                const Breakpoint(beginWidth: 840, andUp: true): SlotLayout.from(
+                  key: const Key('Caption Medium'),
+                  builder:
+                      (_) => Text(
+                        text,
+                        style: TextTheme.of(
+                          context,
+                        ).displaySmall!.copyWith(fontSize: 28),
+                      ),
+                ),
+                Breakpoints.largeAndUp: SlotLayout.from(
+                  key: const Key('Caption Large and Up'),
+                  builder:
+                      (_) => Text(
+                        text,
+                        style: TextTheme.of(context).displayMedium,
+                      ),
+                ),
+              },
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:app/core/data/services/network/network.dart';
 import 'package:flutter/foundation.dart';
 import 'package:video_player/video_player.dart' as video_player;
 
 sealed class VideoController {
   const VideoController();
 
-  factory VideoController.videoPlayer() => VideoPlayerController();
+  factory VideoController.videoPlayer(NetworkService networkService) =>
+      VideoPlayerController(networkService: networkService);
 
   ValueListenable<bool> get loading;
 
@@ -22,7 +24,11 @@ sealed class VideoController {
 
   ValueListenable<String?> get webElementQuery;
 
-  Future<void> setDataSource(Uri? uri, {bool saveState = false});
+  Future<void> setDataSource(
+    Uri? uri, {
+    Uri? subtitlesUri,
+    bool saveState = false,
+  });
 
   Future<void> play();
 
@@ -39,6 +45,9 @@ sealed class VideoController {
 }
 
 class VideoPlayerController extends VideoController {
+  VideoPlayerController({required NetworkService networkService})
+    : _networkService = networkService;
+
   @override
   final ValueNotifier<bool> loading = ValueNotifier(true);
 
@@ -65,8 +74,14 @@ class VideoPlayerController extends VideoController {
 
   ValueListenable<video_player.VideoPlayerController?> get inner => _inner;
 
+  final NetworkService _networkService;
+
   @override
-  Future<void> setDataSource(Uri? uri, {bool saveState = false}) async {
+  Future<void> setDataSource(
+    Uri? uri, {
+    Uri? subtitlesUri,
+    bool saveState = false,
+  }) async {
     await _inner.value?.pause();
     _inner.value
       ?..removeListener(_handleInnerValueChanged)
@@ -91,6 +106,20 @@ class VideoPlayerController extends VideoController {
     webElementQuery.value = 'video#videoElement-${_inner.value!.textureId}';
     await _inner.value!.seekTo(position.value);
     if (playing.value) await play();
+    _inner.value!.setClosedCaptionFile(
+      Future.microtask(() async {
+        var fileContents = '';
+        if (subtitlesUri != null) {
+          final ResponseData<String> response = await _networkService.request(
+            RequestData(uri: subtitlesUri, method: RequestMethod.get),
+          );
+          fileContents = response.body;
+        }
+        final video_player.ClosedCaptionFile closedCaptionFile =
+            video_player.WebVTTCaptionFile(fileContents);
+        return closedCaptionFile;
+      }),
+    );
     _inner.value!.addListener(_handleInnerValueChanged);
   }
 
