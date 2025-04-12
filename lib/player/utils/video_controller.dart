@@ -7,8 +7,9 @@ import 'package:video_player/video_player.dart' as video_player;
 sealed class VideoController {
   const VideoController();
 
-  factory VideoController.videoPlayer(NetworkService networkService) =>
-      VideoPlayerController(networkService: networkService);
+  factory VideoController.videoPlayer({
+    required NetworkService networkService,
+  }) => VideoPlayerController(networkService: networkService);
 
   ValueListenable<bool> get loading;
 
@@ -106,20 +107,9 @@ class VideoPlayerController extends VideoController {
     webElementQuery.value = 'video#videoElement-${_inner.value!.textureId}';
     await _inner.value!.seekTo(position.value);
     if (playing.value) await play();
-    _inner.value!.setClosedCaptionFile(
-      Future.microtask(() async {
-        var fileContents = '';
-        if (subtitlesUri != null) {
-          final ResponseData<String> response = await _networkService.request(
-            RequestData(uri: subtitlesUri, method: RequestMethod.get),
-          );
-          fileContents = response.body;
-        }
-        final video_player.ClosedCaptionFile closedCaptionFile =
-            video_player.WebVTTCaptionFile(fileContents);
-        return closedCaptionFile;
-      }),
-    );
+    if (subtitlesUri != null) {
+      _inner.value!.setClosedCaptionFile(_getCaptionFile(subtitlesUri));
+    }
     _inner.value!.addListener(_handleInnerValueChanged);
   }
 
@@ -181,5 +171,14 @@ class VideoPlayerController extends VideoController {
         _inner.value == null || !value.isInitialized || value.isBuffering;
     playing.value = value.isPlaying;
     aspectRatio.value = value.aspectRatio;
+  }
+
+  Future<video_player.ClosedCaptionFile> _getCaptionFile(
+    Uri subtitlesUri,
+  ) async {
+    final ResponseData<String> response = await _networkService.request(
+      RequestData(uri: subtitlesUri, method: RequestMethod.get),
+    );
+    return video_player.WebVTTCaptionFile(response.body);
   }
 }

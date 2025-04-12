@@ -165,32 +165,7 @@ class _Player extends StatelessWidget {
                   ),
             ),
           ),
-          ListenableBuilder(
-            listenable:
-                (context.wm.videoController as VideoPlayerController).inner,
-            builder:
-                (context, _) => ListenableBuilder(
-                  listenable: Listenable.merge([
-                    (context.wm.videoController as VideoPlayerController)
-                        .inner
-                        .value,
-                  ]),
-                  builder: (context, _) {
-                    return switch ((context.wm.videoController
-                            as VideoPlayerController)
-                        .inner
-                        .value
-                        ?.value
-                        .caption
-                        .text) {
-                      final String caption => _CustomClosedCaption(
-                        text: caption,
-                      ),
-                      _ => const SizedBox.shrink(),
-                    };
-                  },
-                ),
-          ),
+          const _Caption(),
           ListenableBuilder(
             listenable: context.wm.controlsVisibilityController,
             builder:
@@ -361,6 +336,35 @@ class _SkipButton extends StatelessWidget {
   }
 }
 
+class _Caption extends StatelessWidget {
+  const _Caption();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: (context.wm.videoController as VideoPlayerController).inner,
+      builder:
+          (context, _) => ListenableBuilder(
+            listenable: Listenable.merge([
+              (context.wm.videoController as VideoPlayerController).inner.value,
+            ]),
+            builder: (context, _) {
+              return switch ((context.wm.videoController
+                      as VideoPlayerController)
+                  .inner
+                  .value
+                  ?.value
+                  .caption
+                  .text) {
+                final String caption => _CustomClosedCaption(text: caption),
+                _ => const SizedBox.shrink(),
+              };
+            },
+          ),
+    );
+  }
+}
+
 class _CustomClosedCaption extends StatelessWidget {
   const _CustomClosedCaption({this.text});
 
@@ -379,7 +383,7 @@ class _CustomClosedCaption extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 24),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondaryContainer,
+            color: ColorScheme.of(context).secondaryContainer,
             borderRadius: BorderRadius.circular(4),
           ),
           child: Padding(

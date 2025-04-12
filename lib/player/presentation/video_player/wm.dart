@@ -18,7 +18,7 @@ VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
     errorHandler: context.read<ErrorHandler>(),
     repository: context.read<PlayerRepository>(),
   ),
-  context.read<NetworkService>(),
+  networkService: context.read<NetworkService>(),
 );
 
 abstract interface class IVideoPlayerWM implements IWidgetModel {
@@ -60,11 +60,13 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     with L10nWMMixin
     implements IVideoPlayerWM {
-  VideoPlayerWM(super._model, NetworkService networkService)
+  VideoPlayerWM(super._model, {required NetworkService networkService})
     : _networkService = networkService;
 
   @override
-  late final videoController = VideoController.videoPlayer(_networkService);
+  late final videoController = VideoController.videoPlayer(
+    networkService: _networkService,
+  );
 
   @override
   final controlsVisibilityController = VisibilityController();
@@ -281,6 +283,10 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               )
               .toList(growable: false),
         ),
+        // MenuItemData.group(icon: Icons.subtitles, label: 'Субтитры',
+        //   children: ['Да', 'Нет'].map((type) => MenuItemData.single(
+        //     selected: type ==
+        //   ))),
         MenuItemData.group(
           icon: Icons.person_outlined,
           label: l10n.value.authorLabel,
