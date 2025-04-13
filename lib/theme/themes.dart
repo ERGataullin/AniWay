@@ -1,6 +1,5 @@
 import 'package:app/theme/components/video_player_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 abstract class Themes {
   static final ThemeData light = ThemeData().appOverrides;
@@ -43,7 +42,6 @@ extension _AppOverrides on ThemeData {
     appBarTheme: appBarTheme.copyWith(
       scrolledUnderElevation: 3,
       toolbarHeight: 64,
-      systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: brightness),
     ),
     cardTheme: cardTheme.copyWith(
       margin: EdgeInsets.zero,

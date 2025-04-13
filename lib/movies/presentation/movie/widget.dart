@@ -212,16 +212,12 @@ class _PosterFaded extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const Color fadeColor = Colors.black;
-    return ConditionalWrapper(
-      condition: Theme.of(context).brightness == Brightness.light,
-      wrapper:
-          (context, child) => AnnotatedRegion(
-            sized: true,
-            value: const SystemUiOverlayStyle(
-              statusBarBrightness: Brightness.dark,
-            ),
-            child: child,
-          ),
+    return AnnotatedRegion(
+      sized: true,
+      value: const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+      ),
       child: DecoratedBox(
         position: DecorationPosition.foreground,
         decoration: BoxDecoration(

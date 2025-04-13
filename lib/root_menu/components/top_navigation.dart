@@ -24,7 +24,8 @@ class TopNavigation extends StatelessWidget {
     return switch (breakpoint) {
       null => Size.zero,
       _breakpoint => Size.fromHeight(
-        AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight,
+        (AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight) +
+            MediaQuery.paddingOf(context).top,
       ),
       _ =>
         throw UnsupportedError(
@@ -45,7 +46,7 @@ class TopNavigation extends StatelessWidget {
             final Size size = sizeFor(context);
 
             return SizedBox(
-              height: size.height + MediaQuery.paddingOf(context).top,
+              height: size.height,
               child: Theme(
                 data: theme.copyWith(
                   colorScheme: colorScheme.copyWith(
