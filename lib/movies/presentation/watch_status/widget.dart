@@ -35,12 +35,12 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SlotLayout(
           config: <Breakpoint, SlotLayoutConfig>{
-            Breakpoints.small: SlotLayout.from(
-              key: const Key('Body Small'),
+            Breakpoints.standard: SlotLayout.from(
+              key: const Key('Body Standard'),
               builder: (_) => const _ContentSmall(),
             ),
             Breakpoints.mediumAndUp: SlotLayout.from(
-              key: const Key('Medium'),
+              key: const Key('Body Medium and Up'),
               builder: (_) => const _ContentMediumAndUp(),
             ),
           },

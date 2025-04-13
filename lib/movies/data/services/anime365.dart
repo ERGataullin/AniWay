@@ -452,11 +452,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
     return (data['translations']! as List<dynamic>)
         .cast<Json>()
-        .where(
-          (translationJson) =>
-              translationJson['isActive'] == 1 &&
-              translationJson['type'] != 'voiceOther',
-        )
+        .where((translationJson) => translationJson['isActive'] == 1)
         .map(
           (translationJson) => VideoTranslationData(
             id: translationJson['id']! as int,
@@ -506,7 +502,7 @@ class MoviesServiceAnime365 implements MoviesService {
             (sourceJson['urls']! as List<dynamic>).first as String,
           ),
       },
-      subtitlesUri: switch (data['subtitlesUrl']) {
+      captionsUri: switch (data['subtitlesVttUrl']) {
         final String url => Uri.tryParse(url),
         _ => null,
       },

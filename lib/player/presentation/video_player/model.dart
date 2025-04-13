@@ -6,7 +6,10 @@ import 'package:app/player/player.dart';
 import 'package:app/player/presentation/video_player/typedefs.dart';
 import 'package:flutter/foundation.dart';
 
-typedef LocaledTranslations = Map<Locale, List<VideoTranslationData>>;
+typedef TypedTranslations =
+    Map<VideoTranslationType, List<VideoTranslationData>>;
+
+typedef LocaledTranslations = Map<Locale, TypedTranslations>;
 
 abstract interface class IVideoPlayerModel implements ElementaryModel {
   ValueListenable<LocaledTranslations> get translations;
@@ -21,7 +24,7 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 
   set videoResolver(VideoResolver value);
 
-  set locale(Locale value);
+  set currentLocale(Locale value);
 
   double getMaxScale({
     required double surfaceAspectRatio,
@@ -67,7 +70,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   var _autoSelectQuality = true;
 
-  Locale? _locale;
+  Locale? _currentLocale;
+  @override
+  set currentLocale(Locale value) => _currentLocale = value;
 
   Locale? _selectedTranslationLocale;
 
@@ -75,9 +80,6 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   set videoResolver(VideoResolver value) => _videoResolver = value;
-
-  @override
-  set locale(Locale value) => _locale = value;
 
   @override
   void init() {
@@ -97,15 +99,21 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   void setTranslations(List<VideoTranslationData> value) {
-    final translations = <Locale, List<VideoTranslationData>>{};
+    translations.value = <Locale, TypedTranslations>{};
     for (final VideoTranslationData translation in value) {
-      if (translation.type == VideoTranslationType.sub) continue;
-      translations[translation.locale] = [
-        ...translations[translation.locale] ?? const [],
-        translation,
-      ];
+      // Получение "словаря" уже добавленных переводов такой же локализации,
+      // или создание такового при его отсутствии.
+      // Словарь разбит по типу перевода.
+      final TypedTranslations sameLocaleTypedTranslations = translations.value
+          .putIfAbsent(translation.locale, () => {});
+
+      // Получение списка уже добавленных переводов такой же локализации и
+      // типа перевода, или создание такового при его отсутствии.
+      sameLocaleTypedTranslations
+          .putIfAbsent(translation.type, () => [])
+          // Добавление перевода в список уже добавленных
+          .add(translation);
     }
-    this.translations.value = Map.unmodifiable(translations);
 
     if (value.isEmpty) {
       translation.value = null;
@@ -127,9 +135,17 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   Future<void> handleVideoWatched() async {
+    final Map<VideoTranslationType, int> typesRates =
+        await _repository.getTranslationTypesRates();
+    final VideoTranslationType type = translation.value!.type;
+    _repository.saveTranslationTypesRates({
+      ...typesRates,
+      type: 1 + (typesRates[type] ?? 0),
+    });
+
     final Map<String, int> authorsRates =
-        await _repository.getPersonalizedTranslationAuthorsRates();
-    _repository.savePersonalizedTranslationAuthorsRates({
+        await _repository.getTranslationAuthorsRates();
+    _repository.saveTranslationAuthorsRates({
       ...authorsRates,
       for (final String author in _selectedTranslationAuthors)
         author: 1 + (authorsRates[author] ?? 0),
@@ -167,36 +183,67 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   Future<void> _autoSelectTranslation() async {
-    late final Locale suitableLocale;
+    final Locale preferredLocale = _getPreferredLocale();
+    final VideoTranslationType preferredType = await _autoSelectTranslationType(
+      preferredLocale,
+    );
+    translation.value = await _getPreferredTranslation(
+      locale: preferredLocale,
+      type: preferredType,
+    );
+  }
+
+  Locale _getPreferredLocale() {
     if (translations.value[_selectedTranslationLocale] != null) {
-      suitableLocale = _selectedTranslationLocale!;
-    } else if (translations.value[_locale] != null) {
-      suitableLocale = _locale!;
+      return _selectedTranslationLocale!;
+    } else if (translations.value[_currentLocale] != null) {
+      return _currentLocale!;
     } else {
-      suitableLocale = translations.value.keys.first;
+      return translations.value.keys.first;
     }
-    final List<VideoTranslationData> suitableLocaleTranslations =
-        translations.value[suitableLocale]!;
+  }
+
+  Future<VideoTranslationType> _autoSelectTranslationType(Locale locale) async {
+    final Map<VideoTranslationType, int> rates =
+        await _repository.getTranslationTypesRates();
+
+    VideoTranslationType selectedType = VideoTranslationType.raw;
+    int selectedTypeRate = -1;
+    for (final VideoTranslationType type in translations.value[locale]!.keys) {
+      final int rate = rates[type] ?? 0;
+      if (selectedTypeRate > rate) continue;
+      selectedType = type;
+      selectedTypeRate = rate;
+    }
+
+    return selectedType;
+  }
+
+  Future<VideoTranslationData> _getPreferredTranslation({
+    required Locale locale,
+    required VideoTranslationType type,
+  }) async {
+    final List<VideoTranslationData> preferredTranslations =
+        translations.value[locale]![type]!;
 
     final Map<String, int> authorsSuitability = {
-      ...await _repository.getPersonalizedTranslationAuthorsRates(),
+      ...await _repository.getTranslationAuthorsRates(),
       for (final String author in _selectedTranslationAuthors)
         author: double.maxFinite.toInt(),
     };
-    VideoTranslationData suitableTranslation = suitableLocaleTranslations.first;
-    double suitability = 0;
-    for (final translation in suitableLocaleTranslations) {
-      var translationSuitabilitySum = 0;
+    VideoTranslationData preferredTranslation = preferredTranslations.first;
+    double preferredRate = 0;
+    for (final translation in preferredTranslations) {
+      var authorsRate = 0;
       for (final String author in translation.authors) {
-        translationSuitabilitySum +=
-            authorsSuitability[author.trim().toLowerCase()] ?? 0;
+        authorsRate += authorsSuitability[author.trim().toLowerCase()] ?? 0;
       }
-      final double translationSuitability =
-          translationSuitabilitySum / translation.authors.length;
-      if (translationSuitability <= suitability) continue;
-      suitableTranslation = translation;
-      suitability = translationSuitability;
+      final double rate = authorsRate / translation.authors.length;
+      if (rate <= preferredRate) continue;
+      preferredTranslation = translation;
+      preferredRate = rate;
     }
-    translation.value = suitableTranslation;
+
+    return preferredTranslation;
   }
 }

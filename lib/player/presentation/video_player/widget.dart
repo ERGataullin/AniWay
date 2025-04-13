@@ -12,11 +12,11 @@ import 'package:app/player/presentation/video_player/components/video_timer.dart
 import 'package:app/player/presentation/video_player/typedefs.dart';
 import 'package:app/player/presentation/video_player/wm.dart';
 import 'package:app/player/utils/pointer_devices_accuracy.dart';
-import 'package:app/player/utils/video_controller.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart' as video_player;
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+import 'package:video_player/video_player.dart';
 
 extension _VideoPlayerContext on BuildContext {
   IVideoPlayerWM get wm => read<IVideoPlayerWM>();
@@ -148,22 +148,18 @@ class _Player extends StatelessWidget {
               builder:
                   (context, _) => AspectRatio(
                     aspectRatio: context.wm.videoController.aspectRatio.value,
-                    child: switch (context.wm.videoController) {
-                      final VideoPlayerController videoPlayerController =>
-                        ListenableBuilder(
-                          listenable: videoPlayerController.inner,
-                          builder:
-                              (context, _) =>
-                                  videoPlayerController.inner.value == null
-                                      ? const SizedBox.shrink()
-                                      : video_player.VideoPlayer(
-                                        videoPlayerController.inner.value!,
-                                      ),
-                        ),
-                    },
+                    child: ValueListenableBuilder(
+                      valueListenable: context.wm.videoController.inner,
+                      builder:
+                          (context, innerController, _) =>
+                              innerController == null
+                                  ? const SizedBox.shrink()
+                                  : VideoPlayer(innerController),
+                    ),
                   ),
             ),
           ),
+          const _Caption(),
           ListenableBuilder(
             listenable: context.wm.controlsVisibilityController,
             builder:
@@ -330,6 +326,69 @@ class _SkipButton extends StatelessWidget {
             ),
             icon: icon,
           ),
+    );
+  }
+}
+
+class _Caption extends StatelessWidget {
+  const _Caption();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: context.wm.videoController.caption,
+      builder: (context, caption, _) {
+        if (caption.text.isEmpty) return const SizedBox.shrink();
+
+        final TextStyle displaySmall = TextTheme.of(context).displaySmall!;
+
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 24),
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Builder(
+                  builder: (context) {
+                    const breakpointExpanded = Breakpoint(
+                      beginWidth: 840,
+                      andUp: true,
+                    );
+                    final Breakpoint? breakpoint =
+                        Breakpoint.activeBreakpointIn(context, const [
+                          Breakpoints.standard,
+                          breakpointExpanded,
+                          Breakpoints.largeAndUp,
+                        ]);
+                    return AnimatedSwitcher(
+                      switchInCurve: Easing.standard,
+                      switchOutCurve: Easing.standard.flipped,
+                      duration: Durations.medium2,
+                      child: Text(
+                        caption.text,
+                        key: ValueKey(breakpoint),
+                        style: switch (breakpoint) {
+                          Breakpoints.largeAndUp =>
+                            TextTheme.of(context).displayMedium,
+                          breakpointExpanded => displaySmall.copyWith(
+                            fontSize: 28,
+                          ),
+                          _ => displaySmall.copyWith(fontSize: 22),
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
