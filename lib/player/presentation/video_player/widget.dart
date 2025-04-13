@@ -12,12 +12,11 @@ import 'package:app/player/presentation/video_player/components/video_timer.dart
 import 'package:app/player/presentation/video_player/typedefs.dart';
 import 'package:app/player/presentation/video_player/wm.dart';
 import 'package:app/player/utils/pointer_devices_accuracy.dart';
-import 'package:app/player/utils/video_controller.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
-import 'package:video_player/video_player.dart' as video_player;
+import 'package:video_player/video_player.dart';
 
 extension _VideoPlayerContext on BuildContext {
   IVideoPlayerWM get wm => read<IVideoPlayerWM>();
@@ -149,19 +148,14 @@ class _Player extends StatelessWidget {
               builder:
                   (context, _) => AspectRatio(
                     aspectRatio: context.wm.videoController.aspectRatio.value,
-                    child: switch (context.wm.videoController) {
-                      final VideoPlayerController videoPlayerController =>
-                        ListenableBuilder(
-                          listenable: videoPlayerController.inner,
-                          builder:
-                              (context, _) =>
-                                  videoPlayerController.inner.value == null
-                                      ? const SizedBox.shrink()
-                                      : video_player.VideoPlayer(
-                                        videoPlayerController.inner.value!,
-                                      ),
-                        ),
-                    },
+                    child: ValueListenableBuilder(
+                      valueListenable: context.wm.videoController.inner,
+                      builder:
+                          (context, innerController, _) =>
+                              innerController == null
+                                  ? const SizedBox.shrink()
+                                  : VideoPlayer(innerController),
+                    ),
                   ),
             ),
           ),
@@ -341,88 +335,60 @@ class _Caption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: (context.wm.videoController as VideoPlayerController).inner,
-      builder:
-          (context, _) => ListenableBuilder(
-            listenable: Listenable.merge([
-              (context.wm.videoController as VideoPlayerController).inner.value,
-            ]),
-            builder: (context, _) {
-              return switch ((context.wm.videoController
-                      as VideoPlayerController)
-                  .inner
-                  .value
-                  ?.value
-                  .caption
-                  .text) {
-                final String caption => _CustomClosedCaption(text: caption),
-                _ => const SizedBox.shrink(),
-              };
-            },
-          ),
-    );
-  }
-}
+    return ValueListenableBuilder(
+      valueListenable: context.wm.videoController.caption,
+      builder: (context, caption, _) {
+        if (caption.text.isEmpty) return const SizedBox.shrink();
 
-class _CustomClosedCaption extends StatelessWidget {
-  const _CustomClosedCaption({this.text});
+        final TextStyle displaySmall = TextTheme.of(context).displaySmall!;
 
-  final String? text;
-
-  @override
-  Widget build(BuildContext context) {
-    final String? text = this.text;
-    if (text == null || text.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 24),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: ColorScheme.of(context).secondaryContainer,
-            borderRadius: BorderRadius.circular(4),
-          ),
+        return Align(
+          alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: SlotLayout(
-              config: <Breakpoint, SlotLayoutConfig>{
-                Breakpoints.standard: SlotLayout.from(
-                  key: const Key('Caption Standard'),
-                  builder:
-                      (_) => Text(
-                        text,
-                        style: TextTheme.of(
-                          context,
-                        ).displaySmall!.copyWith(fontSize: 22),
+            padding: const EdgeInsets.only(bottom: 24),
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Builder(
+                  builder: (context) {
+                    const breakpointExpanded = Breakpoint(
+                      beginWidth: 840,
+                      andUp: true,
+                    );
+                    final Breakpoint? breakpoint =
+                        Breakpoint.activeBreakpointIn(context, const [
+                          Breakpoints.standard,
+                          breakpointExpanded,
+                          Breakpoints.largeAndUp,
+                        ]);
+                    return AnimatedSwitcher(
+                      switchInCurve: Easing.standard,
+                      switchOutCurve: Easing.standard.flipped,
+                      duration: Durations.medium2,
+                      child: Text(
+                        caption.text,
+                        key: ValueKey(breakpoint),
+                        style: switch (breakpoint) {
+                          Breakpoints.largeAndUp =>
+                            TextTheme.of(context).displayMedium,
+                          breakpointExpanded => displaySmall.copyWith(
+                            fontSize: 28,
+                          ),
+                          _ => displaySmall.copyWith(fontSize: 22),
+                        },
                       ),
+                    );
+                  },
                 ),
-                const Breakpoint(beginWidth: 840, andUp: true): SlotLayout.from(
-                  key: const Key('Caption Medium'),
-                  builder:
-                      (_) => Text(
-                        text,
-                        style: TextTheme.of(
-                          context,
-                        ).displaySmall!.copyWith(fontSize: 28),
-                      ),
-                ),
-                Breakpoints.largeAndUp: SlotLayout.from(
-                  key: const Key('Caption Large and Up'),
-                  builder:
-                      (_) => Text(
-                        text,
-                        style: TextTheme.of(context).displayMedium,
-                      ),
-                ),
-              },
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -64,9 +64,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     : _networkService = networkService;
 
   @override
-  late final videoController = VideoController.videoPlayer(
-    networkService: _networkService,
-  );
+  late final videoController = VideoController(networkService: _networkService);
 
   @override
   final controlsVisibilityController = VisibilityController();
