@@ -41,6 +41,14 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
           listenable: Listenable.merge([wm.loading, wm.episodes]),
           builder:
               (context, _) => Scaffold(
+                floatingActionButton:
+                    wm.episodes.value.isEmpty
+                        ? null
+                        : FloatingActionButton.extended(
+                          onPressed: context.wm.handlePlayPressed,
+                          label: Text(context.l10n.videoPlayLabel),
+                          icon: const Icon(Icons.play_arrow_outlined),
+                        ),
                 body: CustomScrollView(
                   primary: true,
                   slivers: [
@@ -56,7 +64,6 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                         removeTop: true,
                         context: context,
                         child: const SliverSafeArea(
-                          top: false,
                           sliver: SliverToBoxAdapter(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,14 +78,6 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                       ),
                   ],
                 ),
-                floatingActionButton:
-                    wm.episodes.value.isEmpty
-                        ? null
-                        : FloatingActionButton.extended(
-                          onPressed: context.wm.handlePlayPressed,
-                          label: Text(context.l10n.videoPlayLabel),
-                          icon: const Icon(Icons.play_arrow_outlined),
-                        ),
               ),
         ),
       ),

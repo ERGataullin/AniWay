@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/root_menu/components/bottom_navigation.dart';
@@ -50,71 +48,74 @@ class _RootMenuViewState extends State<RootMenuView> {
   Widget build(BuildContext context) {
     final List<NavigationDestination> navigationDestinations =
         _buildDestinations(context);
-    return Scaffold(
-      body: RootMenuScope(
-        primaryNavigationKey: _primaryKey,
-        topNavigationKey: _topKey,
-        bottomNavigationKey: _bottomKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TopNavigation(
-              key: _topKey,
-              query: widget.query,
-              onSearch: widget.onSearch,
-            ),
-            Flexible(
-              child: Builder(
-                builder: (context) {
-                  final MediaQueryData mediaQuery = MediaQuery.of(context);
-                  final Size topSize = TopNavigation.sizeFor(context);
-                  final Size primarySize = PrimaryNavigation.sizeFor(context);
-                  final Size bottomSize = BottomNavigation.sizeFor(context);
-                  final EdgeInsets bodyPadding = mediaQuery.padding.copyWith(
-                    left: max(0, mediaQuery.padding.left - primarySize.width),
-                    top: max(0, mediaQuery.padding.top - topSize.height),
-                    bottom: max(
-                      0,
-                      mediaQuery.padding.bottom - bottomSize.height,
+    return RootMenuScope(
+      primaryNavigationKey: _primaryKey,
+      topNavigationKey: _topKey,
+      bottomNavigationKey: _bottomKey,
+      child: Builder(
+        builder: (context) {
+          final Size topSize = TopNavigation.sizeFor(context);
+          final Size bottomSize = BottomNavigation.sizeFor(context);
+          return Scaffold(
+            appBar:
+                topSize.isEmpty
+                    ? null
+                    : PreferredSize(
+                      preferredSize: topSize,
+                      child: TopNavigation(
+                        key: _topKey,
+                        query: widget.query,
+                        onSearch: widget.onSearch,
+                      ),
                     ),
-                  );
-
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MediaQuery(
-                        data: mediaQuery.copyWith(
-                          padding: mediaQuery.padding.copyWith(
-                            top: bodyPadding.top,
-                            bottom: bodyPadding.bottom,
-                          ),
-                        ),
-                        child: PrimaryNavigation(
-                          key: _primaryKey,
-                          currentIndex: widget.currentIndex,
-                          onDestinationSelected: widget.onDestinationSelected,
-                          destinations: navigationDestinations,
+            bottomNavigationBar:
+                BottomNavigation.sizeFor(context).isEmpty
+                    ? null
+                    : BottomNavigation(
+                      key: _bottomKey,
+                      currentIndex: widget.currentIndex,
+                      onDestinationSelected: widget.onDestinationSelected,
+                      destinations: navigationDestinations,
+                    ),
+            body: Builder(
+              builder: (context) {
+                final MediaQueryData mediaQuery = MediaQuery.of(context);
+                final Size primarySize = PrimaryNavigation.sizeFor(context);
+                final EdgeInsets bodyPadding = mediaQuery.padding.copyWith(
+                  left: primarySize.isEmpty ? null : 0,
+                  top: topSize.isEmpty ? null : 0,
+                  bottom: bottomSize.isEmpty ? null : 0,
+                );
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MediaQuery(
+                      data: mediaQuery.copyWith(
+                        padding: mediaQuery.padding.copyWith(
+                          top: bodyPadding.top,
+                          right: 0,
+                          bottom: bodyPadding.bottom,
                         ),
                       ),
-                      Expanded(
-                        child: MediaQuery(
-                          data: mediaQuery.copyWith(padding: bodyPadding),
-                          child: widget.child,
-                        ),
+                      child: PrimaryNavigation(
+                        key: _primaryKey,
+                        currentIndex: widget.currentIndex,
+                        onDestinationSelected: widget.onDestinationSelected,
+                        destinations: navigationDestinations,
                       ),
-                    ],
-                  );
-                },
-              ),
+                    ),
+                    Expanded(
+                      child: MediaQuery(
+                        data: mediaQuery.copyWith(padding: bodyPadding),
+                        child: widget.child,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-            BottomNavigation(
-              key: _bottomKey,
-              currentIndex: widget.currentIndex,
-              onDestinationSelected: widget.onDestinationSelected,
-              destinations: navigationDestinations,
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
