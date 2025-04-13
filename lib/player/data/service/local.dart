@@ -7,28 +7,52 @@ class LocalPlayerService implements PlayerService {
 
   static const _collection = 'player';
 
-  static const _personalizedTranslationAuthorsRatesKey =
+  static const _translationTypesRatesKey = 'translation_kinds_rates';
+
+  static const _translationAuthorsRatesKey =
       'personalized_translation_authors_rates';
 
   final StorageService _storageService;
 
   @override
-  Future<Map<String, int>> getPersonalizedTranslationAuthorsRates() async {
+  Future<Map<VideoTranslationType, int>> getTranslationTypesRates() async {
     final Map<Object?, Object?> stored = await _storageService.get(
       collection: _collection,
-      key: _personalizedTranslationAuthorsRatesKey,
+      key: _translationTypesRatesKey,
+      defaultValue: const {},
+    );
+    return {
+      for (final MapEntry<Object?, Object?> entry in stored.entries)
+        VideoTranslationType.valueOf(entry.key! as String): entry.value! as int,
+    };
+  }
+
+  @override
+  Future<void> saveTranslationTypesRates(
+    Map<VideoTranslationType, int> rates,
+  ) async {
+    await _storageService.put<Map<Object?, Object?>>(
+      collection: _collection,
+      key: _translationTypesRatesKey,
+      value: rates.map((type, rate) => MapEntry(type.name, rate)),
+    );
+  }
+
+  @override
+  Future<Map<String, int>> getTranslationAuthorsRates() async {
+    final Map<Object?, Object?> stored = await _storageService.get(
+      collection: _collection,
+      key: _translationAuthorsRatesKey,
       defaultValue: const {},
     );
     return Map.from(stored);
   }
 
   @override
-  Future<void> savePersonalizedTranslationAuthorsRates(
-    Map<String, int> rates,
-  ) async {
+  Future<void> saveTranslationAuthorsRates(Map<String, int> rates) async {
     await _storageService.put<Map<Object?, Object?>>(
       collection: _collection,
-      key: _personalizedTranslationAuthorsRatesKey,
+      key: _translationAuthorsRatesKey,
       value: rates,
     );
   }

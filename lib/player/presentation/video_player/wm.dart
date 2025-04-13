@@ -160,7 +160,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void didChangeDependencies() {
-    model.locale = Localizations.localeOf(context);
+    model.currentLocale = Localizations.localeOf(context);
     maxScale.update();
     super.didChangeDependencies();
   }
@@ -276,10 +276,19 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
                 (locale) => MenuItemData.group(
                   selected: locale == model.translation.value?.locale,
                   label: l10n.value.languageTitle(locale.toString()),
-                  children: _getTranslationMenuItems(locale: locale),
+                  children: _getTranslationTypeMenuItems(locale),
                 ),
               )
               .toList(growable: false),
+        ),
+        MenuItemData.group(
+          icon: Icons.subtitles_outlined,
+          label: l10n.value.videoTranslationTypeLabel,
+          children: switch (model.translation.value) {
+            final VideoTranslationData translation =>
+              _getTranslationTypeMenuItems(translation.locale),
+            _ => const [],
+          },
         ),
         MenuItemData.group(
           icon: Icons.person_outlined,
@@ -287,6 +296,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
           children: switch (model.translation.value) {
             final VideoTranslationData translation => _getTranslationMenuItems(
               locale: translation.locale,
+              type: translation.type,
             ),
             _ => const [],
           },
@@ -340,8 +350,23 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         videoController.webElementQuery.value;
   }
 
-  List<MenuItemData> _getTranslationMenuItems({required Locale locale}) {
-    return model.translations.value[locale]
+  List<MenuItemData> _getTranslationTypeMenuItems(Locale locale) {
+    return model.translations.value[locale]!.keys
+        .map(
+          (type) => MenuItemData.group(
+            selected: type == model.translation.value?.type,
+            label: l10n.value.videoTranslationType(type.name),
+            children: _getTranslationMenuItems(locale: locale, type: type),
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  List<MenuItemData> _getTranslationMenuItems({
+    required Locale locale,
+    required VideoTranslationType type,
+  }) {
+    return model.translations.value[locale]![type]
             ?.map(
               (translation) => MenuItemData.single(
                 selected: translation == model.translation.value,

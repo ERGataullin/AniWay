@@ -25,7 +25,7 @@
     "emailValidationError": "Неверный адрес электронной почты",
     "homePageTitle": "Главная",
     "languageLabel": "Язык",
-    "languageTitle": "{type, select, ja{Японский} en{Английский} ru{Русский} other{Неизвестный язык}}",
+    "languageTitle": "{type, select, ru{Русский} uk{Украинский} en{Английский} ja{Японский} other{Неизвестный язык}}",
     "@languageTitle": {
         "placeholders": {
             "type": {
@@ -100,6 +100,15 @@
     },
     "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}",
     "@videoQualityType": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
+    "videoTranslationTypeLabel": "Тип перевода",
+    "videoTranslationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{}}",
+    "@videoTranslationType": {
         "placeholders": {
             "type": {
                 "type": "String"
