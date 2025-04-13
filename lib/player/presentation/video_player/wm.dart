@@ -283,10 +283,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               )
               .toList(growable: false),
         ),
-        // MenuItemData.group(icon: Icons.subtitles, label: 'Субтитры',
-        //   children: ['Да', 'Нет'].map((type) => MenuItemData.single(
-        //     selected: type ==
-        //   ))),
         MenuItemData.group(
           icon: Icons.person_outlined,
           label: l10n.value.authorLabel,
