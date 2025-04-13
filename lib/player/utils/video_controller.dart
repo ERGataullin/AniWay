@@ -31,7 +31,7 @@ class VideoController {
 
   Future<void> setDataSource(
     Uri? uri, {
-    Uri? subtitlesUri,
+    Uri? captionsUri,
     bool saveState = false,
   }) async {
     await _inner.value?.pause();
@@ -59,8 +59,8 @@ class VideoController {
     webElementQuery.value = 'video#videoElement-${_inner.value!.textureId}';
     await _inner.value!.seekTo(position.value);
     if (playing.value) await play();
-    if (subtitlesUri != null) {
-      _inner.value!.setClosedCaptionFile(_getCaptions(subtitlesUri));
+    if (captionsUri != null) {
+      _inner.value!.setClosedCaptionFile(_getCaptions(captionsUri));
     }
     _inner.value!.addListener(_handleInnerValueChanged);
   }
@@ -120,9 +120,9 @@ class VideoController {
     caption.value = value.caption;
   }
 
-  Future<ClosedCaptionFile> _getCaptions(Uri subtitlesUri) async {
+  Future<ClosedCaptionFile> _getCaptions(Uri uri) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(uri: subtitlesUri, method: RequestMethod.get),
+      RequestData(uri: uri, method: RequestMethod.get),
     );
     return WebVTTCaptionFile(response.body);
   }

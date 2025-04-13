@@ -234,7 +234,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   Future<void> _handleVideoDataSourceChanged() async {
     await videoController.setDataSource(
       model.videoDataSource.value,
-      subtitlesUri: model.video.value?.subtitlesUri,
+      captionsUri: model.video.value?.captionsUri,
       saveState: true,
     );
     if (model.videoDataSource.value != null) await videoController.play();
