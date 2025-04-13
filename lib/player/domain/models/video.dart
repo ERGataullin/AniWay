@@ -14,6 +14,4 @@ class VideoData {
   final Map<num, Uri> stream;
 
   final Uri? captionsUri;
-
-  bool get hasCaptions => captionsUri != null;
 }
