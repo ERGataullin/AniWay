@@ -1,28 +1,39 @@
 {
 	"version": "2.0.0",
+	"problemMatcher": [],
+	"presentation": {
+		"close": true,
+		"echo": true,
+		"reveal": "silent",
+	},
 	"tasks": [
 		{
-			"label": "Checkout actual dev",
+			"label": "Build .apk",
+			"type": "shell",
+			"options": {
+				"cwd": "build/app/outputs/apk/release",
+			},
+			"presentation": {
+				"reveal": "always",
+			},
+			"command": [
+				"rm AniWay.apk; ",
+				"flutter build apk --release; ",
+				"mv app-release.apk AniWay.apk; ",
+			],
+		},
+		{
+			"label": "Checkout dev & Pull",
 			"type": "shell",
 			"command": [
-				"git checkout dev;",
-				"git pull;",
+				"git checkout dev; ",
+				"git pull; ",
 			],
-			"problemMatcher": [],
-			"presentation": {
-				"close": true,
-				"echo": true,
-				"reveal": "silent",
-			},
 		},
 		{
 			"label": "Generate l10n",
-			"type": "flutter",
-			"command": "flutter",
-			"args": [
-				"gen-l10n",
-			],
-			"problemMatcher": [],
-		}
+			"type": "shell",
+			"command": "flutter gen-l10n",
+		},
 	]
 }
