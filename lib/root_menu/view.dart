@@ -64,51 +64,47 @@ class _RootMenuViewState extends State<RootMenuView> {
               onSearch: widget.onSearch,
             ),
             Flexible(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  PrimaryNavigation(
-                    key: _primaryKey,
-                    currentIndex: widget.currentIndex,
-                    onDestinationSelected: widget.onDestinationSelected,
-                    destinations: navigationDestinations,
-                  ),
-                  Expanded(
-                    child: Builder(
-                      builder: (context) {
-                        final MediaQueryData mediaQuery = MediaQuery.of(
-                          context,
-                        );
-                        final Size topSize = TopNavigation.sizeFor(context);
-                        final Size primarySize = PrimaryNavigation.sizeFor(
-                          context,
-                        );
-                        final Size bottomSize = BottomNavigation.sizeFor(
-                          context,
-                        );
-                        return MediaQuery(
-                          data: mediaQuery.copyWith(
-                            padding: mediaQuery.padding.copyWith(
-                              left: max(
-                                0,
-                                mediaQuery.padding.left - primarySize.width,
-                              ),
-                              top: max(
-                                0,
-                                mediaQuery.padding.top - topSize.height,
-                              ),
-                              bottom: max(
-                                0,
-                                mediaQuery.padding.bottom - bottomSize.height,
-                              ),
-                            ),
-                          ),
-                          child: widget.child,
-                        );
-                      },
+              child: Builder(
+                builder: (context) {
+                  final MediaQueryData mediaQuery = MediaQuery.of(context);
+                  final Size topSize = TopNavigation.sizeFor(context);
+                  final Size primarySize = PrimaryNavigation.sizeFor(context);
+                  final Size bottomSize = BottomNavigation.sizeFor(context);
+                  final EdgeInsets bodyPadding = mediaQuery.padding.copyWith(
+                    left: max(0, mediaQuery.padding.left - primarySize.width),
+                    top: max(0, mediaQuery.padding.top - topSize.height),
+                    bottom: max(
+                      0,
+                      mediaQuery.padding.bottom - bottomSize.height,
                     ),
-                  ),
-                ],
+                  );
+
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MediaQuery(
+                        data: mediaQuery.copyWith(
+                          padding: mediaQuery.padding.copyWith(
+                            top: bodyPadding.top,
+                            bottom: bodyPadding.bottom,
+                          ),
+                        ),
+                        child: PrimaryNavigation(
+                          key: _primaryKey,
+                          currentIndex: widget.currentIndex,
+                          onDestinationSelected: widget.onDestinationSelected,
+                          destinations: navigationDestinations,
+                        ),
+                      ),
+                      Expanded(
+                        child: MediaQuery(
+                          data: mediaQuery.copyWith(padding: bodyPadding),
+                          child: widget.child,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
             BottomNavigation(

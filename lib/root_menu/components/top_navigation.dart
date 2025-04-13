@@ -45,7 +45,7 @@ class TopNavigation extends StatelessWidget {
             final Size size = sizeFor(context);
 
             return SizedBox(
-              height: size.height,
+              height: size.height + MediaQuery.paddingOf(context).top,
               child: Theme(
                 data: theme.copyWith(
                   colorScheme: colorScheme.copyWith(
