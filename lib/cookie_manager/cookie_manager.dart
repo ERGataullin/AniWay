@@ -10,20 +10,13 @@ extension CookieDecoded on Cookie {
   String get valueDecoded => Uri.decodeComponent(value);
 }
 
-abstract class CookieManager implements Initable {
-  ValueListenable<CookieMap> get cookie;
-
-  NetworkInterceptor get interceptor;
-}
-
-class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
-  CookieManagerImpl({required StorageService storageService})
+class CookieManager extends NetworkInterceptor with Initable {
+  CookieManager({required StorageService storageService})
     : _storageService = storageService;
 
-  static const String _effectiveCookieHeaderName = HttpHeaders.cookieHeader;
+  static const String _cookieHeaderName = HttpHeaders.cookieHeader;
 
-  static const String _effectiveSetCookieHeaderName =
-      HttpHeaders.setCookieHeader;
+  static const String _setCookieHeaderName = HttpHeaders.setCookieHeader;
 
   static final Pattern _setCookieSplitter = RegExp(
     r'[ \t]*,[ \t]*(?=['
@@ -32,16 +25,15 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
     ']+=)',
   );
 
-  @override
   final ValueNotifier<CookieMap> cookie = ValueNotifier(const {});
 
   final StorageService _storageService;
 
-  @override
   NetworkInterceptor get interceptor => this;
 
   @override
   Future<void> init() async {
+    super.init();
     cookie
       ..value = await _storageService
           .get<String?>(
@@ -58,7 +50,7 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
     return data.copyWith(
       headers: {
         ...data.headers,
-        _effectiveCookieHeaderName: cookie.value.values
+        _cookieHeaderName: cookie.value.values
             .map((cookie) => '${cookie.name}=${cookie.value}')
             .join(';'),
       },
@@ -67,21 +59,18 @@ class CookieManagerImpl extends NetworkInterceptor implements CookieManager {
 
   @override
   FutureOr<ResponseData<T>> handleResponse<T>(ResponseData<T> data) {
-    if (data.headers[_effectiveSetCookieHeaderName]?.isNotEmpty != true) {
-      return data;
-    }
-
+    if (data.headers[_setCookieHeaderName]?.isEmpty ?? true) return data;
     cookie.value = {
       ...cookie.value,
-      ..._parseCookie(data.headers[_effectiveSetCookieHeaderName]),
+      ..._parseCookie(data.headers[_setCookieHeaderName]),
     };
-
     return data;
   }
 
   @override
   void dispose() {
     cookie.dispose();
+    super.dispose();
   }
 
   CookieMap _parseCookie(String? setCookie) {
