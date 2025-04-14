@@ -70,7 +70,9 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                               children: [
                                 _Description(marginTop: 16),
                                 _Episodes(marginTop: 16),
-                                SizedBox(height: 16 + 56 + 16),
+                                SizedBox(
+                                  height: kFloatingActionButtonMargin * 2 + 56,
+                                ),
                               ],
                             ),
                           ),

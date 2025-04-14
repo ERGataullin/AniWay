@@ -22,8 +22,8 @@ class VisibilityController with ChangeNotifier {
 
   @override
   void dispose() {
-    super.dispose();
     _hidingTimer?.cancel();
+    super.dispose();
   }
 
   void show({bool autohide = true}) {
