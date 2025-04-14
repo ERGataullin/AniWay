@@ -7,34 +7,23 @@ abstract class Themes {
   static final ThemeData dark =
       ThemeData(brightness: Brightness.dark).appOverrides;
 
-  static final ThemeData videoPlayer = ThemeData.from(
-    colorScheme: ColorScheme(
-      brightness: Brightness.dark,
-      primary: dark.colorScheme.primary,
-      onPrimary: Colors.white,
-      secondary: Colors.grey.shade400,
-      secondaryContainer: Colors.black26,
-      onSecondary: Colors.white,
-      error: const Color(0xFFF2B8B5),
-      onError: const Color(0xFF601410),
-      errorContainer: const Color(0xFF8C1D18),
-      surface: Colors.black,
-      onSurface: Colors.white,
-      surfaceContainerHighest: Colors.white24,
-    ),
-  ).copyWith(
-    splashColor: const Color(0x66C8C8C8),
-    appBarTheme: const AppBarTheme(centerTitle: false),
-    sliderTheme: SliderThemeData(
-      // ignore: deprecated_member_use
-      year2023: false,
-      trackHeight: 4,
-      allowedInteraction: SliderInteraction.slideOnly,
-      overlayShape: SliderComponentShape.noOverlay,
-      trackShape: const VideoPlayerSliderTrackShape(),
-      thumbShape: const VideoPlayerSliderThumbShape(thumbRadius: 8),
-    ),
-  );
+  static final ThemeData videoPlayer =
+      ThemeData.from(
+        colorScheme: ColorScheme(
+          brightness: Brightness.dark,
+          primary: dark.colorScheme.primary,
+          onPrimary: Colors.white,
+          secondary: Colors.grey.shade400,
+          secondaryContainer: Colors.black26,
+          onSecondary: Colors.white,
+          error: const Color(0xFFF2B8B5),
+          onError: const Color(0xFF601410),
+          errorContainer: const Color(0xFF8C1D18),
+          surface: Colors.black,
+          onSurface: Colors.white,
+          surfaceContainerHighest: Colors.white24,
+        ),
+      ).videoPlayerOverrides;
 }
 
 extension _AppOverrides on ThemeData {
@@ -106,4 +95,21 @@ extension _AppOverrides on ThemeData {
       ),
     ),
   );
+}
+
+extension _VideoPlayerOverrides on ThemeData {
+  ThemeData get videoPlayerOverrides =>
+      copyWith(
+        splashColor: const Color(0x66C8C8C8),
+        appBarTheme: appBarTheme.copyWith(centerTitle: false),
+        sliderTheme: SliderThemeData(
+          // ignore: deprecated_member_use
+          year2023: false,
+          trackHeight: 4,
+          allowedInteraction: SliderInteraction.slideOnly,
+          overlayShape: SliderComponentShape.noOverlay,
+          trackShape: const VideoPlayerSliderTrackShape(),
+          thumbShape: const VideoPlayerSliderThumbShape(thumbRadius: 8),
+        ),
+      ).appOverrides;
 }

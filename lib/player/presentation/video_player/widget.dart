@@ -184,25 +184,38 @@ class _Controls extends StatelessWidget {
     return ShowOnMouseHover(
       controller: context.wm.controlsVisibilityController,
       child: SafeArea(
+        top: false,
+        bottom: false,
         child: Stack(
           clipBehavior: Clip.none,
-          fit: StackFit.expand,
+          alignment: Alignment.center,
           children: [
             Align(
               alignment: Alignment.topCenter,
-              child: AppBar(
-                forceMaterialTransparency: true,
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _Title(context.wm.title),
-                    _Title(
-                      context.wm.subtitle,
-                      style: TextTheme.primaryOf(context).titleMedium,
+              child: AnimatedSize(
+                alignment: Alignment.bottomCenter,
+                duration: Durations.medium2,
+                curve: Easing.standard,
+                child: SafeArea(
+                  bottom: false,
+                  child: SizedBox(
+                    height: AppBarTheme.of(context).toolbarHeight!,
+                    child: AppBar(
+                      forceMaterialTransparency: true,
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _Title(context.wm.title),
+                          _Title(
+                            context.wm.subtitle,
+                            style: TextTheme.primaryOf(context).titleMedium,
+                          ),
+                        ],
+                      ),
+                      actions: const [_MenuButton()],
                     ),
-                  ],
+                  ),
                 ),
-                actions: const [_MenuButton()],
               ),
             ),
             Row(
@@ -225,37 +238,49 @@ class _Controls extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+              child: AnimatedSize(
+                alignment: Alignment.topCenter,
+                duration: Durations.medium2,
+                curve: Easing.standard,
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        VideoTimer(videoController: context.wm.videoController),
-                        const SizedBox(width: 16),
-                        LongSeekButton(
-                          videoController: context.wm.videoController,
-                          type: SeekType.rewind,
+                        Row(
+                          children: [
+                            VideoTimer(
+                              videoController: context.wm.videoController,
+                            ),
+                            const SizedBox(width: 16),
+                            LongSeekButton(
+                              videoController: context.wm.videoController,
+                              type: SeekType.rewind,
+                            ),
+                            LongSeekButton(
+                              videoController: context.wm.videoController,
+                              type: SeekType.fastForward,
+                            ),
+                            const Spacer(),
+                            if (context.wm.showFullscreenButton)
+                              FullscreenButton(
+                                controller: context.wm.fullscreenController,
+                              ),
+                          ],
                         ),
-                        LongSeekButton(
+                        VideoSeekBar(
                           videoController: context.wm.videoController,
-                          type: SeekType.fastForward,
-                        ),
-                        const Spacer(),
-                        FullscreenButton(
-                          controller: context.wm.fullscreenController,
+                          onPositionChangeStart:
+                              context.wm.handlePositionChangeStart,
+                          onPositionChangeEnd:
+                              context.wm.handlePositionChangeEnd,
                         ),
                       ],
                     ),
-                    VideoSeekBar(
-                      videoController: context.wm.videoController,
-                      onPositionChangeStart:
-                          context.wm.handlePositionChangeStart,
-                      onPositionChangeEnd: context.wm.handlePositionChangeEnd,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
