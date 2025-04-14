@@ -25,11 +25,11 @@ class App extends StatefulWidget {
     if (kIsWeb) return;
     const iPhoneSESize = Size(375, 667);
     WidgetsFlutterBinding.ensureInitialized();
-    await windowManager.ensureInitialized();
     switch (defaultTargetPlatform) {
       case TargetPlatform.linux ||
           TargetPlatform.macOS ||
           TargetPlatform.windows:
+        await windowManager.ensureInitialized();
         WindowManager.instance.setMinimumSize(iPhoneSESize);
       case TargetPlatform.android ||
           TargetPlatform.fuchsia ||
