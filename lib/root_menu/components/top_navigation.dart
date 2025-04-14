@@ -44,34 +44,31 @@ class TopNavigation extends StatelessWidget {
             final ColorScheme colorScheme = theme.colorScheme;
             final Size size = sizeFor(context);
 
-            return SizedBox(
-              height: size.height,
-              child: Theme(
-                data: theme.copyWith(
-                  colorScheme: colorScheme.copyWith(
-                    surfaceContainer: colorScheme.surfaceContainerLowest,
-                  ),
+            return Theme(
+              data: theme.copyWith(
+                colorScheme: colorScheme.copyWith(
+                  surfaceContainer: colorScheme.surfaceContainerLowest,
                 ),
-                child: AppBar(
-                  centerTitle: true,
-                  title: Theme(
-                    data: theme,
-                    child: CustomMultiChildLayout(
-                      delegate: _LayoutDelegate(spacing: 24, size: size),
-                      children: [
-                        LayoutId(
-                          id: _SlotId.leading,
-                          child: const Logo(enableRedirect: true),
+              ),
+              child: AppBar(
+                centerTitle: true,
+                title: Theme(
+                  data: theme,
+                  child: CustomMultiChildLayout(
+                    delegate: _LayoutDelegate(spacing: 24, size: size),
+                    children: [
+                      LayoutId(
+                        id: _SlotId.leading,
+                        child: const Logo(enableRedirect: true),
+                      ),
+                      LayoutId(
+                        id: _SlotId.middle,
+                        child: MoviesSearchBar(
+                          query: query,
+                          onSearch: onSearch,
                         ),
-                        LayoutId(
-                          id: _SlotId.middle,
-                          child: MoviesSearchBar(
-                            query: query,
-                            onSearch: onSearch,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
