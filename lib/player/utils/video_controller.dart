@@ -124,7 +124,10 @@ class VideoController {
     aspectRatio.value = value.aspectRatio;
     if (value.isCompleted || value.hasError) playing.value = false;
     playbackSpeed.value = value.playbackSpeed;
-    if (!loading.value) position.value = value.position;
+    final Duration positionChange = (position.value - value.position).abs();
+    if (!loading.value && positionChange <= const Duration(seconds: 1)) {
+      position.value = value.position;
+    }
     duration.value = value.duration;
     caption.value = value.caption;
   }
