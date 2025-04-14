@@ -4,9 +4,11 @@ import 'package:app/app/router.dart';
 import 'package:app/auth/auth.dart';
 import 'package:app/l10n/l10n.dart';
 import 'package:app/theme/theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -14,8 +16,25 @@ class App extends StatefulWidget {
   @override
   State<App> createState() => _AppState();
 
-  void run() {
+  Future<void> run() async {
+    await _setMinWindowSize();
     runApp(AppScope(child: this));
+  }
+
+  Future<void> _setMinWindowSize() async {
+    if (kIsWeb) return;
+    const iPhoneSESize = Size(375, 667);
+    WidgetsFlutterBinding.ensureInitialized();
+    await windowManager.ensureInitialized();
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.linux ||
+          TargetPlatform.macOS ||
+          TargetPlatform.windows:
+        WindowManager.instance.setMinimumSize(iPhoneSESize);
+      case TargetPlatform.android ||
+          TargetPlatform.fuchsia ||
+          TargetPlatform.iOS:
+    }
   }
 }
 
