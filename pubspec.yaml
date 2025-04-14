@@ -1,7 +1,7 @@
 name: app
 publish_to: "none"
 
-version: 0.0.1+2
+version: 1.0.2+3
 
 environment:
   sdk: ^3.7.0
@@ -51,7 +51,7 @@ msix_config:
   display_name: AniWay
   publisher_display_name: AniWay
   identity_name: fun.aniway.app
-  msix_version: 1.0.0.0
+  msix_version: 1.0.2.3
   output_name: AniWay
   trim_logo: false
   logo_path: web\icons\Icon-512.png
