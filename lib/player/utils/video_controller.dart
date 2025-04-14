@@ -116,7 +116,7 @@ class VideoController {
     loading.value =
         !value.isCompleted &&
         !value.hasError &&
-        playing.value &&
+        value.isBuffering &&
         !value.buffered.any(
           (range) =>
               range.start <= value.position && value.position < range.end,
