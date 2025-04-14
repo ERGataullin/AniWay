@@ -145,7 +145,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   }
 
   Future<void> _handleSeekTapUp(TapUpDetails details) async {
-    model.incrementValue();
+    model.incrementValue(seekType: widget.type);
     _videoController.seekTo(
       model.getSeekPosition(
         seekType: widget.type,

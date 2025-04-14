@@ -1,1 +1,3 @@
-const shortcutSeekDuration = Duration(seconds: 10);
+const seekGestureRewindStep = Duration(seconds: 5);
+
+const seekGestureFastForwardStep = Duration(seconds: 10);
