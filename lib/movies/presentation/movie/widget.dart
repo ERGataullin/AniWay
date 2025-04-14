@@ -214,7 +214,7 @@ class _PosterFaded extends StatelessWidget {
     return AnnotatedRegion(
       sized: true,
       value: const SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.light,
       ),
       child: DecoratedBox(
