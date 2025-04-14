@@ -51,7 +51,7 @@ msix_config:
   display_name: AniWay
   publisher_display_name: AniWay
   identity_name: fun.aniway.app
-  msix_version: 1.0.2.4
+  msix_version: 1.0.3.4
   output_name: AniWay
   trim_logo: false
   logo_path: web\icons\Icon-512.png
