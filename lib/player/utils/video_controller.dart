@@ -10,19 +10,19 @@ class VideoController {
 
   final loading = ValueNotifier<bool>(true);
 
+  final aspectRatio = ValueNotifier<double>(1);
+
   final playing = ValueNotifier<bool>(false);
 
-  final aspectRatio = ValueNotifier<double>(1);
+  final playbackSpeed = ValueNotifier<double>(1);
 
   final position = ValueNotifier<Duration>(Duration.zero);
 
   final duration = ValueNotifier<Duration>(Duration.zero);
 
-  final playbackSpeed = ValueNotifier<double>(1);
+  final caption = ValueNotifier<Caption>(Caption.none);
 
   final webElementQuery = ValueNotifier<String?>('');
-
-  final caption = ValueNotifier<Caption>(Caption.none);
 
   final _inner = ValueNotifier<VideoPlayerController?>(null);
   ValueListenable<VideoPlayerController?> get inner => _inner;
@@ -67,11 +67,13 @@ class VideoController {
 
   Future<void> play() async {
     _assertHasInner();
+    playing.value = true;
     await _inner.value?.play();
   }
 
   Future<void> pause() async {
     _assertHasInner();
+    playing.value = false;
     await _inner.value?.pause();
   }
 
@@ -81,6 +83,7 @@ class VideoController {
 
   Future<void> seekTo(Duration position) async {
     _assertHasInner();
+    this.position.value = position;
     await _inner.value?.seekTo(position);
   }
 
@@ -110,13 +113,22 @@ class VideoController {
     final VideoPlayerValue value =
         _inner.value?.value ?? const VideoPlayerValue(duration: Duration.zero);
 
-    position.value = value.position;
-    duration.value = value.duration;
-    playbackSpeed.value = value.playbackSpeed;
     loading.value =
-        kIsWeb ? value.isBuffering : value.isBuffering && !value.isPlaying;
-    playing.value = value.isPlaying;
+        !value.isCompleted &&
+        !value.hasError &&
+        playing.value &&
+        !value.buffered.any(
+          (range) =>
+              range.start <= value.position && value.position < range.end,
+        );
     aspectRatio.value = value.aspectRatio;
+    if (value.isCompleted || value.hasError) playing.value = false;
+    playbackSpeed.value = value.playbackSpeed;
+    final Duration positionChange = (position.value - value.position).abs();
+    if (!loading.value && positionChange <= const Duration(seconds: 1)) {
+      position.value = value.position;
+    }
+    duration.value = value.duration;
     caption.value = value.caption;
   }
 
