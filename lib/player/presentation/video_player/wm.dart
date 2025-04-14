@@ -124,11 +124,11 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   late final Map<ShortcutActivator, VoidCallback> shortcuts = {
     const SingleActivator(LogicalKeyboardKey.arrowLeft):
         () => videoController.seekTo(
-          videoController.position.value - shortcutSeekDuration,
+          videoController.position.value - seekGestureRewindStep,
         ),
     const SingleActivator(LogicalKeyboardKey.arrowRight):
         () => videoController.seekTo(
-          videoController.position.value + shortcutSeekDuration,
+          videoController.position.value + seekGestureFastForwardStep,
         ),
     const SingleActivator(LogicalKeyboardKey.space): videoController.playPause,
   };

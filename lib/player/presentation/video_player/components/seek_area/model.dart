@@ -19,7 +19,7 @@ abstract interface class ISeekAreaModel implements ElementaryModel {
     required Duration position,
   });
 
-  void incrementValue();
+  void incrementValue({required SeekType seekType});
 
   void resetValue();
 }
@@ -48,14 +48,17 @@ class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
     required Duration position,
   }) {
     return switch (seekType) {
-      SeekType.rewind => position - shortcutSeekDuration,
-      SeekType.fastForward => position + shortcutSeekDuration,
+      SeekType.rewind => position - seekGestureRewindStep,
+      SeekType.fastForward => position + seekGestureFastForwardStep,
     };
   }
 
   @override
-  void incrementValue() {
-    value.value += shortcutSeekDuration;
+  void incrementValue({required SeekType seekType}) {
+    value.value += switch (seekType) {
+      SeekType.rewind => seekGestureRewindStep,
+      SeekType.fastForward => seekGestureFastForwardStep,
+    };
   }
 
   @override
