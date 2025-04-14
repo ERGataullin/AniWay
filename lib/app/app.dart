@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/app/app_scope.dart';
 import 'package:app/app/platform_wrapper/platform_wrapper.dart';
 import 'package:app/app/router.dart';
@@ -7,6 +9,7 @@ import 'package:app/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -14,7 +17,12 @@ class App extends StatefulWidget {
   @override
   State<App> createState() => _AppState();
 
-  void run() {
+  Future<void> run() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await windowManager.ensureInitialized();
+    if (Platform.isWindows) {
+      WindowManager.instance.setMinimumSize(const Size(375, 667));
+    }
     runApp(AppScope(child: this));
   }
 }

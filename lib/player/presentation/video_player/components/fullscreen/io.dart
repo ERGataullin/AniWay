@@ -25,9 +25,7 @@ class FullscreenControllerPlatform
     switch (defaultTargetPlatform) {
       case TargetPlatform.windows:
         await windowManager.ensureInitialized();
-        windowManager.waitUntilReadyToShow(
-          const WindowOptions(fullScreen: true),
-        );
+        windowManager.setFullScreen(true);
       case TargetPlatform.android ||
           TargetPlatform.fuchsia ||
           TargetPlatform.iOS ||
@@ -45,9 +43,7 @@ class FullscreenControllerPlatform
     switch (defaultTargetPlatform) {
       case TargetPlatform.windows:
         await windowManager.ensureInitialized();
-        windowManager.waitUntilReadyToShow(
-          const WindowOptions(fullScreen: false),
-        );
+        windowManager.setFullScreen(false);
       case TargetPlatform.android ||
           TargetPlatform.fuchsia ||
           TargetPlatform.iOS ||
