@@ -63,6 +63,7 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
                       ),
                 )
                 : AnimatedIcon(
+                  key: ValueKey('$VideoPlayPauseLoader.playPause'),
                   icon: AnimatedIcons.play_pause,
                   progress: _animation,
                 ),
