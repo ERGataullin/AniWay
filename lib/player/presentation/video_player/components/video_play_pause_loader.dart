@@ -39,7 +39,7 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
   Widget build(BuildContext context) {
     return IconButton.filledTonal(
       iconSize: 48,
-      onPressed: _loading ? null : _handlePressed,
+      onPressed: _loading ? null : widget.videoController.playPause,
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(
           ColorScheme.of(context).secondaryContainer,
@@ -52,6 +52,7 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
         child:
             _loading
                 ? Builder(
+                  key: ValueKey('$VideoPlayPauseLoader.loader'),
                   builder:
                       (context) => SizedBox.square(
                         dimension: IconTheme.of(context).size,
@@ -71,16 +72,12 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
 
   @override
   void dispose() {
-    super.dispose();
-    _animation.dispose();
-    _animationController.dispose();
     widget.videoController
       ..loading.removeListener(_update)
       ..playing.removeListener(_update);
-  }
-
-  void _handlePressed() {
-    widget.videoController.playPause();
+    _animation.dispose();
+    _animationController.dispose();
+    super.dispose();
   }
 
   void _update() {
