@@ -51,8 +51,14 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
         duration: Durations.medium2,
         child:
             _loading
-                ? CircularProgressIndicator.adaptive(
-                  key: ValueKey('$VideoPlayPauseLoader.loader'),
+                ? Builder(
+                  builder:
+                      (context) => SizedBox.square(
+                        dimension: IconTheme.of(context).size,
+                        child: CircularProgressIndicator.adaptive(
+                          key: ValueKey('$VideoPlayPauseLoader.loader'),
+                        ),
+                      ),
                 )
                 : AnimatedIcon(
                   key: ValueKey('$VideoPlayPauseLoader.playPause'),

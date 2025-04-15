@@ -83,8 +83,10 @@ class VideoController {
 
   Future<void> seekTo(Duration position) async {
     _assertHasInner();
-    this.position.value = position;
-    await _inner.value?.seekTo(position);
+    final Duration effectivePosition = position;
+    // Duration(seconds: position.inSeconds);
+    this.position.value = effectivePosition;
+    await _inner.value?.seekTo(effectivePosition);
   }
 
   Future<void> setPlaybackSpeed(double speed) async {
@@ -110,6 +112,7 @@ class VideoController {
   }
 
   void _handleInnerValueChanged() {
+    const positionMeasurementError = Duration(seconds: 1);
     final VideoPlayerValue value =
         _inner.value?.value ?? const VideoPlayerValue(duration: Duration.zero);
 
@@ -119,13 +122,14 @@ class VideoController {
         playing.value &&
         !value.buffered.any(
           (range) =>
-              range.start <= position.value && position.value < range.end,
+              range.start <= position.value + positionMeasurementError &&
+              position.value < range.end + positionMeasurementError,
         );
     aspectRatio.value = value.aspectRatio;
     if (value.isCompleted || value.hasError) playing.value = false;
     playbackSpeed.value = value.playbackSpeed;
     final Duration positionChange = (position.value - value.position).abs();
-    if (!loading.value && positionChange <= const Duration(seconds: 1)) {
+    if (!loading.value && positionChange <= positionMeasurementError) {
       position.value = value.position;
     }
     duration.value = value.duration;
