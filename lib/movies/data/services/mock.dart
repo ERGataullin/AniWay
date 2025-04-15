@@ -372,6 +372,9 @@ class MoviesServiceMock implements MoviesService {
           'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
         ),
       },
+      url: Uri.parse(
+        'https://smotret-anime.org/catalog/pan-de-peace-13486/1-seriya-109620/russkie-subtitry-905760',
+      ),
     );
   }
 

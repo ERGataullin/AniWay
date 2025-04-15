@@ -11,6 +11,7 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
@@ -29,6 +30,8 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<String> get subtitle;
+
+  ValueListenable<Future<ShareResult>?> get onSharePressed;
 
   ValueListenable<VoidCallback?> get onMenuPressed;
 
@@ -94,6 +97,14 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final Computed<String> subtitle = Computed(() => widget.subtitle);
+
+  @override
+  late final Computed<Future<ShareResult>?> onSharePressed = Computed(
+    () =>
+        widget.translations.isEmpty
+            ? null
+            : Share.share('${model.video.value!.url}'),
+  );
 
   @override
   late final Computed<VoidCallback?> onMenuPressed = Computed(
