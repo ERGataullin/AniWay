@@ -116,10 +116,10 @@ class VideoController {
     loading.value =
         !value.isCompleted &&
         !value.hasError &&
-        value.isBuffering &&
+        playing.value &&
         !value.buffered.any(
           (range) =>
-              range.start <= value.position && value.position < range.end,
+              range.start <= position.value && position.value < range.end,
         );
     aspectRatio.value = value.aspectRatio;
     if (value.isCompleted || value.hasError) playing.value = false;
