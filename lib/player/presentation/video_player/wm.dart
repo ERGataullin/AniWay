@@ -100,11 +100,11 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final Computed<VoidCallback?> onSharePressed = Computed(
-    trigger: model.video,
+    trigger: model.translation,
     () =>
-        model.video.value == null
+        model.translation.value == null
             ? null
-            : () => Share.share('${model.video.value!.url}'),
+            : () => Share.share('${model.translation.value!.uri}'),
   );
 
   @override
@@ -245,6 +245,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
+    onSharePressed.dispose();
     onMenuPressed.dispose();
     onPreviousPressed.dispose();
     onNextPressed.dispose();

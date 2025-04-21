@@ -82,11 +82,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
 
   @override
   Future<VideoData> getVideo(int translationId) {
-    return _repository.getTranslationVideo(
-      movie.value!.uri,
-      episode.value!.id,
-      translationId,
-    );
+    return _repository.getTranslationVideo(translationId);
   }
 
   @override

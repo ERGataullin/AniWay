@@ -2,7 +2,6 @@ class VideoData {
   const VideoData({
     required this.download,
     required this.stream,
-    required this.url,
     this.captionsUri,
   });
 
@@ -13,8 +12,6 @@ class VideoData {
   /// Источники потокового просмотра.
   /// Ключ - качество видео (высота в пикселях), значение - URL для просмотра.
   final Map<num, Uri> stream;
-
-  final Uri url;
 
   final Uri? captionsUri;
 }

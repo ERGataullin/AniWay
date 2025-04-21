@@ -58,16 +58,8 @@ class MoviesRepository with Initable {
     return _moviesService.getTranslations(episodeId);
   }
 
-  Future<VideoData> getTranslationVideo(
-    Uri movieUri,
-    int episodeId,
-    int translationId,
-  ) {
-    return _moviesService.getTranslationVideo(
-      movieUri,
-      episodeId,
-      translationId,
-    );
+  Future<VideoData> getTranslationVideo(int translationId) {
+    return _moviesService.getTranslationVideo(translationId);
   }
 
   Future<void> saveTranslationWatched(int translationId) async {

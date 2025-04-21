@@ -344,6 +344,7 @@ class MoviesServiceMock implements MoviesService {
       10,
       (index) => VideoTranslationData(
         id: index,
+        uri: Uri.parse('https://smotret-anime.org/catalog/anime-19730'),
         title: 'Озвучка №$index',
         type: VideoTranslationType.voice,
         locale: const Locale('ru', 'RU'),
@@ -353,11 +354,7 @@ class MoviesServiceMock implements MoviesService {
   }
 
   @override
-  Future<VideoData> getTranslationVideo(
-    Uri movieUri,
-    int episodeId,
-    int translationId,
-  ) async {
+  Future<VideoData> getTranslationVideo(int translationId) async {
     await _delay();
     return VideoData(
       download: {
@@ -376,9 +373,6 @@ class MoviesServiceMock implements MoviesService {
           'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
         ),
       },
-      url: Uri.parse(
-        'https://smotret-anime.org/catalog/pan-de-peace-13486/1-seriya-109620/russkie-subtitry-905760',
-      ),
     );
   }
 
