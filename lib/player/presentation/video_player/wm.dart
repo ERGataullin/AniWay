@@ -31,7 +31,7 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
-  ValueListenable<Future<ShareResult>?> get onSharePressed;
+  ValueListenable<VoidCallback?> get onSharePressed;
 
   ValueListenable<VoidCallback?> get onMenuPressed;
 
@@ -99,11 +99,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   late final Computed<String> subtitle = Computed(() => widget.subtitle);
 
   @override
-  late final Computed<Future<ShareResult>?> onSharePressed = Computed(
+  late final Computed<VoidCallback?> onSharePressed = Computed(
+    trigger: model.video,
     () =>
-        widget.translations.isEmpty
+        model.video.value == null
             ? null
-            : Share.share('${model.video.value!.url}'),
+            : () => Share.share('${model.video.value!.url}'),
   );
 
   @override

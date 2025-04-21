@@ -314,13 +314,17 @@ class _Title extends StatelessWidget {
 }
 
 class _ShareButton extends StatelessWidget {
-  const _ShareButton({super.key});
+  const _ShareButton();
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.adaptive.share_outlined),
-      onPressed: () => context.wm.onSharePressed.value,
+    return ValueListenableBuilder(
+      valueListenable: context.wm.onSharePressed,
+      builder:
+          (context, onSharePressed, _) => IconButton(
+            icon: Icon(Icons.adaptive.share_outlined),
+            onPressed: onSharePressed,
+          ),
     );
   }
 }
@@ -335,7 +339,7 @@ class _MenuButton extends StatelessWidget {
       builder:
           (context, _) => IconButton(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: context.wm.onMenuPressed.value,
+            onPressed: () => context.wm.onMenuPressed.value,
           ),
     );
   }

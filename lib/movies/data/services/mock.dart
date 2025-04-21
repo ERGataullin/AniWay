@@ -353,7 +353,11 @@ class MoviesServiceMock implements MoviesService {
   }
 
   @override
-  Future<VideoData> getTranslationVideo(Object translationId) async {
+  Future<VideoData> getTranslationVideo(
+    Uri movieUri,
+    int episodeId,
+    int translationId,
+  ) async {
     await _delay();
     return VideoData(
       download: {

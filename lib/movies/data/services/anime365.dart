@@ -478,27 +478,24 @@ class MoviesServiceAnime365 implements MoviesService {
   }
 
   @override
-  Future<VideoData> getTranslationVideo(Object translationId) async {
-    final ResponseData<Json> embedResponse = await _networkService.request(
+  Future<VideoData> getTranslationVideo(
+    Uri movieUri,
+    int episodeId,
+    int translationId,
+  ) async {
+    final ResponseData<Json> response = await _networkService.request(
       RequestData(
         uri: Uri(path: '/api/translations/embed/$translationId'),
         method: RequestMethod.get,
       ),
     );
-    final ResponseData<Json> response = await _networkService.request(
-      RequestData(
-        uri: Uri(path: '/api/translations/$translationId'),
-        method: RequestMethod.get,
-      ),
-    );
-    final embedData = embedResponse.body['data']! as Json;
 
     final data = response.body['data']! as Json;
 
     final List<Json> downloadSourcesJsons =
-        (embedData['download']! as List<dynamic>).cast();
+        (data['download']! as List<dynamic>).cast();
     final List<Json> streamSourcesJsons =
-        (embedData['stream']! as List<dynamic>).cast();
+        (data['stream']! as List<dynamic>).cast();
     return VideoData(
       download: {
         for (final Json sourceJson in downloadSourcesJsons)
@@ -510,7 +507,9 @@ class MoviesServiceAnime365 implements MoviesService {
             (sourceJson['urls']! as List<dynamic>).first as String,
           ),
       },
-      url: Uri.parse(data['url']! as String),
+      url: movieUri.resolve(
+        '${movieUri.path}/seriya-$episodeId/$translationId',
+      ),
       captionsUri: switch (data['subtitlesVttUrl']) {
         final String url => Uri.tryParse(url),
         _ => null,
