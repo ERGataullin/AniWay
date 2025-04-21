@@ -486,7 +486,6 @@ class MoviesServiceAnime365 implements MoviesService {
         method: RequestMethod.get,
       ),
     );
-
     final data = response.body['data']! as Json;
 
     final List<Json> downloadSourcesJsons =

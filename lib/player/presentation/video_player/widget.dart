@@ -339,7 +339,7 @@ class _MenuButton extends StatelessWidget {
       builder:
           (context, _) => IconButton(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: () => context.wm.onMenuPressed.value,
+            onPressed: context.wm.onMenuPressed.value,
           ),
     );
   }
