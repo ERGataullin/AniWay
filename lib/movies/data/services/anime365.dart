@@ -456,6 +456,7 @@ class MoviesServiceAnime365 implements MoviesService {
         .map(
           (translationJson) => VideoTranslationData(
             id: translationJson['id']! as int,
+            uri: Uri.parse(translationJson['url']! as String),
             title: switch (translationJson['authorsSummary']) {
               final String author when author.isNotEmpty => author,
               _ => 'Неизвестный',
@@ -478,7 +479,7 @@ class MoviesServiceAnime365 implements MoviesService {
   }
 
   @override
-  Future<VideoData> getTranslationVideo(Object translationId) async {
+  Future<VideoData> getTranslationVideo(int translationId) async {
     final ResponseData<Json> response = await _networkService.request(
       RequestData(
         uri: Uri(path: '/api/translations/embed/$translationId'),

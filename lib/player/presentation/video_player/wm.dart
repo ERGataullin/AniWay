@@ -11,6 +11,7 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
@@ -29,6 +30,8 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   ValueListenable<String> get title;
 
   ValueListenable<String> get subtitle;
+
+  ValueListenable<VoidCallback?> get onSharePressed;
 
   ValueListenable<VoidCallback?> get onMenuPressed;
 
@@ -94,6 +97,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final Computed<String> subtitle = Computed(() => widget.subtitle);
+
+  @override
+  late final Computed<VoidCallback?> onSharePressed = Computed(
+    trigger: model.translation,
+    () => model.translation.value == null ? null : _handleSharePressed,
+  );
 
   @override
   late final Computed<VoidCallback?> onMenuPressed = Computed(
@@ -233,6 +242,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
+    onSharePressed.dispose();
     onMenuPressed.dispose();
     onPreviousPressed.dispose();
     onNextPressed.dispose();
@@ -279,6 +289,29 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     final bool finished =
         videoController.position.value >= videoController.duration.value;
     if (finished) widget.onFinished();
+  }
+
+  Future<void> _handleSharePressed() async {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android ||
+          TargetPlatform.fuchsia ||
+          TargetPlatform.iOS ||
+          TargetPlatform.linux ||
+          TargetPlatform.macOS:
+        Share.shareUri(model.translation.value!.uri);
+      case TargetPlatform.windows:
+        await Clipboard.setData(
+          ClipboardData(text: '${model.translation.value!.uri}'),
+        );
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            duration: Durations.extralong4,
+            content: Text(context.l10n.linkCopied),
+          ),
+        );
+    }
   }
 
   void _handleMenuPressed() {
