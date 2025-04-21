@@ -101,10 +101,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   @override
   late final Computed<VoidCallback?> onSharePressed = Computed(
     trigger: model.translation,
-    () =>
-        model.translation.value == null
-            ? null
-            : () => Share.share('${model.translation.value!.uri}'),
+    () => model.translation.value == null ? null : _handleSharePressed,
   );
 
   @override
@@ -292,6 +289,29 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     final bool finished =
         videoController.position.value >= videoController.duration.value;
     if (finished) widget.onFinished();
+  }
+
+  Future<void> _handleSharePressed() async {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android ||
+          TargetPlatform.fuchsia ||
+          TargetPlatform.iOS ||
+          TargetPlatform.linux ||
+          TargetPlatform.macOS:
+        Share.shareUri(model.translation.value!.uri);
+      case TargetPlatform.windows:
+        await Clipboard.setData(
+          ClipboardData(text: '${model.translation.value!.uri}'),
+        );
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            duration: Durations.extralong4,
+            content: Text(context.l10n.linkCopied),
+          ),
+        );
+    }
   }
 
   void _handleMenuPressed() {
