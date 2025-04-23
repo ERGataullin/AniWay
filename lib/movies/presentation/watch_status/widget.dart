@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
@@ -9,6 +7,10 @@ import 'package:app/movies/presentation/watch_status/wm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
+
+const _marginHorizontal = EdgeInsets.symmetric(horizontal: 24);
+
+const _marginVertical = EdgeInsets.symmetric(vertical: 24);
 
 extension _WatchStatusContext on BuildContext {
   IWatchStatusWM get wm => read<IWatchStatusWM>();
@@ -39,8 +41,8 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
               key: const Key('Body Standard'),
               builder: (_) => const _ContentSmall(),
             ),
-            Breakpoints.mediumAndUp: SlotLayout.from(
-              key: const Key('Body Medium and Up'),
+            Breakpoints.mediumLargeAndUp: SlotLayout.from(
+              key: const Key('Body Medium Large and Up'),
               builder: (_) => const _ContentMediumAndUp(),
             ),
           },
@@ -55,6 +57,7 @@ class _ContentSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = ColorScheme.of(context);
     return Dialog.fullscreen(
       child: Scaffold(
         appBar: AppBar(
@@ -63,11 +66,34 @@ class _ContentSmall extends StatelessWidget {
             icon: const Icon(Icons.close),
           ),
           title: Text(context.l10n.watchStatusAdd),
-          actions: const [_Actions(), SizedBox(width: 16)],
+          actionsPadding: const EdgeInsets.only(right: 12),
+          actions: [
+            IconButton(
+              color: colorScheme.error,
+              onPressed: context.wm.handleDeletePressed,
+              icon: const Icon(Icons.delete_outlined),
+            ),
+            IconButton(
+              color: colorScheme.primary,
+              onPressed: context.wm.handleSavePressed,
+              icon: const Icon(Icons.done_outlined),
+            ),
+          ],
         ),
-        body: const Padding(
-          padding: EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: _MaybeLoader(child: _Fields()),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final EdgeInsets margin =
+                _marginVertical + MediaQuery.paddingOf(context);
+            return SingleChildScrollView(
+              padding: margin,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - margin.vertical,
+                ),
+                child: const _MaybeLoader(child: _Fields()),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -79,25 +105,51 @@ class _ContentMediumAndUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 560),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+    return SafeArea(
+      child: Dialog(
+        clipBehavior: Clip.hardEdge,
+        child: SingleChildScrollView(
+          clipBehavior: Clip.none,
+          padding: _marginVertical,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
             child: _MaybeLoader(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    context.l10n.watchStatusAdd,
-                    style: TextTheme.of(context).headlineSmall,
+                  Padding(
+                    padding: _marginHorizontal,
+                    child: Text(
+                      context.l10n.watchStatusAdd,
+                      style: TextTheme.of(context).headlineSmall,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   const _Fields(),
                   const SizedBox(height: 24),
-                  const _Actions(),
+                  Padding(
+                    padding: _marginHorizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed:
+                              context.wm.currentStatus == WatchStatus.none
+                                  ? null
+                                  : context.wm.handleDeletePressed,
+                          style: TextButton.styleFrom(
+                            foregroundColor: ColorScheme.of(context).error,
+                          ),
+                          child: Text(context.l10n.delete),
+                        ),
+                        TextButton(
+                          onPressed: context.wm.handleSavePressed,
+                          child: Text(context.l10n.save),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -126,33 +178,6 @@ class _MaybeLoader extends StatelessWidget {
   }
 }
 
-class _Actions extends StatelessWidget {
-  const _Actions();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        TextButton(
-          onPressed:
-              context.wm.currentStatus == WatchStatus.none
-                  ? null
-                  : context.wm.handleDeletePressed,
-          style: TextButton.styleFrom(
-            foregroundColor: ColorScheme.of(context).error,
-          ),
-          child: Text(context.l10n.delete),
-        ),
-        TextButton(
-          onPressed: context.wm.handleSavePressed,
-          child: Text(context.l10n.save),
-        ),
-      ],
-    );
-  }
-}
-
 class _Fields extends StatelessWidget {
   const _Fields();
 
@@ -162,13 +187,19 @@ class _Fields extends StatelessWidget {
       spacing: 32,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 8,
-          children: [Expanded(child: _Status()), Expanded(child: _Episodes())],
+        Padding(
+          padding: _marginHorizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              Expanded(child: _Status()),
+              Expanded(child: _Episodes()),
+            ],
+          ),
         ),
         _Score(),
-        _Comment(),
+        Padding(padding: _marginHorizontal, child: _Comment()),
       ],
     );
   }
@@ -205,77 +236,77 @@ class _Score extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const itemsCount = 10;
-    const double itemMaxWidth = 48;
-    const double spacing = 8;
-    const double spacingTotal = spacing * (itemsCount - 1);
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxWidth: itemMaxWidth * itemsCount + spacingTotal,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
-        children: [
-          Text(context.l10n.score, style: TextTheme.of(context).bodyLarge),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final double size = min(
-                itemMaxWidth,
-                (constraints.maxWidth - spacingTotal) / itemsCount,
-              );
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: spacing,
-                children: List.generate(
-                  itemsCount,
-                  (index) => SizedBox.square(
-                    dimension: size,
-                    child: _ScoreItem(index),
-                  ),
-                ),
-              );
-            },
+    const double itemSize = 48;
+    final double spacing = Breakpoint.activeBreakpointOf(context).padding;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: spacing,
+      children: [
+        Padding(
+          padding: _marginHorizontal,
+          child: Text(
+            context.l10n.score,
+            style: TextTheme.of(context).bodyLarge,
           ),
-        ],
-      ),
+        ),
+        SizedBox(
+          height: itemSize,
+          child: ListView(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            padding: _marginHorizontal,
+            itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
+            children: List.generate(
+              10 * 2 - 1,
+              (index) =>
+                  index.isOdd
+                      ? const SizedBox.shrink()
+                      : SizedBox.square(child: _ScoreItem(index ~/ 2 + 1)),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _ScoreItem extends StatelessWidget {
-  const _ScoreItem(this.index);
+  const _ScoreItem(this.value);
 
-  final int index;
+  final int value;
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: context.wm.score,
-      builder:
-          (context, _) => Ink(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color:
-                  index + 1 == context.wm.score.value
-                      ? ColorScheme.of(context).inversePrimary
-                      : ColorScheme.of(context).surfaceContainerHighest,
-            ),
-            child: InkWell(
-              onTap: () => context.wm.handleScorePressed(index + 1),
-              customBorder: const CircleBorder(),
-              child: FittedBox(
-                child: Text(
-                  '${index + 1}',
-                  style: TextTheme.of(context).displaySmall?.copyWith(
-                    fontFamily: 'Alvida',
-                    color: ColorScheme.of(context).onSecondaryContainer,
-                  ),
-                ),
+    return ValueListenableBuilder(
+      valueListenable: context.wm.score,
+      builder: (context, score, _) {
+        final selected = value == score;
+        return Ink(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color:
+                selected
+                    ? ColorScheme.of(context).primaryContainer
+                    : ColorScheme.of(context).surfaceContainerHighest,
+          ),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => context.wm.handleScorePressed(value),
+            child: Text(
+              '$value',
+              textAlign: TextAlign.center,
+              style: TextTheme.of(context).displaySmall?.copyWith(
+                fontFamily: 'Alvida',
+                color:
+                    selected
+                        ? ColorScheme.of(context).onPrimaryContainer
+                        : ColorScheme.of(context).onSurface,
               ),
             ),
           ),
+        );
+      },
     );
   }
 }
