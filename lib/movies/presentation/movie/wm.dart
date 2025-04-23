@@ -128,6 +128,7 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   Future<void> handleWatchStatusPressed(BuildContext context) async {
     final WatchStatusDetails? newStatus = await showDialog<WatchStatusDetails?>(
       context: context,
+      useSafeArea: false,
       builder:
           (context) => WatchStatusWidget(
             movie: model.movie.value!,

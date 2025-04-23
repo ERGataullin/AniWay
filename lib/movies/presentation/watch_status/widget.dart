@@ -80,24 +80,26 @@ class _ContentMediumAndUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: _MaybeLoader(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.l10n.watchStatusAdd,
-                  style: TextTheme.of(context).headlineSmall,
-                ),
-                const SizedBox(height: 16),
-                const _Fields(),
-                const SizedBox(height: 24),
-                const _Actions(),
-              ],
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: _MaybeLoader(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.watchStatusAdd,
+                    style: TextTheme.of(context).headlineSmall,
+                  ),
+                  const SizedBox(height: 16),
+                  const _Fields(),
+                  const SizedBox(height: 24),
+                  const _Actions(),
+                ],
+              ),
             ),
           ),
         ),
