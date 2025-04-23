@@ -26,7 +26,7 @@ class VisibilityController with ChangeNotifier {
     super.dispose();
   }
 
-  void show({bool autohide = true}) {
+  void show({bool autohide = !kDebugMode}) {
     if (_visible) {
       if (_hidingTimer == null) return;
       autohide ? _restartHidingTimer() : _cancelHidingTimer();
@@ -47,7 +47,7 @@ class VisibilityController with ChangeNotifier {
     }
   }
 
-  void toggle({bool autohide = true, bool immediately = false}) {
+  void toggle({bool autohide = !kDebugMode, bool immediately = false}) {
     _visible ? hide(immediately: immediately) : show(autohide: autohide);
   }
 

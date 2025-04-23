@@ -452,7 +452,11 @@ class MoviesServiceAnime365 implements MoviesService {
 
     return (data['translations']! as List<dynamic>)
         .cast<Json>()
-        .where((translationJson) => translationJson['isActive'] == 1)
+        .where(
+          (translationJson) =>
+              translationJson['isActive'] == 1 &&
+              translationJson['typeKind'] != 'voiceOth',
+        )
         .map(
           (translationJson) => VideoTranslationData(
             id: translationJson['id']! as int,
