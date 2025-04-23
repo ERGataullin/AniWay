@@ -83,9 +83,12 @@ class VideoController {
 
   Future<void> seekTo(Duration position) async {
     _assertHasInner();
+    final effectivePosition = Duration(
+      milliseconds: (position.inMilliseconds ~/ 100) * 100,
+    );
     print('Log: Seek to $position');
-    this.position.value = position;
-    await _inner.value?.seekTo(position);
+    this.position.value = effectivePosition;
+    await _inner.value?.seekTo(effectivePosition);
   }
 
   Future<void> setPlaybackSpeed(double speed) async {
@@ -99,6 +102,7 @@ class VideoController {
       ..dispose();
     loading.dispose();
     playing.dispose();
+    playbackSpeed.dispose();
     aspectRatio.dispose();
     position.dispose();
     duration.dispose();
@@ -114,11 +118,13 @@ class VideoController {
     final VideoPlayerValue value =
         _inner.value?.value ?? const VideoPlayerValue.uninitialized();
 
-    const positionChangeMax = Duration(seconds: 1);
+    const positionMeasurementError = Duration(seconds: 1);
     final bool isPositionCorrect =
-        (position.value - value.position).abs() < positionChangeMax;
+        (position.value - value.position).abs() <= positionMeasurementError;
     final bool isPositionBuffered = value.buffered.any(
-      (range) => range.start <= position.value && position.value < range.end,
+      (range) =>
+          range.start <= position.value + positionMeasurementError &&
+          position.value <= range.end + positionMeasurementError,
     );
     loading.value = switch (defaultTargetPlatform) {
       _ when !value.isInitialized => true,
