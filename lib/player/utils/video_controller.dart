@@ -83,10 +83,9 @@ class VideoController {
 
   Future<void> seekTo(Duration position) async {
     _assertHasInner();
-    final Duration effectivePosition = position;
-    // Duration(seconds: position.inSeconds);
-    this.position.value = effectivePosition;
-    await _inner.value?.seekTo(effectivePosition);
+    print('Log: Seek to $position');
+    this.position.value = position;
+    await _inner.value?.seekTo(position);
   }
 
   Future<void> setPlaybackSpeed(double speed) async {
@@ -112,26 +111,59 @@ class VideoController {
   }
 
   void _handleInnerValueChanged() {
-    const positionMeasurementError = Duration(seconds: 1);
     final VideoPlayerValue value =
-        _inner.value?.value ?? const VideoPlayerValue(duration: Duration.zero);
+        _inner.value?.value ?? const VideoPlayerValue.uninitialized();
 
-    loading.value =
-        !value.isCompleted &&
-        !value.hasError &&
-        playing.value &&
-        !value.buffered.any(
-          (range) =>
-              range.start <= position.value + positionMeasurementError &&
-              position.value < range.end + positionMeasurementError,
-        );
+    const positionChangeMax = Duration(seconds: 1);
+    final bool isPositionCorrect =
+        (position.value - value.position).abs() < positionChangeMax;
+    final bool isPositionBuffered = value.buffered.any(
+      (range) => range.start <= position.value && position.value < range.end,
+    );
+    loading.value = switch (defaultTargetPlatform) {
+      _ when !value.isInitialized => true,
+      _ when value.isCompleted || value.hasError => false,
+      _ when kIsWeb => value.isBuffering,
+      TargetPlatform.linux || TargetPlatform.windows => value.isBuffering,
+      TargetPlatform.android ||
+      TargetPlatform.fuchsia ||
+      TargetPlatform.iOS ||
+      TargetPlatform.macOS =>
+        playing.value && (!isPositionCorrect || !isPositionBuffered),
+    };
+    // final Duration positionChangeMax = switch (defaultTargetPlatform) {
+    //   _ when kIsWeb => Duration.zero,
+    //   TargetPlatform.android ||
+    //   TargetPlatform.iOS => const Duration(seconds: 1),
+    //   TargetPlatform.fuchsia ||
+    //   TargetPlatform.linux ||
+    //   TargetPlatform.macOS ||
+    //   TargetPlatform.windows => Duration.zero,
+    // };
+    // final bool isPositionCorrect =
+    //     (position.value - value.position).abs() < positionChangeMax;
+    // final bool isPositionBuffered = value.buffered.any(
+    //   (range) =>
+    //       range.start <= position.value + positionChangeMax &&
+    //       position.value < range.end + positionChangeMax,
+    // );
+    // loading.value =
+    //     !value.isCompleted &&
+    //     !value.hasError &&
+    //     playing.value &&
+    //     (!isPositionCorrect || !isPositionBuffered);
+    print(
+      'Log: -----------------------------------------------------------------\n'
+      'Log: Loading: ${loading.value}\n'
+      'Log: Buffered: ${value.buffered}\n'
+      'Log: Position: ${position.value}\n'
+      'Log: Inner position: ${value.position}\n',
+    );
+
     aspectRatio.value = value.aspectRatio;
     if (value.isCompleted || value.hasError) playing.value = false;
     playbackSpeed.value = value.playbackSpeed;
-    final Duration positionChange = (position.value - value.position).abs();
-    if (!loading.value && positionChange <= positionMeasurementError) {
-      position.value = value.position;
-    }
+    if (!loading.value) position.value = value.position;
     duration.value = value.duration;
     caption.value = value.caption;
   }
