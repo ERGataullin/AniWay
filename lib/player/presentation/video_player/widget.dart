@@ -396,14 +396,10 @@ class _Caption extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Builder(
                   builder: (context) {
-                    const breakpointExpanded = Breakpoint(
-                      beginWidth: 840,
-                      andUp: true,
-                    );
                     final Breakpoint? breakpoint =
                         Breakpoint.activeBreakpointIn(context, const [
                           Breakpoints.standard,
-                          breakpointExpanded,
+                          Breakpoints.mediumLargeAndUp,
                           Breakpoints.largeAndUp,
                         ]);
                     return AnimatedSwitcher(
@@ -416,7 +412,7 @@ class _Caption extends StatelessWidget {
                         style: switch (breakpoint) {
                           Breakpoints.largeAndUp =>
                             TextTheme.of(context).displayMedium,
-                          breakpointExpanded => displaySmall.copyWith(
+                          Breakpoints.mediumLargeAndUp => displaySmall.copyWith(
                             fontSize: 28,
                           ),
                           _ => displaySmall.copyWith(fontSize: 22),

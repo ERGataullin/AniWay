@@ -98,6 +98,7 @@ class VideoController {
       ..dispose();
     loading.dispose();
     playing.dispose();
+    playbackSpeed.dispose();
     aspectRatio.dispose();
     position.dispose();
     duration.dispose();
@@ -111,23 +112,37 @@ class VideoController {
 
   void _handleInnerValueChanged() {
     final VideoPlayerValue value =
-        _inner.value?.value ?? const VideoPlayerValue(duration: Duration.zero);
+        _inner.value?.value ?? const VideoPlayerValue.uninitialized();
 
-    loading.value =
-        !value.isCompleted &&
-        !value.hasError &&
-        value.isBuffering &&
-        !value.buffered.any(
+    switch (defaultTargetPlatform) {
+      case _ when !value.isInitialized:
+        loading.value = true;
+      case _ when value.isCompleted || value.hasError:
+        loading.value = false;
+      case _ when kIsWeb:
+        loading.value = value.isBuffering;
+      case TargetPlatform.linux || TargetPlatform.windows:
+        loading.value = value.isBuffering;
+      case TargetPlatform.android ||
+          TargetPlatform.fuchsia ||
+          TargetPlatform.iOS ||
+          TargetPlatform.macOS:
+        const positionMeasurementError = Duration(seconds: 1);
+        final bool isPositionCorrect =
+            (position.value - value.position).abs() <= positionMeasurementError;
+        final bool isPositionBuffered = value.buffered.any(
           (range) =>
-              range.start <= value.position && value.position < range.end,
+              range.start <= position.value + positionMeasurementError &&
+              position.value < range.end + positionMeasurementError,
         );
+        loading.value =
+            playing.value && (!isPositionCorrect || !isPositionBuffered);
+    }
+
     aspectRatio.value = value.aspectRatio;
     if (value.isCompleted || value.hasError) playing.value = false;
     playbackSpeed.value = value.playbackSpeed;
-    final Duration positionChange = (position.value - value.position).abs();
-    if (!loading.value && positionChange <= const Duration(seconds: 1)) {
-      position.value = value.position;
-    }
+    if (!loading.value) position.value = value.position;
     duration.value = value.duration;
     caption.value = value.caption;
   }
