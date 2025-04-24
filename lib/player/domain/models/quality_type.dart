@@ -1,8 +1,8 @@
-enum VideoQualityType {
+enum QualityType {
   tv,
   dvd,
   bd;
 
-  factory VideoQualityType.valueOf(String name) =>
+  factory QualityType.valueOf(String name) =>
       values.singleWhere((value) => name == value.name);
 }

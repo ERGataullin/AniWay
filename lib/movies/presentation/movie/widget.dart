@@ -46,7 +46,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                         ? null
                         : FloatingActionButton.extended(
                           onPressed: context.wm.handlePlayPressed,
-                          label: Text(context.l10n.videoPlayLabel),
+                          label: Text(context.l10n.playLabel),
                           icon: const Icon(Icons.play_arrow_outlined),
                         ),
                 body: CustomScrollView(

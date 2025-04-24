@@ -40,7 +40,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
 
   final String subtitle;
 
-  final List<VideoTranslationData> translations;
+  final List<TranslationData> translations;
 
   final VideoResolver videoResolver;
 
