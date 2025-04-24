@@ -114,6 +114,10 @@ class VideoController {
     final VideoPlayerValue value =
         _inner.value?.value ?? const VideoPlayerValue.uninitialized();
 
+    const positionMeasurementError = Duration(milliseconds: 200);
+    final bool isPositionCorrect =
+        (position.value - value.position).abs() <= positionMeasurementError;
+
     switch (defaultTargetPlatform) {
       case _ when !value.isInitialized:
         loading.value = true;
@@ -123,36 +127,33 @@ class VideoController {
         loading.value = value.isBuffering;
       case TargetPlatform.linux || TargetPlatform.windows:
         loading.value = value.isBuffering;
-      case TargetPlatform.android ||
-          TargetPlatform.fuchsia ||
-          TargetPlatform.iOS ||
-          TargetPlatform.macOS:
-        const positionMeasurementError = Duration(seconds: 1);
-        final bool isPositionCorrect =
-            (position.value - value.position).abs() <= positionMeasurementError;
+      case TargetPlatform.android || TargetPlatform.fuchsia:
+        loading.value = playing.value && !value.isPlaying;
+      case TargetPlatform.iOS || TargetPlatform.macOS:
         final bool isPositionBuffered = value.buffered.any(
           (range) =>
               range.start <= position.value + positionMeasurementError &&
               position.value < range.end + positionMeasurementError,
         );
-        loading.value = playing.value && !value.isPlaying;
-        playing.value &&
+        loading.value =
+            playing.value &&
             (!value.isPlaying || !isPositionCorrect || !isPositionBuffered);
         print(
           'Log: -------------------------------------------------------------\n'
           'Log: loading: ${loading.value}\n'
+          'Log: buffered: ${value.buffered}\n'
           'Log: position: ${position.value}\n'
-          'Log: inner position: ${value.position}\n'
+          'Log: position inner: ${value.position}\n'
           'Log: playing: ${playing.value}\n'
-          'Log: inner playing: ${value.isPlaying}\n',
+          'Log: playing inner: ${value.isPlaying}\n',
         );
     }
 
     aspectRatio.value = value.aspectRatio;
     if (value.isCompleted || value.hasError) playing.value = false;
     playbackSpeed.value = value.playbackSpeed;
-    if (!loading.value) position.value = value.position;
     duration.value = value.duration;
+    if (isPositionCorrect) position.value = value.position;
     caption.value = value.caption;
   }
 
