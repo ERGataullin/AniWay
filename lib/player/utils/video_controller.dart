@@ -138,15 +138,6 @@ class VideoController {
         loading.value =
             playing.value &&
             (!value.isPlaying || !isPositionCorrect || !isPositionBuffered);
-        print(
-          'Log: -------------------------------------------------------------\n'
-          'Log: loading: ${loading.value}\n'
-          'Log: buffered: ${value.buffered}\n'
-          'Log: position: ${position.value}\n'
-          'Log: position inner: ${value.position}\n'
-          'Log: playing: ${playing.value}\n'
-          'Log: playing inner: ${value.isPlaying}\n',
-        );
     }
 
     aspectRatio.value = value.aspectRatio;
