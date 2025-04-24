@@ -226,7 +226,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void handlePositionChangeEnd(double position) {
-    controlsVisibilityController.hide();
+    if (!kDebugMode) controlsVisibilityController.hide();
   }
 
   @override

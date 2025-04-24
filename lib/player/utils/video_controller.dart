@@ -135,8 +135,17 @@ class VideoController {
               range.start <= position.value + positionMeasurementError &&
               position.value < range.end + positionMeasurementError,
         );
-        loading.value =
-            playing.value && (!isPositionCorrect || !isPositionBuffered);
+        loading.value = playing.value && !value.isPlaying;
+        playing.value &&
+            (!value.isPlaying || !isPositionCorrect || !isPositionBuffered);
+        print(
+          'Log: -------------------------------------------------------------\n'
+          'Log: loading: ${loading.value}\n'
+          'Log: position: ${position.value}\n'
+          'Log: inner position: ${value.position}\n'
+          'Log: playing: ${playing.value}\n'
+          'Log: inner playing: ${value.isPlaying}\n',
+        );
     }
 
     aspectRatio.value = value.aspectRatio;
