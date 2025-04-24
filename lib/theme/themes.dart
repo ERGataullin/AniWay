@@ -31,7 +31,6 @@ extension _AppOverrides on ThemeData {
     appBarTheme: appBarTheme.copyWith(
       scrolledUnderElevation: 3,
       toolbarHeight: 64,
-      actionsPadding: const EdgeInsets.only(right: 8),
     ),
     cardTheme: cardTheme.copyWith(
       margin: EdgeInsets.zero,
