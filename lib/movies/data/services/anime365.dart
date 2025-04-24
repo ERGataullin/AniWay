@@ -450,6 +450,7 @@ class MoviesServiceAnime365 implements MoviesService {
     );
     final data = response.body['data']! as Json;
 
+    final spacesRegExp = RegExp(r'\s');
     return (data['translations']! as List<dynamic>)
         .cast<Json>()
         .where(
@@ -474,9 +475,15 @@ class MoviesServiceAnime365 implements MoviesService {
             qualityType: VideoQualityType.valueOf(
               translationJson['qualityType']! as String,
             ),
-            authors: List.from(
-              translationJson['authorsList']! as List<dynamic>,
-            ),
+            authors: (translationJson['authorsList']! as List<dynamic>)
+                .cast<String>()
+                .map(
+                  (author) => VideoTranslationAuthorData(
+                    id: author.replaceAll(spacesRegExp, '').toLowerCase(),
+                    title: author,
+                  ),
+                )
+                .toList(growable: false),
           ),
         )
         .toList(growable: false);

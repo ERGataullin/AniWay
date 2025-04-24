@@ -25,5 +25,5 @@ class VideoTranslationData {
 
   final VideoQualityType qualityType;
 
-  final List<String> authors;
+  final List<VideoTranslationAuthorData> authors;
 }

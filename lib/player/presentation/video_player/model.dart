@@ -74,9 +74,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   @override
   set currentLocale(Locale value) => _currentLocale = value;
 
-  Locale? _selectedTranslationLocale;
-
-  List<String> _selectedTranslationAuthors = const [];
+  VideoTranslationData? _lastSelectedTranslation;
 
   @override
   set videoResolver(VideoResolver value) => _videoResolver = value;
@@ -147,8 +145,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
         await _repository.getTranslationAuthorsRates();
     _repository.saveTranslationAuthorsRates({
       ...authorsRates,
-      for (final String author in _selectedTranslationAuthors)
-        author: 1 + (authorsRates[author] ?? 0),
+      for (final VideoTranslationAuthorData author
+          in translation.value!.authors)
+        author.id: 1 + (authorsRates[author.id] ?? 0),
     });
   }
 
@@ -163,15 +162,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   Future<void> _handleTranslationChanged() async {
-    _selectedTranslationLocale =
-        translation.value?.locale ?? _selectedTranslationLocale;
-    _selectedTranslationAuthors =
-        translation.value?.authors
-            .map((author) => author.toLowerCase())
-            .toList(growable: false) ??
-        _selectedTranslationAuthors;
     video.value = null;
     if (translation.value != null) {
+      _lastSelectedTranslation = translation.value;
       video.value = await _videoResolver(translation.value!.id);
       quality.value =
           _autoSelectQuality
@@ -184,9 +177,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   Future<void> _autoSelectTranslation() async {
     final Locale preferredLocale = _getPreferredLocale();
-    final VideoTranslationType preferredType = await _autoSelectTranslationType(
-      preferredLocale,
-    );
+    final VideoTranslationType preferredType =
+        await _getPreferredTranslationType(preferredLocale);
     translation.value = await _getPreferredTranslation(
       locale: preferredLocale,
       type: preferredType,
@@ -194,8 +186,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   Locale _getPreferredLocale() {
-    if (translations.value[_selectedTranslationLocale] != null) {
-      return _selectedTranslationLocale!;
+    if (translations.value[_lastSelectedTranslation?.locale] != null) {
+      return _lastSelectedTranslation!.locale;
     } else if (translations.value[_currentLocale] != null) {
       return _currentLocale!;
     } else {
@@ -203,7 +195,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     }
   }
 
-  Future<VideoTranslationType> _autoSelectTranslationType(Locale locale) async {
+  Future<VideoTranslationType> _getPreferredTranslationType(
+    Locale locale,
+  ) async {
     final Map<VideoTranslationType, int> rates =
         await _repository.getTranslationTypesRates();
 
@@ -226,19 +220,22 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     final List<VideoTranslationData> preferredTranslations =
         translations.value[locale]![type]!;
 
-    final Map<String, int> authorsSuitability = {
+    final List<VideoTranslationAuthorData> lastSelectedAuthors =
+        _lastSelectedTranslation?.authors ?? const [];
+    final Map<String, int> authorsRates = {
       ...await _repository.getTranslationAuthorsRates(),
-      for (final String author in _selectedTranslationAuthors)
-        author: double.maxFinite.toInt(),
+      for (final VideoTranslationAuthorData author in lastSelectedAuthors)
+        author.id: double.maxFinite.toInt() ~/ lastSelectedAuthors.length,
     };
+
     VideoTranslationData preferredTranslation = preferredTranslations.first;
     double preferredRate = 0;
     for (final translation in preferredTranslations) {
-      var authorsRate = 0;
-      for (final String author in translation.authors) {
-        authorsRate += authorsSuitability[author.trim().toLowerCase()] ?? 0;
+      var authorsRateSum = 0;
+      for (final VideoTranslationAuthorData author in translation.authors) {
+        authorsRateSum += authorsRates[author.id] ?? 0;
       }
-      final double rate = authorsRate / translation.authors.length;
+      final double rate = authorsRateSum / translation.authors.length;
       if (rate <= preferredRate) continue;
       preferredTranslation = translation;
       preferredRate = rate;
