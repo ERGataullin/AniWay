@@ -320,6 +320,7 @@ class _Title extends StatelessWidget {
                 ),
             child: Text.rich(
               key: Key('${data.value} · ${trailing?.value}'),
+              style: style,
               TextSpan(
                 children: [
                   TextSpan(text: data.value),
@@ -332,7 +333,6 @@ class _Title extends StatelessWidget {
                     ),
                 ],
               ),
-              style: style,
             ),
           ),
     );
