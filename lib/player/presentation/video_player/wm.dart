@@ -31,6 +31,8 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
+  ValueListenable<String?> get translationTitle;
+
   ValueListenable<VoidCallback?> get onSharePressed;
 
   ValueListenable<VoidCallback?> get onMenuPressed;
@@ -97,6 +99,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final Computed<String> subtitle = Computed(() => widget.subtitle);
+
+  @override
+  late final Computed<String?> translationTitle = Computed(
+    trigger: model.translation,
+    () => model.translation.value?.title,
+  );
 
   @override
   late final Computed<VoidCallback?> onSharePressed = Computed(
@@ -242,6 +250,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
+    translationTitle.dispose();
     onSharePressed.dispose();
     onMenuPressed.dispose();
     onPreviousPressed.dispose();

@@ -13,7 +13,7 @@ abstract class Themes {
           brightness: Brightness.dark,
           primary: dark.colorScheme.primary,
           onPrimary: Colors.white,
-          secondary: Colors.grey.shade400,
+          secondary: Colors.grey[350]!,
           secondaryContainer: Colors.black26,
           onSecondary: Colors.white,
           error: const Color(0xFFF2B8B5),
@@ -31,6 +31,7 @@ extension _AppOverrides on ThemeData {
     appBarTheme: appBarTheme.copyWith(
       scrolledUnderElevation: 3,
       toolbarHeight: 64,
+      actionsPadding: const EdgeInsets.only(right: 8),
     ),
     cardTheme: cardTheme.copyWith(
       margin: EdgeInsets.zero,

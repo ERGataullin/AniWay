@@ -124,9 +124,7 @@ class _AppBar extends StatelessWidget {
               ),
             ),
             actions:
-                context.wm.loading.value
-                    ? null
-                    : const [_WatchStatusButton(), SizedBox(width: 8)],
+                context.wm.loading.value ? null : const [_WatchStatusButton()],
             flexibleSpace: const _AppBarFlexibleSpace(),
           ),
     );
