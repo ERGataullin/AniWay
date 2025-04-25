@@ -208,6 +208,7 @@ class _Controls extends StatelessWidget {
                           _Title(context.wm.title),
                           _Title(
                             context.wm.subtitle,
+                            trailing: context.wm.translationTitle,
                             style: TextTheme.primaryOf(context).titleMedium,
                           ),
                         ],
@@ -292,22 +293,47 @@ class _Controls extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  const _Title(this.data, {this.style});
+  const _Title(this.data, {this.trailing, this.style});
 
   final ValueListenable<String> data;
+
+  final ValueListenable<String?>? trailing;
 
   final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable: data,
+    return ListenableBuilder(
+      listenable: Listenable.merge([data, trailing]),
       builder:
-          (context, data, _) => AnimatedSwitcher(
+          (context, _) => AnimatedSwitcher(
             switchInCurve: Easing.standard,
             switchOutCurve: Easing.standard.flipped,
             duration: Durations.medium2,
-            child: Text(data, key: Key(data), style: style),
+
+            layoutBuilder:
+                (currentChild, previousChildren) => Stack(
+                  children: [
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                ),
+            child: Text.rich(
+              key: Key('${data.value} · ${trailing?.value}'),
+              TextSpan(
+                children: [
+                  TextSpan(text: data.value),
+                  if (trailing?.value != null)
+                    TextSpan(
+                      text: ' · ${trailing?.value}',
+                      style: TextStyle(
+                        color: ColorScheme.of(context).secondary,
+                      ),
+                    ),
+                ],
+              ),
+              style: style,
+            ),
           ),
     );
   }
