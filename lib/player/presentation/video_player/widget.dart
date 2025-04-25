@@ -310,7 +310,6 @@ class _Title extends StatelessWidget {
             switchInCurve: Easing.standard,
             switchOutCurve: Easing.standard.flipped,
             duration: Durations.medium2,
-
             layoutBuilder:
                 (currentChild, previousChildren) => Stack(
                   children: [
