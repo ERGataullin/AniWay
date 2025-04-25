@@ -56,32 +56,30 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                 body: body,
               ),
           child: RootMenuAwaredCenter(
-            child: ConstrainedContent(
-              child: CustomScrollView(
-                controller: wm.scrollController,
-                slivers: [
-                  Builder(
-                    builder:
-                        (context) => SliverPadding(
-                          padding: EdgeInsets.fromLTRB(
-                            16,
-                            16 + MediaQuery.paddingOf(context).top,
-                            16,
-                            16 + MediaQuery.paddingOf(context).bottom,
-                          ),
-                          sliver: SliverPagedGrid(
-                            key: wm.pagedGridKey,
-                            controller: wm.scrollController,
-                            gridDelegate: MovieCard.gridDelegate,
-                            onLoadPage: wm.handleLoadPage,
-                            itemBuilder:
-                                (context, movie, animation) =>
-                                    MovieCard(movie, opacity: animation),
-                          ),
+            child: CustomScrollView(
+              controller: wm.scrollController,
+              slivers: [
+                Builder(
+                  builder:
+                      (context) => SliverPadding(
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          16 + MediaQuery.paddingOf(context).top,
+                          16,
+                          16 + MediaQuery.paddingOf(context).bottom,
                         ),
-                  ),
-                ],
-              ),
+                        sliver: SliverPagedGrid(
+                          key: wm.pagedGridKey,
+                          controller: wm.scrollController,
+                          gridDelegate: MovieCard.gridDelegate,
+                          onLoadPage: wm.handleLoadPage,
+                          itemBuilder:
+                              (context, movie, animation) =>
+                                  MovieCard(movie, opacity: animation),
+                        ),
+                      ),
+                ),
+              ],
             ),
           ),
         ),

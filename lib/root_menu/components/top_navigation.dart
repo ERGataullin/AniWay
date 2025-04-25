@@ -94,7 +94,7 @@ class TopNavigation extends StatelessWidget {
 class _LayoutDelegate extends MultiChildLayoutDelegate {
   _LayoutDelegate({required this.size});
 
-  static const spacing = 8.0;
+  static const spacing = 24.0;
 
   final Size size;
 

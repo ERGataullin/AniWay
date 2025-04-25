@@ -7,13 +7,20 @@ import 'package:flutter/rendering.dart';
 /// Располагает дочерний виджет как можно ближе к горизонтальному центру окна
 /// так, чтобы при этом его не перекрывало главное меню.
 class RootMenuAwaredCenter extends SingleChildRenderObjectWidget {
-  const RootMenuAwaredCenter({super.key, required Widget super.child});
+  const RootMenuAwaredCenter({
+    super.key,
+    this.constraints = const BoxConstraints(maxWidth: 1600),
+    required Widget super.child,
+  });
+
+  final BoxConstraints constraints;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
     return _RenderRootMenuAwaredCenter(
       primaryNavigationKey: RootMenuScope.of(context).primaryNavigationKey,
       windowSize: MediaQuery.sizeOf(context),
+      childConstraints: constraints,
     );
   }
 
@@ -23,7 +30,9 @@ class RootMenuAwaredCenter extends SingleChildRenderObjectWidget {
     // ignore: library_private_types_in_public_api
     _RenderRootMenuAwaredCenter renderObject,
   ) {
-    renderObject.windowSize = MediaQuery.sizeOf(context);
+    renderObject
+      ..windowSize = MediaQuery.sizeOf(context)
+      ..childConstraints = constraints;
   }
 }
 
@@ -31,8 +40,10 @@ class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
   _RenderRootMenuAwaredCenter({
     required GlobalKey primaryNavigationKey,
     required Size windowSize,
+    required BoxConstraints childConstraints,
   }) : _primaryNavigationKey = primaryNavigationKey,
        _windowSize = windowSize,
+       _childConstraints = childConstraints,
        super(null);
 
   GlobalKey _primaryNavigationKey;
@@ -49,6 +60,13 @@ class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
     markNeedsPaint();
   }
 
+  BoxConstraints _childConstraints;
+  set childConstraints(BoxConstraints value) {
+    if (value == _childConstraints) return;
+    _childConstraints = value;
+    markNeedsLayout();
+  }
+
   @override
   bool get sizedByParent => true;
 
@@ -59,7 +77,7 @@ class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
 
   @override
   void performLayout() {
-    child?.layout(constraints);
+    child?.layout(constraints.enforce(_childConstraints));
   }
 
   @override

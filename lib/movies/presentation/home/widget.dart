@@ -59,32 +59,30 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RootMenuAwaredCenter(
-      child: ConstrainedContent(
-        child: ListenableBuilder(
-          listenable: context.wm.loading,
-          builder:
-              (context, _) => AnimatedSwitcher(
-                switchInCurve: Easing.emphasizedDecelerate,
-                switchOutCurve: Easing.emphasizedAccelerate.flipped,
-                duration: Durations.medium4,
-                reverseDuration: Durations.short4,
-                layoutBuilder:
-                    (currentChild, previousChildren) => Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        ...previousChildren,
-                        if (currentChild != null) currentChild,
-                      ],
-                    ),
-                child:
-                    context.wm.loading.value
-                        ? const Center(
-                          key: ValueKey('Loader'),
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                        : const _Content(key: ValueKey('Content')),
-              ),
-        ),
+      child: ListenableBuilder(
+        listenable: context.wm.loading,
+        builder:
+            (context, _) => AnimatedSwitcher(
+              switchInCurve: Easing.emphasizedDecelerate,
+              switchOutCurve: Easing.emphasizedAccelerate.flipped,
+              duration: Durations.medium4,
+              reverseDuration: Durations.short4,
+              layoutBuilder:
+                  (currentChild, previousChildren) => Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      ...previousChildren,
+                      if (currentChild != null) currentChild,
+                    ],
+                  ),
+              child:
+                  context.wm.loading.value
+                      ? const Center(
+                        key: ValueKey('Loader'),
+                        child: CircularProgressIndicator.adaptive(),
+                      )
+                      : const _Content(key: ValueKey('Content')),
+            ),
       ),
     );
   }
