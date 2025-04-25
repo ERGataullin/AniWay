@@ -33,7 +33,6 @@ class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
     required Size windowSize,
   }) : _primaryNavigationKey = primaryNavigationKey,
        _windowSize = windowSize,
-
        super(null);
 
   GlobalKey _primaryNavigationKey;

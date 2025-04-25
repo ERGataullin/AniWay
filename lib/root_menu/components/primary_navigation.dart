@@ -20,21 +20,41 @@ class PrimaryNavigation extends StatelessWidget {
   final List<NavigationDestination> destinations;
 
   static Size sizeFor(BuildContext context) {
+    return _valueFor(
+      context,
+      none: () => Size.zero,
+      rail:
+          () => Size.fromWidth(
+            NavigationRailTheme.of(context).minWidth! +
+                DividerTheme.of(context).thickness!,
+          ),
+      drawer: () => Size.fromWidth(DrawerTheme.of(context).width!),
+    );
+  }
+
+  static EdgeInsets topNavigationPaddingFor(BuildContext context) {
+    return _valueFor(
+      context,
+      none: () => EdgeInsets.zero,
+      rail: () => EdgeInsets.zero,
+      drawer: () => const EdgeInsets.symmetric(horizontal: 16),
+    );
+  }
+
+  static T _valueFor<T>(
+    BuildContext context, {
+    required T Function() none,
+    required T Function() rail,
+    required T Function() drawer,
+  }) {
     final Breakpoint? breakpoint = Breakpoint.activeBreakpointIn(
       context,
       const [_railBreakpoint, _drawerBreakpoint],
     );
     return switch (breakpoint) {
-      null => Size.zero,
-      _railBreakpoint => Size.fromWidth(
-        NavigationRailTheme.of(context).minWidth! +
-            DividerTheme.of(context).thickness!,
-      ),
-      _drawerBreakpoint => Size.fromWidth(DrawerTheme.of(context).width!),
-      _ =>
-        throw UnsupportedError(
-          'tried getting size for an unsupported breakpoint',
-        ),
+      _railBreakpoint => rail(),
+      _drawerBreakpoint => drawer(),
+      _ => none(),
     };
   }
 

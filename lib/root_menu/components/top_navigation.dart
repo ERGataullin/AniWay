@@ -8,9 +8,16 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 enum _SlotId { leading, middle }
 
 class TopNavigation extends StatelessWidget {
-  const TopNavigation({super.key, this.query, required this.onSearch});
+  const TopNavigation({
+    super.key,
+    this.padding = EdgeInsets.zero,
+    this.query,
+    required this.onSearch,
+  });
 
   static const Breakpoint _breakpoint = Breakpoints.mediumAndUp;
+
+  final EdgeInsets padding;
 
   final String? query;
 
@@ -54,21 +61,25 @@ class TopNavigation extends StatelessWidget {
                 centerTitle: true,
                 title: Theme(
                   data: theme,
-                  child: CustomMultiChildLayout(
-                    delegate: _LayoutDelegate(spacing: 24, size: size),
-                    children: [
-                      LayoutId(
-                        id: _SlotId.leading,
-                        child: const Logo(enableRedirect: true),
-                      ),
-                      LayoutId(
-                        id: _SlotId.middle,
-                        child: MoviesSearchBar(
-                          query: query,
-                          onSearch: onSearch,
+                  child: Padding(
+                    padding: padding,
+                    child: CustomMultiChildLayout(
+                      delegate: _LayoutDelegate(size: size),
+                      children: [
+                        LayoutId(
+                          id: _SlotId.leading,
+                          child: const Logo(enableRedirect: true),
                         ),
-                      ),
-                    ],
+                        LayoutId(
+                          id: _SlotId.middle,
+                          child: MoviesSearchBar(
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            query: query,
+                            onSearch: onSearch,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -81,15 +92,15 @@ class TopNavigation extends StatelessWidget {
 }
 
 class _LayoutDelegate extends MultiChildLayoutDelegate {
-  _LayoutDelegate({this.spacing = 0, required this.size});
+  _LayoutDelegate({required this.size});
 
-  final double spacing;
+  static const spacing = 8.0;
 
   final Size size;
 
   @override
   bool shouldRelayout(_LayoutDelegate oldDelegate) {
-    return spacing != oldDelegate.spacing;
+    return false;
   }
 
   @override

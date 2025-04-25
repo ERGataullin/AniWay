@@ -39,11 +39,11 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
           config: <Breakpoint, SlotLayoutConfig>{
             Breakpoints.standard: SlotLayout.from(
               key: const Key('Body Standard'),
-              builder: (_) => const _ContentSmall(),
+              builder: (context) => const _ContentSmall(),
             ),
             Breakpoints.mediumLargeAndUp: SlotLayout.from(
               key: const Key('Body Medium Large and Up'),
-              builder: (_) => const _ContentMediumAndUp(),
+              builder: (context) => const _ContentMediumAndUp(),
             ),
           },
         ),

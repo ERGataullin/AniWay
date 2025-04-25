@@ -7,16 +7,21 @@ import 'package:flutter/material.dart';
 typedef OnMoviesSearch = void Function(String query);
 
 class MoviesSearchBar extends StatefulWidget implements PreferredSizeWidget {
-  const MoviesSearchBar({super.key, this.query, required this.onSearch});
+  const MoviesSearchBar({
+    super.key,
+    this.margin = EdgeInsets.zero,
+    this.query,
+    required this.onSearch,
+  });
 
-  static const double margin = 8;
+  final EdgeInsets margin;
 
   final String? query;
 
   final OnMoviesSearch onSearch;
 
   @override
-  Size get preferredSize => const Size.fromHeight(margin + 56 + margin);
+  Size get preferredSize => Size.fromHeight(56 + margin.vertical);
 
   @override
   State<MoviesSearchBar> createState() => _MoviesSearchBarState();
@@ -63,7 +68,7 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.all(MoviesSearchBar.margin),
+          padding: widget.margin,
           child: ListenableBuilder(
             listenable: _controller,
             builder:

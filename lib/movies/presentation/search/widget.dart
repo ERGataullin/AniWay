@@ -46,6 +46,10 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                     RootMenuScope.of(context).hasTopNavigation(context)
                         ? null
                         : MoviesSearchBar(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           query: wm.query.value,
                           onSearch: onSearch,
                         ),
