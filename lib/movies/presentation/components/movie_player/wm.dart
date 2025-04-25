@@ -68,9 +68,7 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   void initWidgetModel() {
     super.initWidgetModel();
     model.loadData(movieId: widget.movieId, episodeId: widget.initialEpisodeId);
-    if (!kIsWeb) {
-      _lockOrientation();
-    }
+    if (!kIsWeb) _lockOrientation();
   }
 
   @override
@@ -91,14 +89,12 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   }
 
   @override
-  Future<void> dispose() async {
-    super.dispose();
+  void dispose() {
+    if (!kIsWeb) _unlockOrientation();
     title.dispose();
     onPreviousPressed.dispose();
     onNextPressed.dispose();
-    if (!kIsWeb) {
-      await _unlockOrientation();
-    }
+    super.dispose();
   }
 
   Future<void> _lockOrientation() {
