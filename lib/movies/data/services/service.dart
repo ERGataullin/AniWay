@@ -24,7 +24,7 @@ abstract interface class MoviesService {
 
   Future<MovieDetailsData> getMovie(int id);
 
-  Future<List<VideoTranslationData>> getTranslations(int episodeId);
+  Future<List<TranslationData>> getTranslations(int episodeId);
 
   Future<VideoData> getTranslationVideo(int translationId);
 

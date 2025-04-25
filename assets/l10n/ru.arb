@@ -63,11 +63,34 @@
     },
     "ongoingsTitle": "Cейчас выходят",
     "passwordLabel": "Пароль",
+    "playbackSpeedLabel": "Скорость воспроизведения",
+    "playbackSpeed": "{speed, plural, =1{Обычная} other{{speed}}}",
+    "@playbackSpeed": {
+        "placeholders": {
+            "speed": {
+                "type": "num"
+            }
+        }
+    },
+    "playLabel": "Смотреть",
     "popularsTitle": "Популярное",
-    "save": "Сохранить",
-    "score": "Оценка",
-    "signInSubmitLabel": "Войти через Anime365",
-    "searchPageTitle": "Поиск",
+    "qualityLabel": "Качество",
+    "quality": "{quality}p",
+    "@videoQuality": {
+        "placeholders": {
+            "quality": {
+                "type": "num"
+            }
+        }
+    },
+    "qualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}",
+    "@qualityType": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
     "range": "{start}-{end}",
     "@range": {
         "placeholders": {
@@ -79,43 +102,20 @@
             }
         }
     },
+    "save": "Сохранить",
+    "score": "Оценка",
+    "signInSubmitLabel": "Войти через Anime365",
+    "searchPageTitle": "Поиск",
+    "translationTypeLabel": "Тип перевода",
+    "translationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{}}",
+    "@translationType": {
+        "placeholders": {
+            "type": {
+                "type": "String"
+            }
+        }
+    },
     "upNextTitle": "К просмотру",
-    "videoPlaybackSpeedLabel": "Скорость воспроизведения",
-    "videoPlaybackSpeed": "{speed, plural, =1{Обычная} other{{speed}}}",
-    "@videoPlaybackSpeed": {
-        "placeholders": {
-            "speed": {
-                "type": "num"
-            }
-        }
-    },
-    "videoPlayLabel": "Смотреть",
-    "videoQualityLabel": "Качество",
-    "videoQuality": "{quality}p",
-    "@videoQuality": {
-        "placeholders": {
-            "quality": {
-                "type": "num"
-            }
-        }
-    },
-    "videoQualityType": "{type, select, tv{ТВ} dvd{DVD} bd{BD} other{}}",
-    "@videoQualityType": {
-        "placeholders": {
-            "type": {
-                "type": "String"
-            }
-        }
-    },
-    "videoTranslationTypeLabel": "Тип перевода",
-    "videoTranslationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{}}",
-    "@videoTranslationType": {
-        "placeholders": {
-            "type": {
-                "type": "String"
-            }
-        }
-    },
     "watchStatusAdd": "Добавить в список",
     "watchStatusEpisodesError": "Не более {episodesCountTotal} серий",
     "@watchStatusEpisodesError": {

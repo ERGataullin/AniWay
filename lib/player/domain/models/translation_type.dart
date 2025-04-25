@@ -1,8 +1,8 @@
-enum VideoTranslationType {
+enum TranslationType {
   raw,
   sub,
   voice;
 
-  factory VideoTranslationType.valueOf(String name) =>
+  factory TranslationType.valueOf(String name) =>
       values.singleWhere((value) => name == value.name);
 }

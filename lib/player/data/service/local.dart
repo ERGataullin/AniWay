@@ -15,7 +15,7 @@ class LocalPlayerService implements PlayerService {
   final StorageService _storageService;
 
   @override
-  Future<Map<VideoTranslationType, int>> getTranslationTypesRates() async {
+  Future<Map<TranslationType, int>> getTranslationTypesRates() async {
     final Map<Object?, Object?> stored = await _storageService.get(
       collection: _collection,
       key: _translationTypesRatesKey,
@@ -23,13 +23,13 @@ class LocalPlayerService implements PlayerService {
     );
     return {
       for (final MapEntry<Object?, Object?> entry in stored.entries)
-        VideoTranslationType.valueOf(entry.key! as String): entry.value! as int,
+        TranslationType.valueOf(entry.key! as String): entry.value! as int,
     };
   }
 
   @override
   Future<void> saveTranslationTypesRates(
-    Map<VideoTranslationType, int> rates,
+    Map<TranslationType, int> rates,
   ) async {
     await _storageService.put<Map<Object?, Object?>>(
       collection: _collection,

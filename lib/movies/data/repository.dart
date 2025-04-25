@@ -54,7 +54,7 @@ class MoviesRepository with Initable {
     return _moviesService.getMovie(id);
   }
 
-  Future<List<VideoTranslationData>> getTranslations(int episodeId) {
+  Future<List<TranslationData>> getTranslations(int episodeId) {
     return _moviesService.getTranslations(episodeId);
   }
 

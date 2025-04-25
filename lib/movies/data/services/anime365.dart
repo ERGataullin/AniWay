@@ -438,7 +438,7 @@ class MoviesServiceAnime365 implements MoviesService {
   }
 
   @override
-  Future<List<VideoTranslationData>> getTranslations(Object episodeId) async {
+  Future<List<TranslationData>> getTranslations(Object episodeId) async {
     final ResponseData<Json> response = await _networkService.request(
       RequestData(
         uri: Uri(
@@ -450,6 +450,7 @@ class MoviesServiceAnime365 implements MoviesService {
     );
     final data = response.body['data']! as Json;
 
+    final spacesRegExp = RegExp(r'\s');
     return (data['translations']! as List<dynamic>)
         .cast<Json>()
         .where(
@@ -458,25 +459,31 @@ class MoviesServiceAnime365 implements MoviesService {
               translationJson['typeKind'] != 'voiceOth',
         )
         .map(
-          (translationJson) => VideoTranslationData(
+          (translationJson) => TranslationData(
             id: translationJson['id']! as int,
             uri: Uri.parse(translationJson['url']! as String),
             title: switch (translationJson['authorsSummary']) {
               final String author when author.isNotEmpty => author,
               _ => 'Неизвестный',
             },
-            type: VideoTranslationType.valueOf(
+            type: TranslationType.valueOf(
               translationJson['typeKind']! as String,
             ),
             locale: Locale.fromSubtags(
               languageCode: translationJson['typeLang']! as String,
             ),
-            qualityType: VideoQualityType.valueOf(
+            qualityType: QualityType.valueOf(
               translationJson['qualityType']! as String,
             ),
-            authors: List.from(
-              translationJson['authorsList']! as List<dynamic>,
-            ),
+            authors: (translationJson['authorsList']! as List<dynamic>)
+                .cast<String>()
+                .map(
+                  (author) => TranslationAuthorData(
+                    id: author.replaceAll(spacesRegExp, '').toLowerCase(),
+                    title: author,
+                  ),
+                )
+                .toList(growable: false),
           ),
         )
         .toList(growable: false);

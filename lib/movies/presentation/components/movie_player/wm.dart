@@ -22,7 +22,7 @@ abstract interface class IMoviePlayerWM implements IWidgetModel {
 
   ValueListenable<EpisodeData?> get episode;
 
-  ValueListenable<List<VideoTranslationData>> get translations;
+  ValueListenable<List<TranslationData>> get translations;
 
   ValueListenable<VoidCallback?> get onPreviousPressed;
 
@@ -61,8 +61,7 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   ValueListenable<EpisodeData?> get episode => model.episode;
 
   @override
-  ValueListenable<List<VideoTranslationData>> get translations =>
-      model.translations;
+  ValueListenable<List<TranslationData>> get translations => model.translations;
 
   @override
   void initWidgetModel() {
