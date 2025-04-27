@@ -70,13 +70,11 @@ class VideoController {
 
   Future<void> play() async {
     _assertHasInner();
-    playing.value = true;
     await _inner.value?.play();
   }
 
   Future<void> pause() async {
     _assertHasInner();
-    playing.value = false;
     await _inner.value?.pause();
   }
 
@@ -86,7 +84,6 @@ class VideoController {
 
   Future<void> seekTo(Duration position) async {
     _assertHasInner();
-    this.position.value = position;
     await _inner.value?.seekTo(position);
   }
 
@@ -117,37 +114,12 @@ class VideoController {
     final VideoPlayerValue value =
         _inner.value?.value ?? const VideoPlayerValue.uninitialized();
 
-    const positionMeasurementError = Duration(milliseconds: 200);
-    final bool isPositionCorrect =
-        (position.value - value.position).abs() <= positionMeasurementError;
-
-    switch (defaultTargetPlatform) {
-      case _ when !value.isInitialized:
-        loading.value = true;
-      case _ when value.isCompleted || value.hasError:
-        loading.value = false;
-      case _ when kIsWeb:
-        loading.value = value.isBuffering;
-      case TargetPlatform.linux || TargetPlatform.windows:
-        loading.value = value.isBuffering;
-      case TargetPlatform.android || TargetPlatform.fuchsia:
-        loading.value = value.isBuffering;
-      case TargetPlatform.iOS || TargetPlatform.macOS:
-        final bool isPositionBuffered = value.buffered.any(
-          (range) =>
-              range.start <= position.value + positionMeasurementError &&
-              position.value < range.end + positionMeasurementError,
-        );
-        loading.value =
-            playing.value &&
-            (!value.isPlaying || !isPositionCorrect || !isPositionBuffered);
-    }
-
+    loading.value = value.isBuffering;
     aspectRatio.value = value.aspectRatio;
-    if (value.isCompleted || value.hasError) playing.value = false;
+    playing.value = value.isPlaying;
     playbackSpeed.value = value.playbackSpeed;
     duration.value = value.duration;
-    if (isPositionCorrect) position.value = value.position;
+    position.value = value.position;
     caption.value = value.caption;
   }
 
