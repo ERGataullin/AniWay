@@ -17,7 +17,6 @@ export 'domain/models/json.dart';
 export 'domain/models/proxied_uri.dart';
 export 'presentation/components/animated_visibility.dart';
 export 'presentation/components/conditional_wrapper.dart';
-export 'presentation/components/constrained_content.dart';
 export 'presentation/components/destination_title.dart';
 export 'presentation/components/expandable_text.dart';
 export 'presentation/components/image/adaptive_image_builder.dart';

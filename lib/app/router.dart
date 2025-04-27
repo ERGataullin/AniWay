@@ -303,6 +303,7 @@ abstract class _RoutesBuilders {
     return GoRoute(
       name: _Routes.library,
       path: '/library',
+      routes: [movieRoute],
       builder:
           (context, state) => LibraryWidget(
             onMoviePressed:

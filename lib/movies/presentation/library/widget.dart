@@ -1,5 +1,6 @@
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
+import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/library/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
@@ -24,19 +25,41 @@ class LibraryWidget extends ElementaryWidget<ILibraryWM> {
       value: wm,
       builder:
           (context, _) => RootMenuAwaredCenter(
-            child: ConstrainedContent(
-              child: Scaffold(
-                appBar: AppBar(
-                  title: Text(context.l10n.libraryTitle),
-                  // bottom: TabBar(
-                  //   controller: wm.tabController.value,
-                  //   isScrollable: true,
-                  //   tabs: wm.tabsTexts.value
-                  //       .map((text) => Tab(text: text))
-                  //       .toList(growable: false),
-                  // ),
+            child: ShimmerScope(
+              child: DefaultTabController(
+                length: wm.watchStatuses.length,
+                child: Scaffold(
+                  body: NestedScrollView(
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        SliverOverlapAbsorber(
+                          handle:
+                              NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                context,
+                              ),
+                          sliver: SliverAppBar(
+                            pinned: true,
+                            forceElevated: innerBoxIsScrolled,
+                            title: Text(context.l10n.libraryTitle),
+                            bottom: TabBar(
+                              isScrollable: true,
+                              tabs: wm.tabsTexts.value
+                                  .map((text) => Tab(text: text))
+                                  .toList(growable: false),
+                            ),
+                          ),
+                        ),
+                      ];
+                    },
+                    body: TabBarView(
+                      children: wm.watchStatuses
+                          .map(
+                            (watchStatus) => _Movies(watchStatus: watchStatus),
+                          )
+                          .toList(growable: false),
+                    ),
+                  ),
                 ),
-                body: const _Movies(),
               ),
             ),
           ),
@@ -45,8 +68,9 @@ class LibraryWidget extends ElementaryWidget<ILibraryWM> {
 }
 
 class _Movies extends StatelessWidget {
-  const _Movies();
+  const _Movies({this.watchStatus});
 
+  final WatchStatus? watchStatus;
   @override
   Widget build(BuildContext context) {
     return Builder(
@@ -55,8 +79,12 @@ class _Movies extends StatelessWidget {
           context,
         );
         return CustomScrollView(
-          controller: scrollController,
+          key: PageStorageKey(watchStatus),
+          // controller: scrollController,
           slivers: [
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            ),
             Builder(
               builder:
                   (context) => SliverPadding(

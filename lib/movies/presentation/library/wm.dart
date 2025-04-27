@@ -6,6 +6,7 @@ import 'package:app/movies/domain/models/movie_card.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/presentation/library/model.dart';
 import 'package:app/movies/presentation/library/widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 LibraryWM libraryWMFactory(BuildContext context) => LibraryWM(
@@ -16,34 +17,29 @@ LibraryWM libraryWMFactory(BuildContext context) => LibraryWM(
 );
 
 abstract interface class ILibraryWM implements IWidgetModel {
-  // ValueListenable<TabController> get tabController;
+  ValueListenable<List<String>> get tabsTexts;
 
-  // ValueListenable<List<String>> get tabsTexts;
-
-  // ValueListenable<List<List<MovieBaseData>>> get tabsMovies;
+  List<WatchStatus?> get watchStatuses;
 
   Future<List<MovieCardData>> handleLoadPage(int page, WatchStatus? statuses);
 }
 
 class LibraryWM extends WidgetModel<LibraryWidget, ILibraryModel>
-    with L10nWMMixin, SingleTickerProviderWidgetModelMixin
+    with L10nWMMixin
     implements ILibraryWM {
   LibraryWM(super._model);
+  @override
+  late final Computed<List<String>> tabsTexts = Computed(
+    () => watchStatuses
+        .map(
+          (status) =>
+              status == null ? 'Все' : l10n.value.watchStatus(status.name),
+        )
+        .toList(growable: false),
+  );
 
-  // @override
-  // late final Computed<TabController> tabController = Computed(
-  //   () => TabController(length: WatchStatus.values.length, vsync: this),
-  // );
-
-  // @override
-  // late final Computed<List<String>> tabsTexts = Computed(
-  //   () => [null, ...WatchStatus.values]
-  //       .map(
-  //         (status) =>
-  //             status == null ? 'Все' : l10n.value.watchStatus(status.name),
-  //       )
-  //       .toList(growable: false),
-  // );
+  @override
+  List<WatchStatus?> get watchStatuses => [null, ...WatchStatus.values];
 
   @override
   Future<List<MovieCardData>> handleLoadPage(
@@ -64,12 +60,4 @@ class LibraryWM extends WidgetModel<LibraryWidget, ILibraryModel>
         )
         .toList(growable: false);
   }
-
-  // @override
-  // late final Computed<List<List<MovieBaseData>>> tabsMovies = Computed(
-  //   () => List.generate(WatchStatus.values.length - 1, (index) {
-  //     _movies = model.getMovies([_convertIndexToWatchStatus(index)]);
-  //     return _movies;
-  //   }),
-  // );
 }

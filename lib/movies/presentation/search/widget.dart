@@ -52,38 +52,36 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                 body: body,
               ),
           child: RootMenuAwaredCenter(
-            child: ConstrainedContent(
-              child: Builder(
-                builder: (context) {
-                  final ScrollController scrollController =
-                      PrimaryScrollController.of(context);
-                  return CustomScrollView(
-                    controller: scrollController,
-                    slivers: [
-                      Builder(
-                        builder:
-                            (context) => SliverPadding(
-                              padding: EdgeInsets.fromLTRB(
-                                16,
-                                16 + MediaQuery.paddingOf(context).top,
-                                16,
-                                16 + MediaQuery.paddingOf(context).bottom,
-                              ),
-                              sliver: SliverPagedGrid(
-                                key: wm.pagedGridKey,
-                                controller: scrollController,
-                                gridDelegate: MovieCard.gridDelegate,
-                                onLoadPage: wm.handleLoadPage,
-                                itemBuilder:
-                                    (context, movie, animation) =>
-                                        MovieCard(movie, opacity: animation),
-                              ),
+            child: Builder(
+              builder: (context) {
+                final ScrollController scrollController =
+                    PrimaryScrollController.of(context);
+                return CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    Builder(
+                      builder:
+                          (context) => SliverPadding(
+                            padding: EdgeInsets.fromLTRB(
+                              16,
+                              16 + MediaQuery.paddingOf(context).top,
+                              16,
+                              16 + MediaQuery.paddingOf(context).bottom,
                             ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                            sliver: SliverPagedGrid(
+                              key: wm.pagedGridKey,
+                              controller: scrollController,
+                              gridDelegate: MovieCard.gridDelegate,
+                              onLoadPage: wm.handleLoadPage,
+                              itemBuilder:
+                                  (context, movie, animation) =>
+                                      MovieCard(movie, opacity: animation),
+                            ),
+                          ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
