@@ -301,17 +301,16 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   Future<void> _handleSharePressed() async {
+    final Uri translationUri = model.translation.value!.uri;
     switch (defaultTargetPlatform) {
       case TargetPlatform.android ||
           TargetPlatform.fuchsia ||
           TargetPlatform.iOS ||
           TargetPlatform.linux ||
           TargetPlatform.macOS:
-        Share.shareUri(model.translation.value!.uri);
+        SharePlus.instance.share(ShareParams(uri: translationUri));
       case TargetPlatform.windows:
-        await Clipboard.setData(
-          ClipboardData(text: '${model.translation.value!.uri}'),
-        );
+        await Clipboard.setData(ClipboardData(text: '$translationUri'));
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
