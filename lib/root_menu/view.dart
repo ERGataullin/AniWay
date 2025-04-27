@@ -134,6 +134,11 @@ class _RootMenuViewState extends State<RootMenuView> {
               icon: const Icon(Icons.search_outlined),
               selectedIcon: const Icon(Icons.search),
             ),
+            RootMenuDestination.library => NavigationDestination(
+              label: context.l10n.libraryTitle,
+              icon: const Icon(Icons.video_library_outlined),
+              selectedIcon: const Icon(Icons.video_library),
+            ),
           },
         )
         .toList(growable: false);

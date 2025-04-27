@@ -4,6 +4,7 @@ import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/presentation/components/movie_player/widget.dart';
 import 'package:app/movies/presentation/episodes/widget.dart';
 import 'package:app/movies/presentation/home/widget.dart';
+import 'package:app/movies/presentation/library/widget.dart';
 import 'package:app/movies/presentation/movie/widget.dart';
 import 'package:app/movies/presentation/search/widget.dart';
 import 'package:app/movies/presentation/up_next/widget.dart';
@@ -77,6 +78,8 @@ abstract class _Routes {
   static String movie({required String parent}) => '$parent/movies/:movieId';
 
   static String episodes({String? parent}) => '$parent/episodes';
+
+  static const library = '/library';
 }
 
 abstract class _RoutesBuilders {
@@ -110,10 +113,12 @@ abstract class _RoutesBuilders {
 
   static ShellRouteBase buildRootMenu() {
     final GoRoute search = _buildSearch();
+    final GoRoute library = _buildLibrary();
     return StatefulShellRoute(
       branches: [
         StatefulShellBranch(routes: [_buildHome()]),
         StatefulShellBranch(routes: [search]),
+        StatefulShellBranch(routes: [library]),
       ],
       navigatorContainerBuilder:
           (context, navigationShell, children) => RootMenuContainer(
@@ -288,6 +293,22 @@ abstract class _RoutesBuilders {
                   _Routes.moviePlayer,
                   pathParameters: {'movieId': state.pathParameters['movieId']!},
                   queryParameters: {'episodeId': episodeId.toString()},
+                ),
+          ),
+    );
+  }
+
+  static GoRoute _buildLibrary() {
+    final GoRoute movieRoute = _buildMovie(parent: _Routes.library);
+    return GoRoute(
+      name: _Routes.library,
+      path: '/library',
+      builder:
+          (context, state) => LibraryWidget(
+            onMoviePressed:
+                (id) => context.pushNamed(
+                  movieRoute.name!,
+                  pathParameters: {'movieId': id.toString()},
                 ),
           ),
     );

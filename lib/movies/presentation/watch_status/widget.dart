@@ -135,7 +135,7 @@ class _ContentMediumAndUp extends StatelessWidget {
                       children: [
                         TextButton(
                           onPressed:
-                              context.wm.currentStatus == WatchStatus.none
+                              context.wm.currentStatus == null
                                   ? null
                                   : context.wm.handleDeletePressed,
                           style: TextButton.styleFrom(
@@ -219,7 +219,7 @@ class _Status extends StatelessWidget {
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
       ),
-      dropdownMenuEntries: context.wm.statuses
+      dropdownMenuEntries: WatchStatus.values
           .map(
             (status) => DropdownMenuEntry(
               value: status,

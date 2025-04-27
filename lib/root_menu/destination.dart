@@ -1,1 +1,1 @@
-enum RootMenuDestination { home, search }
+enum RootMenuDestination { home, search, library }
