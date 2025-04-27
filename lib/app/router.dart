@@ -117,8 +117,8 @@ abstract class _RoutesBuilders {
     return StatefulShellRoute(
       branches: [
         StatefulShellBranch(routes: [_buildHome()]),
-        StatefulShellBranch(routes: [search]),
         StatefulShellBranch(routes: [library]),
+        StatefulShellBranch(routes: [search]),
       ],
       navigatorContainerBuilder:
           (context, navigationShell, children) => RootMenuContainer(
