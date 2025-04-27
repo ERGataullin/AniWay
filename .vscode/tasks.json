@@ -10,15 +10,12 @@
 		{
 			"label": "Build .apk",
 			"type": "shell",
-			"options": {
-				"cwd": "build/app/outputs/apk/release",
-			},
 			"presentation": {
 				"reveal": "always",
 			},
 			"command": [
-				"rm AniWay.apk; ",
 				"flutter build apk --release; ",
+				"cd build/app/outputs/apk/release; ",
 				"mv app-release.apk AniWay.apk; ",
 			],
 		},
