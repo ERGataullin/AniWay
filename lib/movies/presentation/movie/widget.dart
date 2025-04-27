@@ -46,7 +46,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                         ? null
                         : FloatingActionButton.extended(
                           onPressed: context.wm.handlePlayPressed,
-                          label: Text(context.l10n.videoPlayLabel),
+                          label: Text(context.l10n.playLabel),
                           icon: const Icon(Icons.play_arrow_outlined),
                         ),
                 body: CustomScrollView(
@@ -124,9 +124,7 @@ class _AppBar extends StatelessWidget {
               ),
             ),
             actions:
-                context.wm.loading.value
-                    ? null
-                    : const [_WatchStatusButton(), SizedBox(width: 8)],
+                context.wm.loading.value ? null : const [_WatchStatusButton()],
             flexibleSpace: const _AppBarFlexibleSpace(),
           ),
     );

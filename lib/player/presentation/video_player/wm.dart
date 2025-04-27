@@ -31,6 +31,8 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   ValueListenable<String> get subtitle;
 
+  ValueListenable<String?> get translationTitle;
+
   ValueListenable<VoidCallback?> get onSharePressed;
 
   ValueListenable<VoidCallback?> get onMenuPressed;
@@ -97,6 +99,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final Computed<String> subtitle = Computed(() => widget.subtitle);
+
+  @override
+  late final Computed<String?> translationTitle = Computed(
+    trigger: model.translation,
+    () => model.translation.value?.title,
+  );
 
   @override
   late final Computed<VoidCallback?> onSharePressed = Computed(
@@ -226,7 +234,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void handlePositionChangeEnd(double position) {
-    controlsVisibilityController.hide();
+    if (!kDebugMode) controlsVisibilityController.hide();
   }
 
   @override
@@ -242,6 +250,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
+    translationTitle.dispose();
     onSharePressed.dispose();
     onMenuPressed.dispose();
     onPreviousPressed.dispose();
@@ -334,10 +343,11 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         ),
         MenuItemData.group(
           icon: Icons.subtitles_outlined,
-          label: l10n.value.videoTranslationTypeLabel,
+          label: l10n.value.translationTypeLabel,
           children: switch (model.translation.value) {
-            final VideoTranslationData translation =>
-              _getTranslationTypeMenuItems(translation.locale),
+            final TranslationData translation => _getTranslationTypeMenuItems(
+              translation.locale,
+            ),
             _ => const [],
           },
         ),
@@ -345,7 +355,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
           icon: Icons.person_outlined,
           label: l10n.value.authorLabel,
           children: switch (model.translation.value) {
-            final VideoTranslationData translation => _getTranslationMenuItems(
+            final TranslationData translation => _getTranslationMenuItems(
               locale: translation.locale,
               type: translation.type,
             ),
@@ -354,7 +364,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         ),
         MenuItemData.group(
           icon: Icons.high_quality_outlined,
-          label: l10n.value.videoQualityLabel,
+          label: l10n.value.qualityLabel,
           children:
               model.video.value == null
                   ? const []
@@ -362,7 +372,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
                       .map(
                         (quality) => MenuItemData.single(
                           selected: quality == model.quality.value,
-                          label: l10n.value.videoQuality(quality),
+                          label: l10n.value.quality(quality),
                           onSelected: () => model.setQuality(quality),
                         ),
                       )
@@ -370,7 +380,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         ),
         MenuItemData.group(
           icon: Icons.speed_outlined,
-          label: l10n.value.videoPlaybackSpeedLabel,
+          label: l10n.value.playbackSpeedLabel,
           children:
               model.video.value == null
                   ? const []
@@ -379,7 +389,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
                         (speed) => MenuItemData.single(
                           selected:
                               speed == videoController.playbackSpeed.value,
-                          label: l10n.value.videoPlaybackSpeed(speed),
+                          label: l10n.value.playbackSpeed(speed),
                           onSelected:
                               () => videoController.setPlaybackSpeed(speed),
                         ),
@@ -406,7 +416,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         .map(
           (type) => MenuItemData.group(
             selected: type == model.translation.value?.type,
-            label: l10n.value.videoTranslationType(type.name),
+            label: l10n.value.translationType(type.name),
             children: _getTranslationMenuItems(locale: locale, type: type),
           ),
         )
@@ -415,7 +425,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   List<MenuItemData> _getTranslationMenuItems({
     required Locale locale,
-    required VideoTranslationType type,
+    required TranslationType type,
   }) {
     return model.translations.value[locale]![type]
             ?.map(
@@ -423,9 +433,10 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
                 selected: translation == model.translation.value,
                 label: translation.title,
                 trailing: switch (translation.qualityType) {
-                  VideoQualityType.bd || VideoQualityType.dvd => l10n.value
-                      .videoQualityType(translation.qualityType.name),
-                  VideoQualityType.tv => null,
+                  QualityType.bd || QualityType.dvd => l10n.value.qualityType(
+                    translation.qualityType.name,
+                  ),
+                  QualityType.tv => null,
                 },
                 onSelected: () => model.setTranslation(translation),
               ),

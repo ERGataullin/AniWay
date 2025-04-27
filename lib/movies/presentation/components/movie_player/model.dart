@@ -12,7 +12,7 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 
   ValueListenable<EpisodeData?> get episode;
 
-  ValueListenable<List<VideoTranslationData>> get translations;
+  ValueListenable<List<TranslationData>> get translations;
 
   ValueListenable<bool> get hasPreviousEpisode;
 
@@ -43,7 +43,7 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   final ValueNotifier<EpisodeData?> episode = ValueNotifier(null);
 
   @override
-  final ValueNotifier<List<VideoTranslationData>> translations = ValueNotifier(
+  final ValueNotifier<List<TranslationData>> translations = ValueNotifier(
     const [],
   );
 

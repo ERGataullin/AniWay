@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:app/player/player.dart';
 
-class VideoTranslationData {
-  const VideoTranslationData({
+class TranslationData {
+  const TranslationData({
     required this.id,
     required this.uri,
     required this.title,
@@ -19,11 +19,11 @@ class VideoTranslationData {
 
   final String title;
 
-  final VideoTranslationType type;
+  final TranslationType type;
 
   final Locale locale;
 
-  final VideoQualityType qualityType;
+  final QualityType qualityType;
 
-  final List<String> authors;
+  final List<TranslationAuthorData> authors;
 }

@@ -6,15 +6,14 @@ import 'package:app/player/player.dart';
 import 'package:app/player/presentation/video_player/typedefs.dart';
 import 'package:flutter/foundation.dart';
 
-typedef TypedTranslations =
-    Map<VideoTranslationType, List<VideoTranslationData>>;
+typedef TypedTranslations = Map<TranslationType, List<TranslationData>>;
 
 typedef LocaledTranslations = Map<Locale, TypedTranslations>;
 
 abstract interface class IVideoPlayerModel implements ElementaryModel {
   ValueListenable<LocaledTranslations> get translations;
 
-  ValueListenable<VideoTranslationData?> get translation;
+  ValueListenable<TranslationData?> get translation;
 
   ValueListenable<VideoData?> get video;
 
@@ -31,9 +30,9 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
     required double videoAspectRatio,
   });
 
-  void setTranslations(List<VideoTranslationData> value);
+  void setTranslations(List<TranslationData> value);
 
-  void setTranslation(VideoTranslationData translation);
+  void setTranslation(TranslationData translation);
 
   void setQuality(num quality);
 
@@ -50,7 +49,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   );
 
   @override
-  final ValueNotifier<VideoTranslationData?> translation = ValueNotifier(null);
+  final ValueNotifier<TranslationData?> translation = ValueNotifier(null);
 
   @override
   final ValueNotifier<VideoData?> video = ValueNotifier(null);
@@ -74,9 +73,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   @override
   set currentLocale(Locale value) => _currentLocale = value;
 
-  Locale? _selectedTranslationLocale;
-
-  List<String> _selectedTranslationAuthors = const [];
+  TranslationData? _lastSelectedTranslation;
 
   @override
   set videoResolver(VideoResolver value) => _videoResolver = value;
@@ -98,9 +95,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   @override
-  void setTranslations(List<VideoTranslationData> value) {
+  void setTranslations(List<TranslationData> value) {
     translations.value = <Locale, TypedTranslations>{};
-    for (final VideoTranslationData translation in value) {
+    for (final TranslationData translation in value) {
       // Получение "словаря" уже добавленных переводов такой же локализации,
       // или создание такового при его отсутствии.
       // Словарь разбит по типу перевода.
@@ -123,7 +120,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   @override
-  void setTranslation(VideoTranslationData translation) {
+  void setTranslation(TranslationData translation) {
     this.translation.value = translation;
   }
 
@@ -135,9 +132,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   Future<void> handleVideoWatched() async {
-    final Map<VideoTranslationType, int> typesRates =
+    final Map<TranslationType, int> typesRates =
         await _repository.getTranslationTypesRates();
-    final VideoTranslationType type = translation.value!.type;
+    final TranslationType type = translation.value!.type;
     _repository.saveTranslationTypesRates({
       ...typesRates,
       type: 1 + (typesRates[type] ?? 0),
@@ -147,8 +144,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
         await _repository.getTranslationAuthorsRates();
     _repository.saveTranslationAuthorsRates({
       ...authorsRates,
-      for (final String author in _selectedTranslationAuthors)
-        author: 1 + (authorsRates[author] ?? 0),
+      for (final TranslationAuthorData author in translation.value!.authors)
+        author.id: 1 + (authorsRates[author.id] ?? 0),
     });
   }
 
@@ -163,15 +160,9 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   Future<void> _handleTranslationChanged() async {
-    _selectedTranslationLocale =
-        translation.value?.locale ?? _selectedTranslationLocale;
-    _selectedTranslationAuthors =
-        translation.value?.authors
-            .map((author) => author.toLowerCase())
-            .toList(growable: false) ??
-        _selectedTranslationAuthors;
     video.value = null;
     if (translation.value != null) {
+      _lastSelectedTranslation = translation.value;
       video.value = await _videoResolver(translation.value!.id);
       quality.value =
           _autoSelectQuality
@@ -184,7 +175,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   Future<void> _autoSelectTranslation() async {
     final Locale preferredLocale = _getPreferredLocale();
-    final VideoTranslationType preferredType = await _autoSelectTranslationType(
+    final TranslationType preferredType = await _getPreferredTranslationType(
       preferredLocale,
     );
     translation.value = await _getPreferredTranslation(
@@ -194,8 +185,8 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   Locale _getPreferredLocale() {
-    if (translations.value[_selectedTranslationLocale] != null) {
-      return _selectedTranslationLocale!;
+    if (translations.value[_lastSelectedTranslation?.locale] != null) {
+      return _lastSelectedTranslation!.locale;
     } else if (translations.value[_currentLocale] != null) {
       return _currentLocale!;
     } else {
@@ -203,13 +194,13 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     }
   }
 
-  Future<VideoTranslationType> _autoSelectTranslationType(Locale locale) async {
-    final Map<VideoTranslationType, int> rates =
+  Future<TranslationType> _getPreferredTranslationType(Locale locale) async {
+    final Map<TranslationType, int> rates =
         await _repository.getTranslationTypesRates();
 
-    VideoTranslationType selectedType = VideoTranslationType.raw;
+    TranslationType selectedType = TranslationType.raw;
     int selectedTypeRate = -1;
-    for (final VideoTranslationType type in translations.value[locale]!.keys) {
+    for (final TranslationType type in translations.value[locale]!.keys) {
       final int rate = rates[type] ?? 0;
       if (selectedTypeRate > rate) continue;
       selectedType = type;
@@ -219,26 +210,29 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     return selectedType;
   }
 
-  Future<VideoTranslationData> _getPreferredTranslation({
+  Future<TranslationData> _getPreferredTranslation({
     required Locale locale,
-    required VideoTranslationType type,
+    required TranslationType type,
   }) async {
-    final List<VideoTranslationData> preferredTranslations =
+    final List<TranslationData> preferredTranslations =
         translations.value[locale]![type]!;
 
-    final Map<String, int> authorsSuitability = {
+    final List<TranslationAuthorData> lastSelectedAuthors =
+        _lastSelectedTranslation?.authors ?? const [];
+    final Map<String, int> authorsRates = {
       ...await _repository.getTranslationAuthorsRates(),
-      for (final String author in _selectedTranslationAuthors)
-        author: double.maxFinite.toInt(),
+      for (final TranslationAuthorData author in lastSelectedAuthors)
+        author.id: double.maxFinite.toInt() ~/ lastSelectedAuthors.length,
     };
-    VideoTranslationData preferredTranslation = preferredTranslations.first;
+
+    TranslationData preferredTranslation = preferredTranslations.first;
     double preferredRate = 0;
     for (final translation in preferredTranslations) {
-      var authorsRate = 0;
-      for (final String author in translation.authors) {
-        authorsRate += authorsSuitability[author.trim().toLowerCase()] ?? 0;
+      var authorsRateSum = 0;
+      for (final TranslationAuthorData author in translation.authors) {
+        authorsRateSum += authorsRates[author.id] ?? 0;
       }
-      final double rate = authorsRate / translation.authors.length;
+      final double rate = authorsRateSum / translation.authors.length;
       if (rate <= preferredRate) continue;
       preferredTranslation = translation;
       preferredRate = rate;

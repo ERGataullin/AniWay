@@ -1,9 +1,9 @@
-import 'package:app/player/domain/models/video_translation_type.dart';
+import 'package:app/player/domain/models/translation_type.dart';
 
 abstract class PlayerService {
-  Future<Map<VideoTranslationType, int>> getTranslationTypesRates();
+  Future<Map<TranslationType, int>> getTranslationTypesRates();
 
-  Future<void> saveTranslationTypesRates(Map<VideoTranslationType, int> rates);
+  Future<void> saveTranslationTypesRates(Map<TranslationType, int> rates);
 
   Future<Map<String, int>> getTranslationAuthorsRates();
 

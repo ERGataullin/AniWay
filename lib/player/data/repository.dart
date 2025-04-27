@@ -8,12 +8,12 @@ class PlayerRepository with Initable {
   final PlayerService _playerService;
 
   /// Получение персонализированных рангов типов переводов видео.
-  Future<Map<VideoTranslationType, int>> getTranslationTypesRates() {
+  Future<Map<TranslationType, int>> getTranslationTypesRates() {
     return _playerService.getTranslationTypesRates();
   }
 
   /// Сохранение персонализированных рангов типов переводов видео.
-  Future<void> saveTranslationTypesRates(Map<VideoTranslationType, int> rates) {
+  Future<void> saveTranslationTypesRates(Map<TranslationType, int> rates) {
     return _playerService.saveTranslationTypesRates(rates);
   }
 

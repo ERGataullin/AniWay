@@ -338,17 +338,17 @@ class MoviesServiceMock implements MoviesService {
   }
 
   @override
-  Future<List<VideoTranslationData>> getTranslations(Object episodeId) async {
+  Future<List<TranslationData>> getTranslations(Object episodeId) async {
     await _delay();
     return List.generate(
       10,
-      (index) => VideoTranslationData(
+      (index) => TranslationData(
         id: index,
         uri: Uri.parse('https://smotret-anime.org/catalog/anime-19730'),
         title: 'Озвучка №$index',
-        type: VideoTranslationType.voice,
+        type: TranslationType.voice,
         locale: const Locale('ru', 'RU'),
-        qualityType: VideoQualityType.bd,
+        qualityType: QualityType.bd,
       ),
     );
   }

@@ -22,7 +22,7 @@ abstract interface class IMoviePlayerWM implements IWidgetModel {
 
   ValueListenable<EpisodeData?> get episode;
 
-  ValueListenable<List<VideoTranslationData>> get translations;
+  ValueListenable<List<TranslationData>> get translations;
 
   ValueListenable<VoidCallback?> get onPreviousPressed;
 
@@ -61,16 +61,13 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   ValueListenable<EpisodeData?> get episode => model.episode;
 
   @override
-  ValueListenable<List<VideoTranslationData>> get translations =>
-      model.translations;
+  ValueListenable<List<TranslationData>> get translations => model.translations;
 
   @override
   void initWidgetModel() {
     super.initWidgetModel();
     model.loadData(movieId: widget.movieId, episodeId: widget.initialEpisodeId);
-    if (!kIsWeb) {
-      _lockOrientation();
-    }
+    if (!kIsWeb) _lockOrientation();
   }
 
   @override
@@ -91,14 +88,12 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   }
 
   @override
-  Future<void> dispose() async {
-    super.dispose();
+  void dispose() {
+    if (!kIsWeb) _unlockOrientation();
     title.dispose();
     onPreviousPressed.dispose();
     onNextPressed.dispose();
-    if (!kIsWeb) {
-      await _unlockOrientation();
-    }
+    super.dispose();
   }
 
   Future<void> _lockOrientation() {
