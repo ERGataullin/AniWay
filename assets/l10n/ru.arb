@@ -1,13 +1,6 @@
 {
     "@@locale": "ru",
-    "releasedCount": "Вышло {count}",
-    "@releasedCount": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
-    },
+    "all": "Все",
     "authorLabel": "Автор",
     "commentLabel": "Комментарий",
     "delete": "Удалить",
@@ -103,6 +96,14 @@
             }
         }
     },
+    "releasedCount": "Вышло {count}",
+    "@releasedCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "save": "Сохранить",
     "score": "Оценка",
     "signInSubmitLabel": "Войти через Anime365",
@@ -117,7 +118,7 @@
         }
     },
     "upNextTitle": "К просмотру",
-    "watchStatusAdd": "Добавить в список",
+    "watchStatusTitle": "Статус просмотра",
     "watchStatusEpisodesError": "Не более {episodesCountTotal} серий",
     "@watchStatusEpisodesError": {
         "placeholders": {

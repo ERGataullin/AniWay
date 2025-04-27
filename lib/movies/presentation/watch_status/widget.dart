@@ -65,7 +65,7 @@ class _ContentSmall extends StatelessWidget {
             onPressed: Navigator.of(context).pop,
             icon: const Icon(Icons.close),
           ),
-          title: Text(context.l10n.watchStatusAdd),
+          title: Text(context.l10n.watchStatusTitle),
           actionsPadding: const EdgeInsets.only(right: 12),
           actions: [
             IconButton(
@@ -121,7 +121,7 @@ class _ContentMediumAndUp extends StatelessWidget {
                   Padding(
                     padding: _marginHorizontal,
                     child: Text(
-                      context.l10n.watchStatusAdd,
+                      context.l10n.watchStatusTitle,
                       style: TextTheme.of(context).headlineSmall,
                     ),
                   ),
@@ -237,7 +237,7 @@ class _Score extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double itemSize = 48;
-    final double spacing = Breakpoint.activeBreakpointOf(context).padding;
+    final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,

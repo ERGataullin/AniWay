@@ -11,13 +11,10 @@ typedef PagedGridItemBuilder<T> =
 class SliverPagedGrid<T> extends StatefulWidget {
   const SliverPagedGrid({
     super.key,
-    required this.controller,
     required this.gridDelegate,
     required this.onLoadPage,
     required this.itemBuilder,
   });
-
-  final ScrollController controller;
 
   final SliverGridDelegate gridDelegate;
 
@@ -29,7 +26,8 @@ class SliverPagedGrid<T> extends StatefulWidget {
   State<SliverPagedGrid<T>> createState() => SliverPagedGridState();
 }
 
-class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
+class SliverPagedGridState<T> extends State<SliverPagedGrid<T>>
+    with AutomaticKeepAliveClientMixin {
   /// Ключ [SliverAnimatedGrid].
   ///
   /// Используется для информирования состояния [SliverAnimatedGridState]
@@ -60,18 +58,26 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
   /// Выполняемый запрос страницы.
   Future<void>? _pendingPageRequest;
 
+  @override
+  bool get wantKeepAlive => true;
+
   /// Выполняется ли запрос страницы.
   bool get _isPending => _pendingPageRequest != null;
 
   /// Имеются ли плэйсхолдеры.
   bool get _hasPlaceholders => _items.length > _finishedItemsCount;
 
+  /// Менеджер скролла.
+  ///
+  /// Предоставляет информацию о запасе скролла.
+  ScrollableState get _scrollable => Scrollable.of(context);
+
   /// Сбрасывает состояние.
   ///
   /// Очищает все данные и незамедлительно запрашивает 1-ю страницу.
   Future<void> reset() async {
     // Скролл в начало списка.
-    widget.controller.animateTo(
+    _scrollable.position.animateTo(
       0,
       duration: Durations.long2,
       curve: Curves.easeInOutCubicEmphasized,
@@ -115,6 +121,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final curveTween = CurveTween(curve: Easing.standardDecelerate);
     return SliverLayoutBuilder(
       builder: (context, constraints) {
@@ -199,7 +206,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
         widget.gridDelegate
             .getLayout(constraints)
             .getMaxChildIndexForScrollOffset(
-              widget.controller.position.viewportDimension,
+              _scrollable.position.viewportDimension,
             ) +
         1;
     _crossAxisCount =
@@ -235,7 +242,7 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>> {
     final double filledViewports = _items.length / _viewportCapacity;
     // Кол-во уже проскроленных вьюпортов.
     final double overscrolledViewports =
-        widget.controller.offset / widget.controller.position.viewportDimension;
+        _scrollable.position.pixels / _scrollable.position.viewportDimension;
     // Кол-во вьюпортов, на которое хватает резерва скролла.
     final double reserveViewports = filledViewports - overscrolledViewports - 1;
 

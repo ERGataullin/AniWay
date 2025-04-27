@@ -33,13 +33,15 @@ class LibraryWM extends WidgetModel<LibraryWidget, ILibraryModel>
     () => watchStatuses
         .map(
           (status) =>
-              status == null ? 'Все' : l10n.value.watchStatus(status.name),
+              status == null
+                  ? l10n.value.all
+                  : l10n.value.watchStatus(status.name),
         )
         .toList(growable: false),
   );
 
   @override
-  List<WatchStatus?> get watchStatuses => [null, ...WatchStatus.values];
+  List<WatchStatus?> get watchStatuses => const [null, ...WatchStatus.values];
 
   @override
   Future<List<MovieCardData>> handleLoadPage(

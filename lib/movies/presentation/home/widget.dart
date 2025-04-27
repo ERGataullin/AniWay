@@ -37,16 +37,18 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
     return Provider<IHomeWM>.value(
       value: wm,
       builder:
-          (context, _) => ShimmerScope(
-            child: Scaffold(
-              appBar:
-                  RootMenuScope.of(context).hasTopNavigation(context)
-                      ? null
-                      : AppBar(
-                        centerTitle: true,
-                        title: const FittedBox(child: Logo(primary: false)),
-                      ),
-              body: const _Body(),
+          (context, _) => RootMenuAwaredCenter(
+            child: ShimmerScope(
+              child: Scaffold(
+                appBar:
+                    RootMenuScope.of(context).hasTopNavigation(context)
+                        ? null
+                        : AppBar(
+                          centerTitle: true,
+                          title: const FittedBox(child: Logo(primary: false)),
+                        ),
+                body: const _Body(),
+              ),
             ),
           ),
     );
@@ -58,32 +60,30 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RootMenuAwaredCenter(
-      child: ListenableBuilder(
-        listenable: context.wm.loading,
-        builder:
-            (context, _) => AnimatedSwitcher(
-              switchInCurve: Easing.emphasizedDecelerate,
-              switchOutCurve: Easing.emphasizedAccelerate.flipped,
-              duration: Durations.medium4,
-              reverseDuration: Durations.short4,
-              layoutBuilder:
-                  (currentChild, previousChildren) => Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      ...previousChildren,
-                      if (currentChild != null) currentChild,
-                    ],
-                  ),
-              child:
-                  context.wm.loading.value
-                      ? const Center(
-                        key: ValueKey('Loader'),
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                      : const _Content(key: ValueKey('Content')),
-            ),
-      ),
+    return ListenableBuilder(
+      listenable: context.wm.loading,
+      builder:
+          (context, _) => AnimatedSwitcher(
+            switchInCurve: Easing.emphasizedDecelerate,
+            switchOutCurve: Easing.emphasizedAccelerate.flipped,
+            duration: Durations.medium4,
+            reverseDuration: Durations.short4,
+            layoutBuilder:
+                (currentChild, previousChildren) => Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                ),
+            child:
+                context.wm.loading.value
+                    ? const Center(
+                      key: ValueKey('Loader'),
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                    : const _Content(key: ValueKey('Content')),
+          ),
     );
   }
 }
@@ -103,7 +103,6 @@ class _Content extends StatelessWidget {
         child: LayoutBuilder(
           builder:
               (context, constraints) => SingleChildScrollView(
-                primary: true,
                 padding: EdgeInsets.only(
                   top: 16 + safeAreaPadding.top,
                   bottom: 16 + safeAreaPadding.bottom,

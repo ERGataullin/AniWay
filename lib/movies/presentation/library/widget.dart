@@ -5,6 +5,7 @@ import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/library/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _LibraryContext on BuildContext {
   ILibraryWM get wm => read<ILibraryWM>();
@@ -30,27 +31,26 @@ class LibraryWidget extends ElementaryWidget<ILibraryWM> {
                 length: wm.watchStatuses.length,
                 child: Scaffold(
                   body: NestedScrollView(
-                    headerSliverBuilder: (context, innerBoxIsScrolled) {
-                      return [
-                        SliverOverlapAbsorber(
-                          handle:
-                              NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                context,
+                    headerSliverBuilder:
+                        (context, innerBoxIsScrolled) => [
+                          SliverOverlapAbsorber(
+                            handle:
+                                NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                  context,
+                                ),
+                            sliver: SliverAppBar(
+                              pinned: true,
+                              forceElevated: innerBoxIsScrolled,
+                              title: Text(context.l10n.libraryTitle),
+                              bottom: TabBar(
+                                isScrollable: true,
+                                tabs: wm.tabsTexts.value
+                                    .map((text) => Tab(text: text))
+                                    .toList(growable: false),
                               ),
-                          sliver: SliverAppBar(
-                            pinned: true,
-                            forceElevated: innerBoxIsScrolled,
-                            title: Text(context.l10n.libraryTitle),
-                            bottom: TabBar(
-                              isScrollable: true,
-                              tabs: wm.tabsTexts.value
-                                  .map((text) => Tab(text: text))
-                                  .toList(growable: false),
                             ),
                           ),
-                        ),
-                      ];
-                    },
+                        ],
                     body: TabBarView(
                       children: wm.watchStatuses
                           .map(
@@ -71,43 +71,32 @@ class _Movies extends StatelessWidget {
   const _Movies({this.watchStatus});
 
   final WatchStatus? watchStatus;
+
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        final ScrollController scrollController = PrimaryScrollController.of(
-          context,
-        );
-        return CustomScrollView(
-          key: PageStorageKey(watchStatus),
-          // controller: scrollController,
-          slivers: [
-            SliverOverlapInjector(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+    return CustomScrollView(
+      key: PageStorageKey(watchStatus?.name ?? ''),
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
+        SliverSafeArea(
+          top: false,
+          sliver: SliverPadding(
+            padding: EdgeInsets.all(
+              Breakpoint.defaultBreakpointOf(context).margin,
             ),
-            Builder(
-              builder:
-                  (context) => SliverPadding(
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      16 + MediaQuery.paddingOf(context).top,
-                      16,
-                      16 + MediaQuery.paddingOf(context).bottom,
-                    ),
-                    sliver: SliverPagedGrid(
-                      controller: scrollController,
-                      gridDelegate: MovieCard.gridDelegate,
-                      onLoadPage:
-                          (page) => context.wm.handleLoadPage(page, null),
-                      itemBuilder:
-                          (context, movie, animation) =>
-                              MovieCard(movie, opacity: animation),
-                    ),
-                  ),
+            sliver: SliverPagedGrid(
+              gridDelegate: MovieCard.gridDelegate,
+              onLoadPage:
+                  (page) => context.wm.handleLoadPage(page, watchStatus),
+              itemBuilder:
+                  (context, movie, animation) =>
+                      MovieCard(movie, opacity: animation),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }

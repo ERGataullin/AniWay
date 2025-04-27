@@ -1,6 +1,7 @@
 import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
+import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 
 abstract interface class ILibraryModel implements ElementaryModel {
@@ -21,6 +22,10 @@ class LibraryModel extends ElementaryModel implements ILibraryModel {
     required int page,
     required List<WatchStatus> statuses,
   }) {
-    return _repository.getMovies(page: page, watchStatuses: statuses);
+    return _repository.getMovies(
+      order: MoviesOrder.byName,
+      page: page,
+      watchStatuses: statuses,
+    );
   }
 }
