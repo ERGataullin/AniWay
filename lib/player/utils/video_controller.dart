@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/core/data/services/network/network.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fvp/fvp.dart' as fvp;
 import 'package:video_player/video_player.dart';
 
 class VideoController {
@@ -34,6 +35,8 @@ class VideoController {
     Uri? captionsUri,
     bool saveState = false,
   }) async {
+    fvp.registerWith();
+
     await _inner.value?.pause();
     _inner.value
       ?..removeListener(_handleInnerValueChanged)
@@ -128,7 +131,7 @@ class VideoController {
       case TargetPlatform.linux || TargetPlatform.windows:
         loading.value = value.isBuffering;
       case TargetPlatform.android || TargetPlatform.fuchsia:
-        loading.value = playing.value && !value.isPlaying;
+        loading.value = value.isBuffering;
       case TargetPlatform.iOS || TargetPlatform.macOS:
         final bool isPositionBuffered = value.buffered.any(
           (range) =>
