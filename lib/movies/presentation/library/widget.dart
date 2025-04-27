@@ -75,7 +75,7 @@ class _Movies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      key: PageStorageKey(watchStatus?.name ?? ''),
+      key: PageStorageKey(watchStatus),
       slivers: [
         SliverOverlapInjector(
           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),

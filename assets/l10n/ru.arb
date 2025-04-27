@@ -105,9 +105,10 @@
         }
     },
     "save": "Сохранить",
+    "searchPageTitle": "Поиск",
     "score": "Оценка",
     "signInSubmitLabel": "Войти через Anime365",
-    "searchPageTitle": "Поиск",
+    "statusLabel": "Статус",
     "translationTypeLabel": "Тип перевода",
     "translationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{}}",
     "@translationType": {
@@ -127,7 +128,6 @@
             }
         }
     },
-    "watchStatusLabel": "Статус",
     "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Брошено} other{Неизвестный статус}}",
     "@watchStatus": {
         "placeholders": {

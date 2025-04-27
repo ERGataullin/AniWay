@@ -213,7 +213,7 @@ class _Status extends StatelessWidget {
     return DropdownMenu<WatchStatus>(
       expandedInsets: EdgeInsets.zero,
       requestFocusOnTap: false,
-      label: Text(context.l10n.watchStatusLabel),
+      label: Text(context.l10n.statusLabel),
       initialSelection: context.wm.status,
       onSelected: (value) => context.wm.handleStatusSelected(value!),
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
