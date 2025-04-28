@@ -428,12 +428,13 @@ class _Caption extends StatelessWidget {
                           Breakpoints.largeAndUp,
                         ]);
                     return AnimatedSwitcher(
-                      switchInCurve: Easing.standard,
-                      switchOutCurve: Easing.standard.flipped,
-                      duration: Durations.medium2,
+                      switchInCurve: Easing.emphasizedDecelerate,
+                      switchOutCurve: Easing.emphasizedAccelerate.flipped,
+                      duration: Durations.medium4,
+                      reverseDuration: Durations.short4,
                       child: Text(
                         caption.text,
-                        key: ValueKey(breakpoint),
+                        key: Key('$breakpoint: ${caption.text}'),
                         style: switch (breakpoint) {
                           Breakpoints.largeAndUp =>
                             TextTheme.of(context).displayMedium,
