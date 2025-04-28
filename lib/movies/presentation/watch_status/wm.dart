@@ -85,6 +85,9 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
 
   @override
   void handleStatusSelected(WatchStatus status) {
+    if (status == WatchStatus.completed) {
+      episodesController.text = '$episodesCountTotal';
+    }
     _status = status;
   }
 
