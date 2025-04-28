@@ -29,9 +29,7 @@ abstract interface class IWatchStatusWM implements IWidgetModel {
 
   WatchStatus get status;
 
-  WatchStatus get currentStatus;
-
-  List<WatchStatus> get statuses;
+  WatchStatus? get currentStatus;
 
   int? get episodesCountTotal;
 
@@ -71,12 +69,7 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   WatchStatus get status => _status;
 
   @override
-  WatchStatus get currentStatus => widget.statusDetails.status;
-
-  @override
-  List<WatchStatus> get statuses => WatchStatus.values
-      .where((status) => status != WatchStatus.none)
-      .toList(growable: false);
+  WatchStatus? get currentStatus => widget.statusDetails.status;
 
   @override
   int? get episodesCountTotal => widget.movie.episodesCount;
@@ -102,7 +95,7 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
 
   @override
   Future<void> handleDeletePressed() async {
-    const status = WatchStatusDetails(WatchStatus.none);
+    const status = WatchStatusDetails(null);
     await _submit(status);
     if (!context.mounted) return;
     Navigator.pop(context, status);
@@ -125,10 +118,7 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
 
   @override
   void initWidgetModel() {
-    _status = switch (widget.statusDetails.status) {
-      WatchStatus.none => WatchStatus.planned,
-      final WatchStatus status => status,
-    };
+    _status = widget.statusDetails.status ?? WatchStatus.planned;
     episodesController.text = '${widget.statusDetails.episodesCount}';
     score.value = widget.statusDetails.score;
     commentController.text = widget.statusDetails.comment ?? '';

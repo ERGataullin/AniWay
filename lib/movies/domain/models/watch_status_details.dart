@@ -8,7 +8,7 @@ class WatchStatusDetails {
     this.comment,
   });
 
-  final WatchStatus status;
+  final WatchStatus? status;
 
   final int? score;
 
