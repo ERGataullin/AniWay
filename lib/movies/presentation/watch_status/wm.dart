@@ -87,6 +87,8 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   void handleStatusSelected(WatchStatus status) {
     if (status == WatchStatus.completed) {
       episodesController.text = '$episodesCountTotal';
+    } else {
+      episodesController.text = '${widget.statusDetails.episodesCount}';
     }
     _status = status;
   }
