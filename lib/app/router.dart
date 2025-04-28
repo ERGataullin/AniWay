@@ -72,14 +72,14 @@ abstract class _Routes {
 
   static const upNext = '/up-next';
 
+  static const library = '/library';
+
   static String search({String? parent}) =>
       parent == null ? '/search' : '$parent/search';
 
   static String movie({required String parent}) => '$parent/movies/:movieId';
 
   static String episodes({String? parent}) => '$parent/episodes';
-
-  static const library = '/library';
 }
 
 abstract class _RoutesBuilders {
@@ -113,11 +113,10 @@ abstract class _RoutesBuilders {
 
   static ShellRouteBase buildRootMenu() {
     final GoRoute search = _buildSearch();
-    final GoRoute library = _buildLibrary();
     return StatefulShellRoute(
       branches: [
         StatefulShellBranch(routes: [_buildHome()]),
-        StatefulShellBranch(routes: [library]),
+        StatefulShellBranch(routes: [_buildLibrary()]),
         StatefulShellBranch(routes: [search]),
       ],
       navigatorContainerBuilder:

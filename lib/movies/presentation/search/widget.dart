@@ -7,6 +7,7 @@ import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/movies/presentation/search/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   const MoviesSearchWidget({
@@ -53,16 +54,25 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
           child: CustomScrollView(
             slivers: [
               SliverSafeArea(
-                sliver: SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverPagedGrid(
-                    key: wm.pagedGridKey,
-                    gridDelegate: MovieCard.gridDelegate,
-                    onLoadPage: wm.handleLoadPage,
-                    itemBuilder:
-                        (context, movie, animation) =>
-                            MovieCard(movie, opacity: animation),
-                  ),
+                sliver: Builder(
+                  builder: (context) {
+                    return SliverPadding(
+                      padding: EdgeInsets.fromLTRB(
+                        Breakpoint.defaultBreakpointOf(context).margin,
+                        0,
+                        Breakpoint.defaultBreakpointOf(context).margin,
+                        Breakpoint.defaultBreakpointOf(context).margin,
+                      ),
+                      sliver: SliverPagedGrid(
+                        key: wm.pagedGridKey,
+                        gridDelegate: MovieCard.gridDelegate,
+                        onLoadPage: wm.handleLoadPage,
+                        itemBuilder:
+                            (context, movie, animation) =>
+                                MovieCard(movie, opacity: animation),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

@@ -28,6 +28,7 @@ class LibraryWM extends WidgetModel<LibraryWidget, ILibraryModel>
     with L10nWMMixin
     implements ILibraryWM {
   LibraryWM(super._model);
+
   @override
   late final Computed<List<String>> tabsTexts = Computed(
     () => watchStatuses
