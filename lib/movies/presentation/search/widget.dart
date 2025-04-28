@@ -56,21 +56,20 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
               SliverSafeArea(
                 top: false,
                 sliver: Builder(
-                  builder: (context) {
-                    return SliverPadding(
-                      padding: EdgeInsets.all(
-                        Breakpoint.defaultBreakpointOf(context).margin,
+                  builder:
+                      (context) => SliverPadding(
+                        padding: EdgeInsets.all(
+                          Breakpoint.defaultBreakpointOf(context).margin,
+                        ),
+                        sliver: SliverPagedGrid(
+                          key: wm.pagedGridKey,
+                          gridDelegate: MovieCard.gridDelegate,
+                          onLoadPage: wm.handleLoadPage,
+                          itemBuilder:
+                              (context, movie, animation) =>
+                                  MovieCard(movie, opacity: animation),
+                        ),
                       ),
-                      sliver: SliverPagedGrid(
-                        key: wm.pagedGridKey,
-                        gridDelegate: MovieCard.gridDelegate,
-                        onLoadPage: wm.handleLoadPage,
-                        itemBuilder:
-                            (context, movie, animation) =>
-                                MovieCard(movie, opacity: animation),
-                      ),
-                    );
-                  },
                 ),
               ),
             ],
