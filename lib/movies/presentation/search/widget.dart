@@ -54,13 +54,11 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
           child: CustomScrollView(
             slivers: [
               SliverSafeArea(
+                top: false,
                 sliver: Builder(
                   builder: (context) {
                     return SliverPadding(
-                      padding: EdgeInsets.fromLTRB(
-                        Breakpoint.defaultBreakpointOf(context).margin,
-                        0,
-                        Breakpoint.defaultBreakpointOf(context).margin,
+                      padding: EdgeInsets.all(
                         Breakpoint.defaultBreakpointOf(context).margin,
                       ),
                       sliver: SliverPagedGrid(
