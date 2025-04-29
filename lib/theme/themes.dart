@@ -63,14 +63,16 @@ extension _AppOverrides on ThemeData {
         size: 24,
         color: colorScheme.onSecondaryContainer,
       ),
-      selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
-        color: colorScheme.onSurface,
-      ),
       unselectedIconTheme: IconThemeData(
         size: 24,
         color: colorScheme.onSurfaceVariant,
       ),
+      selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+        fontWeight: FontWeight.w600,
+        color: colorScheme.onSurface,
+      ),
       unselectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+        fontWeight: FontWeight.w500,
         color: colorScheme.onSurfaceVariant,
       ),
       backgroundColor: colorScheme.surface,

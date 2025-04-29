@@ -54,13 +54,11 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
                 ? Builder(
                   builder:
                       (context) => SizedBox.square(
-                        key: ValueKey('$VideoPlayPauseLoader.loader'),
                         dimension: IconTheme.of(context).size,
                         child: const CircularProgressIndicator.adaptive(),
                       ),
                 )
                 : AnimatedIcon(
-                  key: ValueKey('$VideoPlayPauseLoader.playPause'),
                   icon: AnimatedIcons.play_pause,
                   progress: _animation,
                 ),

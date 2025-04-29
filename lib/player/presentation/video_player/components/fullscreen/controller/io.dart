@@ -1,12 +1,12 @@
-import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
+import 'package:app/player/presentation/video_player/components/fullscreen/controller/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 
-class FullscreenControllerPlatform
+class FullscreenControllerImpl
     with ChangeNotifier
     implements FullscreenController {
-  FullscreenControllerPlatform() {
+  FullscreenControllerImpl() {
     ServicesBinding.instance.keyboard.addHandler(_handleKeyPressed);
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
@@ -18,40 +18,31 @@ class FullscreenControllerPlatform
   bool get isFullscreen => _isFullscreen;
 
   @override
+  bool get supported => switch (defaultTargetPlatform) {
+    TargetPlatform.android ||
+    TargetPlatform.fuchsia ||
+    TargetPlatform.iOS => false,
+    TargetPlatform.linux ||
+    TargetPlatform.macOS ||
+    TargetPlatform.windows => true,
+  };
+
+  @override
   set webElementQuery(String? value) {}
 
   @override
   Future<void> request() async {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.windows:
-        await windowManager.ensureInitialized();
-        windowManager.setFullScreen(true);
-      case TargetPlatform.android ||
-          TargetPlatform.fuchsia ||
-          TargetPlatform.iOS ||
-          TargetPlatform.linux ||
-          TargetPlatform.macOS:
-        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    }
-
+    assert(supported);
+    await windowManager.ensureInitialized();
+    windowManager.setFullScreen(true);
     _isFullscreen = true;
     notifyListeners();
   }
 
   @override
   Future<void> exit() async {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.windows:
-        await windowManager.ensureInitialized();
-        windowManager.setFullScreen(false);
-      case TargetPlatform.android ||
-          TargetPlatform.fuchsia ||
-          TargetPlatform.iOS ||
-          TargetPlatform.linux ||
-          TargetPlatform.macOS:
-        await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    }
-
+    await windowManager.ensureInitialized();
+    windowManager.setFullScreen(false);
     _isFullscreen = false;
     notifyListeners();
   }
@@ -65,6 +56,7 @@ class FullscreenControllerPlatform
     if (!_isFullscreen) return false;
     if (event is! KeyUpEvent) return false;
     if (event.physicalKey != PhysicalKeyboardKey.escape) return false;
+
     exit();
     return true;
   }
