@@ -61,11 +61,30 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
         child: PopScope(
           onPopInvokedWithResult: wm.handlePopInvoked,
           child: Scaffold(
-            body: Autohide(
-              videoController: wm.videoController,
-              background: Colors.black54,
-              player: const _Gestures(child: _Player()),
-              controls: const _Controls(),
+            body: Stack(
+              clipBehavior: Clip.none,
+              fit: StackFit.expand,
+              children: [
+                const _Player(),
+                Autohide(
+                  videoController: wm.videoController,
+                  background: Colors.black54,
+                  controls: const _Controls(),
+                  gestures: const _Gestures(),
+                  playerBuilder:
+                      (context, background) => ValueListenableBuilder(
+                        valueListenable: wm.maxScale,
+                        builder:
+                            (context, maxZoom, player) =>
+                                Zoomable(maxZoom: 2, child: player!),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          fit: StackFit.expand,
+                          children: [const _Player(), background],
+                        ),
+                      ),
+                ),
+              ],
             ),
           ),
         ),
@@ -75,9 +94,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
 }
 
 class _Gestures extends StatelessWidget {
-  const _Gestures({required this.child});
-
-  final Widget child;
+  const _Gestures();
 
   @override
   Widget build(BuildContext context) {
@@ -89,12 +106,6 @@ class _Gestures extends StatelessWidget {
           clipBehavior: Clip.none,
           fit: StackFit.expand,
           children: [
-            ValueListenableBuilder(
-              valueListenable: context.wm.maxScale,
-              builder:
-                  (context, maxZoom, _) =>
-                      Zoomable(maxZoom: maxZoom, child: child),
-            ),
             GestureDetector(
               supportedDevices: PointerDevicesAccuracy.accurateDevices,
               onTap: context.wm.handleAccurateTap,

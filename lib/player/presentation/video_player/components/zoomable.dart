@@ -5,12 +5,9 @@ import 'package:flutter/material.dart';
 class Zoomable extends StatefulWidget {
   const Zoomable({
     super.key,
-    this.minZoom = 1,
     this.maxZoom = double.infinity,
     required this.child,
   });
-
-  final double minZoom;
 
   final double maxZoom;
 
@@ -27,10 +24,7 @@ class _ZoomableState extends State<Zoomable> {
 
   @override
   void didUpdateWidget(Zoomable oldWidget) {
-    _zoom.value = math.max(
-      widget.minZoom,
-      math.min(widget.maxZoom, _zoom.value),
-    );
+    _zoom.value = math.max(1, math.min(widget.maxZoom, _zoom.value));
     super.didUpdateWidget(oldWidget);
   }
 
@@ -56,7 +50,7 @@ class _ZoomableState extends State<Zoomable> {
 
   void _handleScaleUpdate(ScaleUpdateDetails details) {
     _zoom.value = math.max(
-      widget.minZoom,
+      1,
       math.min(widget.maxZoom, _submittedZoom * details.scale),
     );
   }
@@ -64,7 +58,7 @@ class _ZoomableState extends State<Zoomable> {
   void _handleScaleEnd(ScaleEndDetails details) {
     double? closestAnchor;
     num? closestAnchorDistance;
-    for (final double anchor in {widget.minZoom, widget.maxZoom}) {
+    for (final double anchor in {1, widget.maxZoom}) {
       final num distance = (anchor - _zoom.value).abs();
       if (distance < (closestAnchorDistance ?? .1)) {
         closestAnchor = anchor;

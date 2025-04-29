@@ -10,22 +10,26 @@ class Autohide extends StatefulWidget {
     super.key,
     required this.videoController,
     this.background = Colors.transparent,
-    required this.player,
     required this.controls,
+    required this.gestures,
+    required this.playerBuilder,
   });
 
   final VideoController videoController;
 
   final Color background;
 
-  final Widget player;
-
   final Widget controls;
+
+  final Widget gestures;
+
+  final Widget Function(BuildContext context, Widget background) playerBuilder;
 
   @override
   State<Autohide> createState() => _AutohideState();
 }
 
+// TODO(Edgar): Anime using AnimationController
 class _AutohideState extends State<Autohide> {
   static const _enabled = true;
   // !kDebugMode;
@@ -99,11 +103,14 @@ class _AutohideState extends State<Autohide> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          AnimatedVisibility.emphasized(
-            visible: _forceVisible || _visible,
-            child: ColoredBox(
-              color: widget.background,
-              child: const SizedBox.expand(),
+          widget.playerBuilder(
+            context,
+            AnimatedVisibility.emphasized(
+              visible: _forceVisible || _visible,
+              child: ColoredBox(
+                color: widget.background,
+                child: const SizedBox.expand(),
+              ),
             ),
           ),
           _InaccuratePointerDevicesListener(
@@ -112,7 +119,7 @@ class _AutohideState extends State<Autohide> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                widget.player,
+                widget.gestures,
                 AnimatedVisibility.emphasized(
                   visible: _forceVisible || _visible,
                   child: widget.controls,
