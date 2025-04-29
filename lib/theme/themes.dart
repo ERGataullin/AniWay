@@ -33,19 +33,27 @@ extension _AppOverrides on ThemeData {
       toolbarHeight: 64,
       actionsPadding: const EdgeInsets.only(right: 8),
     ),
+
     cardTheme: cardTheme.copyWith(
       margin: EdgeInsets.zero,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     ),
-    progressIndicatorTheme: progressIndicatorTheme.copyWith(year2023: false),
+
+    progressIndicatorTheme: progressIndicatorTheme.copyWith(
+      year2023: false,
+      strokeWidth: 4,
+    ),
+
     dividerTheme: dividerTheme.copyWith(
       space: 0,
       thickness: 1,
       color: colorScheme.outlineVariant,
     ),
+
     drawerTheme: drawerTheme.copyWith(width: 360),
+
     inputDecorationTheme: inputDecorationTheme.copyWith(
       filled: true,
       border: const UnderlineInputBorder(borderSide: BorderSide.none),
@@ -53,9 +61,11 @@ extension _AppOverrides on ThemeData {
         borderSide: BorderSide(width: 2, color: colorScheme.primary),
       ),
     ),
+
     navigationDrawerTheme: navigationDrawerTheme.copyWith(
       backgroundColor: colorScheme.surface,
     ),
+
     navigationRailTheme: navigationRailTheme.copyWith(
       minWidth: 80,
       labelType: NavigationRailLabelType.all,
@@ -77,6 +87,7 @@ extension _AppOverrides on ThemeData {
       ),
       backgroundColor: colorScheme.surface,
     ),
+
     searchBarTheme: searchBarTheme.copyWith(
       elevation: const WidgetStatePropertyAll(0),
       textCapitalization: TextCapitalization.sentences,
@@ -87,9 +98,11 @@ extension _AppOverrides on ThemeData {
         maxHeight: 56,
       ),
     ),
+
     tabBarTheme: tabBarTheme.copyWith(
       splashBorderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
     ),
+
     tooltipTheme: tooltipTheme.copyWith(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       textStyle: textTheme.bodySmall!.copyWith(
