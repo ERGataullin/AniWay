@@ -30,11 +30,7 @@ class Autohide extends StatefulWidget {
   State<Autohide> createState() => _AutohideState();
 }
 
-// TODO(Edgar): Anime using AnimationController
 class _AutohideState extends State<Autohide> {
-  static const _enabled = true;
-  // !kDebugMode;
-
   var _visible = false;
 
   var _forceVisible = false;
@@ -74,17 +70,23 @@ class _AutohideState extends State<Autohide> {
     _visible ? _hide() : _show();
   }
 
-  void _scheduleHiding() {
+  void _scheduleHiding({bool force = false}) {
+    if (_forceVisible && !force) return;
     _hidingTimer?.cancel();
     _hidingTimer = Timer(
-      const Duration(seconds: 3),
-      () => _setVisibility(visible: false),
+      const Duration(seconds: 2),
+      () => _setVisibility(visible: false, forceVisible: false),
     );
   }
 
   void _setVisibility({bool? visible, bool? forceVisible}) {
     _hidingTimer?.cancel();
-    if (!_enabled || _visible == visible) return;
+
+    if ((visible == null || visible == _visible) &&
+        (forceVisible == null || forceVisible == _forceVisible)) {
+      return;
+    }
+
     setState(() {
       _visible = visible ?? _visible;
       _forceVisible = forceVisible ?? _forceVisible;
@@ -101,7 +103,7 @@ class _AutohideState extends State<Autohide> {
         widget.videoController.loading.value ||
         !widget.videoController.playing.value;
     if (_forceVisible == value) return;
-    _setVisibility(forceVisible: value);
+    value ? _setVisibility(forceVisible: true) : _scheduleHiding(force: true);
   }
 
   @override
