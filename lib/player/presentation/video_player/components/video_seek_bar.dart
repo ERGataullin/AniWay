@@ -2,18 +2,9 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoSeekBar extends StatefulWidget {
-  const VideoSeekBar({
-    super.key,
-    required this.videoController,
-    required this.onPositionChangeStart,
-    required this.onPositionChangeEnd,
-  });
+  const VideoSeekBar({super.key, required this.videoController});
 
   final VideoController videoController;
-
-  final ValueChanged<double> onPositionChangeStart;
-
-  final ValueChanged<double> onPositionChangeEnd;
 
   @override
   State<VideoSeekBar> createState() => _VideoSeekBarState();
@@ -70,14 +61,8 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
             _isMouse
                 ? SliderInteraction.tapAndSlide
                 : SliderInteraction.slideOnly,
-        onChangeStart: (value) {
-          _isSeeking = true;
-          widget.onPositionChangeStart(value);
-        },
-        onChangeEnd: (value) {
-          _isSeeking = false;
-          widget.onPositionChangeEnd(value);
-        },
+        onChangeStart: (_) => _isSeeking = true,
+        onChangeEnd: (_) => _isSeeking = false,
         onChanged: (value) {
           setState(() {
             _value = value;

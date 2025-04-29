@@ -79,10 +79,9 @@ class _Body extends StatelessWidget {
                 child:
                     context.wm.loading.value
                         ? const Center(
-                          key: ValueKey('Loader'),
                           child: CircularProgressIndicator.adaptive(),
                         )
-                        : const _Content(key: ValueKey('Content')),
+                        : const _Content(),
               ),
         ),
       ),
@@ -91,7 +90,7 @@ class _Body extends StatelessWidget {
 }
 
 class _Content extends StatelessWidget {
-  const _Content({super.key});
+  const _Content();
 
   @override
   Widget build(BuildContext context) {

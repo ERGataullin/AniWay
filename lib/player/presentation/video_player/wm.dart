@@ -4,7 +4,6 @@ import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
 import 'package:app/player/player.dart';
 import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
-import 'package:app/player/presentation/video_player/components/show_on_mouse_hover.dart';
 import 'package:app/player/presentation/video_player/const.dart';
 import 'package:app/player/presentation/video_player/model.dart';
 import 'package:app/player/utils/video_controller.dart';
@@ -43,8 +42,6 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   VideoController get videoController;
 
-  VisibilityController get controlsVisibilityController;
-
   FullscreenController get fullscreenController;
 
   bool get showFullscreenButton;
@@ -54,12 +51,6 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
   void handleAccurateTap();
 
   void handleAccurateDoubleTap();
-
-  void handleInaccurateTap();
-
-  void handlePositionChangeStart(double position);
-
-  void handlePositionChangeEnd(double position);
 
   void handlePopInvoked(bool didPop, [Object? result]);
 }
@@ -72,9 +63,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final videoController = VideoController(networkService: _networkService);
-
-  @override
-  final controlsVisibilityController = VisibilityController();
 
   @override
   final fullscreenController = FullscreenController();
@@ -119,24 +107,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   late final Computed<VoidCallback?> onPreviousPressed = Computed(
-    () =>
-        widget.onPreviousPressed == null
-            ? null
-            : () {
-              controlsVisibilityController.show();
-              widget.onPreviousPressed?.call();
-            },
+    () => widget.onPreviousPressed,
   );
 
   @override
   late final Computed<VoidCallback?> onNextPressed = Computed(
-    () =>
-        widget.onNextPressed == null
-            ? null
-            : () {
-              controlsVisibilityController.show();
-              widget.onNextPressed?.call();
-            },
+    () => widget.onNextPressed,
   );
 
   @override
@@ -177,20 +153,12 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         _updateFullscreenWebElementQuery,
       );
     }
-    if (!showFullscreenButton) {
-      controlsVisibilityController.addListener(
-        () =>
-            controlsVisibilityController.visible
-                ? fullscreenController.exit()
-                : fullscreenController.request(),
-      );
-    }
     videoController
-      ..loading.addListener(_updateControlsVisibility)
-      ..playing.addListener(_handlePlayingChanged)
+      ..playing.addListener(
+        () => WakelockPlus.toggle(enable: videoController.playing.value),
+      )
       ..position.addListener(_handlePositionDurationChanged)
       ..duration.addListener(_handlePositionDurationChanged);
-    _updateControlsVisibility();
   }
 
   @override
@@ -223,21 +191,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   }
 
   @override
-  void handleInaccurateTap() {
-    controlsVisibilityController.toggle(immediately: true);
-  }
-
-  @override
-  void handlePositionChangeStart(double position) {
-    controlsVisibilityController.show(autohide: false);
-  }
-
-  @override
-  void handlePositionChangeEnd(double position) {
-    if (!kDebugMode) controlsVisibilityController.hide();
-  }
-
-  @override
   void handlePopInvoked(bool didPop, [Object? result]) {
     if (!didPop) return;
     fullscreenController.exit();
@@ -256,7 +209,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     onPreviousPressed.dispose();
     onNextPressed.dispose();
     videoController.dispose();
-    controlsVisibilityController.dispose();
     fullscreenController.dispose();
     super.dispose();
   }
@@ -275,11 +227,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       saveState: true,
     );
     if (model.videoDataSource.value != null) await videoController.play();
-  }
-
-  void _handlePlayingChanged() {
-    _updateControlsVisibility();
-    WakelockPlus.toggle(enable: videoController.playing.value);
   }
 
   void _handlePositionDurationChanged() {
@@ -312,18 +259,19 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       case TargetPlatform.windows:
         await Clipboard.setData(ClipboardData(text: '$translationUri'));
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            duration: Durations.extralong4,
-            content: Text(context.l10n.linkCopied),
-          ),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              duration: Durations.extralong4,
+              content: Text(context.l10n.linkCopied),
+            ),
+          );
     }
   }
 
   void _handleMenuPressed() {
-    controlsVisibilityController.show();
     showModalMenuBottomSheet(
       context: context,
       items: [
@@ -397,12 +345,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
         ),
       ],
     );
-  }
-
-  void _updateControlsVisibility() {
-    videoController.loading.value
-        ? controlsVisibilityController.show(autohide: false)
-        : controlsVisibilityController.hide();
   }
 
   void _updateFullscreenWebElementQuery() {

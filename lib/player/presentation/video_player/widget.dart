@@ -1,11 +1,11 @@
 import 'package:app/core/core.dart';
 import 'package:app/player/domain/models/seek_type.dart';
 import 'package:app/player/player.dart';
+import 'package:app/player/presentation/video_player/components/autohide.dart';
 import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:app/player/presentation/video_player/components/long_seek_button.dart';
 import 'package:app/player/presentation/video_player/components/scalable.dart';
 import 'package:app/player/presentation/video_player/components/seek_area/widget.dart';
-import 'package:app/player/presentation/video_player/components/show_on_mouse_hover.dart';
 import 'package:app/player/presentation/video_player/components/video_play_pause_loader.dart';
 import 'package:app/player/presentation/video_player/components/video_seek_bar.dart';
 import 'package:app/player/presentation/video_player/components/video_timer.dart';
@@ -64,7 +64,14 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
             body: Stack(
               clipBehavior: Clip.none,
               fit: StackFit.expand,
-              children: [_Gestures(child: _Player()), _Controls()],
+              children: [
+                _Player(),
+                Autohide(
+                  background: Colors.black54,
+                  gestures: _Gestures(child: SizedBox.expand()),
+                  controls: _Controls(),
+                ),
+              ],
             ),
           ),
         ),
@@ -104,10 +111,6 @@ class _Gestures extends StatelessWidget {
               supportedDevices: PointerDevicesAccuracy.accurateDevices,
               onTap: context.wm.handleAccurateTap,
               onDoubleTap: context.wm.handleAccurateDoubleTap,
-            ),
-            GestureDetector(
-              supportedDevices: PointerDevicesAccuracy.inaccurateDevices,
-              onTap: context.wm.handleInaccurateTap,
             ),
             Row(
               children: [
@@ -160,16 +163,6 @@ class _Player extends StatelessWidget {
             ),
           ),
           const _Caption(),
-          ListenableBuilder(
-            listenable: context.wm.controlsVisibilityController,
-            builder:
-                (context, _) => AnimatedVisibility.emphasized(
-                  visible: context.wm.controlsVisibilityController.visible,
-                  child: const DecoratedBox(
-                    decoration: BoxDecoration(color: Colors.black54),
-                  ),
-                ),
-          ),
         ],
       ),
     );
@@ -181,112 +174,101 @@ class _Controls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ShowOnMouseHover(
-      controller: context.wm.controlsVisibilityController,
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: AnimatedSize(
-                alignment: Alignment.bottomCenter,
-                duration: Durations.medium2,
-                curve: Easing.standard,
-                child: SafeArea(
-                  bottom: false,
-                  child: SizedBox(
-                    height: AppBarTheme.of(context).toolbarHeight!,
-                    child: AppBar(
-                      forceMaterialTransparency: true,
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _Title(context.wm.title),
-                          _Title(
-                            context.wm.subtitle,
-                            trailing: context.wm.translationTitle,
-                            style: TextTheme.primaryOf(context).titleMedium,
-                          ),
-                        ],
-                      ),
-                      actions: const [_ShareButton(), _MenuButton()],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _SkipButton(
-                  icon: const Icon(Icons.skip_previous_outlined),
-                  onPressed: context.wm.onPreviousPressed,
-                ),
-                const SizedBox(width: 48),
-                VideoPlayPauseLoader(
-                  videoController: context.wm.videoController,
-                ),
-                const SizedBox(width: 48),
-                _SkipButton(
-                  icon: const Icon(Icons.skip_next_outlined),
-                  onPressed: context.wm.onNextPressed,
-                ),
-              ],
-            ),
-            Align(
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: AnimatedSize(
               alignment: Alignment.bottomCenter,
-              child: AnimatedSize(
-                alignment: Alignment.topCenter,
-                duration: Durations.medium2,
-                curve: Easing.standard,
-                child: SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
+              duration: Durations.medium2,
+              curve: Easing.standard,
+              child: SafeArea(
+                bottom: false,
+                child: SizedBox(
+                  height: AppBarTheme.of(context).toolbarHeight!,
+                  child: AppBar(
+                    forceMaterialTransparency: true,
+                    title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Row(
-                          children: [
-                            VideoTimer(
-                              videoController: context.wm.videoController,
-                            ),
-                            const SizedBox(width: 16),
-                            LongSeekButton(
-                              videoController: context.wm.videoController,
-                              type: SeekType.rewind,
-                            ),
-                            LongSeekButton(
-                              videoController: context.wm.videoController,
-                              type: SeekType.fastForward,
-                            ),
-                            const Spacer(),
-                            if (context.wm.showFullscreenButton)
-                              FullscreenButton(
-                                controller: context.wm.fullscreenController,
-                              ),
-                          ],
-                        ),
-                        VideoSeekBar(
-                          videoController: context.wm.videoController,
-                          onPositionChangeStart:
-                              context.wm.handlePositionChangeStart,
-                          onPositionChangeEnd:
-                              context.wm.handlePositionChangeEnd,
+                        _Title(context.wm.title),
+                        _Title(
+                          context.wm.subtitle,
+                          trailing: context.wm.translationTitle,
+                          style: TextTheme.primaryOf(context).titleMedium,
                         ),
                       ],
                     ),
+                    actions: const [_ShareButton(), _MenuButton()],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _SkipButton(
+                icon: const Icon(Icons.skip_previous_outlined),
+                onPressed: context.wm.onPreviousPressed,
+              ),
+              const SizedBox(width: 48),
+              VideoPlayPauseLoader(videoController: context.wm.videoController),
+              const SizedBox(width: 48),
+              _SkipButton(
+                icon: const Icon(Icons.skip_next_outlined),
+                onPressed: context.wm.onNextPressed,
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedSize(
+              alignment: Alignment.topCenter,
+              duration: Durations.medium2,
+              curve: Easing.standard,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          VideoTimer(
+                            videoController: context.wm.videoController,
+                          ),
+                          const SizedBox(width: 16),
+                          LongSeekButton(
+                            videoController: context.wm.videoController,
+                            type: SeekType.rewind,
+                          ),
+                          LongSeekButton(
+                            videoController: context.wm.videoController,
+                            type: SeekType.fastForward,
+                          ),
+                          const Spacer(),
+                          if (context.wm.showFullscreenButton)
+                            FullscreenButton(
+                              controller: context.wm.fullscreenController,
+                            ),
+                        ],
+                      ),
+                      VideoSeekBar(videoController: context.wm.videoController),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

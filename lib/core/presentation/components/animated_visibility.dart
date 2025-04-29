@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AnimatedVisibility extends StatefulWidget {
+class AnimatedVisibility extends StatelessWidget {
   AnimatedVisibility.standard({
     super.key,
     this.fadeInCurve = Easing.standardDecelerate,
@@ -34,70 +34,13 @@ class AnimatedVisibility extends StatefulWidget {
   final Widget child;
 
   @override
-  State<AnimatedVisibility> createState() => _AnimatedVisibilityState();
-}
-
-class _AnimatedVisibilityState extends State<AnimatedVisibility>
-    with SingleTickerProviderStateMixin {
-  late final _controller = AnimationController(
-    vsync: this,
-    value: _animationTarget,
-    duration: Duration.zero,
-  );
-
-  double get _animationTarget => widget.visible ? 1 : 0;
-
-  bool get _ignorePointer => !widget.visible;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addStatusListener((status) {
-      const List<AnimationStatus> boundaryStatuses = [
-        AnimationStatus.completed,
-        AnimationStatus.dismissed,
-      ];
-      if (!boundaryStatuses.contains(status)) return;
-
-      setState(() {});
-    });
-  }
-
-  @override
-  void didUpdateWidget(AnimatedVisibility oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.visible != oldWidget.visible) {
-      _animate();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: _ignorePointer,
-      child: FadeTransition(opacity: _controller, child: widget.child),
+    return AnimatedSwitcher(
+      switchInCurve: fadeInCurve,
+      switchOutCurve: fadeOutCurve,
+      duration: fadeInDuration,
+      reverseDuration: fadeOutDuration,
+      child: visible ? child : null,
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _animate() {
-    final double target = _animationTarget;
-
-    target > _controller.value
-        ? _controller.animateTo(
-          target,
-          curve: widget.fadeInCurve,
-          duration: widget.fadeInDuration,
-        )
-        : _controller.animateBack(
-          target,
-          curve: widget.fadeOutCurve.flipped,
-          duration: widget.fadeOutDuration,
-        );
   }
 }
