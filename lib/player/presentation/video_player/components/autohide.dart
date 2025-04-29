@@ -177,11 +177,9 @@ class _InaccuratePointerDevicesListener extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerMove: (event) {},
-          onPointerUp: (event) {
-            if (event.kind.accurate) return;
+        GestureDetector(
+          supportedDevices: PointerDevicesAccuracy.inaccurateDevices,
+          onTap: () {
             onToggle();
             onScheduleHiding();
           },
@@ -189,12 +187,14 @@ class _InaccuratePointerDevicesListener extends StatelessWidget {
         child,
         Listener(
           behavior: HitTestBehavior.translucent,
-          onPointerMove: (event) {},
+          onPointerDown: (event) {
+            if (!event.kind.accurate) onScheduleHiding();
+          },
+          onPointerMove: (event) {
+            if (!event.kind.accurate) onScheduleHiding();
+          },
           onPointerUp: (event) {
-            if (event.kind.accurate) return;
-            onToggle();
-            onToggle();
-            onScheduleHiding();
+            if (!event.kind.accurate) onScheduleHiding();
           },
         ),
       ],
