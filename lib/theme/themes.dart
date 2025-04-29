@@ -40,6 +40,13 @@ extension _AppOverrides on ThemeData {
       ),
     ),
     progressIndicatorTheme: progressIndicatorTheme.copyWith(year2023: false),
+    dialogTheme: dialogTheme.copyWith(
+      elevation: 6,
+      backgroundColor: colorScheme.surfaceContainerHigh,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(28)),
+      ),
+    ),
     dividerTheme: dividerTheme.copyWith(
       space: 0,
       thickness: 1,
