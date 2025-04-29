@@ -3,7 +3,10 @@ import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:elementary/elementary.dart';
 
 abstract interface class IWatchStatusModel implements ElementaryModel {
-  Future<void> save({required int movieId, required WatchStatusDetails status});
+  Future<WatchStatusDetails> save({
+    required int movieId,
+    required WatchStatusDetails status,
+  });
 }
 
 class WatchStatusModel extends ElementaryModel implements IWatchStatusModel {
@@ -13,10 +16,10 @@ class WatchStatusModel extends ElementaryModel implements IWatchStatusModel {
   final MoviesRepository _repository;
 
   @override
-  Future<void> save({
+  Future<WatchStatusDetails> save({
     required int movieId,
     required WatchStatusDetails status,
-  }) async {
-    await _repository.saveWatchStatus(movieId: movieId, status: status);
+  }) {
+    return _repository.saveWatchStatus(movieId: movieId, status: status);
   }
 }

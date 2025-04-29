@@ -392,11 +392,12 @@ class MoviesServiceMock implements MoviesService {
   }
 
   @override
-  Future<void> saveWatchStatus({
+  Future<WatchStatusDetails> saveWatchStatus({
     required int movieId,
-    required WatchStatusDetails watchStatusDetails,
+    required WatchStatusDetails status,
   }) async {
     await _delay();
+    return status;
   }
 
   Future<void> _delay() {

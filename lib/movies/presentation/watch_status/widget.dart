@@ -215,7 +215,7 @@ class _Status extends StatelessWidget {
       requestFocusOnTap: false,
       label: Text(context.l10n.statusLabel),
       initialSelection: context.wm.status,
-      onSelected: (value) => context.wm.handleStatusSelected(value!),
+      onSelected: (value) => context.wm.status = value!,
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
       ),
