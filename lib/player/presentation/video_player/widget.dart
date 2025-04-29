@@ -1,14 +1,14 @@
 import 'package:app/core/core.dart';
 import 'package:app/player/domain/models/seek_type.dart';
 import 'package:app/player/player.dart';
+import 'package:app/player/presentation/video_player/components/autohide.dart';
 import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:app/player/presentation/video_player/components/long_seek_button.dart';
-import 'package:app/player/presentation/video_player/components/scalable.dart';
 import 'package:app/player/presentation/video_player/components/seek_area/widget.dart';
-import 'package:app/player/presentation/video_player/components/show_on_mouse_hover.dart';
 import 'package:app/player/presentation/video_player/components/video_play_pause_loader.dart';
 import 'package:app/player/presentation/video_player/components/video_seek_bar.dart';
 import 'package:app/player/presentation/video_player/components/video_timer.dart';
+import 'package:app/player/presentation/video_player/components/zoomable.dart';
 import 'package:app/player/presentation/video_player/typedefs.dart';
 import 'package:app/player/presentation/video_player/wm.dart';
 import 'package:app/player/utils/pointer_devices_accuracy.dart';
@@ -60,11 +60,31 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
         data: Themes.videoPlayer,
         child: PopScope(
           onPopInvokedWithResult: wm.handlePopInvoked,
-          child: const Scaffold(
+          child: Scaffold(
             body: Stack(
               clipBehavior: Clip.none,
               fit: StackFit.expand,
-              children: [_Gestures(child: _Player()), _Controls()],
+              children: [
+                const _Player(),
+                Autohide(
+                  videoController: wm.videoController,
+                  background: Colors.black54,
+                  controls: const _Controls(),
+                  gestures: const _Gestures(),
+                  playerBuilder:
+                      (context, background) => ValueListenableBuilder(
+                        valueListenable: wm.maxScale,
+                        builder:
+                            (context, maxZoom, player) =>
+                                Zoomable(maxZoom: 2, child: player!),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          fit: StackFit.expand,
+                          children: [const _Player(), background],
+                        ),
+                      ),
+                ),
+              ],
             ),
           ),
         ),
@@ -74,9 +94,7 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
 }
 
 class _Gestures extends StatelessWidget {
-  const _Gestures({required this.child});
-
-  final Widget child;
+  const _Gestures();
 
   @override
   Widget build(BuildContext context) {
@@ -88,26 +106,10 @@ class _Gestures extends StatelessWidget {
           clipBehavior: Clip.none,
           fit: StackFit.expand,
           children: [
-            ListenableBuilder(
-              listenable: Listenable.merge([
-                context.wm.maxScale,
-                context.wm.scaleAnchors,
-              ]),
-              builder:
-                  (context, _) => Scalable(
-                    maxScale: context.wm.maxScale.value,
-                    anchors: context.wm.scaleAnchors.value,
-                    child: child,
-                  ),
-            ),
             GestureDetector(
               supportedDevices: PointerDevicesAccuracy.accurateDevices,
               onTap: context.wm.handleAccurateTap,
               onDoubleTap: context.wm.handleAccurateDoubleTap,
-            ),
-            GestureDetector(
-              supportedDevices: PointerDevicesAccuracy.inaccurateDevices,
-              onTap: context.wm.handleInaccurateTap,
             ),
             Row(
               children: [
@@ -160,16 +162,6 @@ class _Player extends StatelessWidget {
             ),
           ),
           const _Caption(),
-          ListenableBuilder(
-            listenable: context.wm.controlsVisibilityController,
-            builder:
-                (context, _) => AnimatedVisibility.emphasized(
-                  visible: context.wm.controlsVisibilityController.visible,
-                  child: const DecoratedBox(
-                    decoration: BoxDecoration(color: Colors.black54),
-                  ),
-                ),
-          ),
         ],
       ),
     );
@@ -181,112 +173,101 @@ class _Controls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ShowOnMouseHover(
-      controller: context.wm.controlsVisibilityController,
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: AnimatedSize(
-                alignment: Alignment.bottomCenter,
-                duration: Durations.medium2,
-                curve: Easing.standard,
-                child: SafeArea(
-                  bottom: false,
-                  child: SizedBox(
-                    height: AppBarTheme.of(context).toolbarHeight!,
-                    child: AppBar(
-                      forceMaterialTransparency: true,
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _Title(context.wm.title),
-                          _Title(
-                            context.wm.subtitle,
-                            trailing: context.wm.translationTitle,
-                            style: TextTheme.primaryOf(context).titleMedium,
-                          ),
-                        ],
-                      ),
-                      actions: const [_ShareButton(), _MenuButton()],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _SkipButton(
-                  icon: const Icon(Icons.skip_previous_outlined),
-                  onPressed: context.wm.onPreviousPressed,
-                ),
-                const SizedBox(width: 48),
-                VideoPlayPauseLoader(
-                  videoController: context.wm.videoController,
-                ),
-                const SizedBox(width: 48),
-                _SkipButton(
-                  icon: const Icon(Icons.skip_next_outlined),
-                  onPressed: context.wm.onNextPressed,
-                ),
-              ],
-            ),
-            Align(
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: AnimatedSize(
               alignment: Alignment.bottomCenter,
-              child: AnimatedSize(
-                alignment: Alignment.topCenter,
-                duration: Durations.medium2,
-                curve: Easing.standard,
-                child: SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
+              duration: Durations.medium2,
+              curve: Easing.standard,
+              child: SafeArea(
+                bottom: false,
+                child: SizedBox(
+                  height: AppBarTheme.of(context).toolbarHeight!,
+                  child: AppBar(
+                    forceMaterialTransparency: true,
+                    title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Row(
-                          children: [
-                            VideoTimer(
-                              videoController: context.wm.videoController,
-                            ),
-                            const SizedBox(width: 16),
-                            LongSeekButton(
-                              videoController: context.wm.videoController,
-                              type: SeekType.rewind,
-                            ),
-                            LongSeekButton(
-                              videoController: context.wm.videoController,
-                              type: SeekType.fastForward,
-                            ),
-                            const Spacer(),
-                            if (context.wm.showFullscreenButton)
-                              FullscreenButton(
-                                controller: context.wm.fullscreenController,
-                              ),
-                          ],
-                        ),
-                        VideoSeekBar(
-                          videoController: context.wm.videoController,
-                          onPositionChangeStart:
-                              context.wm.handlePositionChangeStart,
-                          onPositionChangeEnd:
-                              context.wm.handlePositionChangeEnd,
+                        _Title(context.wm.title),
+                        _Title(
+                          context.wm.subtitle,
+                          trailing: context.wm.translationTitle,
+                          style: TextTheme.primaryOf(context).titleMedium,
                         ),
                       ],
                     ),
+                    actions: const [_ShareButton(), _MenuButton()],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _SkipButton(
+                icon: const Icon(Icons.skip_previous_outlined),
+                onPressed: context.wm.onPreviousPressed,
+              ),
+              const SizedBox(width: 48),
+              VideoPlayPauseLoader(videoController: context.wm.videoController),
+              const SizedBox(width: 48),
+              _SkipButton(
+                icon: const Icon(Icons.skip_next_outlined),
+                onPressed: context.wm.onNextPressed,
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedSize(
+              alignment: Alignment.topCenter,
+              duration: Durations.medium2,
+              curve: Easing.standard,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          VideoTimer(
+                            videoController: context.wm.videoController,
+                          ),
+                          const SizedBox(width: 16),
+                          LongSeekButton(
+                            videoController: context.wm.videoController,
+                            type: SeekType.rewind,
+                          ),
+                          LongSeekButton(
+                            videoController: context.wm.videoController,
+                            type: SeekType.fastForward,
+                          ),
+                          const Spacer(),
+                          if (context.wm.fullscreenController.supported)
+                            FullscreenButton(
+                              controller: context.wm.fullscreenController,
+                            ),
+                        ],
+                      ),
+                      VideoSeekBar(videoController: context.wm.videoController),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -428,12 +409,13 @@ class _Caption extends StatelessWidget {
                           Breakpoints.largeAndUp,
                         ]);
                     return AnimatedSwitcher(
-                      switchInCurve: Easing.standard,
-                      switchOutCurve: Easing.standard.flipped,
-                      duration: Durations.medium2,
+                      switchInCurve: Easing.emphasizedDecelerate,
+                      switchOutCurve: Easing.emphasizedAccelerate.flipped,
+                      duration: Durations.medium4,
+                      reverseDuration: Durations.short4,
                       child: Text(
                         caption.text,
-                        key: ValueKey(breakpoint),
+                        key: Key('$breakpoint: ${caption.text}'),
                         style: switch (breakpoint) {
                           Breakpoints.largeAndUp =>
                             TextTheme.of(context).displayMedium,

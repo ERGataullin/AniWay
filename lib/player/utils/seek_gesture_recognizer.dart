@@ -342,7 +342,7 @@ class SeekGestureRecognizer extends GestureRecognizer {
 
   void _checkCancel() {
     if (onSeekTapCancel != null) {
-      invokeCallback<void>('onSeelTapCancel', onSeekTapCancel!);
+      invokeCallback<void>('onSeekTapCancel', onSeekTapCancel!);
     }
   }
 

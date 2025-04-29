@@ -4,6 +4,7 @@ import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/library/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
@@ -52,6 +53,15 @@ class LibraryWidget extends ElementaryWidget<ILibraryWM> {
                           ),
                         ],
                     body: TabBarView(
+                      physics: switch (defaultTargetPlatform) {
+                        TargetPlatform.android ||
+                        TargetPlatform.fuchsia ||
+                        TargetPlatform.iOS => null,
+                        TargetPlatform.linux ||
+                        TargetPlatform.macOS ||
+                        TargetPlatform
+                            .windows => const NeverScrollableScrollPhysics(),
+                      },
                       children: wm.watchStatuses
                           .map(
                             (watchStatus) => _Movies(watchStatus: watchStatus),

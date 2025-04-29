@@ -61,7 +61,16 @@ class PrimaryNavigation extends StatelessWidget {
                         selectedIndex: currentIndex,
                         onDestinationSelected: onDestinationSelected,
                         destinations: destinations
-                            .map(AdaptiveScaffold.toRailDestination)
+                            .map(
+                              (destination) => NavigationRailDestination(
+                                icon: destination.icon,
+                                selectedIcon: destination.selectedIcon,
+                                label: Text(
+                                  destination.label,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            )
                             .toList(growable: false),
                       ),
                     ),
