@@ -56,7 +56,9 @@ class MoviesServiceAnime365 implements MoviesService {
             if (limit != null) 'limit': limit,
             if (offset != null) 'offset': offset,
             if (watchStatuses.isNotEmpty)
-              'status': watchStatuses.map(_convertWatchStatusToJson).join(','),
+              'chips':
+                  'status='
+                  '${watchStatuses.map(_convertWatchStatusToJson).join(',')}',
           }.map((key, value) => MapEntry(key, value.toString())),
         ),
         method: RequestMethod.get,
@@ -576,7 +578,7 @@ class MoviesServiceAnime365 implements MoviesService {
         'Просмотрено' => WatchStatus.completed,
         'Отложено' => WatchStatus.onHold,
         'Брошено' => WatchStatus.dropped,
-        null => WatchStatus.none,
+        null => null,
         final Object? unsupported =>
           throw UnsupportedError('Unsupported movie status: $unsupported'),
       },
@@ -651,14 +653,14 @@ class MoviesServiceAnime365 implements MoviesService {
     };
   }
 
-  int _convertWatchStatusToJson(WatchStatus watchStatus) {
+  int _convertWatchStatusToJson(WatchStatus? watchStatus) {
     return switch (watchStatus) {
       WatchStatus.planned => 0,
       WatchStatus.watching => 1,
       WatchStatus.completed => 2,
       WatchStatus.onHold => 3,
       WatchStatus.dropped => 4,
-      WatchStatus.none => 99,
+      null => 99,
     };
   }
 }

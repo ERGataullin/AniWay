@@ -85,6 +85,9 @@ extension _AppOverrides on ThemeData {
         maxHeight: 56,
       ),
     ),
+    tabBarTheme: tabBarTheme.copyWith(
+      splashBorderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
+    ),
     tooltipTheme: tooltipTheme.copyWith(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       textStyle: textTheme.bodySmall!.copyWith(

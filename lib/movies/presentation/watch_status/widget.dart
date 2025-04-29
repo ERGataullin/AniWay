@@ -65,7 +65,7 @@ class _ContentSmall extends StatelessWidget {
             onPressed: Navigator.of(context).pop,
             icon: const Icon(Icons.close),
           ),
-          title: Text(context.l10n.watchStatusAdd),
+          title: Text(context.l10n.watchStatusTitle),
           actionsPadding: const EdgeInsets.only(right: 12),
           actions: [
             IconButton(
@@ -121,7 +121,7 @@ class _ContentMediumAndUp extends StatelessWidget {
                   Padding(
                     padding: _marginHorizontal,
                     child: Text(
-                      context.l10n.watchStatusAdd,
+                      context.l10n.watchStatusTitle,
                       style: TextTheme.of(context).headlineSmall,
                     ),
                   ),
@@ -135,7 +135,7 @@ class _ContentMediumAndUp extends StatelessWidget {
                       children: [
                         TextButton(
                           onPressed:
-                              context.wm.currentStatus == WatchStatus.none
+                              context.wm.currentStatus == null
                                   ? null
                                   : context.wm.handleDeletePressed,
                           style: TextButton.styleFrom(
@@ -213,13 +213,13 @@ class _Status extends StatelessWidget {
     return DropdownMenu<WatchStatus>(
       expandedInsets: EdgeInsets.zero,
       requestFocusOnTap: false,
-      label: Text(context.l10n.watchStatusLabel),
+      label: Text(context.l10n.statusLabel),
       initialSelection: context.wm.status,
       onSelected: (value) => context.wm.handleStatusSelected(value!),
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
       ),
-      dropdownMenuEntries: context.wm.statuses
+      dropdownMenuEntries: WatchStatus.values
           .map(
             (status) => DropdownMenuEntry(
               value: status,
@@ -237,7 +237,7 @@ class _Score extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double itemSize = 48;
-    final double spacing = Breakpoint.activeBreakpointOf(context).padding;
+    final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,

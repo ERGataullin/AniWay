@@ -27,12 +27,10 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: CustomScrollView(
-                    controller: wm.scrollController,
                     slivers: [
                       const SliverToBoxAdapter(child: SizedBox(height: 16)),
                       SliverPagedGrid(
                         key: wm.pagedGridKey,
-                        controller: wm.scrollController,
                         gridDelegate: MovieCard.gridDelegate,
                         onLoadPage: wm.handleLoadPage,
                         itemBuilder:

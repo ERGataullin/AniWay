@@ -4,6 +4,7 @@ import 'package:app/movies/domain/models/movies_order.dart';
 import 'package:app/movies/presentation/components/movie_player/widget.dart';
 import 'package:app/movies/presentation/episodes/widget.dart';
 import 'package:app/movies/presentation/home/widget.dart';
+import 'package:app/movies/presentation/library/widget.dart';
 import 'package:app/movies/presentation/movie/widget.dart';
 import 'package:app/movies/presentation/search/widget.dart';
 import 'package:app/movies/presentation/up_next/widget.dart';
@@ -71,6 +72,8 @@ abstract class _Routes {
 
   static const upNext = '/up-next';
 
+  static const library = '/library';
+
   static String search({String? parent}) =>
       parent == null ? '/search' : '$parent/search';
 
@@ -113,6 +116,7 @@ abstract class _RoutesBuilders {
     return StatefulShellRoute(
       branches: [
         StatefulShellBranch(routes: [_buildHome()]),
+        StatefulShellBranch(routes: [_buildLibrary()]),
         StatefulShellBranch(routes: [search]),
       ],
       navigatorContainerBuilder:
@@ -288,6 +292,23 @@ abstract class _RoutesBuilders {
                   _Routes.moviePlayer,
                   pathParameters: {'movieId': state.pathParameters['movieId']!},
                   queryParameters: {'episodeId': episodeId.toString()},
+                ),
+          ),
+    );
+  }
+
+  static GoRoute _buildLibrary() {
+    final GoRoute movieRoute = _buildMovie(parent: _Routes.library);
+    return GoRoute(
+      name: _Routes.library,
+      path: '/library',
+      routes: [movieRoute],
+      builder:
+          (context, state) => LibraryWidget(
+            onMoviePressed:
+                (id) => context.pushNamed(
+                  movieRoute.name!,
+                  pathParameters: {'movieId': id.toString()},
                 ),
           ),
     );

@@ -1,13 +1,6 @@
 {
     "@@locale": "ru",
-    "releasedCount": "Вышло {count}",
-    "@releasedCount": {
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
-    },
+    "all": "Все",
     "authorLabel": "Автор",
     "commentLabel": "Комментарий",
     "delete": "Удалить",
@@ -33,6 +26,7 @@
             }
         }
     },
+    "libraryTitle": "Библиотека",
     "linkCopied": "Ссылка скопирована",
     "movieEpisode": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} ad{Реклама {episode}} music{Музыка {episode}} preview{Трейлер {episode}} other{{episode} серия}}",
     "@movieEpisode": {
@@ -102,10 +96,19 @@
             }
         }
     },
+    "releasedCount": "Вышло {count}",
+    "@releasedCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
     "save": "Сохранить",
+    "searchPageTitle": "Поиск",
     "score": "Оценка",
     "signInSubmitLabel": "Войти через Anime365",
-    "searchPageTitle": "Поиск",
+    "statusLabel": "Статус",
     "translationTypeLabel": "Тип перевода",
     "translationType": "{type, select, raw{Оригинал} sub{Субтитры} voice{Озвучка} other{}}",
     "@translationType": {
@@ -116,7 +119,7 @@
         }
     },
     "upNextTitle": "К просмотру",
-    "watchStatusAdd": "Добавить в список",
+    "watchStatusTitle": "Статус просмотра",
     "watchStatusEpisodesError": "Не более {episodesCountTotal} серий",
     "@watchStatusEpisodesError": {
         "placeholders": {
@@ -125,8 +128,7 @@
             }
         }
     },
-    "watchStatusLabel": "Статус",
-    "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Заброшено} none{Отстутвует в списке} other{Неизвестный статус}}",
+    "watchStatus": "{type, select, planned{Запланировано} watching{Смотрю} completed{Просмотрено} onHold{Отложено} dropped{Брошено} other{Неизвестный статус}}",
     "@watchStatus": {
         "placeholders": {
             "type": {

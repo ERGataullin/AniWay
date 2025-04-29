@@ -50,7 +50,6 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                           icon: const Icon(Icons.play_arrow_outlined),
                         ),
                 body: CustomScrollView(
-                  primary: true,
                   slivers: [
                     const _AppBar(),
                     if (wm.loading.value)
@@ -191,10 +190,9 @@ class _WatchStatusButton extends StatelessWidget {
                 ),
             child: IconButton(
               onPressed: () => context.wm.handleWatchStatusPressed(context),
-              isSelected: context.wm.watchStatus.value != WatchStatus.none,
+              isSelected: context.wm.watchStatus.value != null,
               tooltip: switch (context.wm.watchStatus.value) {
-                null => null,
-                WatchStatus.none => context.l10n.watchStatusAdd,
+                null => context.l10n.watchStatusTitle,
                 final WatchStatus other => context.l10n.watchStatus(other.name),
               },
               icon: const Icon(Icons.library_add_outlined),
