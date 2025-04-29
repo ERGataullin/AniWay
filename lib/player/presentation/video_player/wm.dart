@@ -24,8 +24,6 @@ VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
 abstract interface class IVideoPlayerWM implements IWidgetModel {
   ValueListenable<double> get maxScale;
 
-  ValueListenable<List<double>> get scaleAnchors;
-
   ValueListenable<String> get title;
 
   ValueListenable<String> get subtitle;
@@ -74,12 +72,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       surfaceAspectRatio: MediaQuery.sizeOf(context).aspectRatio,
       videoAspectRatio: videoController.aspectRatio.value,
     ),
-  );
-
-  @override
-  late final Computed<List<double>> scaleAnchors = Computed(
-    trigger: maxScale,
-    () => [1, maxScale.value],
   );
 
   @override
@@ -200,7 +192,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   @override
   void dispose() {
     maxScale.dispose();
-    scaleAnchors.dispose();
     title.dispose();
     subtitle.dispose();
     translationTitle.dispose();

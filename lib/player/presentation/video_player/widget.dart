@@ -4,11 +4,11 @@ import 'package:app/player/player.dart';
 import 'package:app/player/presentation/video_player/components/autohide.dart';
 import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
 import 'package:app/player/presentation/video_player/components/long_seek_button.dart';
-import 'package:app/player/presentation/video_player/components/scalable.dart';
 import 'package:app/player/presentation/video_player/components/seek_area/widget.dart';
 import 'package:app/player/presentation/video_player/components/video_play_pause_loader.dart';
 import 'package:app/player/presentation/video_player/components/video_seek_bar.dart';
 import 'package:app/player/presentation/video_player/components/video_timer.dart';
+import 'package:app/player/presentation/video_player/components/zoomable.dart';
 import 'package:app/player/presentation/video_player/typedefs.dart';
 import 'package:app/player/presentation/video_player/wm.dart';
 import 'package:app/player/utils/pointer_devices_accuracy.dart';
@@ -60,18 +60,12 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
         data: Themes.videoPlayer,
         child: PopScope(
           onPopInvokedWithResult: wm.handlePopInvoked,
-          child: const Scaffold(
-            body: Stack(
-              clipBehavior: Clip.none,
-              fit: StackFit.expand,
-              children: [
-                _Player(),
-                Autohide(
-                  background: Colors.black54,
-                  gestures: _Gestures(child: SizedBox.expand()),
-                  controls: _Controls(),
-                ),
-              ],
+          child: Scaffold(
+            body: Autohide(
+              videoController: wm.videoController,
+              background: Colors.black54,
+              player: const _Gestures(child: _Player()),
+              controls: const _Controls(),
             ),
           ),
         ),
@@ -95,17 +89,11 @@ class _Gestures extends StatelessWidget {
           clipBehavior: Clip.none,
           fit: StackFit.expand,
           children: [
-            ListenableBuilder(
-              listenable: Listenable.merge([
-                context.wm.maxScale,
-                context.wm.scaleAnchors,
-              ]),
+            ValueListenableBuilder(
+              valueListenable: context.wm.maxScale,
               builder:
-                  (context, _) => Scalable(
-                    maxScale: context.wm.maxScale.value,
-                    anchors: context.wm.scaleAnchors.value,
-                    child: child,
-                  ),
+                  (context, maxZoom, _) =>
+                      Zoomable(maxZoom: maxZoom, child: child),
             ),
             GestureDetector(
               supportedDevices: PointerDevicesAccuracy.accurateDevices,
