@@ -254,7 +254,7 @@ class _Controls extends StatelessWidget {
                             type: SeekType.fastForward,
                           ),
                           const Spacer(),
-                          if (context.wm.showFullscreenButton)
+                          if (context.wm.fullscreenController.supported)
                             FullscreenButton(
                               controller: context.wm.fullscreenController,
                             ),

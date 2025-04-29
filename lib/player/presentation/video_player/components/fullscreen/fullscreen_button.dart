@@ -7,6 +7,8 @@ abstract class FullscreenController implements ChangeNotifier {
     return FullscreenControllerPlatform();
   }
 
+  bool get supported;
+
   bool get isFullscreen;
 
   set webElementQuery(String? value);

@@ -4,6 +4,7 @@ import 'package:app/core/core.dart';
 import 'package:app/player/utils/pointer_devices_accuracy.dart';
 import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Autohide extends StatefulWidget {
   const Autohide({
@@ -40,6 +41,8 @@ class _AutohideState extends State<Autohide> {
 
   Timer? _hidingTimer;
 
+  bool get _effectiveVisible => _forceVisible || _visible;
+
   @override
   void initState() {
     widget.videoController
@@ -60,11 +63,11 @@ class _AutohideState extends State<Autohide> {
   }
 
   void _show() {
-    _setVisibility(true);
+    _setVisibility(visible: true);
   }
 
   void _hide() {
-    _setVisibility(false);
+    _setVisibility(visible: false);
   }
 
   void _toggle() {
@@ -75,15 +78,21 @@ class _AutohideState extends State<Autohide> {
     _hidingTimer?.cancel();
     _hidingTimer = Timer(
       const Duration(seconds: 3),
-      () => _setVisibility(false),
+      () => _setVisibility(visible: false),
     );
   }
 
-  void _setVisibility(bool value) {
+  void _setVisibility({bool? visible, bool? forceVisible}) {
     _hidingTimer?.cancel();
-    if (!_enabled || _visible == value) return;
+    if (!_enabled || _visible == visible) return;
     setState(() {
-      _visible = value;
+      _visible = visible ?? _visible;
+      _forceVisible = forceVisible ?? _forceVisible;
+      SystemChrome.setEnabledSystemUIMode(
+        _effectiveVisible
+            ? SystemUiMode.edgeToEdge
+            : SystemUiMode.immersiveSticky,
+      );
     });
   }
 
@@ -92,7 +101,7 @@ class _AutohideState extends State<Autohide> {
         widget.videoController.loading.value ||
         !widget.videoController.playing.value;
     if (_forceVisible == value) return;
-    setState(() => _forceVisible = value);
+    _setVisibility(forceVisible: value);
   }
 
   @override
@@ -106,7 +115,7 @@ class _AutohideState extends State<Autohide> {
           widget.playerBuilder(
             context,
             AnimatedVisibility.emphasized(
-              visible: _forceVisible || _visible,
+              visible: _effectiveVisible,
               child: ColoredBox(
                 color: widget.background,
                 child: const SizedBox.expand(),
@@ -121,7 +130,7 @@ class _AutohideState extends State<Autohide> {
               children: [
                 widget.gestures,
                 AnimatedVisibility.emphasized(
-                  visible: _forceVisible || _visible,
+                  visible: _effectiveVisible,
                   child: widget.controls,
                 ),
               ],

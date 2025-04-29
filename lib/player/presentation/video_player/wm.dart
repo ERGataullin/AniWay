@@ -42,8 +42,6 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 
   FullscreenController get fullscreenController;
 
-  bool get showFullscreenButton;
-
   Map<ShortcutActivator, VoidCallback> get shortcuts;
 
   void handleAccurateTap();
@@ -121,16 +119,6 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   };
 
   var _watched = false;
-
-  @override
-  bool get showFullscreenButton => switch (defaultTargetPlatform) {
-    TargetPlatform.android ||
-    TargetPlatform.fuchsia ||
-    TargetPlatform.iOS => kIsWeb,
-    TargetPlatform.linux ||
-    TargetPlatform.macOS ||
-    TargetPlatform.windows => true,
-  };
 
   @override
   void initWidgetModel() {

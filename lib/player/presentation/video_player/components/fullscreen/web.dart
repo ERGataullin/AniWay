@@ -32,6 +32,9 @@ class FullscreenControllerPlatform
   late StreamSubscription<Event> _fullscreenSubscription;
 
   @override
+  bool get supported => true;
+
+  @override
   bool get isFullscreen {
     return _isIos
         ? _element.tagName == 'video' && _element.webkitDisplayingFullscreen
