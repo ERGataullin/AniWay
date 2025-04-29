@@ -25,7 +25,7 @@ abstract class WatchStatusDetailsConverterAnime365 {
     final int episodesCount =
         episodesCountValue == null ? 0 : int.parse(episodesCountValue);
 
-    final String? commentValue =
+    final String? comment =
         element.querySelector('textarea#UsersRates_comment')?.innerHtml;
 
     return WatchStatusDetails(
@@ -36,12 +36,12 @@ abstract class WatchStatusDetailsConverterAnime365 {
         'Отложено' => WatchStatus.onHold,
         'Брошено' => WatchStatus.dropped,
         null => null,
-        final Object? unsupported =>
-          throw UnsupportedError('Unsupported movie status: $unsupported'),
+        final Object? value =>
+          throw UnsupportedError('Unsupported $WatchStatus: $value'),
       },
       score: score,
       episodesCount: episodesCount,
-      comment: commentValue,
+      comment: comment,
     );
   }
 
