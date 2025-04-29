@@ -137,6 +137,5 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   Future<void> _submit(WatchStatusDetails watchStatusDetails) async {
     loading.value = true;
     await model.save(movieId: widget.movie.id, status: watchStatusDetails);
-    loading.value = false;
   }
 }
