@@ -6,6 +6,8 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum _VisibilityReason { loading, paused, userInteraction }
+
 class Autohide extends StatefulWidget {
   const Autohide({
     super.key,
@@ -31,79 +33,75 @@ class Autohide extends StatefulWidget {
 }
 
 class _AutohideState extends State<Autohide> {
+  final _visibilityReasons = <_VisibilityReason>{};
+
+  Timer? _visibilityReasonsChangeTimer;
+
   var _visible = false;
-
-  var _forceVisible = false;
-
-  Timer? _hidingTimer;
-
-  bool get _effectiveVisible => _forceVisible || _visible;
 
   @override
   void initState() {
     widget.videoController
-      ..loading.addListener(_handleForceVisibleUpdate)
-      ..playing.addListener(_handleForceVisibleUpdate);
-    _handleForceVisibleUpdate();
-    _scheduleHiding();
+      ..loading.addListener(_handleLoadingPlayingChanged)
+      ..playing.addListener(_handleLoadingPlayingChanged);
+    _handleLoadingPlayingChanged();
     super.initState();
   }
 
   @override
   void dispose() {
     widget.videoController
-      ..loading.removeListener(_handleForceVisibleUpdate)
-      ..playing.removeListener(_handleForceVisibleUpdate);
-    _hidingTimer?.cancel();
+      ..loading.removeListener(_handleLoadingPlayingChanged)
+      ..playing.removeListener(_handleLoadingPlayingChanged);
+    _visibilityReasonsChangeTimer?.cancel();
     super.dispose();
   }
 
-  void _show() {
-    _setVisibility(visible: true);
-  }
+  void _changeVisibilityReasons({
+    Set<_VisibilityReason> add = const {},
+    Set<_VisibilityReason> remove = const {},
+    bool delayRemove = true,
+  }) {
+    if (add.isEmpty && remove.isEmpty) return;
+    _visibilityReasonsChangeTimer?.cancel();
 
-  void _hide() {
-    _setVisibility(visible: false);
-  }
+    _visibilityReasons
+      ..addAll(add)
+      ..removeAll(remove);
 
-  void _toggle() {
-    _visible ? _hide() : _show();
-  }
+    final bool visibleNew = _visibilityReasons.isNotEmpty;
+    if (visibleNew == _visible) return;
 
-  void _scheduleHiding({bool force = false}) {
-    if (_forceVisible && !force) return;
-    _hidingTimer?.cancel();
-    _hidingTimer = Timer(
-      const Duration(seconds: 2),
-      () => _setVisibility(visible: false, forceVisible: force ? false : null),
-    );
-  }
-
-  void _setVisibility({bool? visible, bool? forceVisible}) {
-    _hidingTimer?.cancel();
-
-    if ((visible == null || visible == _visible) &&
-        (forceVisible == null || forceVisible == _forceVisible)) {
-      return;
+    if (visibleNew || !delayRemove) {
+      _setVisibility(visibleNew);
+    } else {
+      _visibilityReasonsChangeTimer = Timer(
+        const Duration(seconds: 2),
+        () => _setVisibility(visibleNew),
+      );
     }
+  }
 
+  void _setVisibility(bool visible) {
     setState(() {
-      _visible = visible ?? _visible;
-      _forceVisible = forceVisible ?? _forceVisible;
+      _visible = visible;
       SystemChrome.setEnabledSystemUIMode(
-        _effectiveVisible
-            ? SystemUiMode.edgeToEdge
-            : SystemUiMode.immersiveSticky,
+        _visible ? SystemUiMode.edgeToEdge : SystemUiMode.immersiveSticky,
       );
     });
   }
 
-  void _handleForceVisibleUpdate() {
-    final bool value =
-        widget.videoController.loading.value ||
-        !widget.videoController.playing.value;
-    if (_forceVisible == value) return;
-    value ? _setVisibility(forceVisible: true) : _scheduleHiding(force: true);
+  void _handleLoadingPlayingChanged() {
+    _changeVisibilityReasons(
+      add: {
+        if (widget.videoController.loading.value) _VisibilityReason.loading,
+        if (!widget.videoController.playing.value) _VisibilityReason.paused,
+      },
+      remove: {
+        if (!widget.videoController.loading.value) _VisibilityReason.loading,
+        if (widget.videoController.playing.value) _VisibilityReason.paused,
+      },
+    );
   }
 
   @override
@@ -117,31 +115,59 @@ class _AutohideState extends State<Autohide> {
           widget.playerBuilder(
             context,
             AnimatedVisibility.emphasized(
-              visible: _effectiveVisible,
+              visible: _visible,
               child: ColoredBox(
                 color: widget.background,
                 child: const SizedBox.expand(),
               ),
             ),
           ),
-          _InaccuratePointerDevicesListener(
-            onToggle: _toggle,
-            onScheduleHiding: _scheduleHiding,
+          _InaccuratePointerListener(
+            onTap: () {
+              _changeVisibilityReasons(
+                add: {if (!_visible) _VisibilityReason.userInteraction},
+                remove: {if (_visible) ..._VisibilityReason.values},
+                delayRemove: false,
+              );
+            },
+            onUserInteractionStart: () {
+              _changeVisibilityReasons(
+                add: const {_VisibilityReason.userInteraction},
+              );
+            },
+            onUserInteractionEnd: () {
+              _changeVisibilityReasons(
+                remove: const {_VisibilityReason.userInteraction},
+              );
+            },
             child: Stack(
               fit: StackFit.expand,
               children: [
                 widget.gestures,
                 AnimatedVisibility.emphasized(
-                  visible: _effectiveVisible,
+                  visible: _visible,
                   child: widget.controls,
                 ),
               ],
             ),
           ),
-          _AccuratePointerDevicesListener(
-            onShow: _show,
-            onHide: _hide,
-            onScheduleHiding: _scheduleHiding,
+          _AccuratePointerListener(
+            onUserInteractionStart: () {
+              _changeVisibilityReasons(
+                add: const {_VisibilityReason.userInteraction},
+              );
+            },
+            onUserInteractionEnd: () {
+              _changeVisibilityReasons(
+                remove: const {_VisibilityReason.userInteraction},
+              );
+            },
+            onPointerOut: () {
+              _changeVisibilityReasons(
+                remove: const {_VisibilityReason.userInteraction},
+                delayRemove: false,
+              );
+            },
           ),
         ],
       ),
@@ -149,18 +175,18 @@ class _AutohideState extends State<Autohide> {
   }
 }
 
-class _AccuratePointerDevicesListener extends StatelessWidget {
-  const _AccuratePointerDevicesListener({
-    required this.onShow,
-    required this.onHide,
-    required this.onScheduleHiding,
+class _AccuratePointerListener extends StatelessWidget {
+  const _AccuratePointerListener({
+    required this.onUserInteractionStart,
+    required this.onUserInteractionEnd,
+    required this.onPointerOut,
   });
 
-  final VoidCallback onShow;
+  final VoidCallback onUserInteractionStart;
 
-  final VoidCallback onHide;
+  final VoidCallback onUserInteractionEnd;
 
-  final VoidCallback onScheduleHiding;
+  final VoidCallback onPointerOut;
 
   @override
   Widget build(BuildContext context) {
@@ -177,19 +203,19 @@ class _AccuratePointerDevicesListener extends StatelessWidget {
           child: Listener(
             behavior: HitTestBehavior.translucent,
             onPointerDown: (event) {
-              if (event.kind.accurate) onShow();
+              if (event.kind.accurate) onUserInteractionStart();
             },
             onPointerHover: (event) {
               if (!event.kind.accurate || event.down) return;
               if (pointerHoverSensitivityRect.contains(event.localPosition)) {
-                onShow();
-                onScheduleHiding();
+                onUserInteractionStart();
+                onUserInteractionEnd();
               } else {
-                onHide();
+                onPointerOut();
               }
             },
             onPointerUp: (event) {
-              if (event.kind.accurate) onScheduleHiding();
+              if (event.kind.accurate) onUserInteractionEnd();
             },
           ),
         );
@@ -198,16 +224,19 @@ class _AccuratePointerDevicesListener extends StatelessWidget {
   }
 }
 
-class _InaccuratePointerDevicesListener extends StatelessWidget {
-  const _InaccuratePointerDevicesListener({
-    required this.onToggle,
-    required this.onScheduleHiding,
+class _InaccuratePointerListener extends StatelessWidget {
+  const _InaccuratePointerListener({
+    required this.onTap,
+    required this.onUserInteractionStart,
+    required this.onUserInteractionEnd,
     required this.child,
   });
 
-  final VoidCallback onToggle;
+  final VoidCallback onTap;
 
-  final VoidCallback onScheduleHiding;
+  final VoidCallback onUserInteractionStart;
+
+  final VoidCallback onUserInteractionEnd;
 
   final Widget child;
 
@@ -218,22 +247,16 @@ class _InaccuratePointerDevicesListener extends StatelessWidget {
       children: [
         GestureDetector(
           supportedDevices: PointerDevicesAccuracy.inaccurateDevices,
-          onTap: () {
-            onToggle();
-            onScheduleHiding();
-          },
+          onTap: onTap,
         ),
         child,
         Listener(
           behavior: HitTestBehavior.translucent,
           onPointerDown: (event) {
-            if (!event.kind.accurate) onScheduleHiding();
-          },
-          onPointerMove: (event) {
-            if (!event.kind.accurate) onScheduleHiding();
+            if (event.kind.accurate) onUserInteractionStart();
           },
           onPointerUp: (event) {
-            if (!event.kind.accurate) onScheduleHiding();
+            if (!event.kind.accurate) onUserInteractionEnd();
           },
         ),
       ],
