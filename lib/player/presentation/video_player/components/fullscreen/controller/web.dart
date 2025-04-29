@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
+import 'package:app/player/presentation/video_player/components/fullscreen/controller/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:web/web.dart';
 
@@ -15,10 +15,10 @@ extension _ElementFullscreen on Element {
       const EventStreamProvider<Event>('fullscreenchange').forElement(this);
 }
 
-class FullscreenControllerPlatform
+class FullscreenControllerImpl
     with ChangeNotifier
     implements FullscreenController {
-  FullscreenControllerPlatform() : _element = document.documentElement! {
+  FullscreenControllerImpl() : _element = document.documentElement! {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }

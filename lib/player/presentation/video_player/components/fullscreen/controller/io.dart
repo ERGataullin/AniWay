@@ -1,12 +1,12 @@
-import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
+import 'package:app/player/presentation/video_player/components/fullscreen/controller/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 
-class FullscreenControllerPlatform
+class FullscreenControllerImpl
     with ChangeNotifier
     implements FullscreenController {
-  FullscreenControllerPlatform() {
+  FullscreenControllerImpl() {
     ServicesBinding.instance.keyboard.addHandler(_handleKeyPressed);
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);

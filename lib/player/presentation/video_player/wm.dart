@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
 import 'package:app/player/player.dart';
-import 'package:app/player/presentation/video_player/components/fullscreen/fullscreen_button.dart';
+import 'package:app/player/presentation/video_player/components/fullscreen/controller/controller.dart';
 import 'package:app/player/presentation/video_player/const.dart';
 import 'package:app/player/presentation/video_player/model.dart';
 import 'package:app/player/utils/video_controller.dart';
