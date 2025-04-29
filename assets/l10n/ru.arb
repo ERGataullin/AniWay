@@ -26,7 +26,7 @@
             }
         }
     },
-    "libraryTitle": "Библиотека",
+    "libraryTitle": "Мой список",
     "linkCopied": "Ссылка скопирована",
     "movieEpisode": "{type, select, tv{{episode} серия} movie{Фильм} ova{OVA {episode}} ona{ONA {episode}} special{Спешл {episode}} tvSpecial{ТВ спешл {episode}} ad{Реклама {episode}} music{Музыка {episode}} preview{Трейлер {episode}} other{{episode} серия}}",
     "@movieEpisode": {

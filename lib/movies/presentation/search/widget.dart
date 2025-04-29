@@ -54,7 +54,6 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
           child: CustomScrollView(
             slivers: [
               SliverSafeArea(
-                top: false,
                 sliver: Builder(
                   builder:
                       (context) => SliverPadding(
