@@ -58,9 +58,12 @@ class MoviesServiceAnime365 implements MoviesService {
             if (limit != null) 'limit': limit,
             if (offset != null) 'offset': offset,
             if (watchStatuses.isNotEmpty)
-              'chips':
-                  'status='
-                  '${watchStatuses.map(WatchStatusConverterAnime365.toJson).join(',')}',
+              'chips': [
+                'status',
+                watchStatuses
+                    .map(WatchStatusConverterAnime365.toJson)
+                    .join(','),
+              ].join('='),
           }.map((key, value) => MapEntry(key, value.toString())),
         ),
         method: RequestMethod.get,
