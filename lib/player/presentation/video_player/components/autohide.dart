@@ -75,7 +75,7 @@ class _AutohideState extends State<Autohide> {
     _hidingTimer?.cancel();
     _hidingTimer = Timer(
       const Duration(seconds: 2),
-      () => _setVisibility(visible: false, forceVisible: false),
+      () => _setVisibility(visible: false, forceVisible: force ? false : null),
     );
   }
 
