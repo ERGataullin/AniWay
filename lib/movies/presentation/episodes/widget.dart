@@ -3,6 +3,7 @@ import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/presentation/components/episode_card.dart';
 import 'package:app/movies/presentation/episodes/wm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _EpisodesContext on BuildContext {
   IEpisodesWM get wm => read<IEpisodesWM>();
@@ -69,7 +70,9 @@ class _Episodes extends StatelessWidget {
                 .map(
                   (episodes) => GridView.builder(
                     clipBehavior: Clip.none,
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(
+                      Breakpoint.activeBreakpointOf(context).margin,
+                    ),
                     itemCount: episodes.length,
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(

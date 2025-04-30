@@ -52,10 +52,7 @@ class TopNavigation extends StatelessWidget {
             return Column(
               children: [
                 AppBar(
-                  // forceMaterialTransparency: true,
                   centerTitle: true,
-                  // scrolledUnderElevation: 3,
-                  // shadowColor: ColorScheme.of(context).shadow,
                   title: Padding(
                     padding: padding,
                     child: CustomMultiChildLayout(

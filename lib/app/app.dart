@@ -67,22 +67,26 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return !_initialized
         ? const SizedBox.shrink()
-        : MaterialApp(
-          debugShowCheckedModeBanner: false,
-          supportedLocales: L10n.supportedLocales,
-          localizationsDelegates: L10n.localizationsDelegates,
-          title: 'AniWay',
-          theme: Themes.light,
-          darkTheme: Themes.dark,
-          builder:
-              (context, _) => PlatformWrapper(
-                child: Router.withConfig(
-                  config:
-                      _router ??= AppRouter(
-                        signedIn: context.read<AuthRepository>().signedIn,
-                      ),
-                ),
-              ),
+        : Builder(
+          builder: (context) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              supportedLocales: L10n.supportedLocales,
+              localizationsDelegates: L10n.localizationsDelegates,
+              title: 'AniWay',
+              theme: Themes.light(context),
+              darkTheme: Themes.dark(context),
+              builder:
+                  (context, _) => PlatformWrapper(
+                    child: Router.withConfig(
+                      config:
+                          _router ??= AppRouter(
+                            signedIn: context.read<AuthRepository>().signedIn,
+                          ),
+                    ),
+                  ),
+            );
+          },
         );
   }
 

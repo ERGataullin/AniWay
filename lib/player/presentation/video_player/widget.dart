@@ -56,39 +56,41 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
   Widget build(IVideoPlayerWM wm) {
     return Provider<IVideoPlayerWM>.value(
       value: wm,
-      child: Theme(
-        data: Themes.videoPlayer,
-        child: PopScope(
-          onPopInvokedWithResult: wm.handlePopInvoked,
-          child: Scaffold(
-            body: Stack(
-              clipBehavior: Clip.none,
-              fit: StackFit.expand,
-              children: [
-                const _Player(),
-                Autohide(
-                  videoController: wm.videoController,
-                  background: Colors.black54,
-                  controls: const _Controls(),
-                  gestures: const _Gestures(),
-                  playerBuilder:
-                      (context, background) => ValueListenableBuilder(
-                        valueListenable: wm.maxZoom,
-                        builder:
-                            (context, maxZoom, player) =>
-                                Zoomable(maxZoom: maxZoom, child: player!),
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          fit: StackFit.expand,
-                          children: [const _Player(), background],
+      builder: (context, _) {
+        return Theme(
+          data: Themes.videoPlayer(context),
+          child: PopScope(
+            onPopInvokedWithResult: wm.handlePopInvoked,
+            child: Scaffold(
+              body: Stack(
+                clipBehavior: Clip.none,
+                fit: StackFit.expand,
+                children: [
+                  const _Player(),
+                  Autohide(
+                    videoController: wm.videoController,
+                    background: Colors.black54,
+                    controls: const _Controls(),
+                    gestures: const _Gestures(),
+                    playerBuilder:
+                        (context, background) => ValueListenableBuilder(
+                          valueListenable: wm.maxZoom,
+                          builder:
+                              (context, maxZoom, player) =>
+                                  Zoomable(maxZoom: maxZoom, child: player!),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            fit: StackFit.expand,
+                            children: [const _Player(), background],
+                          ),
                         ),
-                      ),
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -234,7 +236,9 @@ class _Controls extends StatelessWidget {
               child: SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(
+                    Breakpoint.activeBreakpointOf(context).margin,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,

@@ -10,6 +10,7 @@ import 'package:app/movies/presentation/movie/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _MovieContext on BuildContext {
   IMovieWM get wm => read<IMovieWM>();
@@ -147,17 +148,19 @@ class _AppBarFlexibleSpace extends StatelessWidget {
                   ? const SizedBox.shrink()
                   : DefaultTextStyle(
                     style: TextTheme.primaryOf(context).headlineMedium!,
-                    child: const FlexibleSpaceBar(
+                    child: FlexibleSpaceBar(
                       collapseMode: CollapseMode.pin,
                       background: Stack(
                         fit: StackFit.expand,
                         children: [
-                          _PosterFaded(),
+                          const _PosterFaded(),
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Column(
+                              padding: EdgeInsets.all(
+                                Breakpoint.activeBreakpointOf(context).margin,
+                              ),
+                              child: const Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -316,7 +319,9 @@ class _Description extends StatelessWidget {
             final String description when description.isNotEmpty => Padding(
               padding:
                   EdgeInsets.only(top: marginTop) +
-                  const EdgeInsets.symmetric(horizontal: 16),
+                  EdgeInsets.symmetric(
+                    horizontal: Breakpoint.activeBreakpointOf(context).margin,
+                  ),
               child: ExpandableText(description),
             ),
             _ => const SizedBox.shrink(),
@@ -348,8 +353,11 @@ class _Episodes extends StatelessWidget {
                           builder:
                               (context, _) => DestinationTitle(
                                 context.l10n.episodesLabel,
-                                margin: const EdgeInsets.symmetric(
-                                  horizontal: 16,
+                                margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      Breakpoint.activeBreakpointOf(
+                                        context,
+                                      ).margin,
                                 ),
                                 uri: context.wm.episodesUri.value,
                                 trailing: const _EpisodesCount(),
@@ -359,7 +367,10 @@ class _Episodes extends StatelessWidget {
                         SizedBox(
                           height: 128,
                           child: ListView.separated(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  Breakpoint.activeBreakpointOf(context).margin,
+                            ),
                             clipBehavior: Clip.none,
                             scrollDirection: Axis.horizontal,
                             itemCount: context.wm.episodes.value.length,
