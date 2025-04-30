@@ -19,8 +19,6 @@ MoviesSearchWM moviesSearchWMFactory(BuildContext context) => MoviesSearchWM(
 abstract interface class IMoviesSearchWM implements IWidgetModel {
   Computed<String?> get query;
 
-  ScrollController get scrollController;
-
   Key? get pagedGridKey;
 
   Future<List<MovieCardData>> handleLoadPage(int page);
@@ -37,9 +35,6 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   @override
   final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
       GlobalKey();
-
-  @override
-  ScrollController get scrollController => PrimaryScrollController.of(context);
 
   @override
   Future<List<MovieCardData>> handleLoadPage(int page) async {

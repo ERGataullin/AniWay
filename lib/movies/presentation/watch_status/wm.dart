@@ -28,16 +28,13 @@ abstract interface class IWatchStatusWM implements IWidgetModel {
   ValueListenable<bool> get loading;
 
   WatchStatus get status;
+  set status(WatchStatus value);
 
-  WatchStatus get currentStatus;
-
-  List<WatchStatus> get statuses;
+  WatchStatus? get currentStatus;
 
   int? get episodesCountTotal;
 
   String? validateEpisodes(String? value);
-
-  void handleStatusSelected(WatchStatus status);
 
   void handleScorePressed(int score);
 
@@ -66,17 +63,11 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);
 
-  WatchStatus _status = WatchStatus.planned;
   @override
-  WatchStatus get status => _status;
+  WatchStatus status = WatchStatus.planned;
 
   @override
-  WatchStatus get currentStatus => widget.statusDetails.status;
-
-  @override
-  List<WatchStatus> get statuses => WatchStatus.values
-      .where((status) => status != WatchStatus.none)
-      .toList(growable: false);
+  WatchStatus? get currentStatus => widget.statusDetails.status;
 
   @override
   int? get episodesCountTotal => widget.movie.episodesCount;
@@ -91,44 +82,36 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   }
 
   @override
-  void handleStatusSelected(WatchStatus status) {
-    _status = status;
-  }
-
-  @override
   void handleScorePressed(int score) {
     this.score.value = score;
   }
 
   @override
   Future<void> handleDeletePressed() async {
-    const status = WatchStatusDetails(WatchStatus.none);
-    await _submit(status);
+    var statusDetails = const WatchStatusDetails(null);
+    statusDetails = await _submit(statusDetails);
     if (!context.mounted) return;
-    Navigator.pop(context, status);
+    Navigator.pop(context, statusDetails);
   }
 
   @override
   Future<void> handleSavePressed() async {
-    final status = WatchStatusDetails(
-      _status,
+    var statusDetails = WatchStatusDetails(
+      status,
       score: score.value,
       episodesCount: int.parse(episodesController.text),
       comment: commentController.text,
     );
     if (formKey.currentState!.validate()) {
-      await _submit(status);
+      statusDetails = await _submit(statusDetails);
       if (!context.mounted) return;
-      Navigator.pop(context, status);
+      Navigator.pop(context, statusDetails);
     }
   }
 
   @override
   void initWidgetModel() {
-    _status = switch (widget.statusDetails.status) {
-      WatchStatus.none => WatchStatus.planned,
-      final WatchStatus status => status,
-    };
+    status = widget.statusDetails.status ?? WatchStatus.planned;
     episodesController.text = '${widget.statusDetails.episodesCount}';
     score.value = widget.statusDetails.score;
     commentController.text = widget.statusDetails.comment ?? '';
@@ -144,9 +127,12 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
     super.dispose();
   }
 
-  Future<void> _submit(WatchStatusDetails watchStatusDetails) async {
+  Future<WatchStatusDetails> _submit(WatchStatusDetails statusDetails) async {
     loading.value = true;
-    await model.save(movieId: widget.movie.id, status: watchStatusDetails);
-    loading.value = false;
+    final WatchStatusDetails result = await model.save(
+      movieId: widget.movie.id,
+      status: statusDetails,
+    );
+    return result;
   }
 }

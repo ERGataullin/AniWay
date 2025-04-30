@@ -12,6 +12,10 @@ const _marginHorizontal = EdgeInsets.symmetric(horizontal: 24);
 
 const _marginVertical = EdgeInsets.symmetric(vertical: 24);
 
+const Breakpoint _fullscreenDialogBreakpoint = Breakpoints.standard;
+
+const Breakpoint _basicDialogBreakpoint = Breakpoints.mediumLargeAndUp;
+
 extension _WatchStatusContext on BuildContext {
   IWatchStatusWM get wm => read<IWatchStatusWM>();
 }
@@ -37,13 +41,13 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: SlotLayout(
           config: <Breakpoint, SlotLayoutConfig>{
-            Breakpoints.standard: SlotLayout.from(
+            _fullscreenDialogBreakpoint: SlotLayout.from(
               key: const Key('Body Standard'),
-              builder: (context) => const _ContentSmall(),
+              builder: (context) => const _FullscreenDialog(),
             ),
-            Breakpoints.mediumLargeAndUp: SlotLayout.from(
+            _basicDialogBreakpoint: SlotLayout.from(
               key: const Key('Body Medium Large and Up'),
-              builder: (context) => const _ContentMediumAndUp(),
+              builder: (context) => const _BasicDialog(),
             ),
           },
         ),
@@ -52,8 +56,8 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
   }
 }
 
-class _ContentSmall extends StatelessWidget {
-  const _ContentSmall();
+class _FullscreenDialog extends StatelessWidget {
+  const _FullscreenDialog();
 
   @override
   Widget build(BuildContext context) {
@@ -65,18 +69,29 @@ class _ContentSmall extends StatelessWidget {
             onPressed: Navigator.of(context).pop,
             icon: const Icon(Icons.close),
           ),
-          title: Text(context.l10n.watchStatusAdd),
+          title: Text(context.l10n.watchStatusTitle),
           actionsPadding: const EdgeInsets.only(right: 12),
           actions: [
-            IconButton(
-              color: colorScheme.error,
-              onPressed: context.wm.handleDeletePressed,
-              icon: const Icon(Icons.delete_outlined),
+            ValueListenableBuilder(
+              valueListenable: context.wm.loading,
+              builder:
+                  (context, loading, _) => IconButton(
+                    color: colorScheme.error,
+                    onPressed:
+                        loading || context.wm.currentStatus == null
+                            ? null
+                            : context.wm.handleDeletePressed,
+                    icon: const Icon(Icons.delete_outlined),
+                  ),
             ),
-            IconButton(
-              color: colorScheme.primary,
-              onPressed: context.wm.handleSavePressed,
-              icon: const Icon(Icons.done_outlined),
+            ValueListenableBuilder(
+              valueListenable: context.wm.loading,
+              builder:
+                  (context, loading, _) => IconButton(
+                    color: colorScheme.primary,
+                    onPressed: loading ? null : context.wm.handleSavePressed,
+                    icon: const Icon(Icons.done_outlined),
+                  ),
             ),
           ],
         ),
@@ -87,8 +102,8 @@ class _ContentSmall extends StatelessWidget {
             return SingleChildScrollView(
               padding: margin,
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight - margin.vertical,
+                constraints: BoxConstraints.tightFor(
+                  height: constraints.maxHeight - margin.vertical,
                 ),
                 child: const _MaybeLoader(child: _Fields()),
               ),
@@ -100,8 +115,8 @@ class _ContentSmall extends StatelessWidget {
   }
 }
 
-class _ContentMediumAndUp extends StatelessWidget {
-  const _ContentMediumAndUp();
+class _BasicDialog extends StatelessWidget {
+  const _BasicDialog();
 
   @override
   Widget build(BuildContext context) {
@@ -113,45 +128,48 @@ class _ContentMediumAndUp extends StatelessWidget {
           padding: _marginVertical,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 560),
-            child: _MaybeLoader(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: _marginHorizontal,
-                    child: Text(
-                      context.l10n.watchStatusAdd,
-                      style: TextTheme.of(context).headlineSmall,
-                    ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: _marginHorizontal,
+                  child: Text(
+                    context.l10n.watchStatusTitle,
+                    style: TextTheme.of(context).headlineSmall,
                   ),
-                  const SizedBox(height: 16),
-                  const _Fields(),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: _marginHorizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed:
-                              context.wm.currentStatus == WatchStatus.none
-                                  ? null
-                                  : context.wm.handleDeletePressed,
-                          style: TextButton.styleFrom(
-                            foregroundColor: ColorScheme.of(context).error,
-                          ),
-                          child: Text(context.l10n.delete),
+                ),
+                const SizedBox(height: 16),
+                const _MaybeLoader(child: _Fields()),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: _marginHorizontal,
+                  child: ValueListenableBuilder(
+                    valueListenable: context.wm.loading,
+                    builder:
+                        (context, loading, _) => Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed:
+                                  loading || context.wm.currentStatus == null
+                                      ? null
+                                      : context.wm.handleDeletePressed,
+                              style: TextButton.styleFrom(
+                                foregroundColor: ColorScheme.of(context).error,
+                              ),
+                              child: Text(context.l10n.delete),
+                            ),
+                            TextButton(
+                              onPressed:
+                                  loading ? null : context.wm.handleSavePressed,
+                              child: Text(context.l10n.save),
+                            ),
+                          ],
                         ),
-                        TextButton(
-                          onPressed: context.wm.handleSavePressed,
-                          child: Text(context.l10n.save),
-                        ),
-                      ],
-                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -167,13 +185,37 @@ class _MaybeLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Breakpoint breakpoint =
+        Breakpoint.activeBreakpointIn(context, const [
+          _fullscreenDialogBreakpoint,
+          _basicDialogBreakpoint,
+        ])!;
     return ListenableBuilder(
       listenable: context.wm.loading,
       builder:
-          (context, _) =>
-              context.wm.loading.value
-                  ? const Center(child: CircularProgressIndicator.adaptive())
-                  : child,
+          (context, _) => Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedContainer(
+                curve: Easing.standard,
+                duration: Durations.medium2,
+                foregroundDecoration: BoxDecoration(
+                  color: switch (breakpoint) {
+                    _ when !context.wm.loading.value => null,
+                    _fullscreenDialogBreakpoint =>
+                      Theme.of(context).scaffoldBackgroundColor,
+                    _ => Theme.of(context).dialogTheme.backgroundColor!,
+                  },
+                ),
+                child: IgnorePointer(
+                  ignoring: context.wm.loading.value,
+                  child: child,
+                ),
+              ),
+              if (context.wm.loading.value)
+                const Center(child: CircularProgressIndicator.adaptive()),
+            ],
+          ),
     );
   }
 }
@@ -213,13 +255,13 @@ class _Status extends StatelessWidget {
     return DropdownMenu<WatchStatus>(
       expandedInsets: EdgeInsets.zero,
       requestFocusOnTap: false,
-      label: Text(context.l10n.watchStatusLabel),
+      label: Text(context.l10n.statusLabel),
       initialSelection: context.wm.status,
-      onSelected: (value) => context.wm.handleStatusSelected(value!),
+      onSelected: (value) => context.wm.status = value!,
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
         focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
       ),
-      dropdownMenuEntries: context.wm.statuses
+      dropdownMenuEntries: WatchStatus.values
           .map(
             (status) => DropdownMenuEntry(
               value: status,
@@ -237,7 +279,7 @@ class _Score extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const double itemSize = 48;
-    final double spacing = Breakpoint.activeBreakpointOf(context).padding;
+    final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,

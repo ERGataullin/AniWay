@@ -35,6 +35,7 @@ extension _AppOverrides on ThemeData {
       surfaceTintColor: colorScheme.surface,
       actionsPadding: const EdgeInsets.only(right: 8),
     ),
+
     cardTheme: cardTheme.copyWith(
       elevation: 1,
       shadowColor: colorScheme.shadow,
@@ -44,13 +45,20 @@ extension _AppOverrides on ThemeData {
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     ),
-    progressIndicatorTheme: progressIndicatorTheme.copyWith(year2023: false),
+
+    progressIndicatorTheme: progressIndicatorTheme.copyWith(
+      year2023: false,
+      strokeWidth: 4,
+    ),
+
     dividerTheme: dividerTheme.copyWith(
       space: 0,
       thickness: 1,
       color: colorScheme.outlineVariant,
     ),
+
     drawerTheme: drawerTheme.copyWith(width: 360),
+
     inputDecorationTheme: inputDecorationTheme.copyWith(
       filled: true,
       border: const UnderlineInputBorder(borderSide: BorderSide.none),
@@ -58,9 +66,11 @@ extension _AppOverrides on ThemeData {
         borderSide: BorderSide(width: 2, color: colorScheme.primary),
       ),
     ),
+
     navigationDrawerTheme: navigationDrawerTheme.copyWith(
       backgroundColor: colorScheme.surface,
     ),
+
     navigationRailTheme: navigationRailTheme.copyWith(
       minWidth: 80,
       labelType: NavigationRailLabelType.all,
@@ -68,18 +78,21 @@ extension _AppOverrides on ThemeData {
         size: 24,
         color: colorScheme.onSecondaryContainer,
       ),
-      selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
-        color: colorScheme.onSurface,
-      ),
       unselectedIconTheme: IconThemeData(
         size: 24,
         color: colorScheme.onSurfaceVariant,
       ),
+      selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+        fontWeight: FontWeight.w600,
+        color: colorScheme.onSurface,
+      ),
       unselectedLabelTextStyle: textTheme.labelMedium!.copyWith(
+        fontWeight: FontWeight.w500,
         color: colorScheme.onSurfaceVariant,
       ),
       backgroundColor: colorScheme.surface,
     ),
+
     searchBarTheme: searchBarTheme.copyWith(
       elevation: const WidgetStatePropertyAll(0),
       textCapitalization: TextCapitalization.sentences,
@@ -90,6 +103,11 @@ extension _AppOverrides on ThemeData {
         maxHeight: 56,
       ),
     ),
+
+    tabBarTheme: tabBarTheme.copyWith(
+      splashBorderRadius: const BorderRadius.vertical(top: Radius.circular(3)),
+    ),
+
     tooltipTheme: tooltipTheme.copyWith(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       textStyle: textTheme.bodySmall!.copyWith(

@@ -10,16 +10,25 @@
 		{
 			"label": "Build .apk",
 			"type": "shell",
-			"options": {
-				"cwd": "build/app/outputs/apk/release",
-			},
 			"presentation": {
 				"reveal": "always",
 			},
 			"command": [
-				"rm AniWay.apk; ",
+				"flutter clean; ",
 				"flutter build apk --release; ",
+				"cd build/app/outputs/apk/release; ",
 				"mv app-release.apk AniWay.apk; ",
+			],
+		},
+		{
+			"label": "Build .msix",
+			"type": "shell",
+			"presentation": {
+				"reveal": "always",
+			},
+			"command": [
+				"flutter clean; ",
+				"dart run msix:create; ",
 			],
 		},
 		{

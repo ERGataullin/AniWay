@@ -2,18 +2,9 @@ import 'package:app/player/utils/video_controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoSeekBar extends StatefulWidget {
-  const VideoSeekBar({
-    super.key,
-    required this.videoController,
-    required this.onPositionChangeStart,
-    required this.onPositionChangeEnd,
-  });
+  const VideoSeekBar({super.key, required this.videoController});
 
   final VideoController videoController;
-
-  final ValueChanged<double> onPositionChangeStart;
-
-  final ValueChanged<double> onPositionChangeEnd;
 
   @override
   State<VideoSeekBar> createState() => _VideoSeekBarState();
@@ -21,8 +12,6 @@ class VideoSeekBar extends StatefulWidget {
 
 class _VideoSeekBarState extends State<VideoSeekBar> {
   var _isMouse = false;
-
-  var _isSeeking = false;
 
   var _value = 0.0;
 
@@ -35,21 +24,21 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
   @override
   void initState() {
     _videoController
-      ..position.addListener(_handlePositionDurationChanged)
-      ..duration.addListener(_handlePositionDurationChanged);
+      ..position.addListener(_updateValue)
+      ..duration.addListener(_updateValue);
+    _updateValue();
     super.initState();
   }
 
   @override
   void dispose() {
     _videoController
-      ..position.removeListener(_handlePositionDurationChanged)
-      ..duration.removeListener(_handlePositionDurationChanged);
+      ..position.removeListener(_updateValue)
+      ..duration.removeListener(_updateValue);
     super.dispose();
   }
 
-  void _handlePositionDurationChanged() {
-    if (_isSeeking) return;
+  void _updateValue() {
     setState(() {
       _value = switch (_duration) {
         Duration.zero => 0,
@@ -70,19 +59,8 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
             _isMouse
                 ? SliderInteraction.tapAndSlide
                 : SliderInteraction.slideOnly,
-        onChangeStart: (value) {
-          _isSeeking = true;
-          widget.onPositionChangeStart(value);
-        },
-        onChangeEnd: (value) {
-          _isSeeking = false;
-          widget.onPositionChangeEnd(value);
-        },
         onChanged: (value) {
-          setState(() {
-            _value = value;
-            _videoController.seekTo(_duration * value);
-          });
+          setState(() => _videoController.seekTo(_duration * value));
         },
       ),
     );

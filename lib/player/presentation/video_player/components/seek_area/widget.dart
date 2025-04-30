@@ -31,14 +31,8 @@ class SeekAreaWidget extends ElementaryWidget<ISeekAreaWM> {
         fit: StackFit.expand,
         clipBehavior: Clip.none,
         children: [
-          ListenableBuilder(
-            listenable: wm.shape,
-            builder:
-                (context, child) => Material(
-                  type: MaterialType.transparency,
-                  shape: wm.shape.value,
-                  child: child,
-                ),
+          Material(
+            type: MaterialType.transparency,
             child: Column(
               key: wm.materialChildKey,
               mainAxisAlignment: MainAxisAlignment.center,

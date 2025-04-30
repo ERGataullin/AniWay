@@ -71,13 +71,10 @@ class MoviesRepository with Initable {
     return _moviesService.getWatchStatus(movieUri);
   }
 
-  Future<void> saveWatchStatus({
+  Future<WatchStatusDetails> saveWatchStatus({
     required int movieId,
     required WatchStatusDetails status,
   }) {
-    return _moviesService.saveWatchStatus(
-      movieId: movieId,
-      watchStatusDetails: status,
-    );
+    return _moviesService.saveWatchStatus(movieId: movieId, status: status);
   }
 }

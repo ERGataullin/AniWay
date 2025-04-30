@@ -15,8 +15,6 @@ UpNextWM upNextWMFactory(BuildContext context) => UpNextWM(
 );
 
 abstract interface class IUpNextWM implements IWidgetModel {
-  ScrollController get scrollController;
-
   Key? get pagedGridKey;
 
   Future<List<MovieCardData>> handleLoadPage(int page);
@@ -30,9 +28,6 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
   @override
   final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
       GlobalKey();
-
-  @override
-  ScrollController get scrollController => PrimaryScrollController.of(context);
 
   @override
   Future<List<MovieCardData>> handleLoadPage(int page) async {

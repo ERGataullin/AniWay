@@ -7,6 +7,7 @@ import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/movies/presentation/search/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   const MoviesSearchWidget({
@@ -34,8 +35,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
 
   @override
   Widget build(IMoviesSearchWM wm) {
-    return Provider<IMoviesSearchWM>.value(
-      value: wm,
+    return RootMenuAwaredCenter(
       child: ShimmerScope(
         child: ListenableBuilder(
           listenable: wm.query,
@@ -55,22 +55,17 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                         ),
                 body: body,
               ),
-          child: RootMenuAwaredCenter(
-            child: CustomScrollView(
-              controller: wm.scrollController,
-              slivers: [
-                Builder(
+          child: CustomScrollView(
+            slivers: [
+              SliverSafeArea(
+                sliver: Builder(
                   builder:
                       (context) => SliverPadding(
-                        padding: EdgeInsets.fromLTRB(
-                          16,
-                          16 + MediaQuery.paddingOf(context).top,
-                          16,
-                          16 + MediaQuery.paddingOf(context).bottom,
+                        padding: EdgeInsets.all(
+                          Breakpoint.defaultBreakpointOf(context).margin,
                         ),
                         sliver: SliverPagedGrid(
                           key: wm.pagedGridKey,
-                          controller: wm.scrollController,
                           gridDelegate: MovieCard.gridDelegate,
                           onLoadPage: wm.handleLoadPage,
                           itemBuilder:
@@ -79,8 +74,8 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                         ),
                       ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

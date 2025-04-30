@@ -16,8 +16,6 @@ SeekAreaWM seekAreaWMFactory(BuildContext context) =>
 abstract interface class ISeekAreaWM implements IWidgetModel {
   ValueListenable<Map<Type, GestureRecognizerFactory>> get gestures;
 
-  ValueListenable<ShapeBorder> get shape;
-
   ValueListenable<int> get value;
 
   ValueListenable<int> get iconsRotation;
@@ -63,11 +61,6 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
                   ),
             }
             : const {},
-  );
-
-  @override
-  late final Computed<ShapeBorder> shape = Computed(
-    () => SeekAreaShapeBorder(widget.type),
   );
 
   @override
@@ -118,7 +111,6 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   void initWidgetModel() {
     super.initWidgetModel();
     model.value.addListener(_handleValueChaged);
-    shape.update();
     iconsRotation.update();
   }
 
@@ -132,7 +124,6 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   @override
   void dispose() {
     gestures.dispose();
-    shape.dispose();
     iconsRotation.dispose();
     value.dispose();
     for (final CurvedAnimation animation in iconsOpacities) {
@@ -164,7 +155,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
           color: theme.value.splashColor,
           textDirection: _textDirection,
           containedInkWell: true,
-          customBorder: shape.value,
+          customBorder: SeekAreaShapeBorder(widget.type),
         )
         .confirm();
   }
