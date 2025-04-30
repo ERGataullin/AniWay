@@ -124,12 +124,15 @@ class _AutohideState extends State<Autohide> {
           ),
           _InaccuratePointerListener(
             onTap: () {
-              _changeVisibilityReasons(
-                add: {if (!_visible) _VisibilityReason.userInteraction},
-                remove: {if (_visible) ..._VisibilityReason.values},
-                delayRemove: false,
-              );
               if (_visible) {
+                _changeVisibilityReasons(
+                  remove: const {..._VisibilityReason.values},
+                  delayRemove: false,
+                );
+              } else {
+                _changeVisibilityReasons(
+                  add: const {_VisibilityReason.userInteraction},
+                );
                 _changeVisibilityReasons(
                   remove: const {_VisibilityReason.userInteraction},
                 );
