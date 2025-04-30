@@ -1,5 +1,6 @@
 import 'package:app/theme/components/video_player_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 abstract class Themes {
   static ThemeData light(BuildContext context) =>
@@ -30,19 +31,35 @@ abstract class Themes {
 
 extension _AppOverrides on ThemeData {
   ThemeData appOverrides(BuildContext context) {
-    const isMediumAndUpBreakpoint = false;
-    // Breakpoint.activeBreakpointOf(context) >= Breakpoints.medium;
+    final bool isMediumAndUp =
+        Breakpoint.activeBreakpointOf(context) >= Breakpoints.medium;
     return copyWith(
       appBarTheme: appBarTheme.copyWith(
         toolbarHeight: 64,
-        scrolledUnderElevation: isMediumAndUpBreakpoint ? 1 : 3,
-        shadowColor: isMediumAndUpBreakpoint ? colorScheme.shadow : null,
-        backgroundColor: isMediumAndUpBreakpoint ? colorScheme.surface : null,
-        surfaceTintColor: isMediumAndUpBreakpoint ? colorScheme.surface : null,
+        scrolledUnderElevation: isMediumAndUp ? 1 : 3,
+        shadowColor: isMediumAndUp ? colorScheme.shadow : null,
+        backgroundColor: isMediumAndUp ? colorScheme.surface : null,
+        surfaceTintColor: isMediumAndUp ? colorScheme.surface : null,
         actionsPadding: const EdgeInsets.only(right: 8),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
-        ),
+      ),
+
+      navigationBarTheme: navigationBarTheme.copyWith(
+        elevation: 3,
+        labelTextStyle: WidgetStateTextStyle.fromMap({
+          WidgetState.selected: textTheme.labelMedium!.copyWith(
+            fontWeight: FontWeight.w700,
+            color: colorScheme.onSurface,
+          ),
+          WidgetState.any: textTheme.labelMedium!.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        }),
+        iconTheme: WidgetStateProperty.fromMap({
+          WidgetState.selected: IconThemeData(
+            color: colorScheme.onSecondaryContainer,
+          ),
+          WidgetState.any: IconThemeData(color: colorScheme.onSurface),
+        }),
       ),
 
       cardTheme: cardTheme.copyWith(

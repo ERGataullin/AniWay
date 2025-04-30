@@ -25,28 +25,49 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
         child: Builder(
           builder: (context) {
             return Scaffold(
-              appBar: AppBar(
-                clipBehavior: Clip.hardEdge,
-                title: Text(context.l10n.upNextTitle),
-              ),
-              body: CustomScrollView(
-                slivers: [
-                  SliverSafeArea(
-                    sliver: SliverPadding(
-                      padding: EdgeInsets.all(
-                        Breakpoint.activeBreakpointOf(context).margin,
+              body: NestedScrollView(
+                headerSliverBuilder:
+                    (context, innerBoxIsScrolled) => [
+                      SliverOverlapAbsorber(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context,
+                        ),
+                        sliver: SliverAppBar(
+                          pinned: true,
+                          forceElevated: innerBoxIsScrolled,
+                          title: Text(context.l10n.upNextTitle),
+                        ),
                       ),
-                      sliver: SliverPagedGrid(
-                        key: wm.pagedGridKey,
-                        gridDelegate: MovieCard.gridDelegate,
-                        onLoadPage: wm.handleLoadPage,
-                        itemBuilder:
-                            (context, movie, animation) =>
-                                MovieCard(movie, opacity: animation),
+                    ],
+                body: CustomScrollView(
+                  slivers: [
+                    Builder(
+                      builder: (context) {
+                        return SliverOverlapInjector(
+                          handle:
+                              NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                context,
+                              ),
+                        );
+                      },
+                    ),
+                    SliverSafeArea(
+                      sliver: SliverPadding(
+                        padding: EdgeInsets.all(
+                          Breakpoint.activeBreakpointOf(context).margin,
+                        ),
+                        sliver: SliverPagedGrid(
+                          key: wm.pagedGridKey,
+                          gridDelegate: MovieCard.gridDelegate,
+                          onLoadPage: wm.handleLoadPage,
+                          itemBuilder:
+                              (context, movie, animation) =>
+                                  MovieCard(movie, opacity: animation),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
