@@ -22,7 +22,7 @@ VideoPlayerWM videoPlayerWMFactory(BuildContext context) => VideoPlayerWM(
 );
 
 abstract interface class IVideoPlayerWM implements IWidgetModel {
-  ValueListenable<double> get maxScale;
+  ValueListenable<double> get maxZoom;
 
   ValueListenable<String> get title;
 
@@ -64,7 +64,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   final fullscreenController = FullscreenController();
 
   @override
-  late final Computed<double> maxScale = Computed(
+  late final Computed<double> maxZoom = Computed(
     trigger: videoController.aspectRatio,
     () => model.getMaxScale(
       surfaceAspectRatio: MediaQuery.sizeOf(context).aspectRatio,
@@ -144,7 +144,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   @override
   void didChangeDependencies() {
     model.currentLocale = Localizations.localeOf(context);
-    maxScale.update();
+    maxZoom.update();
     super.didChangeDependencies();
   }
 
@@ -179,7 +179,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
 
   @override
   void dispose() {
-    maxScale.dispose();
+    maxZoom.dispose();
     title.dispose();
     subtitle.dispose();
     translationTitle.dispose();
