@@ -64,13 +64,6 @@ class _AutohideState extends State<Autohide> {
   }) {
     if (add.isEmpty && remove.isEmpty) return;
     _visibilityReasonsChangeTimer?.cancel();
-    print(
-      'LOG: ----------------------------------------------------\n'
-      'LOG: Add: $add\n'
-      'LOG: Remove: $remove\n'
-      'LOG: Delay remove: $delayRemove\n'
-      'LOG: Visible: $_visible',
-    );
 
     _visibilityReasons
       ..addAll(add)
@@ -91,7 +84,6 @@ class _AutohideState extends State<Autohide> {
 
   void _setVisibility(bool visible) {
     setState(() {
-      print('LOG: Set visibility: $visible');
       _visible = visible;
       SystemChrome.setEnabledSystemUIMode(
         _visible ? SystemUiMode.edgeToEdge : SystemUiMode.immersiveSticky,
