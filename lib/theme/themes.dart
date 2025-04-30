@@ -31,9 +31,14 @@ extension _AppOverrides on ThemeData {
     appBarTheme: appBarTheme.copyWith(
       scrolledUnderElevation: 3,
       toolbarHeight: 64,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: colorScheme.surface,
       actionsPadding: const EdgeInsets.only(right: 8),
     ),
     cardTheme: cardTheme.copyWith(
+      elevation: 1,
+      shadowColor: colorScheme.shadow,
+      color: colorScheme.surfaceContainerLow,
       margin: EdgeInsets.zero,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),

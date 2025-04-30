@@ -7,6 +7,7 @@ import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/presentation/components/episode_card.dart';
 import 'package:app/movies/presentation/components/movie_score.dart';
 import 'package:app/movies/presentation/movie/wm.dart';
+import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -36,51 +37,54 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
   Widget build(IMovieWM wm) {
     return Provider<IMovieWM>.value(
       value: wm,
-      child: ShimmerScope(
-        child: ListenableBuilder(
-          listenable: Listenable.merge([wm.loading, wm.episodes]),
-          builder:
-              (context, _) => Scaffold(
-                floatingActionButton:
-                    wm.episodes.value.isEmpty
-                        ? null
-                        : FloatingActionButton.extended(
-                          onPressed: context.wm.handlePlayPressed,
-                          label: Text(context.l10n.playLabel),
-                          icon: const Icon(Icons.play_arrow_outlined),
-                        ),
-                body: CustomScrollView(
-                  primary: true,
-                  slivers: [
-                    const _AppBar(),
-                    if (wm.loading.value)
-                      const SliverFillRemaining(
-                        child: Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        ),
-                      )
-                    else
-                      MediaQuery.removePadding(
-                        removeTop: true,
-                        context: context,
-                        child: const SliverSafeArea(
-                          sliver: SliverToBoxAdapter(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _Description(marginTop: 16),
-                                _Episodes(marginTop: 16),
-                                SizedBox(
-                                  height: kFloatingActionButtonMargin * 2 + 56,
-                                ),
-                              ],
+      child: RootMenuAwaredCenter(
+        child: ShimmerScope(
+          child: ListenableBuilder(
+            listenable: Listenable.merge([wm.loading, wm.episodes]),
+            builder:
+                (context, _) => Scaffold(
+                  floatingActionButton:
+                      wm.episodes.value.isEmpty
+                          ? null
+                          : FloatingActionButton.extended(
+                            onPressed: context.wm.handlePlayPressed,
+                            label: Text(context.l10n.playLabel),
+                            icon: const Icon(Icons.play_arrow_outlined),
+                          ),
+                  body: CustomScrollView(
+                    primary: true,
+                    slivers: [
+                      const _AppBar(),
+                      if (wm.loading.value)
+                        const SliverFillRemaining(
+                          child: Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
+                        )
+                      else
+                        MediaQuery.removePadding(
+                          removeTop: true,
+                          context: context,
+                          child: const SliverSafeArea(
+                            sliver: SliverToBoxAdapter(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _Description(marginTop: 16),
+                                  _Episodes(marginTop: 16),
+                                  SizedBox(
+                                    height:
+                                        kFloatingActionButtonMargin * 2 + 56,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+          ),
         ),
       ),
     );

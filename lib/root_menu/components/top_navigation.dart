@@ -47,21 +47,16 @@ class TopNavigation extends StatelessWidget {
         _breakpoint: SlotLayout.from(
           key: const Key('Top Navigation Medium and Up'),
           builder: (context) {
-            final ThemeData theme = Theme.of(context);
-            final ColorScheme colorScheme = theme.colorScheme;
             final Size size = sizeFor(context);
 
-            return Theme(
-              data: theme.copyWith(
-                colorScheme: colorScheme.copyWith(
-                  surfaceContainer: colorScheme.surfaceContainerLowest,
-                ),
-              ),
-              child: AppBar(
-                centerTitle: true,
-                title: Theme(
-                  data: theme,
-                  child: Padding(
+            return Column(
+              children: [
+                AppBar(
+                  // forceMaterialTransparency: true,
+                  centerTitle: true,
+                  // scrolledUnderElevation: 3,
+                  // shadowColor: ColorScheme.of(context).shadow,
+                  title: Padding(
                     padding: padding,
                     child: CustomMultiChildLayout(
                       delegate: _LayoutDelegate(size: size),
@@ -82,7 +77,7 @@ class TopNavigation extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ],
             );
           },
         ),

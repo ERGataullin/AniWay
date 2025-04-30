@@ -81,6 +81,12 @@ class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
   }
 
   @override
+  Rect describeApproximatePaintClip(covariant RenderBox child) {
+    final Offset childOffset = (child.parentData! as BoxParentData).offset;
+    return child.paintBounds.translate(childOffset.dx, childOffset.dy);
+  }
+
+  @override
   void paint(PaintingContext context, Offset offset) {
     final RenderBox? child = this.child;
     if (child != null) {
@@ -98,6 +104,11 @@ class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
       );
       parentData.offset = Offset(offsetX, 0);
     }
-    super.paint(context, offset);
+    context.pushClipRect(
+      needsCompositing,
+      offset,
+      describeApproximatePaintClip(child!),
+      super.paint,
+    );
   }
 }

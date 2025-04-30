@@ -43,7 +43,7 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
 
   @override
   void didUpdateWidget(covariant MoviesSearchBar oldWidget) {
-    if (widget.query != _controller.text && widget.query?.isNotEmpty == true) {
+    if (widget.query != _controller.text) {
       _controller.text = widget.query ?? '';
     }
     super.didUpdateWidget(oldWidget);
@@ -75,6 +75,12 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
                 (context, _) => SearchBar(
                   controller: _controller,
                   hintText: context.l10n.searchPageTitle,
+                  side: WidgetStatePropertyAll(
+                    BorderSide(
+                      color: ColorScheme.of(context).outlineVariant,
+                      width: 0,
+                    ),
+                  ),
                   leading:
                       Navigator.canPop(context)
                           ? const BackButton()
@@ -82,15 +88,13 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
                             onPressed: null,
                             icon: Icon(Icons.search_outlined),
                           ),
-                  trailing:
-                      _controller.text.isEmpty
-                          ? null
-                          : [
-                            IconButton(
-                              onPressed: _controller.clear,
-                              icon: const Icon(Icons.clear_outlined),
-                            ),
-                          ],
+                  trailing: [
+                    if (_controller.text.isNotEmpty)
+                      IconButton(
+                        onPressed: _controller.clear,
+                        icon: const Icon(Icons.clear_outlined),
+                      ),
+                  ],
                 ),
           ),
         ),
