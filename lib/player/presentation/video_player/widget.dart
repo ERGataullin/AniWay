@@ -73,10 +73,10 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
                   gestures: const _Gestures(),
                   playerBuilder:
                       (context, background) => ValueListenableBuilder(
-                        valueListenable: wm.maxScale,
+                        valueListenable: wm.maxZoom,
                         builder:
                             (context, maxZoom, player) =>
-                                Zoomable(maxZoom: 2, child: player!),
+                                Zoomable(maxZoom: maxZoom, child: player!),
                         child: Stack(
                           clipBehavior: Clip.none,
                           fit: StackFit.expand,
