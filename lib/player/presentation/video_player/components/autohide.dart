@@ -129,6 +129,11 @@ class _AutohideState extends State<Autohide> {
                 remove: {if (_visible) ..._VisibilityReason.values},
                 delayRemove: false,
               );
+              if (_visible) {
+                _changeVisibilityReasons(
+                  remove: const {_VisibilityReason.userInteraction},
+                );
+              }
             },
             onUserInteractionStart: () {
               _changeVisibilityReasons(
