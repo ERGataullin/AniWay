@@ -32,8 +32,8 @@ abstract interface class MoviesService {
 
   Future<WatchStatusDetails> getWatchStatus(Uri movieUri);
 
-  Future<void> saveWatchStatus({
+  Future<WatchStatusDetails> saveWatchStatus({
     required int movieId,
-    required WatchStatusDetails watchStatusDetails,
+    required WatchStatusDetails status,
   });
 }

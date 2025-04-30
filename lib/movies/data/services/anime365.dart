@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
+import 'package:app/movies/data/converters/anime365/watch_status.dart';
+import 'package:app/movies/data/converters/anime365/watch_status_details.dart';
 import 'package:app/movies/data/services/service.dart';
 import 'package:app/movies/domain/models/episode.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
@@ -56,9 +58,12 @@ class MoviesServiceAnime365 implements MoviesService {
             if (limit != null) 'limit': limit,
             if (offset != null) 'offset': offset,
             if (watchStatuses.isNotEmpty)
-              'chips':
-                  'status='
-                  '${watchStatuses.map(_convertWatchStatusToJson).join(',')}',
+              'chips': [
+                'status',
+                watchStatuses
+                    .map(WatchStatusConverterAnime365.toJson)
+                    .join(','),
+              ].join('='),
           }.map((key, value) => MapEntry(key, value.toString())),
         ),
         method: RequestMethod.get,
@@ -540,60 +545,20 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(uri: movieUri, method: RequestMethod.get),
     );
     final Document document = parse(response.body);
-    final Element bodyContainer = document.querySelector('div.body-container')!;
-    final Element animeListForm =
-        bodyContainer.querySelector('div.animelist_one_series > form#yw2')!;
 
-    final String? status =
-        animeListForm
-            .querySelector(
-              'select#UsersRates_status > option[selected="selected"]',
-            )
-            ?.text;
-
-    final String? scoreValue =
-        animeListForm
-            .querySelector(
-              'select#UsersRates_score > option[selected="selected"]',
-            )
-            ?.attributes['value'];
-    final int? score = scoreValue == null ? null : int.parse(scoreValue);
-
-    final String? watchedEpisodesCountValue =
-        animeListForm
-            .querySelector('input#UsersRates_episodes')
-            ?.attributes['value'];
-    final int watchedEpisodesCount =
-        watchedEpisodesCountValue == null
-            ? 0
-            : int.parse(watchedEpisodesCountValue);
-
-    final String? commentValue =
-        animeListForm.querySelector('textarea#UsersRates_comment')?.innerHtml;
-
-    return WatchStatusDetails(
-      switch (status) {
-        'Запланировано' => WatchStatus.planned,
-        'Смотрю' => WatchStatus.watching,
-        'Просмотрено' => WatchStatus.completed,
-        'Отложено' => WatchStatus.onHold,
-        'Брошено' => WatchStatus.dropped,
-        null => null,
-        final Object? unsupported =>
-          throw UnsupportedError('Unsupported movie status: $unsupported'),
-      },
-      score: score,
-      episodesCount: watchedEpisodesCount,
-      comment: commentValue,
+    return WatchStatusDetailsConverterAnime365.fromHtml(
+      document
+          .querySelector('div.body-container')!
+          .querySelector('div.animelist_one_series > form#yw2')!,
     );
   }
 
   @override
-  Future<void> saveWatchStatus({
+  Future<WatchStatusDetails> saveWatchStatus({
     required int movieId,
-    required WatchStatusDetails watchStatusDetails,
+    required WatchStatusDetails status,
   }) async {
-    await _networkService.request<void>(
+    final ResponseData<String> response = await _networkService.request(
       RequestData(
         uri: Uri(
           path: '/animelist/edit/$movieId',
@@ -602,14 +567,14 @@ class MoviesServiceAnime365 implements MoviesService {
         method: RequestMethod.post,
         body: {
           'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
-          'UsersRates[status]': _convertWatchStatusToJson(
-            watchStatusDetails.status,
-          ),
-          'UsersRates[score]': watchStatusDetails.score,
-          'UsersRates[episodes]': watchStatusDetails.episodesCount,
-          'UsersRates[comment]': watchStatusDetails.comment,
+          ...WatchStatusDetailsConverterAnime365.toFormData(status),
         },
       ),
+    );
+    final Document document = parse(response.body);
+
+    return WatchStatusDetailsConverterAnime365.fromHtml(
+      document.documentElement!,
     );
   }
 
@@ -650,17 +615,6 @@ class MoviesServiceAnime365 implements MoviesService {
       MoviesOrder.byName => 'name',
       MoviesOrder.byReleaseDate => 'aired_on',
       MoviesOrder.random => 'random',
-    };
-  }
-
-  int _convertWatchStatusToJson(WatchStatus? watchStatus) {
-    return switch (watchStatus) {
-      WatchStatus.planned => 0,
-      WatchStatus.watching => 1,
-      WatchStatus.completed => 2,
-      WatchStatus.onHold => 3,
-      WatchStatus.dropped => 4,
-      null => 99,
     };
   }
 }
