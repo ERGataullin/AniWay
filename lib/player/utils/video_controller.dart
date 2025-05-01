@@ -7,7 +7,13 @@ import 'package:video_player/video_player.dart';
 
 class VideoController {
   VideoController({required NetworkService networkService})
-    : _networkService = networkService;
+    : _networkService = networkService {
+    fvp.registerWith(
+      options: const {
+        'player': {'audio.renderer': 'AudioTrack'},
+      },
+    );
+  }
 
   final loading = ValueNotifier<bool>(true);
 
@@ -35,8 +41,6 @@ class VideoController {
     Uri? captionsUri,
     bool saveState = false,
   }) async {
-    fvp.registerWith();
-
     await _inner.value?.pause();
     _inner.value
       ?..removeListener(_handleInnerValueChanged)
