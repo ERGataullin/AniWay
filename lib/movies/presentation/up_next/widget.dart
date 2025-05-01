@@ -22,36 +22,32 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
   Widget build(IUpNextWM wm) {
     return RootMenuAwaredCenter(
       child: ShimmerScope(
-        child: Builder(
-          builder: (context) {
-            return Scaffold(
-              body: NestedScrollView(
-                headerSliverBuilder:
-                    (context, innerBoxIsScrolled) => [
-                      SliverOverlapAbsorber(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context,
-                        ),
-                        sliver: SliverAppBar(
-                          pinned: true,
-                          forceElevated: innerBoxIsScrolled,
-                          title: Text(context.l10n.upNextTitle),
-                        ),
-                      ),
-                    ],
-                body: CustomScrollView(
+        child: Scaffold(
+          body: NestedScrollView(
+            headerSliverBuilder:
+                (context, innerBoxIsScrolled) => [
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                      context,
+                    ),
+                    sliver: SliverAppBar(
+                      pinned: true,
+                      forceElevated: innerBoxIsScrolled,
+                      title: Text(context.l10n.upNextTitle),
+                    ),
+                  ),
+                ],
+            body: Builder(
+              builder: (context) {
+                return CustomScrollView(
                   slivers: [
-                    Builder(
-                      builder: (context) {
-                        return SliverOverlapInjector(
-                          handle:
-                              NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                context,
-                              ),
-                        );
-                      },
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context,
+                      ),
                     ),
                     SliverSafeArea(
+                      top: false,
                       sliver: SliverPadding(
                         padding: EdgeInsets.all(
                           Breakpoint.activeBreakpointOf(context).margin,
@@ -67,10 +63,10 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
                       ),
                     ),
                   ],
-                ),
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
