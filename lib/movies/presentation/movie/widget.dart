@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
+part 'components/app_bar.dart';
+
 extension _MovieContext on BuildContext {
   IMovieWM get wm => read<IMovieWM>();
 }
@@ -86,162 +88,6 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _AppBar extends StatelessWidget {
-  const _AppBar();
-
-  static bool isScrolledUnder(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!
-        .isScrolledUnder!;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.loading,
-      builder: (context, loading, _) {
-        return SliverAppBar.large(
-          pinned: true,
-          expandedHeight:
-              loading ? null : MediaQuery.sizeOf(context).width * 1.25,
-          title: const _Title(),
-          leading: IconButton(
-            onPressed: Navigator.of(context).pop,
-            icon: Builder(
-              builder: (context) {
-                return ConditionalWrapper(
-                  condition: !isScrolledUnder(context),
-                  child: Icon(Icons.adaptive.arrow_back),
-                  wrapper: (context, child) {
-                    return IconTheme(
-                      data: Theme.of(context).primaryIconTheme,
-                      child: child,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          actions: loading ? null : const [_WatchStatusButton()],
-          flexibleSpace: const _AppBarFlexibleSpace(),
-        );
-      },
-    );
-  }
-}
-
-class _AppBarFlexibleSpace extends StatelessWidget {
-  const _AppBarFlexibleSpace();
-
-  @override
-  Widget build(BuildContext context) {
-    final Color scrimColor = ColorScheme.of(context).scrim;
-    return ValueListenableBuilder(
-      valueListenable: context.wm.loading,
-      builder: (context, loading, _) {
-        return loading
-            ? const SizedBox.shrink()
-            : FlexibleSpaceBar(
-              collapseMode: CollapseMode.pin,
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  const _Poster(),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            scrimColor.withValues(alpha: .5),
-                            scrimColor.withValues(alpha: 0),
-                          ],
-                        ),
-                      ),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: AppBarTheme.of(context).toolbarHeight!,
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: const [0, .25, .75, 1],
-                          colors: [
-                            scrimColor.withValues(alpha: 0),
-                            scrimColor.withValues(alpha: .5),
-                            scrimColor.withValues(alpha: .9),
-                            scrimColor,
-                          ],
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(
-                          Breakpoint.activeBreakpointOf(context).margin,
-                        ),
-                        child: const Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Отступ для более плавного градиента.
-                            SizedBox(height: 32),
-                            _Score(),
-                            _Title(),
-                            SizedBox(height: 8),
-                            _Genres(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-      },
-    );
-  }
-}
-
-class _WatchStatusButton extends StatelessWidget {
-  const _WatchStatusButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.watchStatus,
-      builder: (context, watchStatus, _) {
-        return ConditionalWrapper(
-          condition: !_AppBar.isScrolledUnder(context),
-          wrapper: (context, child) {
-            return IconTheme(
-              data: Theme.of(context).primaryIconTheme,
-              child: child,
-            );
-          },
-          child: IconButton(
-            onPressed: () => context.wm.handleWatchStatusPressed(context),
-            isSelected: watchStatus != null,
-            tooltip: switch (watchStatus) {
-              null => context.l10n.watchStatusTitle,
-              final WatchStatus other => context.l10n.watchStatus(other.name),
-            },
-            icon: const Icon(Icons.library_add_outlined),
-            selectedIcon: const Icon(Icons.library_add_check_outlined),
-          ),
-        );
-      },
     );
   }
 }
@@ -367,20 +213,7 @@ class _Episodes extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ValueListenableBuilder(
-                    valueListenable: context.wm.episodesUri,
-                    builder: (context, episodesUri, _) {
-                      return DestinationTitle(
-                        context.l10n.episodesLabel,
-                        margin: EdgeInsets.symmetric(
-                          horizontal:
-                              Breakpoint.activeBreakpointOf(context).margin,
-                        ),
-                        uri: episodesUri,
-                        trailing: const _EpisodesCount(),
-                      );
-                    },
-                  ),
+                  const _EpisodesTitle(),
                   const SizedBox(height: 8),
                   SizedBox(
                     height: 128,
@@ -413,21 +246,35 @@ class _Episodes extends StatelessWidget {
   }
 }
 
-class _EpisodesCount extends StatelessWidget {
-  const _EpisodesCount();
+class _EpisodesTitle extends StatelessWidget {
+  const _EpisodesTitle();
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: context.wm.episodesCount,
-      builder: (context, episodesCount, _) {
-        return Text(switch (context.wm.episodesCount.value) {
-          final int episodesCount => context.l10n.xOfY(
-            min(context.wm.episodes.value.length, episodesCount),
-            episodesCount,
+      valueListenable: context.wm.episodesUri,
+      builder: (context, episodesUri, _) {
+        return DestinationTitle(
+          context.l10n.episodesLabel,
+          margin: EdgeInsets.symmetric(
+            horizontal: Breakpoint.activeBreakpointOf(context).margin,
           ),
-          _ => context.l10n.releasedCount(context.wm.episodes.value.length),
-        });
+          uri: episodesUri,
+          trailing: ValueListenableBuilder(
+            valueListenable: context.wm.episodesCount,
+            builder: (context, episodesCount, _) {
+              return Text(switch (context.wm.episodesCount.value) {
+                final int episodesCount => context.l10n.xOfY(
+                  min(context.wm.episodes.value.length, episodesCount),
+                  episodesCount,
+                ),
+                _ => context.l10n.releasedCount(
+                  context.wm.episodes.value.length,
+                ),
+              });
+            },
+          ),
+        );
       },
     );
   }

@@ -4,7 +4,7 @@ import 'package:app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
-extension SignInContext on BuildContext {
+extension _SignInContext on BuildContext {
   ISignInWM get wm => read<ISignInWM>();
 }
 
