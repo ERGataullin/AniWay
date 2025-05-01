@@ -2,20 +2,28 @@ import 'package:app/core/core.dart';
 import 'package:app/movies/domain/models/movie_card.dart';
 import 'package:app/movies/presentation/components/movie_score.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard(this.data, {super.key, this.opacity});
 
-  static const gridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
-    crossAxisSpacing: 8,
-    mainAxisSpacing: 8,
-    childAspectRatio: 3 / 4,
-    maxCrossAxisExtent: 128 + 64,
-  );
+  static const double _aspectRatio = 3 / 4;
 
   final Animation<double>? opacity;
 
   final MovieCardData? data;
+
+  static SliverGridDelegateWithMaxCrossAxisExtent gridDelegate(
+    BuildContext context,
+  ) {
+    final double spacing = Breakpoint.activeBreakpointOf(context).padding;
+    return SliverGridDelegateWithMaxCrossAxisExtent(
+      crossAxisSpacing: spacing,
+      mainAxisSpacing: spacing,
+      childAspectRatio: _aspectRatio,
+      maxCrossAxisExtent: 128 + 64 + 32,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +31,7 @@ class MovieCard extends StatelessWidget {
     final CardThemeData cardTheme = CardTheme.of(context);
 
     return AspectRatio(
-      aspectRatio: gridDelegate.childAspectRatio,
+      aspectRatio: _aspectRatio,
       child: ConditionalWrapper(
         condition: opacity != null,
         wrapper: (context, child) {

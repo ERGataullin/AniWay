@@ -191,7 +191,10 @@ class _Movies extends StatelessWidget {
                   right: safeAreaPadding.right,
                 ),
               ),
-              separatorBuilder: (context, _) => const SizedBox(width: 8),
+              separatorBuilder:
+                  (context, _) => SizedBox(
+                    width: Breakpoint.activeBreakpointOf(context).padding,
+                  ),
               itemBuilder: (context, index) => MovieCard(movies[index]),
             ),
       ),

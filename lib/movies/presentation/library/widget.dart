@@ -100,7 +100,7 @@ class _Movies extends StatelessWidget {
               Breakpoint.defaultBreakpointOf(context).margin,
             ),
             sliver: SliverPagedGrid(
-              gridDelegate: MovieCard.gridDelegate,
+              gridDelegate: MovieCard.gridDelegate(context),
               onLoadPage:
                   (page) => context.wm.handleLoadPage(page, watchStatus),
               itemBuilder:

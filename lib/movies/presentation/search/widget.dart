@@ -67,7 +67,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                         ),
                         sliver: SliverPagedGrid(
                           key: wm.pagedGridKey,
-                          gridDelegate: MovieCard.gridDelegate,
+                          gridDelegate: MovieCard.gridDelegate(context),
                           onLoadPage: wm.handleLoadPage,
                           itemBuilder:
                               (context, movie, animation) =>
