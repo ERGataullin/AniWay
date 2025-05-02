@@ -122,22 +122,26 @@ class _SubmitButton extends StatelessWidget {
       onPressed: context.wm.handleSubmitPressed,
       child: ListenableBuilder(
         listenable: context.wm.loading,
-        builder:
-            (context, _) => AnimatedSwitcher(
-              switchInCurve: Easing.standard,
-              switchOutCurve: Easing.standard.flipped,
-              duration: Durations.medium2,
-              child:
-                  context.wm.loading.value
-                      ? SizedBox.square(
-                        dimension: IconTheme.of(context).size,
-                        child: const CircularProgressIndicator.adaptive(),
-                      )
-                      : ValueListenableBuilder(
-                        valueListenable: context.wm.submitLabel,
-                        builder: (context, label, _) => Text(label),
+        builder: (context, _) {
+          final IconThemeData iconTheme = IconTheme.of(context);
+          return AnimatedSwitcher(
+            switchInCurve: Easing.standard,
+            switchOutCurve: Easing.standard.flipped,
+            duration: Durations.medium2,
+            child:
+                context.wm.loading.value
+                    ? CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation(iconTheme.color!),
+                      constraints: BoxConstraints.tight(
+                        Size.square(iconTheme.size!),
                       ),
-            ),
+                    )
+                    : ValueListenableBuilder(
+                      valueListenable: context.wm.submitLabel,
+                      builder: (context, label, _) => Text(label),
+                    ),
+          );
+        },
       ),
     );
   }
