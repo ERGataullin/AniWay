@@ -10,10 +10,10 @@ abstract class Themes {
       ThemeData(brightness: Brightness.dark).appOverrides(context);
 
   static ThemeData videoPlayer(BuildContext context) {
-    final ThemeData dark = Themes.dark(context);
     return ThemeData.from(
-      colorScheme: dark.colorScheme.copyWith(
+      colorScheme: ColorScheme(
         brightness: Brightness.dark,
+        primary: const Color(0xFFD0BCFF),
         onPrimary: Colors.white,
         secondary: Colors.grey[350]!,
         secondaryContainer: Colors.black26,
