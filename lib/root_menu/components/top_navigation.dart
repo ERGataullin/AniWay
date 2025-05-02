@@ -68,6 +68,15 @@ class TopNavigation extends StatelessWidget {
                             margin: const EdgeInsets.symmetric(vertical: 8),
                             query: query,
                             onSearch: onSearch,
+                            theme: SearchBarThemeData(
+                              elevation: const WidgetStatePropertyAll(0),
+                              side: WidgetStatePropertyAll(
+                                BorderSide(
+                                  width: 0,
+                                  color: ColorScheme.of(context).outlineVariant,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],

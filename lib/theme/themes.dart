@@ -120,7 +120,7 @@ extension _AppOverrides on ThemeData {
       ),
 
       searchBarTheme: searchBarTheme.copyWith(
-        elevation: const WidgetStatePropertyAll(0),
+        elevation: const WidgetStatePropertyAll(6),
         textCapitalization: TextCapitalization.sentences,
         constraints: const BoxConstraints(
           minWidth: 360,

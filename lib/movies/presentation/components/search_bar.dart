@@ -12,6 +12,7 @@ class MoviesSearchBar extends StatefulWidget implements PreferredSizeWidget {
     this.margin = EdgeInsets.zero,
     this.query,
     required this.onSearch,
+    this.theme,
   });
 
   final EdgeInsets margin;
@@ -19,6 +20,8 @@ class MoviesSearchBar extends StatefulWidget implements PreferredSizeWidget {
   final String? query;
 
   final OnMoviesSearch onSearch;
+
+  final SearchBarThemeData? theme;
 
   @override
   Size get preferredSize => Size.fromHeight(56 + margin.vertical);
@@ -60,27 +63,24 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
     final AppBarTheme appBarTheme = AppBarTheme.of(context);
     return ConditionalWrapper(
       condition: appBarTheme.systemOverlayStyle != null,
-      wrapper:
-          (context, child) => AnnotatedRegion(
-            value: appBarTheme.systemOverlayStyle!,
-            child: child,
-          ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: widget.margin,
-          child: ListenableBuilder(
-            listenable: _controller,
-            builder:
-                (context, _) => SearchBar(
+      wrapper: (context, child) {
+        return AnnotatedRegion(
+          value: appBarTheme.systemOverlayStyle!,
+          child: child,
+        );
+      },
+      child: Theme(
+        data: Theme.of(context).copyWith(searchBarTheme: widget.theme),
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: widget.margin,
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) {
+                return SearchBar(
                   controller: _controller,
                   hintText: context.l10n.searchPageTitle,
-                  side: WidgetStatePropertyAll(
-                    BorderSide(
-                      color: ColorScheme.of(context).outlineVariant,
-                      width: 0,
-                    ),
-                  ),
                   leading:
                       Navigator.canPop(context)
                           ? const BackButton()
@@ -95,7 +95,9 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
                         icon: const Icon(Icons.clear_outlined),
                       ),
                   ],
-                ),
+                );
+              },
+            ),
           ),
         ),
       ),
