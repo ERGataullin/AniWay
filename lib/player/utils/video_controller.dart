@@ -9,12 +9,10 @@ class VideoController {
   VideoController({required NetworkService networkService})
     : _networkService = networkService {
     fvp.registerWith(
-      options:
-          defaultTargetPlatform == TargetPlatform.windows
-              ? null
-              : const {
-                'player': {'audio.renderer': 'AudioTrack'},
-              },
+      options: {
+        if (defaultTargetPlatform == TargetPlatform.android)
+          'player': const {'audio.renderer': 'AudioTrack'},
+      },
     );
   }
 
