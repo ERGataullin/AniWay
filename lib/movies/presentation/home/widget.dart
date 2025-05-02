@@ -6,6 +6,7 @@ import 'package:app/movies/presentation/home/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _HomeContext on BuildContext {
   IHomeWM get wm => read<IHomeWM>();
@@ -98,33 +99,38 @@ class _Content extends StatelessWidget {
         removeBottom: true,
         context: context,
         child: LayoutBuilder(
-          builder:
-              (context, constraints) => SingleChildScrollView(
-                padding: EdgeInsets.only(
-                  top: 16 + safeAreaPadding.top,
-                  bottom: 16 + safeAreaPadding.bottom,
-                ),
-                child: Column(
-                  spacing: 16,
-                  children: [
-                    _Category(
-                      title: context.l10n.upNextTitle,
-                      uri: context.wm.upNextUri,
-                      movies: context.wm.upNextItems,
-                    ),
-                    _Category(
-                      title: context.l10n.ongoingsTitle,
-                      uri: context.wm.ongoingsUri,
-                      movies: context.wm.ongoingItems,
-                    ),
-                    _Category(
-                      title: context.l10n.popularsTitle,
-                      uri: context.wm.popularsUri,
-                      movies: context.wm.popularItems,
-                    ),
-                  ],
-                ),
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding:
+                  EdgeInsets.symmetric(
+                    vertical: Breakpoint.activeBreakpointOf(context).margin,
+                  ) +
+                  EdgeInsets.only(
+                    top: safeAreaPadding.top,
+                    bottom: safeAreaPadding.bottom,
+                  ),
+              child: Column(
+                spacing: 16,
+                children: [
+                  _Category(
+                    title: context.l10n.upNextTitle,
+                    uri: context.wm.upNextUri,
+                    movies: context.wm.upNextItems,
+                  ),
+                  _Category(
+                    title: context.l10n.ongoingsTitle,
+                    uri: context.wm.ongoingsUri,
+                    movies: context.wm.ongoingItems,
+                  ),
+                  _Category(
+                    title: context.l10n.popularsTitle,
+                    uri: context.wm.popularsUri,
+                    movies: context.wm.popularItems,
+                  ),
+                ],
               ),
+            );
+          },
         ),
       ),
     );
@@ -146,7 +152,9 @@ class _Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const marginHorizontal = EdgeInsets.symmetric(horizontal: 16);
+    final marginHorizontal = EdgeInsets.symmetric(
+      horizontal: Breakpoint.activeBreakpointOf(context).margin,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -183,7 +191,10 @@ class _Movies extends StatelessWidget {
                   right: safeAreaPadding.right,
                 ),
               ),
-              separatorBuilder: (context, _) => const SizedBox(width: 8),
+              separatorBuilder:
+                  (context, _) => SizedBox(
+                    width: Breakpoint.activeBreakpointOf(context).padding,
+                  ),
               itemBuilder: (context, index) => MovieCard(movies[index]),
             ),
       ),

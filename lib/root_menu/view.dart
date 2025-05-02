@@ -64,6 +64,9 @@ class _RootMenuViewState extends State<RootMenuView> {
                       preferredSize: topSize,
                       child: TopNavigation(
                         key: _topKey,
+                        padding: PrimaryNavigation.topNavigationPaddingFor(
+                          context,
+                        ),
                         query: widget.query,
                         onSearch: widget.onSearch,
                       ),

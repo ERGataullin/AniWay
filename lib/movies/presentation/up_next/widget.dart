@@ -1,8 +1,10 @@
 import 'package:app/core/core.dart';
-import 'package:app/l10n/l10n.dart';
+import 'package:app/l10n/context_extension.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/up_next/wm.dart';
+import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class UpNextWidget extends ElementaryWidget<IUpNextWM> {
   const UpNextWidget({
@@ -18,31 +20,54 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
 
   @override
   Widget build(IUpNextWM wm) {
-    return ShimmerScope(
-      child: Builder(
-        builder:
-            (context) => Scaffold(
-              appBar: AppBar(title: Text(context.l10n.upNextTitle)),
-              body: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: CustomScrollView(
-                    slivers: [
-                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                      SliverPagedGrid(
-                        key: wm.pagedGridKey,
-                        gridDelegate: MovieCard.gridDelegate,
-                        onLoadPage: wm.handleLoadPage,
-                        itemBuilder:
-                            (context, movie, animation) =>
-                                MovieCard(movie, opacity: animation),
-                      ),
-                      const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                    ],
+    return RootMenuAwaredCenter(
+      child: ShimmerScope(
+        child: Scaffold(
+          body: NestedScrollView(
+            headerSliverBuilder:
+                (context, innerBoxIsScrolled) => [
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                      context,
+                    ),
+                    sliver: SliverAppBar(
+                      pinned: true,
+                      forceElevated: innerBoxIsScrolled,
+                      title: Text(context.l10n.upNextTitle),
+                    ),
                   ),
-                ),
-              ),
+                ],
+            body: Builder(
+              builder: (context) {
+                return CustomScrollView(
+                  slivers: [
+                    SliverOverlapInjector(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context,
+                      ),
+                    ),
+                    SliverSafeArea(
+                      top: false,
+                      sliver: SliverPadding(
+                        padding: EdgeInsets.all(
+                          Breakpoint.activeBreakpointOf(context).margin,
+                        ),
+                        sliver: SliverPagedGrid(
+                          key: wm.pagedGridKey,
+                          gridDelegate: MovieCard.gridDelegate(context),
+                          onLoadPage: wm.handleLoadPage,
+                          itemBuilder:
+                              (context, movie, animation) =>
+                                  MovieCard(movie, opacity: animation),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
+          ),
+        ),
       ),
     );
   }

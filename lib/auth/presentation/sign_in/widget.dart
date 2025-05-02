@@ -2,8 +2,9 @@ import 'package:app/auth/presentation/sign_in/wm.dart';
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
-extension SignInContext on BuildContext {
+extension _SignInContext on BuildContext {
   ISignInWM get wm => read<ISignInWM>();
 }
 
@@ -17,38 +18,41 @@ class SignInWidget extends ElementaryWidget<ISignInWM> {
   Widget build(ISignInWM wm) {
     return Provider<ISignInWM>.value(
       value: wm,
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Form(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: AutofillGroup(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 720),
-                  child: const SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SizedBox(height: 16),
-                        _Logo(),
-                        SizedBox(height: 32),
-                        _EmailField(),
-                        SizedBox(height: 16),
-                        _PasswordField(),
-                        SizedBox(height: 32),
-                        _SubmitButton(),
-                        SizedBox(height: 16),
-                      ],
+      builder: (context, _) {
+        final double margin = Breakpoint.activeBreakpointOf(context).margin;
+        return Scaffold(
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: margin),
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: AutofillGroup(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(height: margin),
+                          const _Logo(),
+                          const SizedBox(height: 32),
+                          const _EmailField(),
+                          const SizedBox(height: 16),
+                          const _PasswordField(),
+                          const SizedBox(height: 32),
+                          const _SubmitButton(),
+                          SizedBox(height: margin),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -118,22 +122,26 @@ class _SubmitButton extends StatelessWidget {
       onPressed: context.wm.handleSubmitPressed,
       child: ListenableBuilder(
         listenable: context.wm.loading,
-        builder:
-            (context, _) => AnimatedSwitcher(
-              switchInCurve: Easing.standard,
-              switchOutCurve: Easing.standard.flipped,
-              duration: Durations.medium2,
-              child:
-                  context.wm.loading.value
-                      ? SizedBox.square(
-                        dimension: IconTheme.of(context).size,
-                        child: const CircularProgressIndicator.adaptive(),
-                      )
-                      : ValueListenableBuilder(
-                        valueListenable: context.wm.submitLabel,
-                        builder: (context, label, _) => Text(label),
+        builder: (context, _) {
+          final IconThemeData iconTheme = IconTheme.of(context);
+          return AnimatedSwitcher(
+            switchInCurve: Easing.standard,
+            switchOutCurve: Easing.standard.flipped,
+            duration: Durations.medium2,
+            child:
+                context.wm.loading.value
+                    ? CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation(iconTheme.color!),
+                      constraints: BoxConstraints.tight(
+                        Size.square(iconTheme.size!),
                       ),
-            ),
+                    )
+                    : ValueListenableBuilder(
+                      valueListenable: context.wm.submitLabel,
+                      builder: (context, label, _) => Text(label),
+                    ),
+          );
+        },
       ),
     );
   }

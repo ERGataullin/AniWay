@@ -32,6 +32,7 @@ class LibraryWidget extends ElementaryWidget<ILibraryWM> {
                 length: wm.watchStatuses.length,
                 child: Scaffold(
                   body: NestedScrollView(
+                    floatHeaderSlivers: true,
                     headerSliverBuilder:
                         (context, innerBoxIsScrolled) => [
                           SliverOverlapAbsorber(
@@ -40,7 +41,9 @@ class LibraryWidget extends ElementaryWidget<ILibraryWM> {
                                   context,
                                 ),
                             sliver: SliverAppBar(
-                              pinned: true,
+                              pinned:
+                                  MediaQuery.sizeOf(context).height >=
+                                  Breakpoints.mediumAndUp.beginHeight!,
                               forceElevated: innerBoxIsScrolled,
                               title: Text(context.l10n.libraryTitle),
                               bottom: TabBar(
@@ -97,7 +100,7 @@ class _Movies extends StatelessWidget {
               Breakpoint.defaultBreakpointOf(context).margin,
             ),
             sliver: SliverPagedGrid(
-              gridDelegate: MovieCard.gridDelegate,
+              gridDelegate: MovieCard.gridDelegate(context),
               onLoadPage:
                   (page) => context.wm.handleLoadPage(page, watchStatus),
               itemBuilder:

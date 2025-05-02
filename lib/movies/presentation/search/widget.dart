@@ -46,6 +46,11 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                     RootMenuScope.of(context).hasTopNavigation(context)
                         ? null
                         : MoviesSearchBar(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal:
+                                Breakpoint.activeBreakpointOf(context).margin,
+                          ),
                           query: wm.query.value,
                           onSearch: onSearch,
                         ),
@@ -62,7 +67,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
                         ),
                         sliver: SliverPagedGrid(
                           key: wm.pagedGridKey,
-                          gridDelegate: MovieCard.gridDelegate,
+                          gridDelegate: MovieCard.gridDelegate(context),
                           onLoadPage: wm.handleLoadPage,
                           itemBuilder:
                               (context, movie, animation) =>

@@ -43,11 +43,11 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
           config: <Breakpoint, SlotLayoutConfig>{
             _fullscreenDialogBreakpoint: SlotLayout.from(
               key: const Key('Body Standard'),
-              builder: (_) => const _FullscreenDialog(),
+              builder: (context) => const _FullscreenDialog(),
             ),
             _basicDialogBreakpoint: SlotLayout.from(
               key: const Key('Body Medium Large and Up'),
-              builder: (_) => const _BasicDialog(),
+              builder: (context) => const _BasicDialog(),
             ),
           },
         ),

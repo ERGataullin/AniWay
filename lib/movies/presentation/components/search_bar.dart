@@ -7,16 +7,24 @@ import 'package:flutter/material.dart';
 typedef OnMoviesSearch = void Function(String query);
 
 class MoviesSearchBar extends StatefulWidget implements PreferredSizeWidget {
-  const MoviesSearchBar({super.key, this.query, required this.onSearch});
+  const MoviesSearchBar({
+    super.key,
+    this.margin = EdgeInsets.zero,
+    this.query,
+    required this.onSearch,
+    this.theme,
+  });
 
-  static const double margin = 8;
+  final EdgeInsets margin;
 
   final String? query;
 
   final OnMoviesSearch onSearch;
 
+  final SearchBarThemeData? theme;
+
   @override
-  Size get preferredSize => const Size.fromHeight(margin + 56 + margin);
+  Size get preferredSize => Size.fromHeight(56 + margin.vertical);
 
   @override
   State<MoviesSearchBar> createState() => _MoviesSearchBarState();
@@ -38,7 +46,7 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
 
   @override
   void didUpdateWidget(covariant MoviesSearchBar oldWidget) {
-    if (widget.query != _controller.text && widget.query?.isNotEmpty == true) {
+    if (widget.query != _controller.text) {
       _controller.text = widget.query ?? '';
     }
     super.didUpdateWidget(oldWidget);
@@ -55,19 +63,22 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
     final AppBarTheme appBarTheme = AppBarTheme.of(context);
     return ConditionalWrapper(
       condition: appBarTheme.systemOverlayStyle != null,
-      wrapper:
-          (context, child) => AnnotatedRegion(
-            value: appBarTheme.systemOverlayStyle!,
-            child: child,
-          ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.all(MoviesSearchBar.margin),
-          child: ListenableBuilder(
-            listenable: _controller,
-            builder:
-                (context, _) => SearchBar(
+      wrapper: (context, child) {
+        return AnnotatedRegion(
+          value: appBarTheme.systemOverlayStyle!,
+          child: child,
+        );
+      },
+      child: Theme(
+        data: Theme.of(context).copyWith(searchBarTheme: widget.theme),
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: widget.margin,
+            child: ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) {
+                return SearchBar(
                   controller: _controller,
                   hintText: context.l10n.searchPageTitle,
                   leading:
@@ -77,16 +88,16 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
                             onPressed: null,
                             icon: Icon(Icons.search_outlined),
                           ),
-                  trailing:
-                      _controller.text.isEmpty
-                          ? null
-                          : [
-                            IconButton(
-                              onPressed: _controller.clear,
-                              icon: const Icon(Icons.clear_outlined),
-                            ),
-                          ],
-                ),
+                  trailing: [
+                    if (_controller.text.isNotEmpty)
+                      IconButton(
+                        onPressed: _controller.clear,
+                        icon: const Icon(Icons.clear_outlined),
+                      ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
