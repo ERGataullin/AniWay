@@ -119,7 +119,7 @@
         }
     },
     "upNextTitle": "К просмотру",
-    "watchStatusTitle": "Статус просмотра",
+    "watchStatusTitle": "Добавить в список",
     "watchStatusEpisodesError": "Не более {episodesCountTotal} серий",
     "@watchStatusEpisodesError": {
         "placeholders": {
