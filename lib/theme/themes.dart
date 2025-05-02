@@ -43,6 +43,36 @@ extension _AppOverrides on ThemeData {
         actionsPadding: const EdgeInsets.only(right: 8),
       ),
 
+      cardTheme: cardTheme.copyWith(
+        elevation: 1,
+        shadowColor: colorScheme.shadow,
+        color: colorScheme.surfaceContainerLow,
+        margin: EdgeInsets.zero,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+      ),
+
+      dialogTheme: dialogTheme.copyWith(
+        backgroundColor: colorScheme.surfaceContainerHigh,
+      ),
+
+      dividerTheme: dividerTheme.copyWith(
+        space: 0,
+        thickness: 1,
+        color: colorScheme.outlineVariant,
+      ),
+
+      drawerTheme: drawerTheme.copyWith(width: 360),
+
+      inputDecorationTheme: inputDecorationTheme.copyWith(
+        filled: true,
+        border: const UnderlineInputBorder(borderSide: BorderSide.none),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(width: 2, color: colorScheme.primary),
+        ),
+      ),
+
       navigationBarTheme: navigationBarTheme.copyWith(
         elevation: 3,
         labelTextStyle: WidgetStateTextStyle.fromMap({
@@ -60,37 +90,6 @@ extension _AppOverrides on ThemeData {
           ),
           WidgetState.any: IconThemeData(color: colorScheme.onSurface),
         }),
-      ),
-
-      cardTheme: cardTheme.copyWith(
-        elevation: 1,
-        shadowColor: colorScheme.shadow,
-        color: colorScheme.surfaceContainerLow,
-        margin: EdgeInsets.zero,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-      ),
-
-      progressIndicatorTheme: progressIndicatorTheme.copyWith(
-        year2023: false,
-        strokeWidth: 4,
-      ),
-
-      dividerTheme: dividerTheme.copyWith(
-        space: 0,
-        thickness: 1,
-        color: colorScheme.outlineVariant,
-      ),
-
-      drawerTheme: drawerTheme.copyWith(width: 360),
-
-      inputDecorationTheme: inputDecorationTheme.copyWith(
-        filled: true,
-        border: const UnderlineInputBorder(borderSide: BorderSide.none),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(width: 2, color: colorScheme.primary),
-        ),
       ),
 
       navigationDrawerTheme: navigationDrawerTheme.copyWith(
@@ -117,6 +116,11 @@ extension _AppOverrides on ThemeData {
           color: colorScheme.onSurfaceVariant,
         ),
         backgroundColor: colorScheme.surface,
+      ),
+
+      progressIndicatorTheme: progressIndicatorTheme.copyWith(
+        year2023: false,
+        strokeWidth: 4,
       ),
 
       searchBarTheme: searchBarTheme.copyWith(
