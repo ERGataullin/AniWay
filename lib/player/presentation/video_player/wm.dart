@@ -211,19 +211,20 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   void _handlePositionDurationChanged() {
     if (videoController.loading.value) return;
 
-    if (!_watched) {
-      _watched =
-          videoController.position.value >=
-          videoController.duration.value - const Duration(minutes: 4);
-      if (_watched) {
-        widget.onWatched(model.translation.value!.id);
-        model.handleVideoWatched();
-      }
-    }
+    final Duration position = videoController.position.value;
+    final Duration duration = videoController.duration.value;
 
-    final bool finished =
-        videoController.position.value >= videoController.duration.value;
+    if (duration == Duration.zero) return;
+
+    final bool finished = position >= duration;
     if (finished) widget.onFinished();
+
+    if (_watched) return;
+    _watched = position >= duration - const Duration(minutes: 4);
+    if (_watched) {
+      widget.onWatched(model.translation.value!.id);
+      model.handleVideoWatched();
+    }
   }
 
   Future<void> _handleSharePressed() async {
