@@ -285,26 +285,54 @@ class _Score extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: spacing,
       children: [
+        // Padding(
+        //   padding: _marginHorizontal,
+        //   child:
+        // ),
+        // SizedBox(
+        //   height: itemSize,
+        //   child: ListView(
+        //     shrinkWrap: true,
+        //     scrollDirection: Axis.horizontal,
+        //     padding: _marginHorizontal,
+        //     itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
+        //     children: List.generate(
+        //       10 * 2 - 1,
+        //       (index) =>
+        //           index.isOdd
+        //               ? const SizedBox.shrink()
+        //               : SizedBox.square(child: _ScoreItem(index ~/ 2 + 1)),
+        //     ),
+        //   ),
+        // ),
         Padding(
           padding: _marginHorizontal,
-          child: Text(
-            context.l10n.score,
-            style: TextTheme.of(context).bodyLarge,
-          ),
-        ),
-        SizedBox(
-          height: itemSize,
-          child: ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            padding: _marginHorizontal,
-            itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
-            children: List.generate(
-              10 * 2 - 1,
-              (index) =>
-                  index.isOdd
-                      ? const SizedBox.shrink()
-                      : SizedBox.square(child: _ScoreItem(index ~/ 2 + 1)),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  child: Text(
+                    context.l10n.score,
+                    style: TextTheme.of(context).bodySmall!.copyWith(
+                      color: ColorScheme.of(context).onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(10, (index) => _ScoreItem(index + 1)),
+                ),
+                const SizedBox(height: 4),
+              ],
             ),
           ),
         ),
@@ -320,35 +348,76 @@ class _ScoreItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: context.wm.score,
-      builder: (context, score, _) {
-        final selected = value == score;
-        return Ink(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color:
-                selected
-                    ? ColorScheme.of(context).primaryContainer
-                    : ColorScheme.of(context).surfaceContainerHighest,
-          ),
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: () => context.wm.handleScorePressed(value),
-            child: Text(
-              '$value',
-              textAlign: TextAlign.center,
-              style: TextTheme.of(context).displaySmall?.copyWith(
-                fontFamily: 'Alvida',
-                color:
-                    selected
-                        ? ColorScheme.of(context).onPrimaryContainer
-                        : ColorScheme.of(context).onSurface,
-              ),
+    return Expanded(
+      child: ValueListenableBuilder(
+        valueListenable: context.wm.score,
+        builder: (context, score, _) {
+          final selected = value == score;
+          return Focus(
+            child: Builder(
+              builder: (context) {
+                final FocusNode focusNode = Focus.of(context);
+                final bool hasFocus = focusNode.hasFocus;
+                return MouseRegion(
+                  onHover: (event) => focusNode.requestFocus(),
+                  child: GestureDetector(
+                    onTap: () {
+                      focusNode.requestFocus();
+                      context.wm.handleScorePressed(value);
+                    },
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      '$value',
+                      style: TextStyle(
+                        height: 1,
+                        color:
+                            hasFocus || selected
+                                ? switch (value) {
+                                  <= 4 => Colors.red,
+                                  <= 6 => ColorScheme.of(context).onSurface,
+                                  _ => Colors.green,
+                                }
+                                : ColorScheme.of(context).onSurfaceVariant,
+                        fontSize:
+                            selected || hasFocus
+                                ? TextTheme.of(
+                                      context,
+                                    ).displaySmall!.fontSize! *
+                                    1.20
+                                : TextTheme.of(context).displaySmall!.fontSize,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-        );
-      },
+          );
+          // return Ink(
+          //   decoration: BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     color:
+          //         selected
+          //             ? ColorScheme.of(context).primaryContainer
+          //             : ColorScheme.of(context).surfaceContainerHighest,
+          //   ),
+          //   child: InkWell(
+          //     customBorder: const CircleBorder(),
+          //     onTap: () => context.wm.handleScorePressed(value),
+          //     child: Text(
+          //       '$value',
+          //       textAlign: TextAlign.center,
+          //       style: TextTheme.of(context).displaySmall?.copyWith(
+          //         fontFamily: 'Alvida',
+          //         color:
+          //             selected
+          //                 ? ColorScheme.of(context).onPrimaryContainer
+          //                 : ColorScheme.of(context).onSurface,
+          //       ),
+          //     ),
+          //   ),
+          // );
+        },
+      ),
     );
   }
 }
