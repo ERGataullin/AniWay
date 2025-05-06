@@ -315,11 +315,9 @@ class _Score extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 4),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     context.l10n.score,
                     style: TextTheme.of(context).bodySmall!.copyWith(
@@ -327,9 +325,15 @@ class _Score extends StatelessWidget {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(10, (index) => _ScoreItem(index + 1)),
+                Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      10,
+                      (index) => _ScoreItem(index + 1),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 4),
               ],
@@ -341,81 +345,100 @@ class _Score extends StatelessWidget {
   }
 }
 
-class _ScoreItem extends StatelessWidget {
+class _ScoreItem extends StatefulWidget {
   const _ScoreItem(this.value);
 
   final int value;
 
   @override
+  State<_ScoreItem> createState() => _ScoreItemState();
+}
+
+class _ScoreItemState extends State<_ScoreItem> {
+  var _isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ValueListenableBuilder(
-        valueListenable: context.wm.score,
-        builder: (context, score, _) {
-          final selected = value == score;
-          return Focus(
-            child: Builder(
-              builder: (context) {
-                final FocusNode focusNode = Focus.of(context);
-                final bool hasFocus = focusNode.hasFocus;
-                return MouseRegion(
-                  onHover: (event) => focusNode.requestFocus(),
-                  child: GestureDetector(
-                    onTap: () {
-                      focusNode.requestFocus();
-                      context.wm.handleScorePressed(value);
-                    },
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      '$value',
-                      style: TextStyle(
-                        height: 1,
-                        color:
-                            hasFocus || selected
-                                ? switch (value) {
-                                  <= 4 => Colors.red,
-                                  <= 6 => ColorScheme.of(context).onSurface,
-                                  _ => Colors.green,
-                                }
-                                : ColorScheme.of(context).onSurfaceVariant,
-                        fontSize:
-                            selected || hasFocus
-                                ? TextTheme.of(
-                                      context,
-                                    ).displaySmall!.fontSize! *
-                                    1.20
-                                : TextTheme.of(context).displaySmall!.fontSize,
-                      ),
-                    ),
-                  ),
-                );
+    return Focus(
+      child: Builder(
+        builder: (context) {
+          final FocusNode focusNode = Focus.of(context);
+          return MouseRegion(
+            onEnter: (_) => setState(() => _isHovered = true),
+            onExit: (_) => setState(() => _isHovered = false),
+            child: GestureDetector(
+              onTap: () {
+                focusNode.requestFocus();
+                context.wm.handleScorePressed(widget.value);
               },
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: kMinInteractiveDimension,
+                  minHeight: kMinInteractiveDimension,
+                ),
+                child: Center(
+                  child: ValueListenableBuilder(
+                    valueListenable: context.wm.score,
+                    builder: (context, score, _) {
+                      final selected = widget.value == score;
+                      final bool hasFocus = focusNode.hasFocus;
+                      final bool highlighted =
+                          selected || hasFocus || _isHovered;
+                      return Text(
+                        textAlign: TextAlign.center,
+                        '${widget.value}',
+                        style: TextTheme.of(context).bodyLarge!.copyWith(
+                          height: 1,
+                          color:
+                              highlighted
+                                  ? switch (widget.value) {
+                                    <= 4 => Colors.redAccent[400],
+                                    <= 6 => ColorScheme.of(context).onSurface,
+                                    _ => Colors.greenAccent[700],
+                                  }
+                                  : Theme.of(context).unselectedWidgetColor,
+                          fontWeight: highlighted ? FontWeight.w700 : null,
+                          fontSize:
+                              highlighted
+                                  ? TextTheme.of(
+                                        context,
+                                      ).headlineSmall!.fontSize! *
+                                      1.20
+                                  : TextTheme.of(
+                                    context,
+                                  ).headlineSmall!.fontSize,
+                        ),
+                      );
+                      // return Ink(
+                      //   decoration: BoxDecoration(
+                      //     shape: BoxShape.circle,
+                      //     color:
+                      //         selected
+                      //             ? ColorScheme.of(context).primaryContainer
+                      //             : ColorScheme.of(context).surfaceContainerHighest,
+                      //   ),
+                      //   child: InkWell(
+                      //     customBorder: const CircleBorder(),
+                      //     onTap: () => context.wm.handleScorePressed(value),
+                      //     child: Text(
+                      //       '$value',
+                      //       textAlign: TextAlign.center,
+                      //       style: TextTheme.of(context).displaySmall?.copyWith(
+                      //         fontFamily: 'Alvida',
+                      //         color:
+                      //             selected
+                      //                 ? ColorScheme.of(context).onPrimaryContainer
+                      //                 : ColorScheme.of(context).onSurface,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // );
+                    },
+                  ),
+                ),
+              ),
             ),
           );
-          // return Ink(
-          //   decoration: BoxDecoration(
-          //     shape: BoxShape.circle,
-          //     color:
-          //         selected
-          //             ? ColorScheme.of(context).primaryContainer
-          //             : ColorScheme.of(context).surfaceContainerHighest,
-          //   ),
-          //   child: InkWell(
-          //     customBorder: const CircleBorder(),
-          //     onTap: () => context.wm.handleScorePressed(value),
-          //     child: Text(
-          //       '$value',
-          //       textAlign: TextAlign.center,
-          //       style: TextTheme.of(context).displaySmall?.copyWith(
-          //         fontFamily: 'Alvida',
-          //         color:
-          //             selected
-          //                 ? ColorScheme.of(context).onPrimaryContainer
-          //                 : ColorScheme.of(context).onSurface,
-          //       ),
-          //     ),
-          //   ),
-          // );
         },
       ),
     );
