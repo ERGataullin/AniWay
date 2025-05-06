@@ -60,17 +60,18 @@ class VideoController {
 
     if (uri == null) return;
 
-    _inner.value = VideoPlayerController.networkUrl(uri);
-    await _inner.value!.initialize();
-    aspectRatio.value = _inner.value!.value.aspectRatio;
+    final VideoPlayerController inner =
+        _inner.value = VideoPlayerController.networkUrl(uri);
+    await inner.initialize();
+    aspectRatio.value = inner.value.aspectRatio;
     // ignore: invalid_use_of_visible_for_testing_member
-    webElementQuery.value = 'video#videoElement-${_inner.value!.textureId}';
-    await _inner.value!.seekTo(position.value);
+    webElementQuery.value = 'video#videoElement-${inner.textureId}';
+    await inner.seekTo(position.value);
     if (playing.value) await play();
     if (captionsUri != null) {
-      _inner.value!.setClosedCaptionFile(_getCaptions(captionsUri));
+      inner.setClosedCaptionFile(_getCaptions(captionsUri));
     }
-    _inner.value!.addListener(_handleInnerValueChanged);
+    inner.addListener(_handleInnerValueChanged);
   }
 
   Future<void> play() async {
