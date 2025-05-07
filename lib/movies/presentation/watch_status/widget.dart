@@ -278,69 +278,123 @@ class _Score extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Breakpoint breakpoint =
+        Breakpoint.activeBreakpointIn(context, const [
+          _fullscreenDialogBreakpoint,
+          _basicDialogBreakpoint,
+        ])!;
     const double itemSize = 48;
     final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: spacing,
-      children: [
-        // Padding(
-        //   padding: _marginHorizontal,
-        //   child:
-        // ),
-        // SizedBox(
-        //   height: itemSize,
-        //   child: ListView(
-        //     shrinkWrap: true,
-        //     scrollDirection: Axis.horizontal,
-        //     padding: _marginHorizontal,
-        //     itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
-        //     children: List.generate(
-        //       10 * 2 - 1,
-        //       (index) =>
-        //           index.isOdd
-        //               ? const SizedBox.shrink()
-        //               : SizedBox.square(child: _ScoreItem(index ~/ 2 + 1)),
-        //     ),
-        //   ),
-        // ),
-        Padding(
-          padding: _marginHorizontal,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    context.l10n.score,
-                    style: TextTheme.of(context).bodySmall!.copyWith(
-                      color: ColorScheme.of(context).onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      10,
-                      (index) => _ScoreItem(index + 1),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-              ],
+      children: switch (breakpoint) {
+        _fullscreenDialogBreakpoint => [
+          Padding(
+            padding: _marginHorizontal,
+            child: Text(
+              context.l10n.score,
+              style: TextTheme.of(context).bodyLarge,
             ),
           ),
-        ),
-      ],
+          SizedBox(
+            height: itemSize,
+            child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              padding: _marginHorizontal,
+              itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
+              children: List.generate(
+                10 * 2 - 1,
+                (index) =>
+                    index.isOdd
+                        ? const SizedBox.shrink()
+                        : SizedBox.square(
+                          child: _ScoreItemFullscreen(index ~/ 2 + 1),
+                        ),
+              ),
+            ),
+          ),
+        ],
+        _ => [
+          Padding(
+            padding: _marginHorizontal,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      context.l10n.score,
+                      style: TextTheme.of(context).bodySmall!.copyWith(
+                        color: ColorScheme.of(context).onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        10,
+                        (index) => _ScoreItem(index + 1),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                ],
+              ),
+            ),
+          ),
+        ],
+      },
+    );
+  }
+}
+
+class _ScoreItemFullscreen extends StatelessWidget {
+  const _ScoreItemFullscreen(this.value);
+
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: context.wm.score,
+      builder: (context, score, _) {
+        final selected = value == score;
+        return Ink(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color:
+                selected
+                    ? ColorScheme.of(context).primaryContainer
+                    : ColorScheme.of(context).surfaceContainerHighest,
+          ),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => context.wm.handleScorePressed(value),
+            child: Text(
+              '$value',
+              textAlign: TextAlign.center,
+              style: TextTheme.of(context).displaySmall?.copyWith(
+                fontFamily: 'Alvida',
+                color:
+                    selected
+                        ? ColorScheme.of(context).onPrimaryContainer
+                        : ColorScheme.of(context).onSurface,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -409,30 +463,6 @@ class _ScoreItemState extends State<_ScoreItem> {
                                   ).headlineSmall!.fontSize,
                         ),
                       );
-                      // return Ink(
-                      //   decoration: BoxDecoration(
-                      //     shape: BoxShape.circle,
-                      //     color:
-                      //         selected
-                      //             ? ColorScheme.of(context).primaryContainer
-                      //             : ColorScheme.of(context).surfaceContainerHighest,
-                      //   ),
-                      //   child: InkWell(
-                      //     customBorder: const CircleBorder(),
-                      //     onTap: () => context.wm.handleScorePressed(value),
-                      //     child: Text(
-                      //       '$value',
-                      //       textAlign: TextAlign.center,
-                      //       style: TextTheme.of(context).displaySmall?.copyWith(
-                      //         fontFamily: 'Alvida',
-                      //         color:
-                      //             selected
-                      //                 ? ColorScheme.of(context).onPrimaryContainer
-                      //                 : ColorScheme.of(context).onSurface,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // );
                     },
                   ),
                 ),
