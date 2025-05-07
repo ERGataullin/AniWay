@@ -278,89 +278,116 @@ class _Score extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Breakpoint breakpoint =
-        Breakpoint.activeBreakpointIn(context, const [
-          _fullscreenDialogBreakpoint,
-          _basicDialogBreakpoint,
-        ])!;
+    return SlotLayout(
+      config: <Breakpoint, SlotLayoutConfig>{
+        _fullscreenDialogBreakpoint: SlotLayout.from(
+          key: const Key('Score Basic'),
+          builder: (context) => const _ScoreBasicContent(),
+        ),
+        _basicDialogBreakpoint: SlotLayout.from(
+          key: const Key('Score Medium Large and Up'),
+          builder: (context) => const _ScoreContent(),
+        ),
+      },
+    );
+  }
+}
+
+class _ScoreBasicContent extends StatelessWidget {
+  const _ScoreBasicContent();
+
+  @override
+  Widget build(BuildContext context) {
     const double itemSize = 48;
     final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: spacing,
-      children: switch (breakpoint) {
-        _fullscreenDialogBreakpoint => [
-          Padding(
+      children: [
+        Padding(
+          padding: _marginHorizontal,
+          child: Text(
+            context.l10n.score,
+            style: TextTheme.of(context).bodyLarge,
+          ),
+        ),
+        SizedBox(
+          height: itemSize,
+          child: ListView(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
             padding: _marginHorizontal,
-            child: Text(
-              context.l10n.score,
-              style: TextTheme.of(context).bodyLarge,
+            itemExtentBuilder: (index, _) {
+              return index.isOdd ? spacing : itemSize;
+            },
+            children: List.generate(
+              10 * 2 - 1,
+              (index) =>
+                  index.isOdd
+                      ? const SizedBox.shrink()
+                      : SizedBox.square(child: _ScoreItemBasic(index ~/ 2 + 1)),
             ),
           ),
-          SizedBox(
-            height: itemSize,
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              padding: _marginHorizontal,
-              itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
-              children: List.generate(
-                10 * 2 - 1,
-                (index) =>
-                    index.isOdd
-                        ? const SizedBox.shrink()
-                        : SizedBox.square(
-                          child: _ScoreItemFullscreen(index ~/ 2 + 1),
-                        ),
-              ),
-            ),
-          ),
-        ],
-        _ => [
-          Padding(
-            padding: _marginHorizontal,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      context.l10n.score,
-                      style: TextTheme.of(context).bodySmall!.copyWith(
-                        color: ColorScheme.of(context).onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(
-                        10,
-                        (index) => _ScoreItem(index + 1),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                ],
-              ),
-            ),
-          ),
-        ],
-      },
+        ),
+      ],
     );
   }
 }
 
-class _ScoreItemFullscreen extends StatelessWidget {
-  const _ScoreItemFullscreen(this.value);
+class _ScoreContent extends StatelessWidget {
+  const _ScoreContent();
+
+  @override
+  Widget build(BuildContext context) {
+    final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: spacing,
+      children: [
+        Padding(
+          padding: _marginHorizontal,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: ColorScheme.of(context).surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    context.l10n.score,
+                    style: TextTheme.of(context).bodySmall!.copyWith(
+                      color: ColorScheme.of(context).onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      10,
+                      (index) => _ScoreItem(index + 1),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ScoreItemBasic extends StatelessWidget {
+  const _ScoreItemBasic(this.value);
 
   final int value;
 
