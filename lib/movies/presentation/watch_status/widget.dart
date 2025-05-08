@@ -282,19 +282,19 @@ class _Score extends StatelessWidget {
       config: <Breakpoint, SlotLayoutConfig>{
         _fullscreenDialogBreakpoint: SlotLayout.from(
           key: const Key('Score Basic'),
-          builder: (context) => const _ScoreBasicContent(),
+          builder: (context) => const _ScoreStandart(),
         ),
         _basicDialogBreakpoint: SlotLayout.from(
           key: const Key('Score Medium Large and Up'),
-          builder: (context) => const _ScoreContent(),
+          builder: (context) => const _ScoreMediumAndUp(),
         ),
       },
     );
   }
 }
 
-class _ScoreBasicContent extends StatelessWidget {
-  const _ScoreBasicContent();
+class _ScoreStandart extends StatelessWidget {
+  const _ScoreStandart();
 
   @override
   Widget build(BuildContext context) {
@@ -318,16 +318,12 @@ class _ScoreBasicContent extends StatelessWidget {
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             padding: _marginHorizontal,
-            itemExtentBuilder: (index, _) {
-              return index.isOdd ? spacing : itemSize;
-            },
-            children: List.generate(
-              10 * 2 - 1,
-              (index) =>
-                  index.isOdd
-                      ? const SizedBox.shrink()
-                      : SizedBox.square(child: _ScoreItemBasic(index ~/ 2 + 1)),
-            ),
+            itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
+            children: List.generate(10 * 2 - 1, (index) {
+              return index.isOdd
+                  ? const SizedBox.shrink()
+                  : SizedBox.square(child: _ScoreItemBasic(index ~/ 2 + 1));
+            }),
           ),
         ),
       ],
@@ -335,8 +331,8 @@ class _ScoreBasicContent extends StatelessWidget {
   }
 }
 
-class _ScoreContent extends StatelessWidget {
-  const _ScoreContent();
+class _ScoreMediumAndUp extends StatelessWidget {
+  const _ScoreMediumAndUp();
 
   @override
   Widget build(BuildContext context) {
@@ -351,7 +347,7 @@ class _ScoreContent extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: ColorScheme.of(context).surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,7 +368,7 @@ class _ScoreContent extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       10,
-                      (index) => _ScoreItem(index + 1),
+                      (index) => _ScoreItemMediumAndUp(index + 1),
                     ),
                   ),
                 ),
@@ -426,20 +422,21 @@ class _ScoreItemBasic extends StatelessWidget {
   }
 }
 
-class _ScoreItem extends StatefulWidget {
-  const _ScoreItem(this.value);
+class _ScoreItemMediumAndUp extends StatefulWidget {
+  const _ScoreItemMediumAndUp(this.value);
 
   final int value;
 
   @override
-  State<_ScoreItem> createState() => _ScoreItemState();
+  State<_ScoreItemMediumAndUp> createState() => _ScoreItemMediumAndUpState();
 }
 
-class _ScoreItemState extends State<_ScoreItem> {
+class _ScoreItemMediumAndUpState extends State<_ScoreItemMediumAndUp> {
   var _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
+    final double fontSize = TextTheme.of(context).headlineSmall!.fontSize!;
     return Focus(
       child: Builder(
         builder: (context) {
@@ -462,12 +459,11 @@ class _ScoreItemState extends State<_ScoreItem> {
                     valueListenable: context.wm.score,
                     builder: (context, score, _) {
                       final selected = widget.value == score;
-                      final bool hasFocus = focusNode.hasFocus;
                       final bool highlighted =
-                          selected || hasFocus || _isHovered;
+                          selected || focusNode.hasFocus || _isHovered;
                       return Text(
-                        textAlign: TextAlign.center,
                         '${widget.value}',
+                        textAlign: TextAlign.center,
                         style: TextTheme.of(context).bodyLarge!.copyWith(
                           height: 1,
                           color:
@@ -479,15 +475,7 @@ class _ScoreItemState extends State<_ScoreItem> {
                                   }
                                   : Theme.of(context).unselectedWidgetColor,
                           fontWeight: highlighted ? FontWeight.w700 : null,
-                          fontSize:
-                              highlighted
-                                  ? TextTheme.of(
-                                        context,
-                                      ).headlineSmall!.fontSize! *
-                                      1.20
-                                  : TextTheme.of(
-                                    context,
-                                  ).headlineSmall!.fontSize,
+                          fontSize: highlighted ? fontSize * 1.20 : fontSize,
                         ),
                       );
                     },
