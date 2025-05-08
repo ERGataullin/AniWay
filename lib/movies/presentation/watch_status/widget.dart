@@ -278,6 +278,26 @@ class _Score extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return SlotLayout(
+      config: <Breakpoint, SlotLayoutConfig>{
+        _fullscreenDialogBreakpoint: SlotLayout.from(
+          key: const Key('Score Basic'),
+          builder: (context) => const _ScoreStandard(),
+        ),
+        _basicDialogBreakpoint: SlotLayout.from(
+          key: const Key('Score Medium Large and Up'),
+          builder: (context) => const _ScoreMediumAndUp(),
+        ),
+      },
+    );
+  }
+}
+
+class _ScoreStandard extends StatelessWidget {
+  const _ScoreStandard();
+
+  @override
+  Widget build(BuildContext context) {
     const double itemSize = 48;
     final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
@@ -299,12 +319,64 @@ class _Score extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             padding: _marginHorizontal,
             itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
-            children: List.generate(
-              10 * 2 - 1,
-              (index) =>
-                  index.isOdd
-                      ? const SizedBox.shrink()
-                      : SizedBox.square(child: _ScoreItem(index ~/ 2 + 1)),
+            children: List.generate(10 * 2 - 1, (index) {
+              return index.isOdd
+                  ? const SizedBox.shrink()
+                  : SizedBox.square(child: _ScoreItemStandard(index ~/ 2 + 1));
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ScoreMediumAndUp extends StatelessWidget {
+  const _ScoreMediumAndUp();
+
+  @override
+  Widget build(BuildContext context) {
+    final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: spacing,
+      children: [
+        Padding(
+          padding: _marginHorizontal,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: ColorScheme.of(context).surfaceContainerHighest,
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    context.l10n.score,
+                    style: TextTheme.of(context).bodySmall!.copyWith(
+                      color: ColorScheme.of(context).onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        10,
+                        (index) => _ScoreItemMediumAndUp(index + 1),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+              ],
             ),
           ),
         ),
@@ -313,8 +385,8 @@ class _Score extends StatelessWidget {
   }
 }
 
-class _ScoreItem extends StatelessWidget {
-  const _ScoreItem(this.value);
+class _ScoreItemStandard extends StatelessWidget {
+  const _ScoreItemStandard(this.value);
 
   final int value;
 
@@ -349,6 +421,70 @@ class _ScoreItem extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _ScoreItemMediumAndUp extends StatefulWidget {
+  const _ScoreItemMediumAndUp(this.value);
+
+  final int value;
+
+  @override
+  State<_ScoreItemMediumAndUp> createState() => _ScoreItemMediumAndUpState();
+}
+
+class _ScoreItemMediumAndUpState extends State<_ScoreItemMediumAndUp> {
+  var _isHovered = false;
+
+  void _handlePressed() => context.wm.handleScorePressed(widget.value);
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final double fontSize = theme.textTheme.headlineSmall!.fontSize!;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: kMinInteractiveDimension,
+          minHeight: kMinInteractiveDimension,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: InkWell(
+            hoverColor: Colors.transparent,
+            focusColor: theme.focusColor,
+            customBorder: const CircleBorder(),
+            onTap: _handlePressed,
+            child: Center(
+              child: ValueListenableBuilder(
+                valueListenable: context.wm.score,
+                builder: (context, score, _) {
+                  final selected = widget.value == score;
+                  final bool highlighted = selected || _isHovered;
+                  return Text(
+                    '${widget.value}',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      height: 1,
+                      fontWeight: highlighted ? FontWeight.w600 : null,
+                      fontSize: highlighted ? fontSize * 1.20 : fontSize,
+                      color: switch (widget.value) {
+                        _ when !highlighted => theme.unselectedWidgetColor,
+                        <= 4 => Colors.redAccent[400],
+                        <= 6 => theme.colorScheme.onSurface,
+                        _ => Colors.greenAccent[700],
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
