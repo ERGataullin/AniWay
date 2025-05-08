@@ -454,8 +454,9 @@ class _ScoreItemMediumAndUpState extends State<_ScoreItemMediumAndUp> {
         child: Padding(
           padding: const EdgeInsets.all(4),
           child: InkWell(
-            customBorder: const CircleBorder(),
+            hoverColor: Colors.transparent,
             focusColor: theme.focusColor,
+            customBorder: const CircleBorder(),
             onTap: _handlePressed,
             child: Center(
               child: ValueListenableBuilder(
