@@ -282,7 +282,7 @@ class _Score extends StatelessWidget {
       config: <Breakpoint, SlotLayoutConfig>{
         _fullscreenDialogBreakpoint: SlotLayout.from(
           key: const Key('Score Basic'),
-          builder: (context) => const _ScoreStandart(),
+          builder: (context) => const _ScoreStandard(),
         ),
         _basicDialogBreakpoint: SlotLayout.from(
           key: const Key('Score Medium Large and Up'),
@@ -293,8 +293,8 @@ class _Score extends StatelessWidget {
   }
 }
 
-class _ScoreStandart extends StatelessWidget {
-  const _ScoreStandart();
+class _ScoreStandard extends StatelessWidget {
+  const _ScoreStandard();
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +322,7 @@ class _ScoreStandart extends StatelessWidget {
             children: List.generate(10 * 2 - 1, (index) {
               return index.isOdd
                   ? const SizedBox.shrink()
-                  : SizedBox.square(child: _ScoreItemBasic(index ~/ 2 + 1));
+                  : SizedBox.square(child: _ScoreItemStandard(index ~/ 2 + 1));
             }),
           ),
         ),
@@ -364,11 +364,14 @@ class _ScoreMediumAndUp extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      10,
-                      (index) => _ScoreItemMediumAndUp(index + 1),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        10,
+                        (index) => _ScoreItemMediumAndUp(index + 1),
+                      ),
                     ),
                   ),
                 ),
@@ -382,8 +385,8 @@ class _ScoreMediumAndUp extends StatelessWidget {
   }
 }
 
-class _ScoreItemBasic extends StatelessWidget {
-  const _ScoreItemBasic(this.value);
+class _ScoreItemStandard extends StatelessWidget {
+  const _ScoreItemStandard(this.value);
 
   final int value;
 
@@ -434,57 +437,52 @@ class _ScoreItemMediumAndUp extends StatefulWidget {
 class _ScoreItemMediumAndUpState extends State<_ScoreItemMediumAndUp> {
   var _isHovered = false;
 
+  void _handlePressed() => context.wm.handleScorePressed(widget.value);
+
   @override
   Widget build(BuildContext context) {
-    final double fontSize = TextTheme.of(context).headlineSmall!.fontSize!;
-    return Focus(
-      child: Builder(
-        builder: (context) {
-          final FocusNode focusNode = Focus.of(context);
-          return MouseRegion(
-            onEnter: (_) => setState(() => _isHovered = true),
-            onExit: (_) => setState(() => _isHovered = false),
-            child: GestureDetector(
-              onTap: () {
-                focusNode.requestFocus();
-                context.wm.handleScorePressed(widget.value);
-              },
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minWidth: kMinInteractiveDimension,
-                  minHeight: kMinInteractiveDimension,
-                ),
-                child: Center(
-                  child: ValueListenableBuilder(
-                    valueListenable: context.wm.score,
-                    builder: (context, score, _) {
-                      final selected = widget.value == score;
-                      final bool highlighted =
-                          selected || focusNode.hasFocus || _isHovered;
-                      return Text(
-                        '${widget.value}',
-                        textAlign: TextAlign.center,
-                        style: TextTheme.of(context).bodyLarge!.copyWith(
-                          height: 1,
-                          color:
-                              highlighted
-                                  ? switch (widget.value) {
-                                    <= 4 => Colors.redAccent[400],
-                                    <= 6 => ColorScheme.of(context).onSurface,
-                                    _ => Colors.greenAccent[700],
-                                  }
-                                  : Theme.of(context).unselectedWidgetColor,
-                          fontWeight: highlighted ? FontWeight.w700 : null,
-                          fontSize: highlighted ? fontSize * 1.20 : fontSize,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+    final ThemeData theme = Theme.of(context);
+    final double fontSize = theme.textTheme.headlineSmall!.fontSize!;
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: kMinInteractiveDimension,
+          minHeight: kMinInteractiveDimension,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            focusColor: theme.focusColor,
+            onTap: _handlePressed,
+            child: Center(
+              child: ValueListenableBuilder(
+                valueListenable: context.wm.score,
+                builder: (context, score, _) {
+                  final selected = widget.value == score;
+                  final bool highlighted = selected || _isHovered;
+                  return Text(
+                    '${widget.value}',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      height: 1,
+                      fontWeight: highlighted ? FontWeight.w600 : null,
+                      fontSize: highlighted ? fontSize * 1.20 : fontSize,
+                      color: switch (widget.value) {
+                        _ when !highlighted => theme.unselectedWidgetColor,
+                        <= 4 => Colors.redAccent[400],
+                        <= 6 => ColorScheme.of(context).onSurface,
+                        _ => Colors.greenAccent[700],
+                      },
+                    ),
+                  );
+                },
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
