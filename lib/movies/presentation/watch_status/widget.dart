@@ -474,7 +474,7 @@ class _ScoreItemMediumAndUpState extends State<_ScoreItemMediumAndUp> {
                       color: switch (widget.value) {
                         _ when !highlighted => theme.unselectedWidgetColor,
                         <= 4 => Colors.redAccent[400],
-                        <= 6 => ColorScheme.of(context).onSurface,
+                        <= 6 => theme.colorScheme.onSurface,
                         _ => Colors.greenAccent[700],
                       },
                     ),
