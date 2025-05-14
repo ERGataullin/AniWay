@@ -14,9 +14,11 @@ class CookieManager extends NetworkInterceptor with Initable {
   CookieManager({required StorageService storageService})
     : _storageService = storageService;
 
-  static const String _cookieHeaderName = HttpHeaders.cookieHeader;
+  static const String _cookieHeaderName =
+      kIsWeb ? 'kaki' : HttpHeaders.cookieHeader;
 
-  static const String _setCookieHeaderName = HttpHeaders.setCookieHeader;
+  static const String _setCookieHeaderName =
+      kIsWeb ? 'set-kaki' : HttpHeaders.setCookieHeader;
 
   static final Pattern _setCookieSplitter = RegExp(
     r'[ \t]*,[ \t]*(?=['
