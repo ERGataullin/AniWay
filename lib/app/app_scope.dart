@@ -26,17 +26,14 @@ class AppScope extends InheritedWidget {
     this.networkService =
         networkService ??
         HttpService(
+          userAgent: 'AniWay',
           baseUri:
               kIsWeb
                   ? ProxiedUri(
                     proxy: Uri(scheme: 'https', host: 'aniway.su'),
-                    original: Uri(
-                      scheme: 'https',
-                      host: 'smotret-anime.online',
-                    ),
+                    original: Uri(scheme: 'https', host: 'smotret-anime.org'),
                   )
-                  : Uri(scheme: 'https', host: 'smotret-anime.online'),
-          userAgent: 'AniWay',
+                  : Uri(scheme: 'https', host: 'smotret-anime.org'),
         );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =

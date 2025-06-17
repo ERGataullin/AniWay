@@ -16,7 +16,7 @@ class LocalPlayerService implements PlayerService {
 
   @override
   Future<Map<TranslationType, int>> getTranslationTypesRates() async {
-    final Map<Object?, Object?> stored = await _storageService.get(
+    final Map<dynamic, dynamic> stored = await _storageService.get(
       collection: _collection,
       key: _translationTypesRatesKey,
       defaultValue: const {},
@@ -31,7 +31,7 @@ class LocalPlayerService implements PlayerService {
   Future<void> saveTranslationTypesRates(
     Map<TranslationType, int> rates,
   ) async {
-    await _storageService.put<Map<Object?, Object?>>(
+    await _storageService.put<Map<dynamic, dynamic>>(
       collection: _collection,
       key: _translationTypesRatesKey,
       value: rates.map((type, rate) => MapEntry(type.name, rate)),
@@ -40,7 +40,7 @@ class LocalPlayerService implements PlayerService {
 
   @override
   Future<Map<String, int>> getTranslationAuthorsRates() async {
-    final Map<Object?, Object?> stored = await _storageService.get(
+    final Map<dynamic, dynamic> stored = await _storageService.get(
       collection: _collection,
       key: _translationAuthorsRatesKey,
       defaultValue: const {},
@@ -50,7 +50,7 @@ class LocalPlayerService implements PlayerService {
 
   @override
   Future<void> saveTranslationAuthorsRates(Map<String, int> rates) async {
-    await _storageService.put<Map<Object?, Object?>>(
+    await _storageService.put<Map<dynamic, dynamic>>(
       collection: _collection,
       key: _translationAuthorsRatesKey,
       value: rates,

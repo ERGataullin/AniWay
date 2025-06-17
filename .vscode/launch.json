@@ -8,9 +8,10 @@
             "flutterMode": "debug",
             "program": "lib/main.dart",
             "args": [
+                "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
-                "--web-browser-flag=https://smotret-anime.online/users/login",
+                "--web-browser-flag=https://smotret-anime.org/users/login",
             ]
         },
         {
@@ -20,6 +21,7 @@
             "flutterMode": "debug",
             "program": "lib/main.dart",
             "args": [
+                "--web-experimental-hot-reload",
                 "--web-port=8008",
                 "--web-browser-flag=--disable-web-security",
                 "--dart-define=USE_MOCKS=true"
@@ -32,9 +34,10 @@
             "flutterMode": "profile",
             "program": "lib/main.dart",
             "args": [
+                "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
-                "--web-browser-flag=https://smotret-anime.online/users/login",
+                "--web-browser-flag=https://smotret-anime.org/users/login",
             ]
         },
         {
@@ -44,9 +47,10 @@
             "flutterMode": "release",
             "program": "lib/main.dart",
             "args": [
+                "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
-                "--web-browser-flag=https://smotret-anime.online/users/login",
+                "--web-browser-flag=https://smotret-anime.org/users/login",
             ]
         }
     ]
