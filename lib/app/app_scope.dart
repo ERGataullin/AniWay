@@ -25,7 +25,7 @@ class AppScope extends InheritedWidget {
     this.networkService =
         networkService ??
         HttpService(
-          baseUri: Uri(scheme: 'https', host: 'smotret-anime.online'),
+          baseUri: Uri(scheme: 'https', host: 'smotret-anime.org'),
           userAgent: 'AniWay',
         );
     this.storageService = storageService ?? const HiveService();

@@ -199,7 +199,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
         await _repository.getTranslationTypesRates();
 
     TranslationType selectedType = TranslationType.raw;
-    int selectedTypeRate = -1;
+    var selectedTypeRate = -1;
     for (final TranslationType type in translations.value[locale]!.keys) {
       final int rate = rates[type] ?? 0;
       if (selectedTypeRate > rate) continue;

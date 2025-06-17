@@ -16,22 +16,23 @@
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
     "*.dart": "${capture}.g.dart",
+    "l10n.dart": "l10n*.dart",
     "pubspec.yaml": "*.yaml"
   },
   "files.exclude": {
-    "**/.DS_Store": true,
-    "**/.dart_tool": true,
-    "**/.git": true,
-    "**/.hg": true,
-    "**/.svn": true,
-    "**/CVS": true,
-    "**/Thumbs.db": true,
-    "**/build": true,
-    "pubspec.lock": true,
     ".flutter-plugins": true,
     ".flutter-plugins-dependencies": true,
     ".metadata": true,
-    ".packages": true
+    ".packages": true,
+    "**/.dart_tool": true,
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.svn": true,
+    "**/build": true,
+    "**/CVS": true,
+    "**/Thumbs.db": true,
+    "pubspec.lock": true
   },
   "files.insertFinalNewline": true,
   "files.watcherExclude": {
