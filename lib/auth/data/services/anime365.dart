@@ -18,13 +18,13 @@ class AuthServiceAnime365 implements AuthService {
   @override
   Future<void> signIn({required String email, required String password}) async {
     await _networkService.request<void>(
-      RequestData(uri: Uri(path: '/users/login'), method: RequestMethod.get),
+      RequestData(method: RequestMethod.get, uri: Uri(path: '/users/login')),
     );
 
     await _networkService.request<void>(
       RequestData(
-        uri: Uri(path: '/users/login'),
         method: RequestMethod.post,
+        uri: Uri(path: '/users/login'),
         headers: const {
           'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },

@@ -2,20 +2,11 @@ class ProxiedUri implements Uri {
   ProxiedUri({required this.proxy, required this.original})
     : proxied = Uri(
         scheme: proxy.scheme,
-        userInfo: original.userInfo,
+        userInfo: proxy.userInfo,
         host: proxy.host,
         port: proxy.port,
-        path:
-            [
-              if (original.hasScheme) '${original.scheme}://',
-              original.host,
-              if (original.hasPort) ':${original.port}',
-              original.path,
-            ].join(),
-        queryParameters: {
-          ...proxy.queryParameters,
-          ...original.queryParameters,
-        },
+        path: Uri.encodeComponent(original.toString()),
+        queryParameters: original.queryParameters,
         fragment: original.fragment,
       );
 
@@ -116,26 +107,14 @@ class ProxiedUri implements Uri {
 
   @override
   Uri resolve(String reference) {
-    final proxiedReference = original.resolve(reference).toString();
-    return proxy.resolve(proxiedReference);
+    return resolveUri(Uri.parse(reference));
   }
 
   @override
   Uri resolveUri(Uri reference) {
     final Uri originalResolved = original.resolveUri(reference);
     final proxiedReference = Uri(
-      userInfo: originalResolved.userInfo,
-      path:
-          [
-            if (originalResolved.hasScheme) '${originalResolved.scheme}://',
-            originalResolved.host,
-            if (originalResolved.hasPort) ':${originalResolved.port}',
-            originalResolved.path,
-          ].join(),
-      query: [
-        originalResolved.query,
-        proxy.query,
-      ].where((query) => query.isNotEmpty).join('&'),
+      path: Uri.encodeComponent(originalResolved.toString()),
     );
 
     return proxy.resolveUri(proxiedReference);

@@ -38,28 +38,28 @@ abstract class NetworkInterceptor {
 
 class RequestData {
   const RequestData({
-    required this.uri,
     required this.method,
+    required this.uri,
     this.headers = const {},
     this.body,
   });
 
-  final Uri uri;
-
   final RequestMethod method;
+
+  final Uri uri;
 
   final Headers headers;
 
   final Object? body;
 
   RequestData copyWith({
-    Uri? uri,
     RequestMethod? method,
+    Uri? uri,
     Headers? headers,
     Object? body,
   }) => RequestData(
-    uri: uri ?? this.uri,
     method: method ?? this.method,
+    uri: uri ?? this.uri,
     headers: headers ?? this.headers,
     body: body ?? this.body,
   );

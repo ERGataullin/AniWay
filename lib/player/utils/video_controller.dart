@@ -131,7 +131,7 @@ class VideoController {
 
   Future<ClosedCaptionFile> _getCaptions(Uri uri) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(uri: uri, method: RequestMethod.get),
+      RequestData(method: RequestMethod.get, uri: uri),
     );
     return WebVTTCaptionFile(response.body);
   }
