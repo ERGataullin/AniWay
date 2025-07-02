@@ -33,7 +33,6 @@ class AppRouter implements RouterConfig<RouteMatchList> {
       const referrerKey = 'referrer';
       final String? route = state.topRoute?.name;
       return switch (_signedIn.value) {
-        _ when kIsWeb => null,
         false when route != _Routes.signIn => state.namedLocation(
           _Routes.signIn,
           queryParameters: {referrerKey: state.matchedLocation},

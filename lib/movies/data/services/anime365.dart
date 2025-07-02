@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:app/cookie_manager/cookie_manager.dart';
@@ -41,6 +42,7 @@ class MoviesServiceAnime365 implements MoviesService {
     assert(typesExcluded.isEmpty || query == null);
     final ResponseData<Json> response = await _networkService.request<Json>(
       RequestData(
+        method: RequestMethod.get,
         uri: Uri(
           path: '/api/series',
           queryParameters: {
@@ -66,7 +68,6 @@ class MoviesServiceAnime365 implements MoviesService {
               ].join('='),
           }.map((key, value) => MapEntry(key, value.toString())),
         ),
-        method: RequestMethod.get,
       ),
     );
 
@@ -79,8 +80,8 @@ class MoviesServiceAnime365 implements MoviesService {
         .toList(growable: false);
     final ResponseData<Json> shikimoriResponse = await _networkService.request(
       RequestData(
-        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
         method: RequestMethod.post,
+        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
         body: {
           'query': '''
             { 
@@ -168,6 +169,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
     final ResponseData<String> response = await _networkService.request(
       RequestData(
+        method: RequestMethod.get,
         uri: Uri(
           path: '/',
           queryParameters: {
@@ -175,7 +177,6 @@ class MoviesServiceAnime365 implements MoviesService {
             if (page != 1) 'pageP': page.toString(),
           },
         ),
-        method: RequestMethod.get,
       ),
     );
     final Document document = parse(response.body);
@@ -312,6 +313,7 @@ class MoviesServiceAnime365 implements MoviesService {
   Future<MovieDetailsData> getMovie(int id) async {
     final ResponseData<Json> anime365Response = await _networkService.request(
       RequestData(
+        method: RequestMethod.get,
         uri: Uri(
           path: '/api/series/$id',
           queryParameters: {
@@ -320,15 +322,14 @@ class MoviesServiceAnime365 implements MoviesService {
                 'descriptions,myAnimeListId,myAnimeListScore',
           },
         ),
-        method: RequestMethod.get,
       ),
     );
     final anime365Data = anime365Response.body['data']! as Json;
 
     final ResponseData<Json> shikimoriResponse = await _networkService.request(
       RequestData(
-        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
         method: RequestMethod.post,
+        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
         body: {
           'query': '''
             { 
@@ -448,11 +449,11 @@ class MoviesServiceAnime365 implements MoviesService {
   Future<List<TranslationData>> getTranslations(Object episodeId) async {
     final ResponseData<Json> response = await _networkService.request(
       RequestData(
+        method: RequestMethod.get,
         uri: Uri(
           path: '/api/episodes/$episodeId',
           queryParameters: {'fields': 'translations'},
         ),
-        method: RequestMethod.get,
       ),
     );
     final data = response.body['data']! as Json;
@@ -500,8 +501,8 @@ class MoviesServiceAnime365 implements MoviesService {
   Future<VideoData> getTranslationVideo(int translationId) async {
     final ResponseData<Json> response = await _networkService.request(
       RequestData(
-        uri: Uri(path: '/api/translations/embed/$translationId'),
         method: RequestMethod.get,
+        uri: Uri(path: '/api/translations/embed/$translationId'),
       ),
     );
     final data = response.body['data']! as Json;
@@ -532,8 +533,11 @@ class MoviesServiceAnime365 implements MoviesService {
   Future<void> saveTranslationWatched(Object translationId) {
     return _networkService.request<void>(
       RequestData(
-        uri: Uri(path: '/translations/watched/$translationId'),
         method: RequestMethod.post,
+        uri: Uri(path: '/translations/watched/$translationId'),
+        headers: const {
+          HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+        },
         body: {'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded},
       ),
     );
@@ -542,7 +546,7 @@ class MoviesServiceAnime365 implements MoviesService {
   @override
   Future<WatchStatusDetails> getWatchStatus(Uri movieUri) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(uri: movieUri, method: RequestMethod.get),
+      RequestData(method: RequestMethod.get, uri: movieUri),
     );
     final Document document = parse(response.body);
 
@@ -560,11 +564,14 @@ class MoviesServiceAnime365 implements MoviesService {
   }) async {
     final ResponseData<String> response = await _networkService.request(
       RequestData(
+        method: RequestMethod.post,
         uri: Uri(
           path: '/animelist/edit/$movieId',
           queryParameters: const {'mode': 'mini'},
         ),
-        method: RequestMethod.post,
+        headers: const {
+          HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+        },
         body: {
           'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
           ...WatchStatusDetailsConverterAnime365.toFormData(status),

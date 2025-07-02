@@ -64,8 +64,7 @@ class VideoController {
         _inner.value = VideoPlayerController.networkUrl(uri);
     await inner.initialize();
     aspectRatio.value = inner.value.aspectRatio;
-    // ignore: invalid_use_of_visible_for_testing_member
-    webElementQuery.value = 'video#videoElement-${inner.textureId}';
+    webElementQuery.value = 'video';
     await inner.seekTo(position.value);
     if (playing.value) await play();
     if (captionsUri != null) {
@@ -131,7 +130,7 @@ class VideoController {
 
   Future<ClosedCaptionFile> _getCaptions(Uri uri) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(uri: uri, method: RequestMethod.get),
+      RequestData(method: RequestMethod.get, uri: uri),
     );
     return WebVTTCaptionFile(response.body);
   }

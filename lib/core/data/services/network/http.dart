@@ -52,8 +52,9 @@ class HttpService implements NetworkService {
   Future<ResponseData<T>> _request<T>(RequestData data) async {
     final Uri uri = baseUri.resolveUri(data.uri);
     final Map<String, String> headers = {
-      ...data.headers,
+      HttpHeaders.contentTypeHeader: ContentType.json.toString(),
       HttpHeaders.userAgentHeader: _userAgent,
+      ...data.headers,
     };
 
     final Response httpResponse = await switch (data.method) {
@@ -62,9 +63,11 @@ class HttpService implements NetworkService {
         uri,
         headers: headers,
         body: switch (data.body) {
-          final Json json => json.map(
-            (key, value) => MapEntry(key, value.toString()),
-          ),
+          final Json json
+              when headers[HttpHeaders.contentTypeHeader] ==
+                  'application/x-www-form-urlencoded' =>
+            json.map((key, value) => MapEntry(key, value.toString())),
+          final Json json => jsonEncode(json),
           _ => data.body,
         },
       ),
