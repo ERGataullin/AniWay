@@ -16,7 +16,7 @@ class AppScope extends InheritedWidget {
     NetworkService? networkService,
     StorageService? storageService,
     CookieManager? cookieManager,
-    AuthRepository? authService,
+    AuthRepository? authRepository,
     MoviesRepository? moviesRepository,
     PlayerRepository? playerRepository,
     required super.child,
@@ -38,8 +38,8 @@ class AppScope extends InheritedWidget {
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
         cookieManager ?? CookieManager(storageService: this.storageService);
-    this.authService =
-        authService ??
+    this.authRepository =
+        authRepository ??
         AuthRepository(
           authService:
               useMocks
@@ -78,7 +78,7 @@ class AppScope extends InheritedWidget {
 
   late final CookieManager cookieManager;
 
-  late final AuthRepository authService;
+  late final AuthRepository authRepository;
 
   late final MoviesRepository moviesRepository;
 
@@ -89,7 +89,7 @@ class AppScope extends InheritedWidget {
     networkService,
     storageService,
     cookieManager,
-    authService,
+    authRepository,
     moviesRepository,
     playerRepository,
   ];
@@ -101,7 +101,7 @@ class AppScope extends InheritedWidget {
       Provider<NetworkService>.value(value: networkService),
       Provider<StorageService>.value(value: storageService),
       Provider<CookieManager>.value(value: cookieManager),
-      Provider<AuthRepository>.value(value: authService),
+      Provider<AuthRepository>.value(value: authRepository),
       Provider<MoviesRepository>.value(value: moviesRepository),
       Provider<PlayerRepository>.value(value: playerRepository),
     ],
