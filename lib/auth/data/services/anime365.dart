@@ -25,9 +25,7 @@ class AuthServiceAnime365 implements AuthService {
       RequestData(
         method: RequestMethod.post,
         uri: Uri(path: '/users/login'),
-        headers: const {
-          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        },
+        headers: const {'content-type': 'application/x-www-form-urlencoded'},
         body: {
           'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
           'LoginForm[username]': email,

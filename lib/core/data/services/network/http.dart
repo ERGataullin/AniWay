@@ -62,14 +62,11 @@ class HttpService implements NetworkService {
         uri,
         headers: headers,
         body: switch (data.body) {
-          // От Шики приходит 400 Bad Request, хотя вручную по апи всё норм
           final Json json
-              when headers[HttpHeaders.contentTypeHeader] !=
+              when headers[HttpHeaders.contentTypeHeader] ==
                   'application/x-www-form-urlencoded' =>
-            jsonEncode(json),
-          final Json json => json.map(
-            (key, value) => MapEntry(key, value.toString()),
-          ),
+            json.map((key, value) => MapEntry(key, value.toString())),
+          final Json json => jsonEncode(json),
           _ => data.body,
         },
       ),

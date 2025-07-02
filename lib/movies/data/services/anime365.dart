@@ -331,6 +331,7 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(
         method: RequestMethod.post,
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
+        headers: {HttpHeaders.contentTypeHeader: ContentType.json.toString()},
         body: {
           'query': '''
             { 
@@ -536,6 +537,9 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(
         method: RequestMethod.post,
         uri: Uri(path: '/translations/watched/$translationId'),
+        headers: const {
+          HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+        },
         body: {'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded},
       ),
     );
@@ -567,6 +571,9 @@ class MoviesServiceAnime365 implements MoviesService {
           path: '/animelist/edit/$movieId',
           queryParameters: const {'mode': 'mini'},
         ),
+        headers: const {
+          HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+        },
         body: {
           'csrf': _cookieManager.cookie.value['csrf']?.valueDecoded,
           ...WatchStatusDetailsConverterAnime365.toFormData(status),
