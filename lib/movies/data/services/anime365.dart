@@ -82,7 +82,6 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(
         method: RequestMethod.post,
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
-        headers: const {HttpHeaders.contentTypeHeader: 'application/json'},
         body: {
           'query': '''
             { 
@@ -331,7 +330,6 @@ class MoviesServiceAnime365 implements MoviesService {
       RequestData(
         method: RequestMethod.post,
         uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
-        headers: {HttpHeaders.contentTypeHeader: ContentType.json.toString()},
         body: {
           'query': '''
             { 

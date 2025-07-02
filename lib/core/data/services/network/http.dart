@@ -52,8 +52,9 @@ class HttpService implements NetworkService {
   Future<ResponseData<T>> _request<T>(RequestData data) async {
     final Uri uri = baseUri.resolveUri(data.uri);
     final Map<String, String> headers = {
-      ...data.headers,
+      HttpHeaders.contentTypeHeader: ContentType.json.toString(),
       HttpHeaders.userAgentHeader: _userAgent,
+      ...data.headers,
     };
 
     final Response httpResponse = await switch (data.method) {
