@@ -1,13 +1,13 @@
 import 'package:app/app/app_scope.dart';
 import 'package:app/app/platform_wrapper/platform_wrapper.dart';
 import 'package:app/app/router.dart';
-import 'package:app/auth/auth.dart';
 import 'package:app/l10n/l10n.dart';
 import 'package:app/theme/theme.dart';
+import 'package:device_frame_plus/device_frame_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 class App extends StatefulWidget {
@@ -50,44 +50,47 @@ class _AppState extends State<App> {
   }
 
   @override
-  void didChangeDependencies() {
+  Future<void> didChangeDependencies() async {
     final AppScope scope = AppScope.of(context);
-    scope
-      ..networkService.addInterceptor(scope.cookieManager.interceptor)
-      ..ensureInitialized().then(
-        (_) => setState(() {
-          _initialized = true;
-        }),
-      );
-
+    scope.networkService.addInterceptor(scope.cookieManager.interceptor);
+    await scope.ensureInitialized();
+    setState(() {
+      _initialized = true;
+      _router ??= AppRouter(signedIn: scope.authRepository.signedIn);
+    });
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return !_initialized
-        ? const SizedBox.shrink()
-        : Builder(
-          builder: (context) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              supportedLocales: L10n.supportedLocales,
-              localizationsDelegates: L10n.localizationsDelegates,
-              title: 'AniWay',
-              theme: Themes.light(context),
-              darkTheme: Themes.dark(context),
-              builder:
-                  (context, _) => PlatformWrapper(
-                    child: Router.withConfig(
-                      config:
-                          _router ??= AppRouter(
-                            signedIn: context.read<AuthRepository>().signedIn,
-                          ),
-                    ),
-                  ),
+    if (!_initialized) return const SizedBox.shrink();
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      supportedLocales: L10n.supportedLocales,
+      localizationsDelegates: L10n.localizationsDelegates,
+      title: 'AniWay',
+      theme: Themes.light(context),
+      darkTheme: Themes.dark(context),
+      routerConfig: _router,
+      builder: (context, router) {
+        Widget child = router!;
+        if (kDebugMode) {
+          final Orientation orientation = MediaQuery.orientationOf(context);
+          final bool useDeviceFrame = switch (orientation) {
+            Orientation.portrait => Breakpoints.small.isActive(context),
+            Orientation.landscape => Breakpoints.medium.isActive(context),
+          };
+          if (useDeviceFrame) {
+            child = DeviceFrame(
+              device: Devices.ios.iPhone13Mini,
+              orientation: orientation,
+              screen: child,
             );
-          },
-        );
+          }
+        }
+        return PlatformWrapper(child: child);
+      },
+    );
   }
 
   @override

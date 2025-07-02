@@ -75,10 +75,10 @@ extension _AppOverrides on ThemeData {
 
       navigationBarTheme: navigationBarTheme.copyWith(
         elevation: 3,
+        height: 68,
         labelTextStyle: WidgetStateTextStyle.fromMap({
           WidgetState.selected: textTheme.labelMedium!.copyWith(
-            fontWeight: FontWeight.w700,
-            color: colorScheme.onSurface,
+            color: colorScheme.secondary,
           ),
           WidgetState.any: textTheme.labelMedium!.copyWith(
             color: colorScheme.onSurfaceVariant,
@@ -88,7 +88,7 @@ extension _AppOverrides on ThemeData {
           WidgetState.selected: IconThemeData(
             color: colorScheme.onSecondaryContainer,
           ),
-          WidgetState.any: IconThemeData(color: colorScheme.onSurface),
+          WidgetState.any: IconThemeData(color: colorScheme.onSurfaceVariant),
         }),
       ),
 
