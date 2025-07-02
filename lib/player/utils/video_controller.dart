@@ -64,8 +64,7 @@ class VideoController {
         _inner.value = VideoPlayerController.networkUrl(uri);
     await inner.initialize();
     aspectRatio.value = inner.value.aspectRatio;
-    // ignore: invalid_use_of_visible_for_testing_member
-    webElementQuery.value = 'video#videoElement-${inner.textureId}';
+    webElementQuery.value = 'video';
     await inner.seekTo(position.value);
     if (playing.value) await play();
     if (captionsUri != null) {
