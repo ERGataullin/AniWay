@@ -11,7 +11,6 @@
                 "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
-                "--web-browser-flag=https://smotret-anime.org/users/login",
             ]
         },
         {
@@ -37,7 +36,6 @@
                 "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
-                "--web-browser-flag=https://smotret-anime.org/users/login",
             ]
         },
         {
@@ -50,7 +48,6 @@
                 "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
-                "--web-browser-flag=https://smotret-anime.org/users/login",
             ]
         }
     ]
