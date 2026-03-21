@@ -135,7 +135,7 @@ class _SlidingGradientTransform extends GradientTransform {
       ..setIdentity()
       // Увеличиваем градиент с размеров шиммера
       // до размеров скоупа, чтобы иметь единый градиент на весь скоуп.
-      ..scale(widthMultiplier, heightMultiplier, 0)
+      ..scaleByDouble(widthMultiplier, heightMultiplier, 0, 1)
       // Смещаем начало координат так, чтобы им стала позиция шиммера с учётом
       // прогресса слайда.
       ..setTranslationRaw(

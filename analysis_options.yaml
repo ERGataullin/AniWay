@@ -168,7 +168,6 @@ linter:
     specify_nonobvious_local_variable_types: true
     specify_nonobvious_property_types: true
     tighten_type_of_initializing_formals: true
-    type_annotate_public_apis: true
     type_init_formals: true
     unawaited_futures: false
     unnecessary_await_in_return: true

@@ -97,7 +97,7 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   @override
   void setTranslations(List<TranslationData> value) {
     translations.value = <Locale, TypedTranslations>{};
-    for (final TranslationData translation in value) {
+    for (final translation in value) {
       // Получение "словаря" уже добавленных переводов такой же локализации,
       // или создание такового при его отсутствии.
       // Словарь разбит по типу перевода.

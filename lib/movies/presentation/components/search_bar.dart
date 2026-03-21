@@ -60,7 +60,7 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final AppBarTheme appBarTheme = AppBarTheme.of(context);
+    final AppBarThemeData appBarTheme = AppBarTheme.of(context);
     return ConditionalWrapper(
       condition: appBarTheme.systemOverlayStyle != null,
       wrapper: (context, child) {
