@@ -11,14 +11,11 @@ extension CookieDecoded on Cookie {
 }
 
 class CookieManager extends NetworkInterceptor with Initable {
-  CookieManager({required StorageService storageService})
-    : _storageService = storageService;
-
-  static const String _cookieHeaderName =
-      kIsWeb ? 'kaki' : HttpHeaders.cookieHeader;
-
-  static const String _setCookieHeaderName =
-      kIsWeb ? 'set-kaki' : HttpHeaders.setCookieHeader;
+  CookieManager({
+    required bool useCustomCookieHeader,
+    required StorageService storageService,
+  }) : _useCustomCookieHeader = useCustomCookieHeader,
+       _storageService = storageService;
 
   static final Pattern _setCookieSplitter = RegExp(
     r'[ \t]*,[ \t]*(?=['
@@ -29,9 +26,17 @@ class CookieManager extends NetworkInterceptor with Initable {
 
   final ValueNotifier<CookieMap> cookie = ValueNotifier(const {});
 
+  final bool _useCustomCookieHeader;
+
   final StorageService _storageService;
 
   NetworkInterceptor get interceptor => this;
+
+  String get _cookieHeaderName =>
+      _useCustomCookieHeader ? 'kaki' : HttpHeaders.cookieHeader;
+
+  String get _setCookieHeaderName =>
+      _useCustomCookieHeader ? 'set-kaki' : HttpHeaders.setCookieHeader;
 
   @override
   Future<void> init() async {

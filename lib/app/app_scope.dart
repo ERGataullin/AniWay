@@ -6,6 +6,7 @@ import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/data/services/anime365.dart';
 import 'package:app/movies/data/services/mock.dart';
 import 'package:app/player/player.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -22,22 +23,27 @@ class AppScope extends InheritedWidget {
     required super.child,
   }) {
     const useMocks = bool.fromEnvironment('USE_MOCKS');
+    final serverUri = Uri(scheme: 'https', host: 'smotret-anime.app');
+    final Uri? proxyUri =
+        !kIsWeb || useMocks ? null : Uri(scheme: 'https', host: 'aniway.su');
+
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
     this.networkService =
         networkService ??
         HttpService(
           userAgent: 'AniWay',
           baseUri:
-              kIsWeb
-                  ? ProxiedUri(
-                    proxy: Uri(scheme: 'https', host: 'aniway.su'),
-                    original: Uri(scheme: 'https', host: 'smotret-anime.org'),
-                  )
-                  : Uri(scheme: 'https', host: 'smotret-anime.org'),
+              proxyUri == null
+                  ? serverUri
+                  : ProxiedUri(proxy: proxyUri, original: serverUri),
         );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
-        cookieManager ?? CookieManager(storageService: this.storageService);
+        cookieManager ??
+        CookieManager(
+          useCustomCookieHeader: proxyUri != null,
+          storageService: this.storageService,
+        );
     this.authRepository =
         authRepository ??
         AuthRepository(
@@ -114,11 +120,10 @@ class AppScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(AppScope oldWidget) {
-    if (dependencies.length != oldWidget.dependencies.length) return true;
-    for (var i = 0; i < dependencies.length; i++) {
-      if (dependencies[i] != oldWidget.dependencies[i]) return true;
-    }
-    return false;
+    return !const DeepCollectionEquality().equals(
+      dependencies,
+      oldWidget.dependencies,
+    );
   }
 
   Future<void> ensureInitialized() async {
