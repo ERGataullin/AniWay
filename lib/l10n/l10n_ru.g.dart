@@ -50,7 +50,7 @@ class L10nRu extends L10n {
       'uk': 'Украинский',
       'en': 'Английский',
       'ja': 'Японский',
-      'other': 'Неизвестный язык',
+      'other': 'Неизвестный язык ($type)',
     });
     return '$_temp0';
   }
@@ -189,6 +189,12 @@ class L10nRu extends L10n {
 
   @override
   String get watchStatusTitle => 'Добавить в список';
+
+  @override
+  String get watchStatusAdd => 'Добавить в Мой список';
+
+  @override
+  String get watchStatusEdit => 'Изменить статус';
 
   @override
   String watchStatusEpisodesError(num episodesCountTotal) {

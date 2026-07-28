@@ -47,12 +47,21 @@ class TopNavigation extends StatelessWidget {
         _breakpoint: SlotLayout.from(
           key: const Key('Top Navigation Medium and Up'),
           builder: (context) {
+            final ScaffoldState scaffold = Scaffold.of(context);
             final Size size = sizeFor(context);
 
             return Column(
               children: [
                 AppBar(
                   centerTitle: true,
+                  notificationPredicate: (notification) {
+                    if (notification.depth > 1) return false;
+                    final ScaffoldState notificationScaffold = Scaffold.of(
+                      notification.context!,
+                    );
+                    if (!notificationScaffold.hasAppBar) return true;
+                    return scaffold == notificationScaffold;
+                  },
                   title: Padding(
                     padding: padding,
                     child: CustomMultiChildLayout(

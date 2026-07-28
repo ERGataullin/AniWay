@@ -1,7 +1,7 @@
 import 'package:app/auth/auth.dart';
 import 'package:app/auth/data/services/mock.dart';
-import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
+import 'package:app/core/data/services/cookie_manager.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/data/services/anime365.dart';
 import 'package:app/movies/data/services/mock.dart';

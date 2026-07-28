@@ -1,114 +1,112 @@
 import 'dart:math';
 
+import 'package:app/root_menu/components/bottom_navigation.dart';
+import 'package:app/root_menu/components/primary_navigation.dart';
+import 'package:app/root_menu/components/top_navigation.dart';
 import 'package:app/root_menu/root_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
+typedef RootMenuAwaredCenterBuilder =
+    Widget Function(BuildContext context, EdgeInsets padding);
+
+// TODO(Edgar): Избавиться к херам, перейти на SafeArea, тут баги
 /// Располагает дочерний виджет как можно ближе к горизонтальному центру окна
 /// так, чтобы при этом его не перекрывало главное меню.
-class RootMenuAwaredCenter extends SingleChildRenderObjectWidget {
-  const RootMenuAwaredCenter({
+class RootMenuAwaredCenter extends StatelessWidget {
+  RootMenuAwaredCenter({
     super.key,
     this.constraints = const BoxConstraints(maxWidth: 1600),
-    required Widget super.child,
+    required Widget child,
+  }) : builder = _defaultBuilder(child);
+
+  const RootMenuAwaredCenter.builder({
+    super.key,
+    this.constraints = const BoxConstraints(maxWidth: 1600),
+    required this.builder,
   });
+
+  static RootMenuAwaredCenterBuilder _defaultBuilder(Widget child) {
+    return (context, padding) => Padding(padding: padding, child: child);
+  }
 
   final BoxConstraints constraints;
 
+  final RootMenuAwaredCenterBuilder builder;
+
   @override
-  RenderObject createRenderObject(BuildContext context) {
-    return _RenderRootMenuAwaredCenter(
-      primaryNavigationKey: RootMenuScope.of(context).primaryNavigationKey,
-      windowSize: MediaQuery.sizeOf(context),
-      childConstraints: constraints,
+  Widget build(BuildContext context) {
+    final RootMenuScope rootMenuScope = RootMenuScope.of(context);
+    final RenderBox? primaryNavigation = switch (rootMenuScope
+        .primaryNavigationKey
+        .currentContext) {
+      final BuildContext context when context.mounted =>
+        context.findRenderObject() as RenderBox?,
+      _ => null,
+    };
+    final RenderBox? topNavigation = switch (rootMenuScope
+        .topNavigationKey
+        .currentContext) {
+      final BuildContext context when context.mounted =>
+        context.findRenderObject() as RenderBox?,
+      _ => null,
+    };
+    final RenderBox? bottomNavigation = switch (rootMenuScope
+        .bottomNavigationKey
+        .currentContext) {
+      final BuildContext context when context.mounted =>
+        context.findRenderObject() as RenderBox?,
+      _ => null,
+    };
+
+    final margin = EdgeInsets.only(
+      left: switch (primaryNavigation) {
+        final RenderBox renderBox when renderBox.hasSize =>
+          renderBox.size.width,
+        _ => PrimaryNavigation.sizeFor(context).width,
+      },
+      top: switch (topNavigation) {
+        final RenderBox renderBox when renderBox.hasSize =>
+          renderBox.size.height,
+        _ => TopNavigation.sizeFor(context).height,
+      },
+      bottom: switch (bottomNavigation) {
+        final RenderBox renderBox when renderBox.hasSize =>
+          renderBox.size.height,
+        _ => BottomNavigation.sizeFor(context).height,
+      },
     );
-  }
 
-  @override
-  void updateRenderObject(
-    BuildContext context,
-    // ignore: library_private_types_in_public_api
-    _RenderRootMenuAwaredCenter renderObject,
-  ) {
-    renderObject
-      ..windowSize = MediaQuery.sizeOf(context)
-      ..childConstraints = constraints;
-  }
-}
+    final Size windowSize = MediaQuery.sizeOf(context);
 
-class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
-  _RenderRootMenuAwaredCenter({
-    required GlobalKey primaryNavigationKey,
-    required Size windowSize,
-    required BoxConstraints childConstraints,
-  }) : _primaryNavigationKey = primaryNavigationKey,
-       _windowSize = windowSize,
-       _childConstraints = childConstraints,
-       super(null);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final BoxConstraints effectiveConstraints = constraints.enforce(
+          this.constraints,
+        );
 
-  GlobalKey _primaryNavigationKey;
-  set primaryNavigationKey(GlobalKey value) {
-    if (value == _primaryNavigationKey) return;
-    _primaryNavigationKey = value;
-    markNeedsPaint();
-  }
+        final double paddingHorizontal =
+            windowSize.width - effectiveConstraints.maxWidth;
+        final double paddingLeft = max(0, paddingHorizontal / 2 - margin.left);
+        final double paddingRight = max(
+          0,
+          paddingHorizontal - paddingLeft - margin.horizontal,
+        );
+        final double paddingVertical =
+            windowSize.height - effectiveConstraints.maxHeight;
+        final double paddingTop = max(0, paddingVertical / 2 - margin.top);
+        final double paddingBottom = max(
+          0,
+          paddingVertical - paddingTop - margin.vertical,
+        );
+        final padding = EdgeInsets.fromLTRB(
+          paddingLeft,
+          paddingTop,
+          paddingRight,
+          paddingBottom,
+        );
 
-  Size _windowSize;
-  set windowSize(Size value) {
-    if (value == _windowSize) return;
-    _windowSize = value;
-    markNeedsPaint();
-  }
-
-  BoxConstraints _childConstraints;
-  set childConstraints(BoxConstraints value) {
-    if (value == _childConstraints) return;
-    _childConstraints = value;
-    markNeedsLayout();
-  }
-
-  @override
-  bool get sizedByParent => true;
-
-  @override
-  Size computeDryLayout(covariant BoxConstraints constraints) {
-    return constraints.biggest;
-  }
-
-  @override
-  void performLayout() {
-    child?.layout(constraints.enforce(_childConstraints));
-  }
-
-  @override
-  Rect describeApproximatePaintClip(covariant RenderBox child) {
-    final Offset childOffset = (child.parentData! as BoxParentData).offset;
-    return child.paintBounds.translate(childOffset.dx, childOffset.dy);
-  }
-
-  @override
-  void paint(PaintingContext context, Offset offset) {
-    final RenderBox? child = this.child;
-    if (child != null) {
-      final parentData = child.parentData! as BoxParentData;
-      final primaryNavigation =
-          _primaryNavigationKey.currentContext!.findRenderObject()!
-              as RenderBox;
-
-      // Смещение дочернего RenderObject как можно ближе
-      // к горизонтальному центру окна.
-      final double offsetX = max(
-        0,
-        (_windowSize.width - child.size.width) / 2 -
-            primaryNavigation.size.width,
-      );
-      parentData.offset = Offset(offsetX, 0);
-    }
-    context.pushClipRect(
-      needsCompositing,
-      offset,
-      describeApproximatePaintClip(child!),
-      super.paint,
+        return builder(context, padding);
+      },
     );
   }
 }

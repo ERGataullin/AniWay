@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ExpandableText extends StatefulWidget {
-  const ExpandableText(this.data, {super.key});
+  const ExpandableText(this.data, {super.key, this.style});
 
   final String data;
+
+  final TextStyle? style;
 
   @override
   State<ExpandableText> createState() => _ExpandableTextState();
@@ -16,18 +18,35 @@ class _ExpandableTextState extends State<ExpandableText> {
 
   var _isExpanded = false;
 
+  late TextStyle _style;
+
+  late TextPainter _painter;
+
+  @override
+  void didChangeDependencies() {
+    _style = widget.style ?? DefaultTextStyle.of(context).style;
+    _painter = TextPainter(
+      textDirection: Directionality.of(context),
+      text: TextSpan(text: widget.data, style: _style),
+    );
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _painter.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final TextStyle style = DefaultTextStyle.of(context).style;
-        final textPainter = TextPainter(
-          maxLines: _breakpoint,
-          textDirection: Directionality.of(context),
-          text: TextSpan(text: widget.data, style: style),
-        )..layout(maxWidth: constraints.maxWidth);
-        final bool exceedsBreakpoint = textPainter.didExceedMaxLines;
-        textPainter.dispose();
+        _painter.layout(maxWidth: constraints.maxWidth);
+        final List<LineMetrics> lineMetrics = _painter.computeLineMetrics();
+        final bool exceedsBreakpoint = lineMetrics.length > _breakpoint;
+        final LineMetrics? lastCollapsedLineMetrics = lineMetrics
+            .elementAtOrNull(_maxLinesCollapsed - 1);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -40,10 +59,12 @@ class _ExpandableTextState extends State<ExpandableText> {
                 widget.data,
                 key: ValueKey(_isExpanded),
                 overflow: TextOverflow.fade,
-                style: style,
+                style: _style,
                 maxLines: switch (exceedsBreakpoint) {
                   false => null,
                   true when _isExpanded => null,
+                  true when lastCollapsedLineMetrics!.width <= 0 =>
+                    _maxLinesCollapsed - 1,
                   true => _maxLinesCollapsed,
                 },
               ),

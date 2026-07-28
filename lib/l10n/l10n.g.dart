@@ -162,7 +162,7 @@ abstract class L10n {
   /// No description provided for @languageTitle.
   ///
   /// In ru, this message translates to:
-  /// **'{type, select, ru{Русский} uk{Украинский} en{Английский} ja{Японский} other{Неизвестный язык}}'**
+  /// **'{type, select, ru{Русский} uk{Украинский} en{Английский} ja{Японский} other{Неизвестный язык ({type})}}'**
   String languageTitle(String type);
 
   /// No description provided for @libraryTitle.
@@ -314,6 +314,18 @@ abstract class L10n {
   /// In ru, this message translates to:
   /// **'Добавить в список'**
   String get watchStatusTitle;
+
+  /// No description provided for @watchStatusAdd.
+  ///
+  /// In ru, this message translates to:
+  /// **'Добавить в Мой список'**
+  String get watchStatusAdd;
+
+  /// No description provided for @watchStatusEdit.
+  ///
+  /// In ru, this message translates to:
+  /// **'Изменить статус'**
+  String get watchStatusEdit;
 
   /// No description provided for @watchStatusEpisodesError.
   ///

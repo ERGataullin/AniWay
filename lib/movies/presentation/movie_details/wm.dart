@@ -4,21 +4,21 @@ import 'package:app/movies/domain/models/episode.dart';
 import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
-import 'package:app/movies/presentation/movie/model.dart';
-import 'package:app/movies/presentation/movie/widget.dart';
+import 'package:app/movies/presentation/movie_details/model.dart';
+import 'package:app/movies/presentation/movie_details/widget.dart';
 import 'package:app/movies/presentation/watch_status/widget.dart';
 import 'package:app/theme/theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-MovieWM movieWMFactory(BuildContext context) => MovieWM(
-  MovieModel(
+MovieDetailsWM movieDetailsWMFactory(BuildContext context) => MovieDetailsWM(
+  MovieDetailsModel(
     errorHandler: context.read<ErrorHandler>(),
     repository: context.read<MoviesRepository>(),
   ),
 );
 
-abstract interface class IMovieWM implements IWidgetModel {
+abstract interface class IMovieDetailsWM implements IWidgetModel {
   ValueListenable<bool> get loading;
 
   ValueListenable<WatchStatus?> get watchStatus;
@@ -39,17 +39,17 @@ abstract interface class IMovieWM implements IWidgetModel {
 
   ValueListenable<List<EpisodeData>> get episodes;
 
-  Future<void> handleWatchStatusPressed(BuildContext context);
+  Future<void> handleWatchStatusPressed();
 
   void handlePlayPressed();
 
   void handleEpisodePressed(int episodeId);
 }
 
-class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
+class MovieDetailsWM extends WidgetModel<MovieDetailsWidget, IMovieDetailsModel>
     with ThemeWMMixin
-    implements IMovieWM {
-  MovieWM(super._model);
+    implements IMovieDetailsWM {
+  MovieDetailsWM(super._model);
 
   @override
   late final Computed<WatchStatus?> watchStatus = Computed(
@@ -83,8 +83,8 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
 
   @override
   late final Computed<String?> description = Computed(
-    trigger: model.movie,
-    () => model.movie.value?.description,
+    trigger: Listenable.merge([model.loading, model.movie]),
+    () => model.loading.value ? null : model.movie.value?.description,
   );
 
   @override
@@ -119,28 +119,29 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   }
 
   @override
-  void didUpdateWidget(MovieWidget oldWidget) {
+  void didUpdateWidget(MovieDetailsWidget oldWidget) {
     episodesUri.update();
     super.didUpdateWidget(oldWidget);
   }
 
   @override
-  Future<void> handleWatchStatusPressed(BuildContext context) async {
+  Future<void> handleWatchStatusPressed() async {
     final WatchStatusDetails? newStatus = await showDialog<WatchStatusDetails?>(
       context: context,
       useSafeArea: false,
-      builder:
-          (context) => WatchStatusWidget(
-            movie: model.movie.value!,
-            statusDetails: model.watchStatusDetails.value!,
-          ),
+      builder: (context) {
+        return WatchStatusWidget(
+          movie: model.movie.value!,
+          statusDetails: model.watchStatusDetails.value!,
+        );
+      },
     );
     if (newStatus != null) model.watchStatusDetails.value = newStatus;
   }
 
   @override
   void handlePlayPressed() {
-    widget.onPlayPressed(model.nextEpisodeId.value);
+    widget.onPlayPressed(model.nextEpisodeId.value!);
   }
 
   @override

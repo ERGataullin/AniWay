@@ -43,7 +43,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
               (context, body) => Scaffold(
                 extendBodyBehindAppBar: true,
                 appBar:
-                    RootMenuScope.of(context).hasTopNavigation(context)
+                    RootMenuScope.hasTopNavigation(context)
                         ? null
                         : MoviesSearchBar(
                           margin: EdgeInsets.symmetric(

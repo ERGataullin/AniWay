@@ -5,7 +5,7 @@ import 'package:app/movies/presentation/components/movie_player/widget.dart';
 import 'package:app/movies/presentation/episodes/widget.dart';
 import 'package:app/movies/presentation/home/widget.dart';
 import 'package:app/movies/presentation/library/widget.dart';
-import 'package:app/movies/presentation/movie/widget.dart';
+import 'package:app/movies/presentation/movie_details/widget.dart';
 import 'package:app/movies/presentation/search/widget.dart';
 import 'package:app/movies/presentation/up_next/widget.dart';
 import 'package:app/root_menu/container.dart';
@@ -232,7 +232,7 @@ abstract class _RoutesBuilders {
       path: 'movies/:movieId',
       routes: [episodesRoute],
       builder:
-          (context, state) => MovieWidget(
+          (context, state) => MovieDetailsWidget(
             movieId: int.parse(state.pathParameters['movieId']!),
             episodesUri: Uri.parse(
               state.namedLocation(

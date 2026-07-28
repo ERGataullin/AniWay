@@ -42,7 +42,7 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
             child: ShimmerScope(
               child: Scaffold(
                 appBar:
-                    RootMenuScope.of(context).hasTopNavigation(context)
+                    RootMenuScope.hasTopNavigation(context)
                         ? null
                         : AppBar(
                           centerTitle: true,

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app/auth/auth.dart';
-import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
+import 'package:app/core/data/services/cookie_manager.dart';
 
 class AuthServiceMock implements AuthService {
   AuthServiceMock({required CookieManager cookieManager})

@@ -4,7 +4,7 @@ import 'package:app/movies/domain/models/movie_details.dart';
 import 'package:app/movies/domain/models/watch_status_details.dart';
 import 'package:flutter/foundation.dart';
 
-abstract interface class IMovieModel implements ElementaryModel {
+abstract interface class IMovieDetailsModel implements ElementaryModel {
   ValueListenable<bool> get loading;
 
   ValueListenable<MovieDetailsData?> get movie;
@@ -16,8 +16,8 @@ abstract interface class IMovieModel implements ElementaryModel {
   void loadData({required int movieId});
 }
 
-class MovieModel extends ElementaryModel implements IMovieModel {
-  MovieModel({super.errorHandler, required MoviesRepository repository})
+class MovieDetailsModel extends ElementaryModel implements IMovieDetailsModel {
+  MovieDetailsModel({super.errorHandler, required MoviesRepository repository})
     : _repository = repository;
 
   @override
@@ -37,7 +37,7 @@ class MovieModel extends ElementaryModel implements IMovieModel {
     () {
       final int episodesCount = watchStatusDetails.value?.episodesCount ?? 0;
       return episodesCount >= movie.value!.episodes.length
-          ? null
+          ? movie.value!.episodes.first.id
           : movie.value?.episodes
               .getRange(
                 episodesCount == 0 ? 0 : episodesCount - 1,

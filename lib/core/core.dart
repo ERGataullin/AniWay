@@ -15,6 +15,7 @@ export 'data/services/storage/storage.dart';
 export 'domain/models/image.dart';
 export 'domain/models/json.dart';
 export 'domain/models/proxied_uri.dart';
+export 'presentation/adaptive.dart';
 export 'presentation/components/animated_visibility.dart';
 export 'presentation/components/conditional_wrapper.dart';
 export 'presentation/components/destination_title.dart';

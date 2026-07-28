@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
+import 'package:app/core/data/services/cookie_manager.dart';
 import 'package:app/movies/data/converters/anime365/watch_status.dart';
 import 'package:app/movies/data/converters/anime365/watch_status_details.dart';
 import 'package:app/movies/data/services/service.dart';

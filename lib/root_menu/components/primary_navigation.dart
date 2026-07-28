@@ -76,7 +76,7 @@ class PrimaryNavigation extends StatelessWidget {
                       right: false,
                       child: AdaptiveScaffold.standardNavigationRail(
                         labelType: null,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.all(8),
                         width: CustomNavigationRailTheme.of(context).minWidth!,
                         selectedIndex: currentIndex,
                         onDestinationSelected: onDestinationSelected,

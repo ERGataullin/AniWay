@@ -21,7 +21,7 @@ class RootMenuScope extends InheritedWidget {
     return context.dependOnInheritedWidgetOfExactType<RootMenuScope>()!;
   }
 
-  bool hasTopNavigation(BuildContext context) {
+  static bool hasTopNavigation(BuildContext context) {
     return !TopNavigation.sizeFor(context).isEmpty;
   }
 

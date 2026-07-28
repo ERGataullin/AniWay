@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:app/auth/auth.dart';
-import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
+import 'package:app/core/data/services/cookie_manager.dart';
 
 class AuthServiceAnime365 implements AuthService {
   AuthServiceAnime365({
