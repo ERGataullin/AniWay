@@ -4,9 +4,9 @@ import 'package:app/movies/domain/models/movie_card.dart';
 import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/home/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _HomeContext on BuildContext {
   IHomeWM get wm => read<IHomeWM>();

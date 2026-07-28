@@ -1,5 +1,5 @@
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class PrimaryNavigation extends StatelessWidget {
   const PrimaryNavigation({
@@ -17,7 +17,7 @@ class PrimaryNavigation extends StatelessWidget {
 
   final ValueChanged<int> onDestinationSelected;
 
-  final List<NavigationDestination> destinations;
+  final List<CustomNavigationDestination> destinations;
 
   static Size sizeFor(BuildContext context) {
     return _valueFor(
@@ -25,7 +25,7 @@ class PrimaryNavigation extends StatelessWidget {
       none: () => Size.zero,
       rail:
           () => Size.fromWidth(
-            NavigationRailTheme.of(context).minWidth! +
+            CustomNavigationRailTheme.of(context).minWidth! +
                 DividerTheme.of(context).thickness!,
           ),
       drawer: () => Size.fromWidth(DrawerTheme.of(context).width!),
@@ -77,12 +77,12 @@ class PrimaryNavigation extends StatelessWidget {
                       child: AdaptiveScaffold.standardNavigationRail(
                         labelType: null,
                         padding: const EdgeInsets.symmetric(vertical: 8),
-                        width: NavigationRailTheme.of(context).minWidth!,
+                        width: CustomNavigationRailTheme.of(context).minWidth!,
                         selectedIndex: currentIndex,
                         onDestinationSelected: onDestinationSelected,
                         destinations: destinations
                             .map(
-                              (destination) => NavigationRailDestination(
+                              (destination) => CustomNavigationRailDestination(
                                 icon: destination.icon,
                                 selectedIcon: destination.selectedIcon,
                                 label: Text(

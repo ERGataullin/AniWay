@@ -3,8 +3,8 @@ import 'package:app/l10n/l10n.dart';
 import 'package:app/movies/presentation/components/episode_card.dart';
 import 'package:app/movies/presentation/episodes/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _EpisodesContext on BuildContext {
   IEpisodesWM get wm => read<IEpisodesWM>();

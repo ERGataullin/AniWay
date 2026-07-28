@@ -1,8 +1,8 @@
 import 'package:app/auth/presentation/sign_in/wm.dart';
 import 'package:app/core/core.dart';
 import 'package:app/l10n/l10n.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 extension _SignInContext on BuildContext {
   ISignInWM get wm => read<ISignInWM>();

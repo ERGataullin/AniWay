@@ -1,5 +1,5 @@
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({
@@ -15,7 +15,7 @@ class BottomNavigation extends StatelessWidget {
 
   final ValueChanged<int> onDestinationSelected;
 
-  final List<NavigationDestination> destinations;
+  final List<CustomNavigationDestination> destinations;
 
   static Size sizeFor(BuildContext context) {
     final Breakpoint? breakpoint = Breakpoint.activeBreakpointIn(
@@ -25,7 +25,7 @@ class BottomNavigation extends StatelessWidget {
     return switch (breakpoint) {
       null => Size.zero,
       _breakpoint => Size.fromHeight(
-        NavigationBarTheme.of(context).height ?? 80,
+        CustomNavigationBarTheme.of(context).height ?? 80,
       ),
       _ =>
         throw UnsupportedError(

@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:app/core/core.dart';
 import 'package:app/movies/movies.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 enum _SlotId { leading, middle }
 

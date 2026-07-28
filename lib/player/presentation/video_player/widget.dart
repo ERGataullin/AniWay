@@ -13,9 +13,9 @@ import 'package:app/player/presentation/video_player/typedefs.dart';
 import 'package:app/player/presentation/video_player/wm.dart';
 import 'package:app/player/utils/pointer_devices_accuracy.dart';
 import 'package:app/theme/theme.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:video_player/video_player.dart';
 
 extension _VideoPlayerContext on BuildContext {
