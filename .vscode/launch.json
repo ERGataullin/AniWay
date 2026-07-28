@@ -8,7 +8,6 @@
             "flutterMode": "debug",
             "program": "lib/main.dart",
             "args": [
-                "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
             ]
@@ -20,7 +19,6 @@
             "flutterMode": "debug",
             "program": "lib/main.dart",
             "args": [
-                "--web-experimental-hot-reload",
                 "--web-port=8008",
                 "--web-browser-flag=--disable-web-security",
                 "--dart-define=USE_MOCKS=true"
@@ -33,7 +31,6 @@
             "flutterMode": "profile",
             "program": "lib/main.dart",
             "args": [
-                "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
             ]
@@ -45,7 +42,6 @@
             "flutterMode": "release",
             "program": "lib/main.dart",
             "args": [
-                "--web-experimental-hot-reload",
                 "--web-port=8080",
                 "--web-browser-flag=--disable-web-security",
             ]

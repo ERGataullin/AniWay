@@ -6,8 +6,8 @@ import 'package:app/movies/presentation/components/movie_card.dart';
 import 'package:app/movies/presentation/components/search_bar.dart';
 import 'package:app/movies/presentation/search/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
   const MoviesSearchWidget({

@@ -1,6 +1,6 @@
 import 'package:app/theme/components/video_player_slider.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 abstract class Themes {
   static ThemeData light(BuildContext context) =>

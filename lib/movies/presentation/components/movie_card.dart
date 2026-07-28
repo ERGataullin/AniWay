@@ -1,8 +1,8 @@
 import 'package:app/core/core.dart';
 import 'package:app/movies/domain/models/movie_card.dart';
 import 'package:app/movies/presentation/components/movie_score.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard(this.data, {super.key, this.opacity});

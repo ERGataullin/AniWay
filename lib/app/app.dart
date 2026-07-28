@@ -3,10 +3,10 @@ import 'package:app/app/platform_wrapper/platform_wrapper.dart';
 import 'package:app/app/router.dart';
 import 'package:app/l10n/l10n.dart';
 import 'package:app/theme/theme.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:device_frame_plus/device_frame_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:window_manager/window_manager.dart';
 

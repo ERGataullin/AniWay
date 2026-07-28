@@ -7,9 +7,9 @@ import 'package:app/movies/presentation/components/episode_card.dart';
 import 'package:app/movies/presentation/components/movie_score.dart';
 import 'package:app/movies/presentation/movie/wm.dart';
 import 'package:app/root_menu/root_menu.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
 part 'components/app_bar.dart';
 

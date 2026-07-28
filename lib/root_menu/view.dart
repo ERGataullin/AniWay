@@ -5,6 +5,7 @@ import 'package:app/root_menu/components/primary_navigation.dart';
 import 'package:app/root_menu/components/top_navigation.dart';
 import 'package:app/root_menu/destination.dart';
 import 'package:app/root_menu/root_menu.dart';
+import 'package:custom_adaptive_scaffold/custom_adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
 
 /// Главное меню.
@@ -46,7 +47,7 @@ class _RootMenuViewState extends State<RootMenuView> {
 
   @override
   Widget build(BuildContext context) {
-    final List<NavigationDestination> navigationDestinations =
+    final List<CustomNavigationDestination> navigationDestinations =
         _buildDestinations(context);
     return RootMenuScope(
       primaryNavigationKey: _primaryKey,
@@ -123,21 +124,21 @@ class _RootMenuViewState extends State<RootMenuView> {
     );
   }
 
-  List<NavigationDestination> _buildDestinations(BuildContext context) {
+  List<CustomNavigationDestination> _buildDestinations(BuildContext context) {
     return widget.destinations
         .map(
           (destination) => switch (destination) {
-            RootMenuDestination.home => NavigationDestination(
+            RootMenuDestination.home => CustomNavigationDestination(
               label: context.l10n.homePageTitle,
               icon: const Icon(Icons.home_outlined),
               selectedIcon: const Icon(Icons.home),
             ),
-            RootMenuDestination.library => NavigationDestination(
+            RootMenuDestination.library => CustomNavigationDestination(
               label: context.l10n.libraryTitle,
               icon: const Icon(Icons.video_library_outlined),
               selectedIcon: const Icon(Icons.video_library),
             ),
-            RootMenuDestination.search => NavigationDestination(
+            RootMenuDestination.search => CustomNavigationDestination(
               label: context.l10n.searchPageTitle,
               icon: const Icon(Icons.search_outlined),
               selectedIcon: const Icon(Icons.search),
