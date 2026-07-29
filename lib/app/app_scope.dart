@@ -7,7 +7,6 @@ import 'package:app/movies/data/services/anime365.dart';
 import 'package:app/movies/data/services/mock.dart';
 import 'package:app/player/player.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class AppScope extends InheritedWidget {
@@ -24,8 +23,10 @@ class AppScope extends InheritedWidget {
   }) {
     const useMocks = bool.fromEnvironment('USE_MOCKS');
     final serverUri = Uri(scheme: 'https', host: 'smotret-anime.app');
-    final Uri? proxyUri =
-        !kIsWeb || useMocks ? null : Uri(scheme: 'https', host: 'aniway.su');
+    const Uri? proxyUri = null;
+    // TODO(Edgar): Вернуть после поднятия прокси.
+    // final Uri? proxyUri =
+    //     !kIsWeb || useMocks ? null : Uri(scheme: 'https', host: 'aniway.su');
 
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
     this.networkService =

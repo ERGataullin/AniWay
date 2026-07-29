@@ -81,7 +81,7 @@ class MoviesServiceAnime365 implements MoviesService {
     final ResponseData<Json> shikimoriResponse = await _networkService.request(
       RequestData(
         method: RequestMethod.post,
-        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
+        uri: Uri(scheme: 'https', host: 'shikimori.io', path: '/api/graphql'),
         body: {
           'query': '''
             { 
@@ -329,7 +329,7 @@ class MoviesServiceAnime365 implements MoviesService {
     final ResponseData<Json> shikimoriResponse = await _networkService.request(
       RequestData(
         method: RequestMethod.post,
-        uri: Uri(scheme: 'https', host: 'shikimori.one', path: '/api/graphql'),
+        uri: Uri(scheme: 'https', host: 'shikimori.io', path: '/api/graphql'),
         body: {
           'query': '''
             { 

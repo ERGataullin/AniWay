@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:app/auth/auth.dart';
 import 'package:app/cookie_manager/cookie_manager.dart';
@@ -12,16 +11,16 @@ class AuthRepository with Initable {
   }) : _authService = authService,
        _cookieManager = cookieManager;
 
-  late final Computed<bool> signedIn = Computed(
-    trigger: _cookieManager.cookie,
-    () {
-      final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];
-      return session != null &&
-          _cookieManager.cookie.value['aaaa8ed0da05b797653c4bd51877d861'] !=
-              null &&
-          (session.expires == null || session.expires!.isAfter(DateTime.now()));
-    },
-  );
+  late final Computed<bool>
+  signedIn = Computed(trigger: _cookieManager.cookie, () {
+    return _cookieManager.cookie.value.containsKey('csrf');
+    // TODO(Edgar): Вернуть после поднятия прокси.
+    // final Cookie? session = _cookieManager.cookie.value['PHPSESSID'];
+    // return session != null &&
+    //     _cookieManager.cookie.value['aaaa8ed0da05b797653c4bd51877d861'] !=
+    //         null &&
+    //     (session.expires == null || session.expires!.isAfter(DateTime.now()));
+  });
 
   final AuthService _authService;
 
