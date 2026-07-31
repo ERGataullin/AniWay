@@ -299,7 +299,7 @@ class _Title extends StatelessWidget {
                 (currentChild, previousChildren) => Stack(
                   children: [
                     ...previousChildren,
-                    if (currentChild != null) currentChild,
+                    ?currentChild,
                   ],
                 ),
             child: Text.rich(

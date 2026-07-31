@@ -7,10 +7,9 @@ import 'package:app/core/core.dart';
 
 class AuthServiceAnime365 implements AuthService {
   AuthServiceAnime365({
-    required NetworkService networkService,
-    required CookieManager cookieManager,
-  }) : _networkService = networkService,
-       _cookieManager = cookieManager;
+    required this._networkService,
+    required this._cookieManager,
+  });
 
   final NetworkService _networkService;
 
@@ -20,12 +19,16 @@ class AuthServiceAnime365 implements AuthService {
   Future<void> signIn({required String email, required String password}) async {
     // Инициализация аутентификации для получения CSRF токена.
     final ResponseData<String> response = await _networkService.request(
-      RequestData(method: RequestMethod.get, uri: Uri(path: '/users/login')),
+      RequestData(
+        method: RequestMethod.get,
+        uri: Uri(path: '/users/login'),
+      ),
     );
     final Document document = parse(response.body);
     // TODO(Edgar): Удалить после поднятия прокси.
-    final String csrf =
-        document.querySelector('input[name="csrf"]')!.attributes['value']!;
+    final String csrf = document
+        .querySelector('input[name="csrf"]')!
+        .attributes['value']!;
     _cookieManager.cookie.value = {
       ..._cookieManager.cookie.value,
       'csrf': Cookie('csrf', csrf),

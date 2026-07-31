@@ -12,10 +12,9 @@ extension CookieDecoded on Cookie {
 
 class CookieManager extends NetworkInterceptor with Initable {
   CookieManager({
-    required bool useCustomCookieHeader,
-    required StorageService storageService,
-  }) : _useCustomCookieHeader = useCustomCookieHeader,
-       _storageService = storageService;
+    required this._useCustomCookieHeader,
+    required this._storageService,
+  });
 
   static final Pattern _setCookieSplitter = RegExp(
     r'[ \t]*,[ \t]*(?=['

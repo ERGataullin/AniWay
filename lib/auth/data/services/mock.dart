@@ -6,8 +6,7 @@ import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
 
 class AuthServiceMock implements AuthService {
-  AuthServiceMock({required CookieManager cookieManager})
-    : _cookieManager = cookieManager;
+  AuthServiceMock({required this._cookieManager});
 
   final CookieManager _cookieManager;
 

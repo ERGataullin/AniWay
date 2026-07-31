@@ -40,8 +40,7 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 }
 
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
-  VideoPlayerModel({super.errorHandler, required PlayerRepository repository})
-    : _repository = repository;
+  VideoPlayerModel({super.errorHandler, required this._repository});
 
   @override
   final ValueNotifier<LocaledTranslations> translations = ValueNotifier(

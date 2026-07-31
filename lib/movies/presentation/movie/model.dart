@@ -17,8 +17,7 @@ abstract interface class IMovieModel implements ElementaryModel {
 }
 
 class MovieModel extends ElementaryModel implements IMovieModel {
-  MovieModel({super.errorHandler, required MoviesRepository repository})
-    : _repository = repository;
+  MovieModel({super.errorHandler, required this._repository});
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);

@@ -18,8 +18,7 @@ abstract interface class IHomeModel implements ElementaryModel {
 }
 
 class HomeModel extends ElementaryModel implements IHomeModel {
-  HomeModel({super.errorHandler, required MoviesRepository repository})
-    : _repository = repository;
+  HomeModel({super.errorHandler, required this._repository});
 
   @override
   final ValueNotifier<bool> loading = ValueNotifier(false);

@@ -54,8 +54,7 @@ abstract interface class IVideoPlayerWM implements IWidgetModel {
 class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     with L10nWMMixin
     implements IVideoPlayerWM {
-  VideoPlayerWM(super._model, {required NetworkService networkService})
-    : _networkService = networkService;
+  VideoPlayerWM(super._model, {required this._networkService});
 
   @override
   late final videoController = VideoController(networkService: _networkService);

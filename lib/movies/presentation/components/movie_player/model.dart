@@ -32,9 +32,8 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   MoviePlayerModel(
     ErrorHandler errorHandler, {
-    required MoviesRepository repository,
-  }) : _repository = repository,
-       super(errorHandler: errorHandler);
+    required this._repository,
+  }) : super(errorHandler: errorHandler);
 
   @override
   final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);

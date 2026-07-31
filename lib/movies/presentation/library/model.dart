@@ -12,8 +12,7 @@ abstract interface class ILibraryModel implements ElementaryModel {
 }
 
 class LibraryModel extends ElementaryModel implements ILibraryModel {
-  LibraryModel({super.errorHandler, required MoviesRepository repository})
-    : _repository = repository;
+  LibraryModel({super.errorHandler, required this._repository});
 
   final MoviesRepository _repository;
 

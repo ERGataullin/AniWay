@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter implements RouterConfig<RouteMatchList> {
-  AppRouter({required ValueListenable<bool> signedIn}) : _signedIn = signedIn {
+  AppRouter({required this._signedIn}) {
     GoRouter.optionURLReflectsImperativeAPIs = true;
   }
 

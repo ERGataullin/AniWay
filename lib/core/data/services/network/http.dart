@@ -6,9 +6,8 @@ import 'package:app/core/core.dart';
 import 'package:http/http.dart';
 
 class HttpService implements NetworkService {
-  HttpService({required this.baseUri, required String userAgent})
-    : _userAgent = userAgent,
-      _client = Client();
+  HttpService({required this.baseUri, required this._userAgent})
+    : _client = Client();
 
   @override
   final Uri baseUri;

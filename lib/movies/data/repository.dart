@@ -11,8 +11,7 @@ import 'package:app/player/player.dart';
 import 'package:flutter/foundation.dart';
 
 class MoviesRepository with Initable {
-  MoviesRepository({required MoviesService moviesService})
-    : _moviesService = moviesService;
+  MoviesRepository({required this._moviesService});
 
   final MoviesService _moviesService;
 

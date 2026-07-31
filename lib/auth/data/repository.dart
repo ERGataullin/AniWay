@@ -6,10 +6,9 @@ import 'package:app/core/core.dart';
 
 class AuthRepository with Initable {
   AuthRepository({
-    required AuthService authService,
-    required CookieManager cookieManager,
-  }) : _authService = authService,
-       _cookieManager = cookieManager;
+    required this._authService,
+    required this._cookieManager,
+  });
 
   late final Computed<bool>
   signedIn = Computed(trigger: _cookieManager.cookie, () {

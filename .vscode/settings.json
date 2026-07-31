@@ -17,7 +17,7 @@
   "explorer.fileNesting.patterns": {
     "*.dart": "${capture}.g.dart",
     "l10n.dart": "l10n*.dart",
-    "pubspec.yaml": "*.yaml"
+    "pubspec.yaml": "*.yaml, pubspec.lock",
   },
   "files.exclude": {
     ".flutter-plugins": true,
@@ -32,7 +32,6 @@
     "**/build": true,
     "**/CVS": true,
     "**/Thumbs.db": true,
-    "pubspec.lock": true
   },
   "files.insertFinalNewline": true,
   "files.watcherExclude": {

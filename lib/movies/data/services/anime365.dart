@@ -18,10 +18,9 @@ import 'package:app/player/player.dart';
 
 class MoviesServiceAnime365 implements MoviesService {
   MoviesServiceAnime365({
-    required CookieManager cookieManager,
-    required NetworkService networkService,
-  }) : _cookieManager = cookieManager,
-       _networkService = networkService;
+    required this._cookieManager,
+    required this._networkService,
+  });
 
   final CookieManager _cookieManager;
 
@@ -57,8 +56,8 @@ class MoviesServiceAnime365 implements MoviesService {
                   'type!='
                   '${typesExcluded.map(_convertMovieTypeToJson).join(',')}',
             if (query?.isNotEmpty ?? false) 'query': query,
-            if (limit != null) 'limit': limit,
-            if (offset != null) 'offset': offset,
+            'limit': ?limit,
+            'offset': ?offset,
             if (watchStatuses.isNotEmpty)
               'chips': [
                 'status',

@@ -6,8 +6,7 @@ import 'package:fvp/fvp.dart' as fvp;
 import 'package:video_player/video_player.dart';
 
 class VideoController {
-  VideoController({required NetworkService networkService})
-    : _networkService = networkService {
+  VideoController({required this._networkService}) {
     fvp.registerWith(
       options: {
         if (defaultTargetPlatform == TargetPlatform.android)

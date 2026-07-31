@@ -12,8 +12,7 @@ abstract interface class IEpisodesModel implements ElementaryModel {
 }
 
 class EpisodesModel extends ElementaryModel implements IEpisodesModel {
-  EpisodesModel({super.errorHandler, required MoviesRepository repository})
-    : _repository = repository;
+  EpisodesModel({super.errorHandler, required this._repository});
 
   final MoviesRepository _repository;
 
