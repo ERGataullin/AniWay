@@ -38,8 +38,8 @@ class ShimmerScopeState extends State<ShimmerScope>
     if (!attachedShimmer || !attachedScope) return (backgroundColor, null);
 
     final gradient = LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
+      begin: .centerLeft,
+      end: .centerRight,
       stops: const [0.1, 0.3, 0.4],
       colors: [
         colorScheme.surfaceContainerLow,

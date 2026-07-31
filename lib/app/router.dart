@@ -94,19 +94,16 @@ abstract class _RoutesBuilders {
     return GoRoute(
       name: _Routes.moviePlayer,
       path: '/movies/:movieId/player',
-      pageBuilder:
-          (context, state) => MaterialPage(
-            fullscreenDialog: true,
-            child: MoviePlayerWidget(
-              movieId: int.parse(state.pathParameters['movieId']!),
-              initialEpisodeId: switch (state
-                  .uri
-                  .queryParameters['episodeId']) {
-                final String episodeIdQuery => int.tryParse(episodeIdQuery),
-                _ => null,
-              },
-            ),
-          ),
+      pageBuilder: (context, state) => MaterialPage(
+        fullscreenDialog: true,
+        child: MoviePlayerWidget(
+          movieId: .parse(state.pathParameters['movieId']!),
+          initialEpisodeId: switch (state.uri.queryParameters['episodeId']) {
+            final String episodeIdQuery => .tryParse(episodeIdQuery),
+            _ => null,
+          },
+        ),
+      ),
     );
   }
 
@@ -118,28 +115,25 @@ abstract class _RoutesBuilders {
         StatefulShellBranch(routes: [_buildLibrary()]),
         StatefulShellBranch(routes: [search]),
       ],
-      navigatorContainerBuilder:
-          (context, navigationShell, children) => RootMenuContainer(
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          RootMenuContainer(
             currentIndex: navigationShell.currentIndex,
             children: children,
           ),
-      builder:
-          (context, state, navigationShell) => RootMenuView(
-            currentIndex: navigationShell.currentIndex,
-            onDestinationSelected:
-                (index) => navigationShell.goBranch(
-                  index,
-                  initialLocation: index == navigationShell.currentIndex,
-                ),
-            destinations: RootMenuDestination.values,
-            query: state.uri.queryParameters['query'],
-            onSearch:
-                (query) => context.goNamed(
-                  search.name!,
-                  queryParameters: {if (query.isNotEmpty) 'query': query},
-                ),
-            child: navigationShell,
-          ),
+      builder: (context, state, navigationShell) => RootMenuView(
+        currentIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) => navigationShell.goBranch(
+          index,
+          initialLocation: index == navigationShell.currentIndex,
+        ),
+        destinations: RootMenuDestination.values,
+        query: state.uri.queryParameters['query'],
+        onSearch: (query) => context.goNamed(
+          search.name!,
+          queryParameters: {if (query.isNotEmpty) 'query': query},
+        ),
+        child: navigationShell,
+      ),
     );
   }
 
@@ -151,40 +145,37 @@ abstract class _RoutesBuilders {
       name: _Routes.home,
       path: '/',
       routes: [upNext, search, movie],
-      builder:
-          (context, state) => HomeWidget(
-            upNextUri: Uri.parse(state.namedLocation(upNext.name!)),
-            onUpNextPressed:
-                (movieId, episodeId) => context.pushNamed(
-                  _Routes.moviePlayer,
-                  pathParameters: {'movieId': movieId.toString()},
-                  queryParameters: {'episodeId': episodeId.toString()},
-                ),
-            ongoingsUri: Uri.parse(
-              state.namedLocation(
-                search.name!,
-                queryParameters: {
-                  'isOngoing': true.toString(),
-                  'typesExcluded': [
-                    MovieType.ad.name,
-                    MovieType.music.name,
-                    MovieType.preview.name,
-                  ].join(','),
-                },
-              ),
-            ),
-            popularsUri: Uri.parse(
-              state.namedLocation(
-                search.name!,
-                queryParameters: {'order': MoviesOrder.byPopularity.name},
-              ),
-            ),
-            onMoviePressed:
-                (id) => context.pushNamed(
-                  movie.name!,
-                  pathParameters: {'movieId': id.toString()},
-                ),
+      builder: (context, state) => HomeWidget(
+        upNextUri: .parse(state.namedLocation(upNext.name!)),
+        onUpNextPressed: (movieId, episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': movieId.toString()},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+        ongoingsUri: .parse(
+          state.namedLocation(
+            search.name!,
+            queryParameters: {
+              'isOngoing': true.toString(),
+              'typesExcluded': [
+                MovieType.ad.name,
+                MovieType.music.name,
+                MovieType.preview.name,
+              ].join(','),
+            },
           ),
+        ),
+        popularsUri: .parse(
+          state.namedLocation(
+            search.name!,
+            queryParameters: {'order': MoviesOrder.byPopularity.name},
+          ),
+        ),
+        onMoviePressed: (id) => context.pushNamed(
+          movie.name!,
+          pathParameters: {'movieId': id.toString()},
+        ),
+      ),
     );
   }
 
@@ -195,33 +186,28 @@ abstract class _RoutesBuilders {
       name: name,
       path: path,
       routes: [movieRoute],
-      builder:
-          (context, state) => MoviesSearchWidget(
-            isOngoing: bool.tryParse(
-              state.uri.queryParameters['isOngoing'] ?? '',
-            ),
-            query: state.uri.queryParameters['query'],
-            order: switch (state.uri.queryParameters['order']) {
-              final String order => MoviesOrder.valueOf(order),
-              _ => MoviesOrder.byPopularity,
-            },
-            typesExcluded:
-                state.uri.queryParameters['typesExcluded']
-                    ?.split(',')
-                    .map(MovieType.values.byName)
-                    .toList(growable: false) ??
-                const [],
-            onSearch:
-                (query) => context.replaceNamed(
-                  name,
-                  queryParameters: {if (query.isNotEmpty) 'query': query},
-                ),
-            onMoviePressed:
-                (id) => context.pushNamed(
-                  movieRoute.name!,
-                  pathParameters: {'movieId': id.toString()},
-                ),
-          ),
+      builder: (context, state) => MoviesSearchWidget(
+        isOngoing: .tryParse(state.uri.queryParameters['isOngoing'] ?? ''),
+        query: state.uri.queryParameters['query'],
+        order: switch (state.uri.queryParameters['order']) {
+          final String order => .valueOf(order),
+          _ => .byPopularity,
+        },
+        typesExcluded:
+            state.uri.queryParameters['typesExcluded']
+                ?.split(',')
+                .map(MovieType.values.byName)
+                .toList(growable: false) ??
+            const [],
+        onSearch: (query) => context.replaceNamed(
+          name,
+          queryParameters: {if (query.isNotEmpty) 'query': query},
+        ),
+        onMoviePressed: (id) => context.pushNamed(
+          movieRoute.name!,
+          pathParameters: {'movieId': id.toString()},
+        ),
+      ),
     );
   }
 
@@ -231,28 +217,25 @@ abstract class _RoutesBuilders {
       name: _Routes.movie(parent: parent),
       path: 'movies/:movieId',
       routes: [episodesRoute],
-      builder:
-          (context, state) => MovieWidget(
-            movieId: int.parse(state.pathParameters['movieId']!),
-            episodesUri: Uri.parse(
-              state.namedLocation(
-                episodesRoute.name!,
-                pathParameters: {'movieId': state.pathParameters['movieId']!},
-              ),
-            ),
-            onPlayPressed:
-                (episodeId) => context.pushNamed(
-                  _Routes.moviePlayer,
-                  pathParameters: {'movieId': state.pathParameters['movieId']!},
-                  queryParameters: {'episodeId': episodeId.toString()},
-                ),
-            onEpisodePressed:
-                (episodeId) => context.pushNamed(
-                  _Routes.moviePlayer,
-                  pathParameters: {'movieId': state.pathParameters['movieId']!},
-                  queryParameters: {'episodeId': episodeId.toString()},
-                ),
+      builder: (context, state) => MovieWidget(
+        movieId: .parse(state.pathParameters['movieId']!),
+        episodesUri: .parse(
+          state.namedLocation(
+            episodesRoute.name!,
+            pathParameters: {'movieId': state.pathParameters['movieId']!},
           ),
+        ),
+        onPlayPressed: (episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+        onEpisodePressed: (episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+      ),
     );
   }
 
@@ -262,20 +245,17 @@ abstract class _RoutesBuilders {
       name: _Routes.upNext,
       path: 'up-next',
       routes: [movieRoute],
-      builder:
-          (context, state) => UpNextWidget(
-            onItemPressed:
-                (movieId, episodeId) => context.pushNamed(
-                  _Routes.moviePlayer,
-                  pathParameters: {'movieId': movieId.toString()},
-                  queryParameters: {'episodeId': episodeId.toString()},
-                ),
-            onItemLongPressed:
-                (movieId, _) => context.pushNamed(
-                  movieRoute.name!,
-                  pathParameters: {'movieId': movieId.toString()},
-                ),
-          ),
+      builder: (context, state) => UpNextWidget(
+        onItemPressed: (movieId, episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': movieId.toString()},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+        onItemLongPressed: (movieId, _) => context.pushNamed(
+          movieRoute.name!,
+          pathParameters: {'movieId': movieId.toString()},
+        ),
+      ),
     );
   }
 
@@ -283,16 +263,14 @@ abstract class _RoutesBuilders {
     return GoRoute(
       name: _Routes.episodes(parent: parent),
       path: 'episodes',
-      builder:
-          (context, state) => EpisodesWidget(
-            movieId: int.parse(state.pathParameters['movieId']!),
-            onEpisodePressed:
-                (episodeId) => context.pushNamed(
-                  _Routes.moviePlayer,
-                  pathParameters: {'movieId': state.pathParameters['movieId']!},
-                  queryParameters: {'episodeId': episodeId.toString()},
-                ),
-          ),
+      builder: (context, state) => EpisodesWidget(
+        movieId: .parse(state.pathParameters['movieId']!),
+        onEpisodePressed: (episodeId) => context.pushNamed(
+          _Routes.moviePlayer,
+          pathParameters: {'movieId': state.pathParameters['movieId']!},
+          queryParameters: {'episodeId': episodeId.toString()},
+        ),
+      ),
     );
   }
 
@@ -302,14 +280,12 @@ abstract class _RoutesBuilders {
       name: _Routes.library,
       path: '/library',
       routes: [movieRoute],
-      builder:
-          (context, state) => LibraryWidget(
-            onMoviePressed:
-                (id) => context.pushNamed(
-                  movieRoute.name!,
-                  pathParameters: {'movieId': id.toString()},
-                ),
-          ),
+      builder: (context, state) => LibraryWidget(
+        onMoviePressed: (id) => context.pushNamed(
+          movieRoute.name!,
+          pathParameters: {'movieId': id.toString()},
+        ),
+      ),
     );
   }
 }

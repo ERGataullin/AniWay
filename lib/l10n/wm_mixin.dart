@@ -16,7 +16,7 @@ mixin L10nWMMixin<W extends ElementaryWidget, M extends ElementaryModel>
     if (_initialized) {
       _l10n.value = L10n.of(context);
     } else {
-      _l10n = ValueNotifier(L10n.of(context));
+      _l10n = .new(L10n.of(context));
       _initialized = true;
     }
     super.didChangeDependencies();

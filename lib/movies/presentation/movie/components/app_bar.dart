@@ -16,8 +16,9 @@ class _AppBar extends StatelessWidget {
       builder: (context, loading, _) {
         return SliverAppBar.large(
           pinned: true,
-          expandedHeight:
-              loading ? null : MediaQuery.sizeOf(context).width * 1.25,
+          expandedHeight: loading
+              ? null
+              : MediaQuery.sizeOf(context).width * 1.25,
           title: const _Title(),
           leading: IconButton(
             onPressed: Navigator.of(context).pop,
@@ -87,16 +88,16 @@ class _AppBarFlexibleSpace extends StatelessWidget {
         return loading
             ? const SizedBox.shrink()
             : const FlexibleSpaceBar(
-              collapseMode: CollapseMode.pin,
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _Poster(),
-                  _ToolbarBackgroundFade(),
-                  _AppBarFooter(),
-                ],
-              ),
-            );
+                collapseMode: CollapseMode.pin,
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _Poster(),
+                    _ToolbarBackgroundFade(),
+                    _AppBarFooter(),
+                  ],
+                ),
+              );
       },
     );
   }
@@ -109,12 +110,12 @@ class _ToolbarBackgroundFade extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color scrimColor = ColorScheme.of(context).scrim;
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: .topCenter,
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: .topCenter,
+            end: .bottomCenter,
             colors: [
               scrimColor.withValues(alpha: .5),
               scrimColor.withValues(alpha: 0),
@@ -122,7 +123,7 @@ class _ToolbarBackgroundFade extends StatelessWidget {
           ),
         ),
         child: SizedBox(
-          width: double.infinity,
+          width: .infinity,
           height: AppBarTheme.of(context).toolbarHeight!,
         ),
       ),
@@ -137,12 +138,12 @@ class _AppBarFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color scrimColor = ColorScheme.of(context).scrim;
     return Align(
-      alignment: Alignment.bottomCenter,
+      alignment: .bottomCenter,
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: .topCenter,
+            end: .bottomCenter,
             stops: const [0, .25, .75, 1],
             colors: [
               scrimColor.withValues(alpha: 0),
@@ -153,13 +154,11 @@ class _AppBarFooter extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(
-            Breakpoint.activeBreakpointOf(context).margin,
-          ),
+          padding: .all(Breakpoint.activeBreakpointOf(context).margin),
           child: const Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: .min,
+            mainAxisAlignment: .end,
+            crossAxisAlignment: .start,
             children: [
               // Отступ для более плавного градиента.
               SizedBox(height: 32),

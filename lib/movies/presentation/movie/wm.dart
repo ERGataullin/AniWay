@@ -52,43 +52,43 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   MovieWM(super._model);
 
   @override
-  late final Computed<WatchStatus?> watchStatus = Computed(
+  late final Computed<WatchStatus?> watchStatus = .new(
     trigger: model.watchStatusDetails,
     () => model.watchStatusDetails.value?.status,
   );
 
   @override
-  late final Computed<ImageData?> poster = Computed(
+  late final Computed<ImageData?> poster = .new(
     trigger: model.movie,
     () => model.movie.value?.poster,
   );
 
   @override
-  late final Computed<double?> score = Computed(
+  late final Computed<double?> score = .new(
     trigger: model.movie,
     () => model.movie.value?.score,
   );
 
   @override
-  late final Computed<String> title = Computed(
+  late final Computed<String> title = .new(
     trigger: model.movie,
     () => model.movie.value?.title ?? '',
   );
 
   @override
-  late final Computed<List<String>> genres = Computed(
+  late final Computed<List<String>> genres = .new(
     trigger: model.movie,
     () => model.movie.value?.genres ?? const [],
   );
 
   @override
-  late final Computed<String?> description = Computed(
+  late final Computed<String?> description = .new(
     trigger: model.movie,
     () => model.movie.value?.description,
   );
 
   @override
-  late final Computed<Uri?> episodesUri = Computed(
+  late final Computed<Uri?> episodesUri = .new(
     trigger: model.movie,
     () => switch (model.movie.value) {
       final MovieDetailsData movie when movie.episodes.length > 1 =>
@@ -98,13 +98,13 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
   );
 
   @override
-  late final Computed<int?> episodesCount = Computed(
+  late final Computed<int?> episodesCount = .new(
     trigger: model.movie,
     () => model.movie.value?.episodesCount,
   );
 
   @override
-  late final Computed<List<EpisodeData>> episodes = Computed(
+  late final Computed<List<EpisodeData>> episodes = .new(
     trigger: model.movie,
     () => model.movie.value?.episodes ?? const [],
   );
@@ -129,11 +129,10 @@ class MovieWM extends WidgetModel<MovieWidget, IMovieModel>
     final WatchStatusDetails? newStatus = await showDialog<WatchStatusDetails?>(
       context: context,
       useSafeArea: false,
-      builder:
-          (context) => WatchStatusWidget(
-            movie: model.movie.value!,
-            statusDetails: model.watchStatusDetails.value!,
-          ),
+      builder: (context) => WatchStatusWidget(
+        movie: model.movie.value!,
+        statusDetails: model.watchStatusDetails.value!,
+      ),
     );
     if (newStatus != null) model.watchStatusDetails.value = newStatus;
   }

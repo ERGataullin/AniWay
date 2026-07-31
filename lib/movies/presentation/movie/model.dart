@@ -20,33 +20,31 @@ class MovieModel extends ElementaryModel implements IMovieModel {
   MovieModel({super.errorHandler, required this._repository});
 
   @override
-  final ValueNotifier<bool> loading = ValueNotifier(false);
+  final ValueNotifier<bool> loading = .new(false);
 
   @override
-  final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
+  final ValueNotifier<MovieDetailsData?> movie = .new(null);
 
   @override
-  final ValueNotifier<WatchStatusDetails?> watchStatusDetails = ValueNotifier(
-    null,
-  );
+  final ValueNotifier<WatchStatusDetails?> watchStatusDetails = .new(null);
 
   @override
-  late final Computed<int?> nextEpisodeId = Computed(
-    trigger: Listenable.merge([movie, watchStatusDetails]),
+  late final Computed<int?> nextEpisodeId = .new(
+    trigger: .merge([movie, watchStatusDetails]),
     () {
       final int episodesCount = watchStatusDetails.value?.episodesCount ?? 0;
       return episodesCount >= movie.value!.episodes.length
           ? null
           : movie.value?.episodes
-              .getRange(
-                episodesCount == 0 ? 0 : episodesCount - 1,
-                movie.value!.episodes.length,
-              )
-              .firstWhere(
-                (episode) => episode.number! > episodesCount,
-                orElse: () => movie.value!.episodes.first,
-              )
-              .id;
+                .getRange(
+                  episodesCount == 0 ? 0 : episodesCount - 1,
+                  movie.value!.episodes.length,
+                )
+                .firstWhere(
+                  (episode) => episode.number! > episodesCount,
+                  orElse: () => movie.value!.episodes.first,
+                )
+                .id;
     },
   );
 

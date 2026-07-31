@@ -30,7 +30,7 @@ class MoviesRepository with Initable {
     int limit = 50,
     bool? isOngoing,
     String? query,
-    MoviesOrder order = MoviesOrder.byPopularity,
+    MoviesOrder order = .byPopularity,
     List<MovieType> typesExcluded = const [],
     List<WatchStatus> watchStatuses = const [],
   }) {

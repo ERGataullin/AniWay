@@ -34,6 +34,6 @@ class AuthServiceMock implements AuthService {
   }
 
   Future<void> _delay() {
-    return Future.delayed(const Duration(seconds: 1));
+    return .delayed(const .new(seconds: 1));
   }
 }

@@ -17,48 +17,46 @@ class EpisodeCard extends StatelessWidget {
       onTap: onPressed == null ? null : () => onPressed!(data.id),
       customBorder: cardTheme.shape!,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Expanded(
             child: Card(
-              clipBehavior: Clip.antiAlias,
-              child:
-                  data.preview == null
-                      ? Center(
-                        child: Text(
-                          data.number?.toString() ?? '1',
-                          style: TextTheme.of(
-                            context,
-                          ).displayLarge?.copyWith(fontFamily: 'Alvida'),
-                        ),
-                      )
-                      : AdaptiveImageBuilder(
-                        image: data.preview,
-                        builder:
-                            (context, opacity, image, _) => ListenableBuilder(
-                              listenable: opacity,
-                              builder:
-                                  (context, _) => Shimmer(
-                                    enabled: opacity.value < 1,
-                                    delegate: DecoratedBoxShimmerDelegate(
-                                      decoration: ShapeDecoration(
-                                        shape: CardTheme.of(context).shape!,
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          filterQuality: FilterQuality.low,
-                                          opacity: opacity.value,
-                                          image: image!,
-                                        ),
-                                      ),
-                                    ),
-                                    child: const SizedBox.expand(),
-                                  ),
-                            ),
+              clipBehavior: .antiAlias,
+              child: data.preview == null
+                  ? Center(
+                      child: Text(
+                        data.number?.toString() ?? '1',
+                        style: TextTheme.of(
+                          context,
+                        ).displayLarge?.copyWith(fontFamily: 'Alvida'),
                       ),
+                    )
+                  : AdaptiveImageBuilder(
+                      image: data.preview,
+                      builder: (context, opacity, image, _) =>
+                          ListenableBuilder(
+                            listenable: opacity,
+                            builder: (context, _) => Shimmer(
+                              enabled: opacity.value < 1,
+                              delegate: DecoratedBoxShimmerDelegate(
+                                decoration: ShapeDecoration(
+                                  shape: CardTheme.of(context).shape!,
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.low,
+                                    opacity: opacity.value,
+                                    image: image!,
+                                  ),
+                                ),
+                              ),
+                              child: const SizedBox.expand(),
+                            ),
+                          ),
+                    ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const .symmetric(horizontal: 8),
             child: Text(
               context.l10n.movieEpisode(data.type.name, data.number ?? 0),
               style: TextTheme.of(context).titleSmall,

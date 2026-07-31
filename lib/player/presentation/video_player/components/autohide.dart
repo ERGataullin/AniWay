@@ -75,8 +75,8 @@ class _AutohideState extends State<Autohide> {
     if (visibleNew || !delayRemove) {
       _setVisibility(visibleNew);
     } else {
-      _visibilityReasonsChangeTimer = Timer(
-        const Duration(seconds: 2),
+      _visibilityReasonsChangeTimer = .new(
+        const .new(seconds: 2),
         () => _setVisibility(visibleNew),
       );
     }
@@ -86,7 +86,7 @@ class _AutohideState extends State<Autohide> {
     setState(() {
       _visible = visible;
       SystemChrome.setEnabledSystemUIMode(
-        _visible ? SystemUiMode.edgeToEdge : SystemUiMode.immersiveSticky,
+        _visible ? .edgeToEdge : .immersiveSticky,
       );
     });
   }
@@ -94,12 +94,12 @@ class _AutohideState extends State<Autohide> {
   void _handleLoadingPlayingChanged() {
     _changeVisibilityReasons(
       add: {
-        if (widget.videoController.loading.value) _VisibilityReason.loading,
-        if (!widget.videoController.playing.value) _VisibilityReason.paused,
+        if (widget.videoController.loading.value) .loading,
+        if (!widget.videoController.playing.value) .paused,
       },
       remove: {
-        if (!widget.videoController.loading.value) _VisibilityReason.loading,
-        if (widget.videoController.playing.value) _VisibilityReason.paused,
+        if (!widget.videoController.loading.value) .loading,
+        if (widget.videoController.playing.value) .paused,
       },
     );
   }
@@ -107,10 +107,10 @@ class _AutohideState extends State<Autohide> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      hitTestBehavior: HitTestBehavior.translucent,
+      hitTestBehavior: .translucent,
       cursor: _visible ? SystemMouseCursors.basic : SystemMouseCursors.none,
       child: Stack(
-        fit: StackFit.expand,
+        fit: .expand,
         children: [
           widget.playerBuilder(
             context,
@@ -130,26 +130,18 @@ class _AutohideState extends State<Autohide> {
                   delayRemove: false,
                 );
               } else {
-                _changeVisibilityReasons(
-                  add: const {_VisibilityReason.userInteraction},
-                );
-                _changeVisibilityReasons(
-                  remove: const {_VisibilityReason.userInteraction},
-                );
+                _changeVisibilityReasons(add: const {.userInteraction});
+                _changeVisibilityReasons(remove: const {.userInteraction});
               }
             },
             onUserInteractionStart: () {
-              _changeVisibilityReasons(
-                add: const {_VisibilityReason.userInteraction},
-              );
+              _changeVisibilityReasons(add: const {.userInteraction});
             },
             onUserInteractionEnd: () {
-              _changeVisibilityReasons(
-                remove: const {_VisibilityReason.userInteraction},
-              );
+              _changeVisibilityReasons(remove: const {.userInteraction});
             },
             child: Stack(
-              fit: StackFit.expand,
+              fit: .expand,
               children: [
                 widget.gestures,
                 AnimatedVisibility.emphasized(
@@ -161,18 +153,14 @@ class _AutohideState extends State<Autohide> {
           ),
           _AccuratePointerListener(
             onUserInteractionStart: () {
-              _changeVisibilityReasons(
-                add: const {_VisibilityReason.userInteraction},
-              );
+              _changeVisibilityReasons(add: const {.userInteraction});
             },
             onUserInteractionEnd: () {
-              _changeVisibilityReasons(
-                remove: const {_VisibilityReason.userInteraction},
-              );
+              _changeVisibilityReasons(remove: const {.userInteraction});
             },
             onPointerOut: () {
               _changeVisibilityReasons(
-                remove: const {_VisibilityReason.userInteraction},
+                remove: const {.userInteraction},
                 delayRemove: false,
               );
             },
@@ -202,14 +190,14 @@ class _AccuratePointerListener extends StatelessWidget {
       builder: (context, constraints) {
         final Size size = constraints.biggest;
         final pointerHoverSensitivityRect = Rect.fromPoints(
-          const Offset(1, 1),
-          Offset(size.width - 1, size.height - 1),
+          const .new(1, 1),
+          .new(size.width - 1, size.height - 1),
         );
 
         return SizedBox.fromSize(
           size: size,
           child: Listener(
-            behavior: HitTestBehavior.translucent,
+            behavior: .translucent,
             onPointerDown: (event) {
               if (event.kind.accurate) onUserInteractionStart();
             },
@@ -251,7 +239,7 @@ class _InaccuratePointerListener extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      fit: StackFit.expand,
+      fit: .expand,
       children: [
         GestureDetector(
           supportedDevices: PointerDevicesAccuracy.inaccurateDevices,
@@ -259,7 +247,7 @@ class _InaccuratePointerListener extends StatelessWidget {
         ),
         child,
         Listener(
-          behavior: HitTestBehavior.translucent,
+          behavior: .translucent,
           onPointerDown: (event) {
             if (event.kind.accurate) onUserInteractionStart();
           },

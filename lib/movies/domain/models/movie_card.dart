@@ -22,13 +22,9 @@ class MovieCardData {
   }) => MovieCardData(
     poster: upNext.movie.poster,
     title: upNext.movie.title,
-    subtitle:
-        upNext.episode.number == null
-            ? l10n.movieType(upNext.episode.type.name)
-            : l10n.movieEpisode(
-              upNext.episode.type.name,
-              upNext.episode.number!,
-            ),
+    subtitle: upNext.episode.number == null
+        ? l10n.movieType(upNext.episode.type.name)
+        : l10n.movieEpisode(upNext.episode.type.name, upNext.episode.number!),
     onPressed: onPressed,
     onLongPressed: onLongPressed,
   );

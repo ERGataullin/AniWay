@@ -37,21 +37,19 @@ class HomeWidget extends ElementaryWidget<IHomeWM> {
   Widget build(IHomeWM wm) {
     return Provider<IHomeWM>.value(
       value: wm,
-      builder:
-          (context, _) => RootMenuAwaredCenter(
-            child: ShimmerScope(
-              child: Scaffold(
-                appBar:
-                    RootMenuScope.of(context).hasTopNavigation(context)
-                        ? null
-                        : AppBar(
-                          centerTitle: true,
-                          title: const FittedBox(child: Logo(primary: false)),
-                        ),
-                body: const _Body(),
-              ),
-            ),
+      builder: (context, _) => RootMenuAwaredCenter(
+        child: ShimmerScope(
+          child: Scaffold(
+            appBar: RootMenuScope.of(context).hasTopNavigation(context)
+                ? null
+                : AppBar(
+                    centerTitle: true,
+                    title: const FittedBox(child: Logo(primary: false)),
+                  ),
+            body: const _Body(),
           ),
+        ),
+      ),
     );
   }
 }
@@ -63,25 +61,19 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.loading,
-      builder:
-          (context, _) => AnimatedSwitcher(
-            switchInCurve: Easing.emphasizedDecelerate,
-            switchOutCurve: Easing.emphasizedAccelerate.flipped,
-            duration: Durations.medium4,
-            reverseDuration: Durations.short4,
-            layoutBuilder:
-                (currentChild, previousChildren) => Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    ...previousChildren,
-                    ?currentChild,
-                  ],
-                ),
-            child:
-                context.wm.loading.value
-                    ? const Center(child: CircularProgressIndicator.adaptive())
-                    : const _Content(),
-          ),
+      builder: (context, _) => AnimatedSwitcher(
+        switchInCurve: Easing.emphasizedDecelerate,
+        switchOutCurve: Easing.emphasizedAccelerate.flipped,
+        duration: Durations.medium4,
+        reverseDuration: Durations.short4,
+        layoutBuilder: (currentChild, previousChildren) => Stack(
+          alignment: .topCenter,
+          children: [...previousChildren, ?currentChild],
+        ),
+        child: context.wm.loading.value
+            ? const Center(child: CircularProgressIndicator.adaptive())
+            : const _Content(),
+      ),
     );
   }
 }
@@ -105,7 +97,7 @@ class _Content extends StatelessWidget {
                   EdgeInsets.symmetric(
                     vertical: Breakpoint.activeBreakpointOf(context).margin,
                   ) +
-                  EdgeInsets.only(
+                  .only(
                     top: safeAreaPadding.top,
                     bottom: safeAreaPadding.bottom,
                   ),
@@ -156,7 +148,7 @@ class _Category extends StatelessWidget {
       horizontal: Breakpoint.activeBreakpointOf(context).margin,
     );
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         DestinationTitle(title, uri: uri, margin: marginHorizontal),
         const SizedBox(height: 8),
@@ -167,7 +159,7 @@ class _Category extends StatelessWidget {
 }
 
 class _Movies extends StatelessWidget {
-  const _Movies({this.margin = EdgeInsets.zero, required this.movies});
+  const _Movies({this.margin = .zero, required this.movies});
 
   final EdgeInsets margin;
 
@@ -180,23 +172,17 @@ class _Movies extends StatelessWidget {
       height: 128 + 64 + 32,
       child: ValueListenableBuilder(
         valueListenable: movies,
-        builder:
-            (context, movies, _) => ListView.separated(
-              clipBehavior: Clip.none,
-              scrollDirection: Axis.horizontal,
-              itemCount: movies.length,
-              padding: margin.add(
-                EdgeInsets.only(
-                  left: safeAreaPadding.left,
-                  right: safeAreaPadding.right,
-                ),
-              ),
-              separatorBuilder:
-                  (context, _) => SizedBox(
-                    width: Breakpoint.activeBreakpointOf(context).padding,
-                  ),
-              itemBuilder: (context, index) => MovieCard(movies[index]),
-            ),
+        builder: (context, movies, _) => ListView.separated(
+          clipBehavior: .none,
+          scrollDirection: .horizontal,
+          itemCount: movies.length,
+          padding: margin.add(
+            .only(left: safeAreaPadding.left, right: safeAreaPadding.right),
+          ),
+          separatorBuilder: (context, _) =>
+              SizedBox(width: Breakpoint.activeBreakpointOf(context).padding),
+          itemBuilder: (context, index) => MovieCard(movies[index]),
+        ),
       ),
     );
   }

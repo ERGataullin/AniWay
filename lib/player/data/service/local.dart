@@ -22,7 +22,7 @@ class LocalPlayerService implements PlayerService {
     );
     return {
       for (final MapEntry<Object?, Object?> entry in stored.entries)
-        TranslationType.valueOf(entry.key! as String): entry.value! as int,
+        .valueOf(entry.key! as String): entry.value! as int,
     };
   }
 

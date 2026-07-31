@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:app/cookie_manager/cookie_manager.dart';
 import 'package:app/core/core.dart';
@@ -30,7 +29,7 @@ class MoviesServiceAnime365 implements MoviesService {
 
   @override
   Future<List<MovieBaseData>> getMovies({
-    MoviesOrder order = MoviesOrder.byPopularity,
+    MoviesOrder order = .byPopularity,
     bool? isOngoing,
     String? query,
     int? limit,
@@ -40,9 +39,9 @@ class MoviesServiceAnime365 implements MoviesService {
   }) async {
     assert(typesExcluded.isEmpty || query == null);
     final ResponseData<Json> response = await _networkService.request<Json>(
-      RequestData(
-        method: RequestMethod.get,
-        uri: Uri(
+      .new(
+        method: .get,
+        uri: .new(
           path: '/api/series',
           queryParameters: {
             'fields':
@@ -65,7 +64,7 @@ class MoviesServiceAnime365 implements MoviesService {
                     .map(WatchStatusConverterAnime365.toJson)
                     .join(','),
               ].join('='),
-          }.map((key, value) => MapEntry(key, value.toString())),
+          }.map((key, value) => .new(key, value.toString())),
         ),
       ),
     );
@@ -78,11 +77,12 @@ class MoviesServiceAnime365 implements MoviesService {
         .map((movieJson) => movieJson['myAnimeListId']! as int)
         .toList(growable: false);
     final ResponseData<Json> shikimoriResponse = await _networkService.request(
-      RequestData(
-        method: RequestMethod.post,
-        uri: Uri(scheme: 'https', host: 'shikimori.io', path: '/api/graphql'),
+      .new(
+        method: .post,
+        uri: .new(scheme: 'https', host: 'shikimori.io', path: '/api/graphql'),
         body: {
-          'query': '''
+          'query':
+              '''
             { 
               animes(ids: "${shikimoriIds.join(',')}", limit: 50 ) {
                 id
@@ -119,42 +119,32 @@ class MoviesServiceAnime365 implements MoviesService {
             title:
                 (movieJson['titles'] as Json?)?['ru'] as String? ??
                 movieJson['title']! as String,
-            poster: ImageData(
-              resolutionsUris:
-                  shikimoriPoster == null
-                      ? {
-                        140: Uri.parse(movieJson['posterUrlSmall']! as String),
-                        double.infinity: Uri.parse(
-                          movieJson['posterUrl']! as String,
-                        ),
-                      }
-                      : {
-                        60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
-                        120: Uri.parse(
-                          shikimoriPoster['miniAlt2xUrl']! as String,
-                        ),
-                        160: Uri.parse(
-                          shikimoriPoster['previewAltUrl']! as String,
-                        ),
-                        225: Uri.parse(
-                          shikimoriPoster['mainAltUrl']! as String,
-                        ),
-                        320: Uri.parse(
-                          shikimoriPoster['previewAlt2xUrl']! as String,
-                        ),
-                        450: Uri.parse(
-                          shikimoriPoster['mainAlt2xUrl']! as String,
-                        ),
-                        double.infinity: Uri.parse(
-                          shikimoriPoster['originalUrl']! as String,
-                        ),
-                      },
+            poster: .new(
+              resolutionsUris: shikimoriPoster == null
+                  ? {
+                      140: .parse(movieJson['posterUrlSmall']! as String),
+                      double.infinity: .parse(
+                        movieJson['posterUrl']! as String,
+                      ),
+                    }
+                  : {
+                      60: .parse(shikimoriPoster['miniAltUrl']! as String),
+                      120: .parse(shikimoriPoster['miniAlt2xUrl']! as String),
+                      160: .parse(shikimoriPoster['previewAltUrl']! as String),
+                      225: .parse(shikimoriPoster['mainAltUrl']! as String),
+                      320: .parse(
+                        shikimoriPoster['previewAlt2xUrl']! as String,
+                      ),
+                      450: .parse(shikimoriPoster['mainAlt2xUrl']! as String),
+                      double.infinity: .parse(
+                        shikimoriPoster['originalUrl']! as String,
+                      ),
+                    },
             ),
             type: _convertJsonToMovieType(movieJson['type']! as String),
-            score:
-                movieJson['myAnimeListScore'] == '-1'
-                    ? null
-                    : double.parse(movieJson['myAnimeListScore']! as String),
+            score: movieJson['myAnimeListScore'] == '-1'
+                ? null
+                : .parse(movieJson['myAnimeListScore']! as String),
           );
         })
         .toList(growable: false);
@@ -167,9 +157,9 @@ class MoviesServiceAnime365 implements MoviesService {
     }
 
     final ResponseData<String> response = await _networkService.request(
-      RequestData(
-        method: RequestMethod.get,
-        uri: Uri(
+      .new(
+        method: .get,
+        uri: .new(
           path: '/',
           queryParameters: {
             'ajax': 'm-index-personal-episodes',
@@ -179,24 +169,22 @@ class MoviesServiceAnime365 implements MoviesService {
       ),
     );
     final Document document = parse(response.body);
-    final Element upNextCard =
-        document.querySelector(
-          'div.body-container > '
-          'div.container.section > '
-          'div#m-index-personal-episodes',
-        )!;
+    final Element upNextCard = document.querySelector(
+      'div.body-container > '
+      'div.container.section > '
+      'div#m-index-personal-episodes',
+    )!;
     final Element? pagerCard = upNextCard.querySelector(
       'div.pager.card > ul.pagination',
     );
     _upNextMaxPage = pagerCard == null ? 1 : pagerCard.children.length - 4;
-    final Element upNextItemsContainer =
-        upNextCard.querySelector(
-          // Items card
-          // ignore: lines_longer_than_80_chars
-          'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
-          // Up next items
-          'div.row > div.items', // up next items
-        )!;
+    final Element upNextItemsContainer = upNextCard.querySelector(
+      // Items card
+      // ignore: lines_longer_than_80_chars
+      'div.m-new-episodes.m-missed-episodes.card.collection.with-header.z-depth-1 > '
+      // Up next items
+      'div.row > div.items', // up next items
+    )!;
     final episodeNumberPattern = RegExp(r'\d+(\.\d)?');
     final tvEpisodeTitlePattern = RegExp(
       '^${episodeNumberPattern.pattern} серия\$',
@@ -222,20 +210,19 @@ class MoviesServiceAnime365 implements MoviesService {
     return upNextItemsContainer.children
         .map((itemElement) {
           final Element a = itemElement.querySelector('a[href]')!;
-          final Uri hrefUri = Uri.parse(a.attributes['href']!);
+          final Uri hrefUri = .parse(a.attributes['href']!);
 
           final String moviePathSegment = hrefUri.pathSegments[1];
-          final int movieId = int.parse(
+          final int movieId = .parse(
             moviePathSegment.substring(moviePathSegment.lastIndexOf('-') + 1),
           );
           final String movieTitle = a.nodes[1].text!
               .split(' ')
               .where((part) => part.isNotEmpty)
               .join(' ');
-          final String posterStyle =
-              itemElement
-                  .querySelector('div.circle[style]')!
-                  .attributes['style']!;
+          final String posterStyle = itemElement
+              .querySelector('div.circle[style]')!
+              .attributes['style']!;
           const posterUrlPrefix = 'background-image: url(\'';
           const posterUrlPostfix = '\');';
           String posterUrl = posterStyle.substring(
@@ -247,7 +234,7 @@ class MoviesServiceAnime365 implements MoviesService {
           );
 
           final String episodePathSegment = hrefUri.pathSegments[2];
-          final int episodeId = int.parse(
+          final int episodeId = .parse(
             episodePathSegment.substring(
               episodePathSegment.lastIndexOf('-') + 1,
             ),
@@ -255,54 +242,49 @@ class MoviesServiceAnime365 implements MoviesService {
           final String episodeTitle = a.children[0].text;
           late final MovieType type;
           if (tvEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.tv;
+            type = .tv;
           } else if (movieEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.movie;
+            type = .movie;
           } else if (ovaEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.ova;
+            type = .ova;
           } else if (onaEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.ona;
+            type = .ona;
           } else if (specialEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.special;
+            type = .special;
           } else if (tvSpecialEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.tvSpecial;
+            type = .tvSpecial;
           } else if (musicEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.music;
+            type = .music;
           } else if (pvEpisodeTitlePattern.hasMatch(episodeTitle)) {
-            type = MovieType.preview;
+            type = .preview;
           }
 
           final Iterable<RegExpMatch> episodeNumberMatches =
               episodeNumberPattern.allMatches(episodeTitle);
-          final num? episodeNumber =
-              episodeNumberMatches.isEmpty
-                  ? null
-                  : num.parse(
-                    episodeTitle.substring(
-                      episodeNumberMatches.single.start,
-                      episodeNumberMatches.single.end,
-                    ),
-                  );
+          final num? episodeNumber = episodeNumberMatches.isEmpty
+              ? null
+              : .parse(
+                  episodeTitle.substring(
+                    episodeNumberMatches.single.start,
+                    episodeNumberMatches.single.end,
+                  ),
+                );
 
           return UpNextData(
-            movie: MovieBaseData(
+            movie: .new(
               id: movieId,
               title: movieTitle,
-              poster: ImageData(
+              poster: .new(
                 resolutionsUris: {
-                  140: Uri.parse(posterUrl),
-                  double.infinity: Uri.parse(
+                  140: .parse(posterUrl),
+                  double.infinity: .parse(
                     posterUrl.replaceFirst('140x140.1.', ''),
                   ),
                 },
               ),
               type: type,
             ),
-            episode: EpisodeData(
-              id: episodeId,
-              type: type,
-              number: episodeNumber,
-            ),
+            episode: .new(id: episodeId, type: type, number: episodeNumber),
           );
         })
         .toList(growable: false);
@@ -311,9 +293,9 @@ class MoviesServiceAnime365 implements MoviesService {
   @override
   Future<MovieDetailsData> getMovie(int id) async {
     final ResponseData<Json> anime365Response = await _networkService.request(
-      RequestData(
-        method: RequestMethod.get,
-        uri: Uri(
+      .new(
+        method: .get,
+        uri: .new(
           path: '/api/series/$id',
           queryParameters: {
             'fields':
@@ -326,11 +308,12 @@ class MoviesServiceAnime365 implements MoviesService {
     final anime365Data = anime365Response.body['data']! as Json;
 
     final ResponseData<Json> shikimoriResponse = await _networkService.request(
-      RequestData(
-        method: RequestMethod.post,
-        uri: Uri(scheme: 'https', host: 'shikimori.io', path: '/api/graphql'),
+      .new(
+        method: .post,
+        uri: .new(scheme: 'https', host: 'shikimori.io', path: '/api/graphql'),
         body: {
-          'query': '''
+          'query':
+              '''
             { 
               animes(ids: "${anime365Data['myAnimeListId']}" ) {
                 videos { name kind imageUrl }
@@ -363,12 +346,12 @@ class MoviesServiceAnime365 implements MoviesService {
                           (videoJson as Json)['kind'] == 'episode_preview',
                     )
                     .cast())
-              num.tryParse(videoJson['name']! as String) ?? -1: videoJson,
+              .tryParse(videoJson['name']! as String) ?? -1: videoJson,
           },
           _ => const {},
         };
 
-    final Uri movieUri = Uri.parse(anime365Data['url']! as String);
+    final Uri movieUri = .parse(anime365Data['url']! as String);
     final List<String> genres = (anime365Data['genres']! as List<dynamic>)
         .cast<Json>()
         .map((genreJson) => genreJson['title']! as String)
@@ -379,77 +362,73 @@ class MoviesServiceAnime365 implements MoviesService {
     };
     final List<EpisodeData> previewsAndEpisodes =
         anime365Data['episodes'] == null
-            ? const []
-            : (anime365Data['episodes']! as List<dynamic>)
-                .cast<Json>()
-                .map((episodeJson) {
-                  final num number = num.parse(
-                    episodeJson['episodeInt']! as String,
-                  );
-                  var previewUrl =
-                      shikimoriEpisodePreviews[number]?['imageUrl'] as String?;
-                  if (previewUrl?.startsWith('//') ?? false) {
-                    previewUrl = 'https:$previewUrl';
-                  }
-                  return EpisodeData(
-                    id: episodeJson['id']! as int,
-                    type: _convertJsonToMovieType(
-                      episodeJson['episodeType']! as String,
-                    ),
-                    number: number,
-                    preview:
-                        previewUrl == null
-                            ? null
-                            : ImageData(
-                              resolutionsUris: {
-                                double.infinity: Uri.parse(previewUrl),
-                              },
-                            ),
-                  );
-                })
-                .toList(growable: false);
+        ? const []
+        : (anime365Data['episodes']! as List<dynamic>)
+              .cast<Json>()
+              .map((episodeJson) {
+                final num number = .parse(episodeJson['episodeInt']! as String);
+                var previewUrl =
+                    shikimoriEpisodePreviews[number]?['imageUrl'] as String?;
+                if (previewUrl?.startsWith('//') ?? false) {
+                  previewUrl = 'https:$previewUrl';
+                }
+                return EpisodeData(
+                  id: episodeJson['id']! as int,
+                  type: _convertJsonToMovieType(
+                    episodeJson['episodeType']! as String,
+                  ),
+                  number: number,
+                  preview: previewUrl == null
+                      ? null
+                      : .new(
+                          resolutionsUris: {
+                            double.infinity: .parse(previewUrl),
+                          },
+                        ),
+                );
+              })
+              .toList(growable: false);
     final poster = ImageData(
       resolutionsUris: {
-        60: Uri.parse(shikimoriPoster['miniAltUrl']! as String),
-        120: Uri.parse(shikimoriPoster['miniAlt2xUrl']! as String),
-        160: Uri.parse(shikimoriPoster['previewAltUrl']! as String),
-        225: Uri.parse(shikimoriPoster['mainAltUrl']! as String),
-        320: Uri.parse(shikimoriPoster['previewAlt2xUrl']! as String),
-        450: Uri.parse(shikimoriPoster['mainAlt2xUrl']! as String),
-        double.infinity: Uri.parse(shikimoriPoster['originalUrl']! as String),
+        60: .parse(shikimoriPoster['miniAltUrl']! as String),
+        120: .parse(shikimoriPoster['miniAlt2xUrl']! as String),
+        160: .parse(shikimoriPoster['previewAltUrl']! as String),
+        225: .parse(shikimoriPoster['mainAltUrl']! as String),
+        320: .parse(shikimoriPoster['previewAlt2xUrl']! as String),
+        450: .parse(shikimoriPoster['mainAlt2xUrl']! as String),
+        double.infinity: .parse(shikimoriPoster['originalUrl']! as String),
       },
     );
 
-    return MovieDetailsData(
+    return .new(
       id: id,
       uri: movieUri,
       title: (anime365Data['titles']! as Json)['ru']! as String,
       genres: genres,
       poster: poster,
       previews: previewsAndEpisodes
-          .where((episode) => episode.type == MovieType.preview)
+          .where((episode) => episode.type == .preview)
           .toList(growable: false),
       episodesCount: episodesCount,
       episodes: previewsAndEpisodes
-          .where((episode) => episode.type != MovieType.preview)
+          .where((episode) => episode.type != .preview)
           .toList(growable: false),
       description: switch (anime365Data['descriptions']) {
         final List<dynamic> jsons => (jsons.first as Json)['value']! as String,
         _ => null,
       },
-      score:
-          anime365Data['myAnimeListScore'] == '-1'
-              ? null
-              : double.parse(anime365Data['myAnimeListScore']! as String),
+      score: anime365Data['myAnimeListScore'] == '-1'
+          ? null
+          : .parse(anime365Data['myAnimeListScore']! as String),
     );
   }
 
   @override
   Future<List<TranslationData>> getTranslations(Object episodeId) async {
     final ResponseData<Json> response = await _networkService.request(
-      RequestData(
-        method: RequestMethod.get,
-        uri: Uri(
+      .new(
+        method: .get,
+        uri: .new(
           path: '/api/episodes/$episodeId',
           queryParameters: {'fields': 'translations'},
         ),
@@ -468,20 +447,16 @@ class MoviesServiceAnime365 implements MoviesService {
         .map(
           (translationJson) => TranslationData(
             id: translationJson['id']! as int,
-            uri: Uri.parse(translationJson['url']! as String),
+            uri: .parse(translationJson['url']! as String),
             title: switch (translationJson['authorsSummary']) {
               final String author when author.isNotEmpty => author,
               _ => 'Неизвестный',
             },
-            type: TranslationType.valueOf(
-              translationJson['typeKind']! as String,
-            ),
-            locale: Locale.fromSubtags(
+            type: .valueOf(translationJson['typeKind']! as String),
+            locale: .fromSubtags(
               languageCode: translationJson['typeLang']! as String,
             ),
-            qualityType: QualityType.valueOf(
-              translationJson['qualityType']! as String,
-            ),
+            qualityType: .valueOf(translationJson['qualityType']! as String),
             authors: (translationJson['authorsList']! as List<dynamic>)
                 .cast<String>()
                 .map(
@@ -499,30 +474,30 @@ class MoviesServiceAnime365 implements MoviesService {
   @override
   Future<VideoData> getTranslationVideo(int translationId) async {
     final ResponseData<Json> response = await _networkService.request(
-      RequestData(
-        method: RequestMethod.get,
-        uri: Uri(path: '/api/translations/embed/$translationId'),
+      .new(
+        method: .get,
+        uri: .new(path: '/api/translations/embed/$translationId'),
       ),
     );
     final data = response.body['data']! as Json;
 
-    final List<Json> downloadSourcesJsons =
-        (data['download']! as List<dynamic>).cast();
-    final List<Json> streamSourcesJsons =
-        (data['stream']! as List<dynamic>).cast();
-    return VideoData(
+    final List<Json> downloadSourcesJsons = (data['download']! as List<dynamic>)
+        .cast();
+    final List<Json> streamSourcesJsons = (data['stream']! as List<dynamic>)
+        .cast();
+    return .new(
       download: {
         for (final Json sourceJson in downloadSourcesJsons)
-          sourceJson['height']! as num: Uri.parse(sourceJson['url']! as String),
+          sourceJson['height']! as num: .parse(sourceJson['url']! as String),
       },
       stream: {
         for (final Json sourceJson in streamSourcesJsons)
-          sourceJson['height']! as num: Uri.parse(
+          sourceJson['height']! as num: .parse(
             (sourceJson['urls']! as List<dynamic>).first as String,
           ),
       },
       captionsUri: switch (data['subtitlesVttUrl']) {
-        final String url => Uri.tryParse(url),
+        final String url => .tryParse(url),
         _ => null,
       },
     );
@@ -531,9 +506,9 @@ class MoviesServiceAnime365 implements MoviesService {
   @override
   Future<void> saveTranslationWatched(Object translationId) {
     return _networkService.request<void>(
-      RequestData(
-        method: RequestMethod.post,
-        uri: Uri(path: '/translations/watched/$translationId'),
+      .new(
+        method: .post,
+        uri: .new(path: '/translations/watched/$translationId'),
         headers: const {
           HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
         },
@@ -545,7 +520,7 @@ class MoviesServiceAnime365 implements MoviesService {
   @override
   Future<WatchStatusDetails> getWatchStatus(Uri movieUri) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(method: RequestMethod.get, uri: movieUri),
+      .new(method: .get, uri: movieUri),
     );
     final Document document = parse(response.body);
 
@@ -562,9 +537,9 @@ class MoviesServiceAnime365 implements MoviesService {
     required WatchStatusDetails status,
   }) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(
-        method: RequestMethod.post,
-        uri: Uri(
+      .new(
+        method: .post,
+        uri: .new(
           path: '/animelist/edit/$movieId',
           queryParameters: const {'mode': 'mini'},
         ),
@@ -586,41 +561,42 @@ class MoviesServiceAnime365 implements MoviesService {
 
   MovieType _convertJsonToMovieType(String json) {
     return switch (json) {
-      'tv' || 'tv_13' || 'tv_24' || 'tv_48' => MovieType.tv,
-      'movie' => MovieType.movie,
-      'ova' => MovieType.ova,
-      'ona' => MovieType.ona,
-      'special' => MovieType.special,
-      'tv_special' => MovieType.tvSpecial,
-      'cm' => MovieType.ad,
-      'music' => MovieType.music,
-      'preview' || 'pv' => MovieType.preview,
-      final Object? unsupported =>
-        throw UnsupportedError('Unsupported movie type: $unsupported'),
+      'tv' || 'tv_13' || 'tv_24' || 'tv_48' => .tv,
+      'movie' => .movie,
+      'ova' => .ova,
+      'ona' => .ona,
+      'special' => .special,
+      'tv_special' => .tvSpecial,
+      'cm' => .ad,
+      'music' => .music,
+      'preview' || 'pv' => .preview,
+      final Object? unsupported => throw UnsupportedError(
+        'Unsupported movie type: $unsupported',
+      ),
     };
   }
 
   String _convertMovieTypeToJson(MovieType type) {
     return switch (type) {
-      MovieType.tv => 'tv,tv_13,tv_24,tv_48',
-      MovieType.movie => 'movie',
-      MovieType.ova => 'ova',
-      MovieType.ona => 'ona',
-      MovieType.special => 'special',
-      MovieType.tvSpecial => 'tv_special',
-      MovieType.ad => 'cm',
-      MovieType.music => 'music',
-      MovieType.preview => 'preview,pv',
+      .tv => 'tv,tv_13,tv_24,tv_48',
+      .movie => 'movie',
+      .ova => 'ova',
+      .ona => 'ona',
+      .special => 'special',
+      .tvSpecial => 'tv_special',
+      .ad => 'cm',
+      .music => 'music',
+      .preview => 'preview,pv',
     };
   }
 
   String _convertMoviesOrderToJson(MoviesOrder order) {
     return switch (order) {
-      MoviesOrder.byScore => 'ranked',
-      MoviesOrder.byPopularity => 'popularity',
-      MoviesOrder.byName => 'name',
-      MoviesOrder.byReleaseDate => 'aired_on',
-      MoviesOrder.random => 'random',
+      .byScore => 'ranked',
+      .byPopularity => 'popularity',
+      .byName => 'name',
+      .byReleaseDate => 'aired_on',
+      .random => 'random',
     };
   }
 }

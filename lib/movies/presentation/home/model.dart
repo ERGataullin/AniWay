@@ -1,7 +1,6 @@
 import 'package:app/core/core.dart';
 import 'package:app/movies/data/repository.dart';
 import 'package:app/movies/domain/models/movie_base.dart';
-import 'package:app/movies/domain/models/movie_type.dart';
 import 'package:app/movies/domain/models/up_next.dart';
 import 'package:flutter/foundation.dart';
 
@@ -21,16 +20,16 @@ class HomeModel extends ElementaryModel implements IHomeModel {
   HomeModel({super.errorHandler, required this._repository});
 
   @override
-  final ValueNotifier<bool> loading = ValueNotifier(false);
+  final ValueNotifier<bool> loading = .new(false);
 
   @override
-  final ValueNotifier<List<UpNextData>> upNext = ValueNotifier(const []);
+  final ValueNotifier<List<UpNextData>> upNext = .new(const []);
 
   @override
-  final ValueNotifier<List<MovieBaseData>> ongoings = ValueNotifier(const []);
+  final ValueNotifier<List<MovieBaseData>> ongoings = .new(const []);
 
   @override
-  final ValueNotifier<List<MovieBaseData>> populars = ValueNotifier(const []);
+  final ValueNotifier<List<MovieBaseData>> populars = .new(const []);
 
   final MoviesRepository _repository;
 
@@ -39,18 +38,18 @@ class HomeModel extends ElementaryModel implements IHomeModel {
     final Future<List<UpNextData>> newUpNextFuture = _repository.getUpNext();
     final Future<List<MovieBaseData>> newOngoingFuture = _repository.getMovies(
       isOngoing: true,
-      typesExcluded: const [MovieType.ad, MovieType.music, MovieType.preview],
+      typesExcluded: const [.ad, .music, .preview],
     );
-    final Future<List<MovieBaseData>> newPopularFuture =
-        _repository.getMovies();
+    final Future<List<MovieBaseData>> newPopularFuture = _repository
+        .getMovies();
 
     final List<UpNextData> upNext = await newUpNextFuture;
     final List<MovieBaseData> ongoings = await newOngoingFuture;
     final List<MovieBaseData> populars = await newPopularFuture;
 
-    this.upNext.value = List.unmodifiable(upNext.take(10));
-    this.ongoings.value = List.unmodifiable(ongoings.take(10));
-    this.populars.value = List.unmodifiable(populars.take(10));
+    this.upNext.value = .unmodifiable(upNext.take(10));
+    this.ongoings.value = .unmodifiable(ongoings.take(10));
+    this.populars.value = .unmodifiable(populars.take(10));
   }
 
   @override

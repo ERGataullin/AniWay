@@ -68,7 +68,7 @@ class MovieWidget extends ElementaryWidget<IMovieWM> {
                         child: const SliverSafeArea(
                           sliver: SliverToBoxAdapter(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: .start,
                               children: [
                                 _Description(marginTop: 16),
                                 _Episodes(marginTop: 16),
@@ -183,7 +183,7 @@ class _Description extends StatelessWidget {
           final String description when description.isNotEmpty => Padding(
             padding:
                 EdgeInsets.only(top: marginTop) +
-                EdgeInsets.symmetric(
+                .symmetric(
                   horizontal: Breakpoint.activeBreakpointOf(context).margin,
                 ),
             child: ExpandableText(description),
@@ -208,22 +208,22 @@ class _Episodes extends StatelessWidget {
         return episodes.isEmpty
             ? const SizedBox.shrink()
             : Padding(
-                padding: EdgeInsets.only(top: marginTop),
+                padding: .only(top: marginTop),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     const _EpisodesTitle(),
                     const SizedBox(height: 8),
                     SizedBox(
                       height: 128,
                       child: ListView.separated(
-                        padding: EdgeInsets.symmetric(
+                        padding: .symmetric(
                           horizontal: Breakpoint.activeBreakpointOf(
                             context,
                           ).margin,
                         ),
-                        clipBehavior: Clip.none,
-                        scrollDirection: Axis.horizontal,
+                        clipBehavior: .none,
+                        scrollDirection: .horizontal,
                         itemCount: episodes.length,
                         separatorBuilder: (context, _) =>
                             const SizedBox(width: 8),
@@ -256,7 +256,7 @@ class _EpisodesTitle extends StatelessWidget {
       builder: (context, episodesUri, _) {
         return DestinationTitle(
           context.l10n.episodesLabel,
-          margin: EdgeInsets.symmetric(
+          margin: .symmetric(
             horizontal: Breakpoint.activeBreakpointOf(context).margin,
           ),
           uri: episodesUri,

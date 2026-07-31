@@ -12,18 +12,17 @@ class FullscreenButton extends StatelessWidget {
       onPressed: controller.toggle,
       icon: ListenableBuilder(
         listenable: controller,
-        builder:
-            (context, _) => AnimatedSwitcher(
-              switchInCurve: Easing.standard,
-              switchOutCurve: Easing.standard.flipped,
-              duration: Durations.medium2,
-              child: Icon(
-                controller.isFullscreen
-                    ? Icons.fullscreen_exit_outlined
-                    : Icons.fullscreen_outlined,
-                key: ValueKey(controller.isFullscreen),
-              ),
-            ),
+        builder: (context, _) => AnimatedSwitcher(
+          switchInCurve: Easing.standard,
+          switchOutCurve: Easing.standard.flipped,
+          duration: Durations.medium2,
+          child: Icon(
+            controller.isFullscreen
+                ? Icons.fullscreen_exit_outlined
+                : Icons.fullscreen_outlined,
+            key: ValueKey(controller.isFullscreen),
+          ),
+        ),
       ),
     );
   }

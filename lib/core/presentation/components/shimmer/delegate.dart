@@ -60,11 +60,10 @@ class DecoratedBoxShimmerDelegate implements ShimmerDelegate {
           shadows: shapeDecoration.shadows,
           shape: shapeDecoration.shape,
         ),
-        _ =>
-          throw UnimplementedError(
-            'tried using a $DecoratedBoxShimmerDelegate with '
-            'an unsupported decoration type',
-          ),
+        _ => throw UnimplementedError(
+          'tried using a $DecoratedBoxShimmerDelegate with '
+          'an unsupported decoration type',
+        ),
       },
       child: child,
     );

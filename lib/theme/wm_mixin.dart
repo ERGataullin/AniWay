@@ -16,7 +16,7 @@ mixin ThemeWMMixin<W extends ElementaryWidget, M extends ElementaryModel>
     if (_initialized) {
       _theme.value = Theme.of(context);
     } else {
-      _theme = ValueNotifier(Theme.of(context));
+      _theme = .new(Theme.of(context));
       _initialized = true;
     }
     super.didChangeDependencies();

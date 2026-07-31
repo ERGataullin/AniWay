@@ -36,16 +36,16 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
 
   late final _opacityController = AnimationController(vsync: this);
 
-  late final Computed<ImageProvider<Object>?> _imageProvider = Computed(() {
+  late final Computed<ImageProvider<Object>?> _imageProvider = .new(() {
     return widget.image == null
         ? null
         : ScrollAwareImageProvider(
-          context: _scrollAwareContext,
-          imageProvider: widget.image!,
-        );
+            context: _scrollAwareContext,
+            imageProvider: widget.image!,
+          );
   });
 
-  late final Computed<ImageStream?> _imageStream = Computed(
+  late final Computed<ImageStream?> _imageStream = .new(
     trigger: _imageProvider,
     onDisposeValue: (value) => value?.removeListener(_imageStreamListener),
     () {
@@ -65,8 +65,8 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   @override
   void initState() {
     super.initState();
-    _scrollAwareContext = DisposableBuildContext(this);
-    _imageStreamListener = ImageStreamListener(_handleImage);
+    _scrollAwareContext = .new(this);
+    _imageStreamListener = .new(_handleImage);
   }
 
   @override
@@ -95,13 +95,12 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: _imageProvider,
-      builder:
-          (context, _) => widget.builder(
-            context,
-            _opacityController,
-            _imageProvider.value,
-            widget.child,
-          ),
+      builder: (context, _) => widget.builder(
+        context,
+        _opacityController,
+        _imageProvider.value,
+        widget.child,
+      ),
     );
   }
 
@@ -121,10 +120,9 @@ class _FadeInImageBuilderState extends State<FadeInImageBuilder>
       ..reset()
       ..animateTo(
         _opacityController.upperBound,
-        duration:
-            synchronousCall && !_animateSyncLoad
-                ? Duration.zero
-                : Durations.medium1,
+        duration: synchronousCall && !_animateSyncLoad
+            ? .zero
+            : Durations.medium1,
         curve: Easing.standardDecelerate,
       );
   }

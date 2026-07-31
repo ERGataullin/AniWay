@@ -31,29 +31,23 @@ class VideoTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return ListenableBuilder(
-      listenable: Listenable.merge([
-        videoController.position,
-        videoController.duration,
-      ]),
-      builder:
-          (context, _) => RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: videoController.position.value.format(),
-                  style: TextStyle(color: theme.colorScheme.onSurface),
-                ),
-                const TextSpan(text: ' / '),
-                TextSpan(text: videoController.duration.value.format()),
-              ],
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: theme.colorScheme.secondary,
-                shadows: [
-                  Shadow(blurRadius: 16, color: theme.colorScheme.shadow),
-                ],
-              ),
+      listenable: .merge([videoController.position, videoController.duration]),
+      builder: (context, _) => RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: videoController.position.value.format(),
+              style: TextStyle(color: theme.colorScheme.onSurface),
             ),
+            const TextSpan(text: ' / '),
+            TextSpan(text: videoController.duration.value.format()),
+          ],
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.secondary,
+            shadows: [.new(blurRadius: 16, color: theme.colorScheme.shadow)],
           ),
+        ),
+      ),
     );
   }
 }

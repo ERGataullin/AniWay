@@ -41,14 +41,13 @@ class FullscreenControllerImpl
         : document.fullscreenElement == _element;
   }
 
-  bool get _isIos => defaultTargetPlatform == TargetPlatform.iOS;
+  bool get _isIos => defaultTargetPlatform == .iOS;
 
   @override
   set webElementQuery(String? value) {
-    final Element newElement =
-        value == null
-            ? document.documentElement!
-            : document.querySelector(value)!;
+    final Element newElement = value == null
+        ? document.documentElement!
+        : document.querySelector(value)!;
 
     if (_element == newElement) {
       return;

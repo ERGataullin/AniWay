@@ -3,11 +3,8 @@ import 'package:flutter/foundation.dart';
 typedef OnDisposeValue<T> = void Function(T value);
 
 class Computed<T> with ChangeNotifier implements ValueListenable<T> {
-  Computed(
-    this._onCompute, {
-    this._trigger,
-    this._onDisposeValue,
-  }) : _value = _onCompute() {
+  Computed(this._onCompute, {this._trigger, this._onDisposeValue})
+    : _value = _onCompute() {
     if (kFlutterMemoryAllocationsEnabled) {
       ChangeNotifier.maybeDispatchObjectCreation(this);
     }

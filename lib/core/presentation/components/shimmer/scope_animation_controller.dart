@@ -7,7 +7,7 @@ class ShimmerScopeAnimationController extends AnimationController {
 
   final Set<VoidCallback> _listeners = {};
 
-  final ValueNotifier<bool> _hasClients = ValueNotifier(false);
+  final ValueNotifier<bool> _hasClients = .new(false);
 
   ValueListenable<bool> get hasClients => _hasClients;
 

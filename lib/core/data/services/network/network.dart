@@ -57,7 +57,7 @@ class RequestData {
     Uri? uri,
     Headers? headers,
     Object? body,
-  }) => RequestData(
+  }) => .new(
     method: method ?? this.method,
     uri: uri ?? this.uri,
     headers: headers ?? this.headers,

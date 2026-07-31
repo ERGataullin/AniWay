@@ -63,7 +63,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   final fullscreenController = FullscreenController();
 
   @override
-  late final Computed<double> maxZoom = Computed(
+  late final Computed<double> maxZoom = .new(
     trigger: videoController.aspectRatio,
     () => model.getMaxScale(
       surfaceAspectRatio: MediaQuery.sizeOf(context).aspectRatio,
@@ -72,49 +72,47 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   );
 
   @override
-  late final Computed<String> title = Computed(() => widget.title);
+  late final Computed<String> title = .new(() => widget.title);
 
   @override
-  late final Computed<String> subtitle = Computed(() => widget.subtitle);
+  late final Computed<String> subtitle = .new(() => widget.subtitle);
 
   @override
-  late final Computed<String?> translationTitle = Computed(
+  late final Computed<String?> translationTitle = .new(
     trigger: model.translation,
     () => model.translation.value?.title,
   );
 
   @override
-  late final Computed<VoidCallback?> onSharePressed = Computed(
+  late final Computed<VoidCallback?> onSharePressed = .new(
     trigger: model.translation,
     () => model.translation.value == null ? null : _handleSharePressed,
   );
 
   @override
-  late final Computed<VoidCallback?> onMenuPressed = Computed(
+  late final Computed<VoidCallback?> onMenuPressed = .new(
     () => widget.translations.isEmpty ? null : _handleMenuPressed,
   );
 
   @override
-  late final Computed<VoidCallback?> onPreviousPressed = Computed(
+  late final Computed<VoidCallback?> onPreviousPressed = .new(
     () => widget.onPreviousPressed,
   );
 
   @override
-  late final Computed<VoidCallback?> onNextPressed = Computed(
+  late final Computed<VoidCallback?> onNextPressed = .new(
     () => widget.onNextPressed,
   );
 
   @override
   late final Map<ShortcutActivator, VoidCallback> shortcuts = {
-    const SingleActivator(LogicalKeyboardKey.arrowLeft):
-        () => videoController.seekTo(
-          videoController.position.value - seekGestureRewindStep,
-        ),
-    const SingleActivator(LogicalKeyboardKey.arrowRight):
-        () => videoController.seekTo(
-          videoController.position.value + seekGestureFastForwardStep,
-        ),
-    const SingleActivator(LogicalKeyboardKey.space): videoController.playPause,
+    const SingleActivator(.arrowLeft): () => videoController.seekTo(
+      videoController.position.value - seekGestureRewindStep,
+    ),
+    const SingleActivator(.arrowRight): () => videoController.seekTo(
+      videoController.position.value + seekGestureFastForwardStep,
+    ),
+    const SingleActivator(.space): videoController.playPause,
   };
 
   var _watched = false;
@@ -127,7 +125,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       ..setTranslations(widget.translations)
       ..video.addListener(_handleVideoChanged)
       ..videoDataSource.addListener(_handleVideoDataSourceChanged);
-    if (kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+    if (kIsWeb && defaultTargetPlatform == .iOS) {
       videoController.webElementQuery.addListener(
         _updateFullscreenWebElementQuery,
       );
@@ -213,13 +211,13 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     final Duration position = videoController.position.value;
     final Duration duration = videoController.duration.value;
 
-    if (duration == Duration.zero) return;
+    if (duration == .zero) return;
 
     final bool finished = position >= duration;
     if (finished) widget.onFinished();
 
     if (_watched) return;
-    _watched = position >= duration - const Duration(minutes: 4);
+    _watched = position >= duration - const .new(minutes: 4);
     if (_watched) {
       widget.onWatched(model.translation.value!.id);
       model.handleVideoWatched();
@@ -229,20 +227,16 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
   Future<void> _handleSharePressed() async {
     final Uri translationUri = model.translation.value!.uri;
     switch (defaultTargetPlatform) {
-      case TargetPlatform.android ||
-          TargetPlatform.fuchsia ||
-          TargetPlatform.iOS ||
-          TargetPlatform.linux ||
-          TargetPlatform.macOS:
-        SharePlus.instance.share(ShareParams(uri: translationUri));
-      case TargetPlatform.windows:
-        await Clipboard.setData(ClipboardData(text: '$translationUri'));
+      case .android || .fuchsia || .iOS || .linux || .macOS:
+        SharePlus.instance.share(.new(uri: translationUri));
+      case .windows:
+        await Clipboard.setData(.new(text: '$translationUri'));
         if (!context.mounted) return;
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            SnackBar(
-              behavior: SnackBarBehavior.floating,
+            .new(
+              behavior: .floating,
               duration: Durations.extralong4,
               content: Text(context.l10n.linkCopied),
             ),
@@ -254,7 +248,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
     showModalMenuBottomSheet(
       context: context,
       items: [
-        MenuItemData.group(
+        .group(
           icon: Icons.language_outlined,
           label: l10n.value.languageLabel,
           children: model.translations.value.keys
@@ -267,7 +261,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
               )
               .toList(growable: false),
         ),
-        MenuItemData.group(
+        .group(
           icon: Icons.subtitles_outlined,
           label: l10n.value.translationTypeLabel,
           children: switch (model.translation.value) {
@@ -277,7 +271,7 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
             _ => const [],
           },
         ),
-        MenuItemData.group(
+        .group(
           icon: Icons.person_outlined,
           label: l10n.value.authorLabel,
           children: switch (model.translation.value) {
@@ -288,39 +282,36 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
             _ => const [],
           },
         ),
-        MenuItemData.group(
+        .group(
           icon: Icons.high_quality_outlined,
           label: l10n.value.qualityLabel,
-          children:
-              model.video.value == null
-                  ? const []
-                  : model.video.value!.stream.keys
-                      .map(
-                        (quality) => MenuItemData.single(
-                          selected: quality == model.quality.value,
-                          label: l10n.value.quality(quality),
-                          onSelected: () => model.setQuality(quality),
-                        ),
-                      )
-                      .toList(growable: false),
+          children: model.video.value == null
+              ? const []
+              : model.video.value!.stream.keys
+                    .map(
+                      (quality) => MenuItemData.single(
+                        selected: quality == model.quality.value,
+                        label: l10n.value.quality(quality),
+                        onSelected: () => model.setQuality(quality),
+                      ),
+                    )
+                    .toList(growable: false),
         ),
-        MenuItemData.group(
+        .group(
           icon: Icons.speed_outlined,
           label: l10n.value.playbackSpeedLabel,
-          children:
-              model.video.value == null
-                  ? const []
-                  : const <double>[.25, .5, .75, 1, 1.25, 1.5, 1.75, 2]
-                      .map(
-                        (speed) => MenuItemData.single(
-                          selected:
-                              speed == videoController.playbackSpeed.value,
-                          label: l10n.value.playbackSpeed(speed),
-                          onSelected:
-                              () => videoController.setPlaybackSpeed(speed),
-                        ),
-                      )
-                      .toList(growable: false),
+          children: model.video.value == null
+              ? const []
+              : const <double>[.25, .5, .75, 1, 1.25, 1.5, 1.75, 2]
+                    .map(
+                      (speed) => MenuItemData.single(
+                        selected: speed == videoController.playbackSpeed.value,
+                        label: l10n.value.playbackSpeed(speed),
+                        onSelected: () =>
+                            videoController.setPlaybackSpeed(speed),
+                      ),
+                    )
+                    .toList(growable: false),
         ),
       ],
     );
@@ -353,10 +344,9 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
                 selected: translation == model.translation.value,
                 label: translation.title,
                 trailing: switch (translation.qualityType) {
-                  QualityType.bd || QualityType.dvd => l10n.value.qualityType(
-                    translation.qualityType.name,
-                  ),
-                  QualityType.tv => null,
+                  .bd ||
+                  .dvd => l10n.value.qualityType(translation.qualityType.name),
+                  .tv => null,
                 },
                 onSelected: () => model.setTranslation(translation),
               ),

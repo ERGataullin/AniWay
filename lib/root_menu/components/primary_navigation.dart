@@ -22,22 +22,21 @@ class PrimaryNavigation extends StatelessWidget {
   static Size sizeFor(BuildContext context) {
     return _valueFor(
       context,
-      none: () => Size.zero,
-      rail:
-          () => Size.fromWidth(
-            CustomNavigationRailTheme.of(context).minWidth! +
-                DividerTheme.of(context).thickness!,
-          ),
-      drawer: () => Size.fromWidth(DrawerTheme.of(context).width!),
+      none: () => .zero,
+      rail: () => .fromWidth(
+        CustomNavigationRailTheme.of(context).minWidth! +
+            DividerTheme.of(context).thickness!,
+      ),
+      drawer: () => .fromWidth(DrawerTheme.of(context).width!),
     );
   }
 
   static EdgeInsets topNavigationPaddingFor(BuildContext context) {
     return _valueFor(
       context,
-      none: () => EdgeInsets.zero,
-      rail: () => EdgeInsets.zero,
-      drawer: () => const EdgeInsets.symmetric(horizontal: 16),
+      none: () => .zero,
+      rail: () => .zero,
+      drawer: () => const .symmetric(horizontal: 16),
     );
   }
 
@@ -63,64 +62,59 @@ class PrimaryNavigation extends StatelessWidget {
     return AnimatedSize(
       curve: Easing.standard,
       duration: Durations.medium2,
-      alignment: Alignment.topLeft,
+      alignment: .topLeft,
       child: SlotLayout(
         config: {
           _railBreakpoint: SlotLayout.from(
             key: const Key('Rail'),
-            builder:
-                (context) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SafeArea(
-                      right: false,
-                      child: AdaptiveScaffold.standardNavigationRail(
-                        labelType: null,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        width: CustomNavigationRailTheme.of(context).minWidth!,
-                        selectedIndex: currentIndex,
-                        onDestinationSelected: onDestinationSelected,
-                        destinations: destinations
-                            .map(
-                              (destination) => CustomNavigationRailDestination(
-                                icon: destination.icon,
-                                selectedIcon: destination.selectedIcon,
-                                label: Text(
-                                  destination.label,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            )
-                            .toList(growable: false),
-                      ),
-                    ),
-                    SizedBox(
-                      width: DividerTheme.of(context).thickness!,
-                      child: const VerticalDivider(),
-                    ),
-                  ],
+            builder: (context) => Row(
+              mainAxisSize: .min,
+              children: [
+                SafeArea(
+                  right: false,
+                  child: AdaptiveScaffold.standardNavigationRail(
+                    labelType: null,
+                    padding: const .symmetric(vertical: 8),
+                    width: CustomNavigationRailTheme.of(context).minWidth!,
+                    selectedIndex: currentIndex,
+                    onDestinationSelected: onDestinationSelected,
+                    destinations: destinations
+                        .map(
+                          (destination) => CustomNavigationRailDestination(
+                            icon: destination.icon,
+                            selectedIcon: destination.selectedIcon,
+                            label: Text(destination.label, textAlign: .center),
+                          ),
+                        )
+                        .toList(growable: false),
+                  ),
                 ),
+                SizedBox(
+                  width: DividerTheme.of(context).thickness!,
+                  child: const VerticalDivider(),
+                ),
+              ],
+            ),
           ),
           _drawerBreakpoint: SlotLayout.from(
             key: const Key('Drawer'),
-            builder:
-                (context) => NavigationDrawer(
-                  selectedIndex: currentIndex,
-                  onDestinationSelected: onDestinationSelected,
-                  children: [
-                    const SizedBox(height: 16),
-                    ...destinations.map(
-                      (destination) => NavigationDrawerDestination(
-                        key: destination.key,
-                        icon: destination.icon,
-                        selectedIcon: destination.selectedIcon,
-                        label: Text(destination.label),
-                        enabled: destination.enabled,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+            builder: (context) => NavigationDrawer(
+              selectedIndex: currentIndex,
+              onDestinationSelected: onDestinationSelected,
+              children: [
+                const SizedBox(height: 16),
+                ...destinations.map(
+                  (destination) => NavigationDrawerDestination(
+                    key: destination.key,
+                    icon: destination.icon,
+                    selectedIcon: destination.selectedIcon,
+                    label: Text(destination.label),
+                    enabled: destination.enabled,
+                  ),
                 ),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         },
       ),

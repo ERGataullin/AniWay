@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 class RootMenuAwaredCenter extends SingleChildRenderObjectWidget {
   const RootMenuAwaredCenter({
     super.key,
-    this.constraints = const BoxConstraints(maxWidth: 1600),
+    this.constraints = const .new(maxWidth: 1600),
     required Widget super.child,
   });
 

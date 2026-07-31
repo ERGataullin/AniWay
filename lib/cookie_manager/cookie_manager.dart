@@ -23,7 +23,7 @@ class CookieManager extends NetworkInterceptor with Initable {
     ']+=)',
   );
 
-  final ValueNotifier<CookieMap> cookie = ValueNotifier(const {});
+  final ValueNotifier<CookieMap> cookie = .new(const {});
 
   final bool _useCustomCookieHeader;
 

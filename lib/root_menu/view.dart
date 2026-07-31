@@ -58,29 +58,27 @@ class _RootMenuViewState extends State<RootMenuView> {
           final Size topSize = TopNavigation.sizeFor(context);
           final Size bottomSize = BottomNavigation.sizeFor(context);
           return Scaffold(
-            appBar:
-                topSize.isEmpty
-                    ? null
-                    : PreferredSize(
-                      preferredSize: topSize,
-                      child: TopNavigation(
-                        key: _topKey,
-                        padding: PrimaryNavigation.topNavigationPaddingFor(
-                          context,
-                        ),
-                        query: widget.query,
-                        onSearch: widget.onSearch,
+            appBar: topSize.isEmpty
+                ? null
+                : PreferredSize(
+                    preferredSize: topSize,
+                    child: TopNavigation(
+                      key: _topKey,
+                      padding: PrimaryNavigation.topNavigationPaddingFor(
+                        context,
                       ),
+                      query: widget.query,
+                      onSearch: widget.onSearch,
                     ),
-            bottomNavigationBar:
-                BottomNavigation.sizeFor(context).isEmpty
-                    ? null
-                    : BottomNavigation(
-                      key: _bottomKey,
-                      currentIndex: widget.currentIndex,
-                      onDestinationSelected: widget.onDestinationSelected,
-                      destinations: navigationDestinations,
-                    ),
+                  ),
+            bottomNavigationBar: BottomNavigation.sizeFor(context).isEmpty
+                ? null
+                : BottomNavigation(
+                    key: _bottomKey,
+                    currentIndex: widget.currentIndex,
+                    onDestinationSelected: widget.onDestinationSelected,
+                    destinations: navigationDestinations,
+                  ),
             body: Builder(
               builder: (context) {
                 final MediaQueryData mediaQuery = MediaQuery.of(context);
@@ -91,7 +89,7 @@ class _RootMenuViewState extends State<RootMenuView> {
                   bottom: bottomSize.isEmpty ? null : 0,
                 );
                 return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: .start,
                   children: [
                     MediaQuery(
                       data: mediaQuery.copyWith(
@@ -128,17 +126,17 @@ class _RootMenuViewState extends State<RootMenuView> {
     return widget.destinations
         .map(
           (destination) => switch (destination) {
-            RootMenuDestination.home => CustomNavigationDestination(
+            .home => CustomNavigationDestination(
               label: context.l10n.homePageTitle,
               icon: const Icon(Icons.home_outlined),
               selectedIcon: const Icon(Icons.home),
             ),
-            RootMenuDestination.library => CustomNavigationDestination(
+            .library => CustomNavigationDestination(
               label: context.l10n.libraryTitle,
               icon: const Icon(Icons.video_library_outlined),
               selectedIcon: const Icon(Icons.video_library),
             ),
-            RootMenuDestination.search => CustomNavigationDestination(
+            .search => CustomNavigationDestination(
               label: context.l10n.searchPageTitle,
               icon: const Icon(Icons.search_outlined),
               selectedIcon: const Icon(Icons.search),

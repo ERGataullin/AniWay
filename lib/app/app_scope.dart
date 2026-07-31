@@ -25,18 +25,18 @@ class AppScope extends InheritedWidget {
     final serverUri = Uri(scheme: 'https', host: 'smotret-anime.app');
     const Uri? proxyUri = null;
     // TODO(Edgar): Вернуть после поднятия прокси.
-    // final Uri? proxyUri =
-    //     !kIsWeb || useMocks ? null : Uri(scheme: 'https', host: 'aniway.su');
+    // final Uri? proxyUri = !kIsWeb || useMocks
+    //     ? null
+    //     : .new(scheme: 'https', host: 'aniway.su');
 
     this.errorHandler = errorHandler ?? const DebugPrintErrorHandler();
     this.networkService =
         networkService ??
         HttpService(
           userAgent: 'AniWay',
-          baseUri:
-              proxyUri == null
-                  ? serverUri
-                  : ProxiedUri(proxy: proxyUri, original: serverUri),
+          baseUri: proxyUri == null
+              ? serverUri
+              : ProxiedUri(proxy: proxyUri, original: serverUri),
         );
     this.storageService = storageService ?? const HiveService();
     this.cookieManager =
@@ -48,25 +48,23 @@ class AppScope extends InheritedWidget {
     this.authRepository =
         authRepository ??
         AuthRepository(
-          authService:
-              useMocks
-                  ? AuthServiceMock(cookieManager: this.cookieManager)
-                  : AuthServiceAnime365(
-                    networkService: this.networkService,
-                    cookieManager: this.cookieManager,
-                  ),
+          authService: useMocks
+              ? AuthServiceMock(cookieManager: this.cookieManager)
+              : AuthServiceAnime365(
+                  networkService: this.networkService,
+                  cookieManager: this.cookieManager,
+                ),
           cookieManager: this.cookieManager,
         );
     this.moviesRepository =
         moviesRepository ??
         MoviesRepository(
-          moviesService:
-              useMocks
-                  ? const MoviesServiceMock()
-                  : MoviesServiceAnime365(
-                    cookieManager: this.cookieManager,
-                    networkService: this.networkService,
-                  ),
+          moviesService: useMocks
+              ? const MoviesServiceMock()
+              : MoviesServiceAnime365(
+                  cookieManager: this.cookieManager,
+                  networkService: this.networkService,
+                ),
         );
     this.playerRepository =
         playerRepository ??

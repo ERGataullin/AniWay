@@ -29,29 +29,24 @@ class EpisodesWidget extends ElementaryWidget<IEpisodesWM> {
       child: RootMenuAwaredCenter(
         child: ShimmerScope(
           child: ListenableBuilder(
-            listenable: Listenable.merge([wm.tabController, wm.tabsTexts]),
-            builder:
-                (context, _) => Scaffold(
-                  appBar: AppBar(
-                    title: Text(context.l10n.episodesLabel),
-                    bottom:
-                        wm.tabController.value == null
-                            ? null
-                            : TabBar(
-                              controller: wm.tabController.value,
-                              isScrollable: true,
-                              tabs: wm.tabsTexts.value
-                                  .map((text) => Tab(text: text))
-                                  .toList(growable: false),
-                            ),
-                  ),
-                  body:
-                      wm.tabController.value == null
-                          ? const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          )
-                          : const _Episodes(),
-                ),
+            listenable: .merge([wm.tabController, wm.tabsTexts]),
+            builder: (context, _) => Scaffold(
+              appBar: AppBar(
+                title: Text(context.l10n.episodesLabel),
+                bottom: wm.tabController.value == null
+                    ? null
+                    : TabBar(
+                        controller: wm.tabController.value,
+                        isScrollable: true,
+                        tabs: wm.tabsTexts.value
+                            .map((text) => Tab(text: text))
+                            .toList(growable: false),
+                      ),
+              ),
+              body: wm.tabController.value == null
+                  ? const Center(child: CircularProgressIndicator.adaptive())
+                  : const _Episodes(),
+            ),
           ),
         ),
       ),
@@ -67,32 +62,28 @@ class _Episodes extends StatelessWidget {
     final double spacing = Breakpoint.activeBreakpointOf(context).padding;
     return ListenableBuilder(
       listenable: context.wm.tabsEpisodes,
-      builder:
-          (context, _) => TabBarView(
-            controller: context.wm.tabController.value,
-            children: context.wm.tabsEpisodes.value
-                .map(
-                  (episodes) => GridView.builder(
-                    clipBehavior: Clip.none,
-                    padding: EdgeInsets.all(
-                      Breakpoint.activeBreakpointOf(context).margin,
-                    ),
-                    itemCount: episodes.length,
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      childAspectRatio: 16 / 10,
-                      crossAxisSpacing: spacing,
-                      mainAxisSpacing: spacing,
-                      maxCrossAxisExtent: 256,
-                    ),
-                    itemBuilder:
-                        (context, index) => EpisodeCard(
-                          episodes[index],
-                          onPressed: context.wm.handleEpisodePressed,
-                        ),
-                  ),
-                )
-                .toList(growable: false),
-          ),
+      builder: (context, _) => TabBarView(
+        controller: context.wm.tabController.value,
+        children: context.wm.tabsEpisodes.value
+            .map(
+              (episodes) => GridView.builder(
+                clipBehavior: .none,
+                padding: .all(Breakpoint.activeBreakpointOf(context).margin),
+                itemCount: episodes.length,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  childAspectRatio: 16 / 10,
+                  crossAxisSpacing: spacing,
+                  mainAxisSpacing: spacing,
+                  maxCrossAxisExtent: 256,
+                ),
+                itemBuilder: (context, index) => EpisodeCard(
+                  episodes[index],
+                  onPressed: context.wm.handleEpisodePressed,
+                ),
+              ),
+            )
+            .toList(growable: false),
+      ),
     );
   }
 }
