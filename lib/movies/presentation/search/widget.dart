@@ -14,7 +14,7 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
     super.key,
     this.isOngoing,
     this.query,
-    this.order = MoviesOrder.byPopularity,
+    this.order = .byPopularity,
     this.typesExcluded = const [],
     required this.onSearch,
     required this.onMoviePressed,
@@ -39,41 +39,36 @@ class MoviesSearchWidget extends ElementaryWidget<IMoviesSearchWM> {
       child: ShimmerScope(
         child: ListenableBuilder(
           listenable: wm.query,
-          builder:
-              (context, body) => Scaffold(
-                extendBodyBehindAppBar: true,
-                appBar:
-                    RootMenuScope.of(context).hasTopNavigation(context)
-                        ? null
-                        : MoviesSearchBar(
-                          margin: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal:
-                                Breakpoint.activeBreakpointOf(context).margin,
-                          ),
-                          query: wm.query.value,
-                          onSearch: onSearch,
-                        ),
-                body: body,
-              ),
+          builder: (context, body) => Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: RootMenuScope.of(context).hasTopNavigation(context)
+                ? null
+                : MoviesSearchBar(
+                    margin: .symmetric(
+                      vertical: 8,
+                      horizontal: Breakpoint.activeBreakpointOf(context).margin,
+                    ),
+                    query: wm.query.value,
+                    onSearch: onSearch,
+                  ),
+            body: body,
+          ),
           child: CustomScrollView(
             slivers: [
               SliverSafeArea(
                 sliver: Builder(
-                  builder:
-                      (context) => SliverPadding(
-                        padding: EdgeInsets.all(
-                          Breakpoint.defaultBreakpointOf(context).margin,
-                        ),
-                        sliver: SliverPagedGrid(
-                          key: wm.pagedGridKey,
-                          gridDelegate: MovieCard.gridDelegate(context),
-                          onLoadPage: wm.handleLoadPage,
-                          itemBuilder:
-                              (context, movie, animation) =>
-                                  MovieCard(movie, opacity: animation),
-                        ),
-                      ),
+                  builder: (context) => SliverPadding(
+                    padding: .all(
+                      Breakpoint.defaultBreakpointOf(context).margin,
+                    ),
+                    sliver: SliverPagedGrid(
+                      key: wm.pagedGridKey,
+                      gridDelegate: MovieCard.gridDelegate(context),
+                      onLoadPage: wm.handleLoadPage,
+                      itemBuilder: (context, movie, animation) =>
+                          MovieCard(movie, opacity: animation),
+                    ),
+                  ),
                 ),
               ),
             ],

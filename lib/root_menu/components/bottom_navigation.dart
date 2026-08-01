@@ -23,14 +23,13 @@ class BottomNavigation extends StatelessWidget {
       const [_breakpoint],
     );
     return switch (breakpoint) {
-      null => Size.zero,
-      _breakpoint => Size.fromHeight(
+      null => .zero,
+      _breakpoint => .fromHeight(
         CustomNavigationBarTheme.of(context).height ?? 80,
       ),
-      _ =>
-        throw UnsupportedError(
-          'tried getting size for an unsupported breakpoint',
-        ),
+      _ => throw UnsupportedError(
+        'tried getting size for an unsupported breakpoint',
+      ),
     };
   }
 
@@ -39,17 +38,16 @@ class BottomNavigation extends StatelessWidget {
     return AnimatedSize(
       curve: Easing.standard,
       duration: Durations.medium2,
-      alignment: Alignment.bottomCenter,
+      alignment: .bottomCenter,
       child: SlotLayout(
         config: {
           _breakpoint: SlotLayout.from(
-            key: const Key('Bottom Navigation Small'),
-            builder:
-                (context) => AdaptiveScaffold.standardBottomNavigationBar(
-                  currentIndex: currentIndex,
-                  onDestinationSelected: onDestinationSelected,
-                  destinations: destinations,
-                ),
+            key: const .new('Bottom Navigation Small'),
+            builder: (context) => AdaptiveScaffold.standardBottomNavigationBar(
+              currentIndex: currentIndex,
+              onDestinationSelected: onDestinationSelected,
+              destinations: destinations,
+            ),
           ),
         },
       ),

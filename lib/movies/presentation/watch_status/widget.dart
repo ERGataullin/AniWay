@@ -38,7 +38,7 @@ class WatchStatusWidget extends ElementaryWidget<IWatchStatusWM> {
       value: wm,
       child: Form(
         key: wm.formKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
+        autovalidateMode: .onUserInteraction,
         child: SlotLayout(
           config: <Breakpoint, SlotLayoutConfig>{
             _fullscreenDialogBreakpoint: SlotLayout.from(
@@ -70,28 +70,25 @@ class _FullscreenDialog extends StatelessWidget {
             icon: const Icon(Icons.close),
           ),
           title: Text(context.l10n.watchStatusTitle),
-          actionsPadding: const EdgeInsets.only(right: 12),
+          actionsPadding: const .only(right: 12),
           actions: [
             ValueListenableBuilder(
               valueListenable: context.wm.loading,
-              builder:
-                  (context, loading, _) => IconButton(
-                    color: colorScheme.error,
-                    onPressed:
-                        loading || context.wm.currentStatus == null
-                            ? null
-                            : context.wm.handleDeletePressed,
-                    icon: const Icon(Icons.delete_outlined),
-                  ),
+              builder: (context, loading, _) => IconButton(
+                color: colorScheme.error,
+                onPressed: loading || context.wm.currentStatus == null
+                    ? null
+                    : context.wm.handleDeletePressed,
+                icon: const Icon(Icons.delete_outlined),
+              ),
             ),
             ValueListenableBuilder(
               valueListenable: context.wm.loading,
-              builder:
-                  (context, loading, _) => IconButton(
-                    color: colorScheme.primary,
-                    onPressed: loading ? null : context.wm.handleSavePressed,
-                    icon: const Icon(Icons.done_outlined),
-                  ),
+              builder: (context, loading, _) => IconButton(
+                color: colorScheme.primary,
+                onPressed: loading ? null : context.wm.handleSavePressed,
+                icon: const Icon(Icons.done_outlined),
+              ),
             ),
           ],
         ),
@@ -102,7 +99,7 @@ class _FullscreenDialog extends StatelessWidget {
             return SingleChildScrollView(
               padding: margin,
               child: ConstrainedBox(
-                constraints: BoxConstraints.tightFor(
+                constraints: .tightFor(
                   height: constraints.maxHeight - margin.vertical,
                 ),
                 child: const _MaybeLoader(child: _Fields()),
@@ -122,15 +119,15 @@ class _BasicDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Dialog(
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: .hardEdge,
         child: SingleChildScrollView(
-          clipBehavior: Clip.none,
+          clipBehavior: .none,
           padding: _marginVertical,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 560),
+            constraints: const .new(maxWidth: 560),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: .min,
+              crossAxisAlignment: .start,
               children: [
                 Padding(
                   padding: _marginHorizontal,
@@ -146,27 +143,26 @@ class _BasicDialog extends StatelessWidget {
                   padding: _marginHorizontal,
                   child: ValueListenableBuilder(
                     valueListenable: context.wm.loading,
-                    builder:
-                        (context, loading, _) => Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed:
-                                  loading || context.wm.currentStatus == null
-                                      ? null
-                                      : context.wm.handleDeletePressed,
-                              style: TextButton.styleFrom(
-                                foregroundColor: ColorScheme.of(context).error,
-                              ),
-                              child: Text(context.l10n.delete),
-                            ),
-                            TextButton(
-                              onPressed:
-                                  loading ? null : context.wm.handleSavePressed,
-                              child: Text(context.l10n.save),
-                            ),
-                          ],
+                    builder: (context, loading, _) => Row(
+                      mainAxisAlignment: .end,
+                      children: [
+                        TextButton(
+                          onPressed: loading || context.wm.currentStatus == null
+                              ? null
+                              : context.wm.handleDeletePressed,
+                          style: TextButton.styleFrom(
+                            foregroundColor: ColorScheme.of(context).error,
+                          ),
+                          child: Text(context.l10n.delete),
                         ),
+                        TextButton(
+                          onPressed: loading
+                              ? null
+                              : context.wm.handleSavePressed,
+                          child: Text(context.l10n.save),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -185,37 +181,36 @@ class _MaybeLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Breakpoint breakpoint =
-        Breakpoint.activeBreakpointIn(context, const [
-          _fullscreenDialogBreakpoint,
-          _basicDialogBreakpoint,
-        ])!;
+    final Breakpoint breakpoint = .activeBreakpointIn(context, const [
+      _fullscreenDialogBreakpoint,
+      _basicDialogBreakpoint,
+    ])!;
     return ListenableBuilder(
       listenable: context.wm.loading,
-      builder:
-          (context, _) => Stack(
-            alignment: Alignment.center,
-            children: [
-              AnimatedContainer(
-                curve: Easing.standard,
-                duration: Durations.medium2,
-                foregroundDecoration: BoxDecoration(
-                  color: switch (breakpoint) {
-                    _ when !context.wm.loading.value => null,
-                    _fullscreenDialogBreakpoint =>
-                      Theme.of(context).scaffoldBackgroundColor,
-                    _ => Theme.of(context).dialogTheme.backgroundColor!,
-                  },
-                ),
-                child: IgnorePointer(
-                  ignoring: context.wm.loading.value,
-                  child: child,
-                ),
-              ),
-              if (context.wm.loading.value)
-                const Center(child: CircularProgressIndicator.adaptive()),
-            ],
+      builder: (context, _) => Stack(
+        alignment: .center,
+        children: [
+          AnimatedContainer(
+            curve: Easing.standard,
+            duration: Durations.medium2,
+            foregroundDecoration: BoxDecoration(
+              color: switch (breakpoint) {
+                _ when !context.wm.loading.value => null,
+                _fullscreenDialogBreakpoint => Theme.of(
+                  context,
+                ).scaffoldBackgroundColor,
+                _ => Theme.of(context).dialogTheme.backgroundColor!,
+              },
+            ),
+            child: IgnorePointer(
+              ignoring: context.wm.loading.value,
+              child: child,
+            ),
           ),
+          if (context.wm.loading.value)
+            const Center(child: CircularProgressIndicator.adaptive()),
+        ],
+      ),
     );
   }
 }
@@ -227,12 +222,12 @@ class _Fields extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Column(
       spacing: 32,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: .spaceBetween,
       children: [
         Padding(
           padding: _marginHorizontal,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             spacing: 8,
             children: [
               Expanded(child: _Status()),
@@ -253,13 +248,13 @@ class _Status extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<WatchStatus>(
-      expandedInsets: EdgeInsets.zero,
+      expandedInsets: .zero,
       requestFocusOnTap: false,
       label: Text(context.l10n.statusLabel),
       initialSelection: context.wm.status,
       onSelected: (value) => context.wm.status = value!,
       inputDecorationTheme: Theme.of(context).inputDecorationTheme.copyWith(
-        focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
+        focusedBorder: const UnderlineInputBorder(borderSide: .none),
       ),
       dropdownMenuEntries: WatchStatus.values
           .map(
@@ -281,11 +276,11 @@ class _Score extends StatelessWidget {
     return SlotLayout(
       config: <Breakpoint, SlotLayoutConfig>{
         _fullscreenDialogBreakpoint: SlotLayout.from(
-          key: const Key('Score Basic'),
+          key: const .new('Score Basic'),
           builder: (context) => const _ScoreStandard(),
         ),
         _basicDialogBreakpoint: SlotLayout.from(
-          key: const Key('Score Medium Large and Up'),
+          key: const .new('Score Medium Large and Up'),
           builder: (context) => const _ScoreMediumAndUp(),
         ),
       },
@@ -301,8 +296,8 @@ class _ScoreStandard extends StatelessWidget {
     const double itemSize = 48;
     final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: .center,
+      crossAxisAlignment: .start,
       spacing: spacing,
       children: [
         Padding(
@@ -316,10 +311,10 @@ class _ScoreStandard extends StatelessWidget {
           height: itemSize,
           child: ListView(
             shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
+            scrollDirection: .horizontal,
             padding: _marginHorizontal,
             itemExtentBuilder: (index, _) => index.isOdd ? spacing : itemSize,
-            children: List.generate(10 * 2 - 1, (index) {
+            children: .generate(10 * 2 - 1, (index) {
               return index.isOdd
                   ? const SizedBox.shrink()
                   : SizedBox.square(child: _ScoreItemStandard(index ~/ 2 + 1));
@@ -338,8 +333,8 @@ class _ScoreMediumAndUp extends StatelessWidget {
   Widget build(BuildContext context) {
     final double spacing = Breakpoint.defaultBreakpointOf(context).padding;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: .center,
+      crossAxisAlignment: .start,
       spacing: spacing,
       children: [
         Padding(
@@ -347,14 +342,14 @@ class _ScoreMediumAndUp extends StatelessWidget {
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: ColorScheme.of(context).surfaceContainerHighest,
-              borderRadius: const BorderRadius.all(Radius.circular(4)),
+              borderRadius: const .all(.circular(4)),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 const SizedBox(height: 4),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const .symmetric(horizontal: 16),
                   child: Text(
                     context.l10n.score,
                     style: TextTheme.of(context).bodySmall!.copyWith(
@@ -363,12 +358,12 @@ class _ScoreMediumAndUp extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 2),
+                  padding: const .only(right: 2),
                   child: Material(
-                    type: MaterialType.transparency,
+                    type: .transparency,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(
+                      mainAxisAlignment: .spaceBetween,
+                      children: .generate(
                         10,
                         (index) => _ScoreItemMediumAndUp(index + 1),
                       ),
@@ -398,24 +393,22 @@ class _ScoreItemStandard extends StatelessWidget {
         final selected = value == score;
         return Ink(
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color:
-                selected
-                    ? ColorScheme.of(context).primaryContainer
-                    : ColorScheme.of(context).surfaceContainerHighest,
+            shape: .circle,
+            color: selected
+                ? ColorScheme.of(context).primaryContainer
+                : ColorScheme.of(context).surfaceContainerHighest,
           ),
           child: InkWell(
             customBorder: const CircleBorder(),
             onTap: () => context.wm.handleScorePressed(value),
             child: Text(
               '$value',
-              textAlign: TextAlign.center,
+              textAlign: .center,
               style: TextTheme.of(context).displaySmall?.copyWith(
                 fontFamily: 'Alvida',
-                color:
-                    selected
-                        ? ColorScheme.of(context).onPrimaryContainer
-                        : ColorScheme.of(context).onSurface,
+                color: selected
+                    ? ColorScheme.of(context).onPrimaryContainer
+                    : ColorScheme.of(context).onSurface,
               ),
             ),
           ),
@@ -447,12 +440,12 @@ class _ScoreItemMediumAndUpState extends State<_ScoreItemMediumAndUp> {
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(
+        constraints: const .new(
           minWidth: kMinInteractiveDimension,
           minHeight: kMinInteractiveDimension,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(4),
+          padding: const .all(4),
           child: InkWell(
             hoverColor: Colors.transparent,
             focusColor: theme.focusColor,
@@ -466,10 +459,10 @@ class _ScoreItemMediumAndUpState extends State<_ScoreItemMediumAndUp> {
                   final bool highlighted = selected || _isHovered;
                   return Text(
                     '${widget.value}',
-                    textAlign: TextAlign.center,
+                    textAlign: .center,
                     style: theme.textTheme.bodyLarge!.copyWith(
                       height: 1,
-                      fontWeight: highlighted ? FontWeight.w600 : null,
+                      fontWeight: highlighted ? .w600 : null,
                       fontSize: highlighted ? fontSize * 1.20 : fontSize,
                       color: switch (widget.value) {
                         _ when !highlighted => theme.unselectedWidgetColor,
@@ -496,11 +489,11 @@ class _Episodes extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: context.wm.episodesController,
-      keyboardType: TextInputType.number,
+      keyboardType: .number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       validator: (value) => context.wm.validateEpisodes(value),
-      decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.always,
+      decoration: .new(
+        floatingLabelBehavior: .always,
         hintText: '0',
         label: Text(context.l10n.episodesWatchedLabel),
         suffixText: switch (context.wm.episodesCountTotal) {
@@ -520,8 +513,8 @@ class _Comment extends StatelessWidget {
     return TextFormField(
       maxLines: 8,
       controller: context.wm.commentController,
-      keyboardType: TextInputType.multiline,
-      decoration: InputDecoration(
+      keyboardType: .multiline,
+      decoration: .new(
         alignLabelWithHint: true,
         labelText: context.l10n.commentLabel,
       ),

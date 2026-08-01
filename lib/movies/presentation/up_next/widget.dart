@@ -24,19 +24,18 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
       child: ShimmerScope(
         child: Scaffold(
           body: NestedScrollView(
-            headerSliverBuilder:
-                (context, innerBoxIsScrolled) => [
-                  SliverOverlapAbsorber(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                      context,
-                    ),
-                    sliver: SliverAppBar(
-                      pinned: true,
-                      forceElevated: innerBoxIsScrolled,
-                      title: Text(context.l10n.upNextTitle),
-                    ),
-                  ),
-                ],
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                  context,
+                ),
+                sliver: SliverAppBar(
+                  pinned: true,
+                  forceElevated: innerBoxIsScrolled,
+                  title: Text(context.l10n.upNextTitle),
+                ),
+              ),
+            ],
             body: Builder(
               builder: (context) {
                 return CustomScrollView(
@@ -49,16 +48,15 @@ class UpNextWidget extends ElementaryWidget<IUpNextWM> {
                     SliverSafeArea(
                       top: false,
                       sliver: SliverPadding(
-                        padding: EdgeInsets.all(
+                        padding: .all(
                           Breakpoint.activeBreakpointOf(context).margin,
                         ),
                         sliver: SliverPagedGrid(
                           key: wm.pagedGridKey,
                           gridDelegate: MovieCard.gridDelegate(context),
                           onLoadPage: wm.handleLoadPage,
-                          itemBuilder:
-                              (context, movie, animation) =>
-                                  MovieCard(movie, opacity: animation),
+                          itemBuilder: (context, movie, animation) =>
+                              MovieCard(movie, opacity: animation),
                         ),
                       ),
                     ),

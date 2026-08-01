@@ -15,7 +15,7 @@ abstract interface class MoviesService {
     int? offset,
     bool? isOngoing,
     String? query,
-    MoviesOrder order = MoviesOrder.byPopularity,
+    MoviesOrder order = .byPopularity,
     List<MovieType> typesExcluded = const [],
     List<WatchStatus> watchStatuses = const [],
   });

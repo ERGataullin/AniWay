@@ -30,28 +30,23 @@ abstract interface class IMoviePlayerModel implements ElementaryModel {
 }
 
 class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
-  MoviePlayerModel(
-    ErrorHandler errorHandler, {
-    required MoviesRepository repository,
-  }) : _repository = repository,
-       super(errorHandler: errorHandler);
+  MoviePlayerModel(ErrorHandler errorHandler, {required this._repository})
+    : super(errorHandler: errorHandler);
 
   @override
-  final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
+  final ValueNotifier<MovieDetailsData?> movie = .new(null);
 
   @override
-  final ValueNotifier<EpisodeData?> episode = ValueNotifier(null);
+  final ValueNotifier<EpisodeData?> episode = .new(null);
 
   @override
-  final ValueNotifier<List<TranslationData>> translations = ValueNotifier(
-    const [],
-  );
+  final ValueNotifier<List<TranslationData>> translations = .new(const []);
 
   @override
-  final ValueNotifier<bool> hasPreviousEpisode = ValueNotifier(false);
+  final ValueNotifier<bool> hasPreviousEpisode = .new(false);
 
   @override
-  final ValueNotifier<bool> hasNextEpisode = ValueNotifier(false);
+  final ValueNotifier<bool> hasNextEpisode = .new(false);
 
   final MoviesRepository _repository;
 
@@ -60,12 +55,11 @@ class MoviePlayerModel extends ElementaryModel implements IMoviePlayerModel {
   @override
   Future<void> loadData({required int movieId, int? episodeId}) async {
     movie.value = await _repository.getMovie(movieId);
-    _episodeIndex =
-        episodeId == null
-            ? 0
-            : movie.value!.episodes.indexWhere(
-              (episode) => episode.id == episodeId,
-            );
+    _episodeIndex = episodeId == null
+        ? 0
+        : movie.value!.episodes.indexWhere(
+            (episode) => episode.id == episodeId,
+          );
     if (_episodeIndex < 0) _episodeIndex = 0;
     _loadEpisode(index: _episodeIndex);
   }

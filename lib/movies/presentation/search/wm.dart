@@ -30,11 +30,10 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   MoviesSearchWM(super._model);
 
   @override
-  late final Computed<String?> query = Computed(() => widget.query);
+  late final Computed<String?> query = .new(() => widget.query);
 
   @override
-  final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey =
-      GlobalKey();
+  final GlobalKey<SliverPagedGridState<MovieCardData>> pagedGridKey = .new();
 
   @override
   Future<List<MovieCardData>> handleLoadPage(int page) async {
@@ -57,7 +56,7 @@ class MoviesSearchWM extends WidgetModel<MoviesSearchWidget, IMoviesSearchModel>
   }
 
   MovieCardData _moviePreviewFromMovie(MovieBaseData movie) {
-    return MovieCardData.fromMovie(
+    return .fromMovie(
       movie,
       l10n: l10n.value,
       onPressed: () => widget.onMoviePressed(movie.id),

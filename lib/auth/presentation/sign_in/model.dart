@@ -10,8 +10,7 @@ abstract interface class ISignInModel implements ElementaryModel {
 }
 
 class SignInModel extends ElementaryModel implements ISignInModel {
-  SignInModel({super.errorHandler, required AuthRepository repository})
-    : _repository = repository;
+  SignInModel({super.errorHandler, required this._repository});
 
   final AuthRepository _repository;
 

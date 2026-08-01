@@ -28,7 +28,7 @@ class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
   SeekAreaModel({super.errorHandler});
 
   @override
-  final ValueNotifier<Duration> value = ValueNotifier(Duration.zero);
+  final ValueNotifier<Duration> value = .new(.zero);
 
   @override
   bool canSeek({
@@ -37,8 +37,8 @@ class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
     required Duration duration,
   }) {
     return switch (seekType) {
-      SeekType.rewind => position > Duration.zero,
-      SeekType.fastForward => position < duration,
+      .rewind => position > .zero,
+      .fastForward => position < duration,
     };
   }
 
@@ -48,22 +48,22 @@ class SeekAreaModel extends ElementaryModel implements ISeekAreaModel {
     required Duration position,
   }) {
     return switch (seekType) {
-      SeekType.rewind => position - seekGestureRewindStep,
-      SeekType.fastForward => position + seekGestureFastForwardStep,
+      .rewind => position - seekGestureRewindStep,
+      .fastForward => position + seekGestureFastForwardStep,
     };
   }
 
   @override
   void incrementValue({required SeekType seekType}) {
     value.value += switch (seekType) {
-      SeekType.rewind => seekGestureRewindStep,
-      SeekType.fastForward => seekGestureFastForwardStep,
+      .rewind => seekGestureRewindStep,
+      .fastForward => seekGestureFastForwardStep,
     };
   }
 
   @override
   void resetValue() {
-    value.value = Duration.zero;
+    value.value = .zero;
   }
 
   @override

@@ -56,8 +56,8 @@ class UpNextWM extends WidgetModel<UpNextWidget, IUpNextModel>
       upNext,
       l10n: l10n.value,
       onPressed: () => widget.onItemPressed(upNext.movie.id, upNext.episode.id),
-      onLongPressed:
-          () => widget.onItemLongPressed(upNext.movie.id, upNext.episode.id),
+      onLongPressed: () =>
+          widget.onItemLongPressed(upNext.movie.id, upNext.episode.id),
     );
   }
 }

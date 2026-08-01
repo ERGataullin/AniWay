@@ -40,17 +40,15 @@ extension _AppOverrides on ThemeData {
         shadowColor: isMediumAndUp ? colorScheme.shadow : null,
         backgroundColor: isMediumAndUp ? colorScheme.surface : null,
         surfaceTintColor: isMediumAndUp ? colorScheme.surface : null,
-        actionsPadding: const EdgeInsets.only(right: 8),
+        actionsPadding: const .only(right: 8),
       ),
 
       cardTheme: cardTheme.copyWith(
         elevation: 1,
         shadowColor: colorScheme.shadow,
         color: colorScheme.surfaceContainerLow,
-        margin: EdgeInsets.zero,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
+        margin: .zero,
+        shape: const RoundedRectangleBorder(borderRadius: .all(.circular(12))),
       ),
 
       dialogTheme: dialogTheme.copyWith(
@@ -67,16 +65,16 @@ extension _AppOverrides on ThemeData {
 
       inputDecorationTheme: inputDecorationTheme.copyWith(
         filled: true,
-        border: const UnderlineInputBorder(borderSide: BorderSide.none),
+        border: const UnderlineInputBorder(borderSide: .none),
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(width: 2, color: colorScheme.primary),
+          borderSide: .new(width: 2, color: colorScheme.primary),
         ),
       ),
 
       navigationBarTheme: navigationBarTheme.copyWith(
         elevation: 3,
         height: 68,
-        labelTextStyle: WidgetStateTextStyle.fromMap({
+        labelTextStyle: .fromMap({
           WidgetState.selected: textTheme.labelMedium!.copyWith(
             color: colorScheme.secondary,
           ),
@@ -84,11 +82,9 @@ extension _AppOverrides on ThemeData {
             color: colorScheme.onSurfaceVariant,
           ),
         }),
-        iconTheme: WidgetStateProperty.fromMap({
-          WidgetState.selected: IconThemeData(
-            color: colorScheme.onSecondaryContainer,
-          ),
-          WidgetState.any: IconThemeData(color: colorScheme.onSurfaceVariant),
+        iconTheme: .fromMap({
+          WidgetState.selected: .new(color: colorScheme.onSecondaryContainer),
+          WidgetState.any: .new(color: colorScheme.onSurfaceVariant),
         }),
       ),
 
@@ -98,21 +94,21 @@ extension _AppOverrides on ThemeData {
 
       navigationRailTheme: navigationRailTheme.copyWith(
         minWidth: 80,
-        labelType: NavigationRailLabelType.all,
-        selectedIconTheme: IconThemeData(
+        labelType: .all,
+        selectedIconTheme: .new(
           size: 24,
           color: colorScheme.onSecondaryContainer,
         ),
-        unselectedIconTheme: IconThemeData(
+        unselectedIconTheme: .new(
           size: 24,
           color: colorScheme.onSurfaceVariant,
         ),
         selectedLabelTextStyle: textTheme.labelMedium!.copyWith(
-          fontWeight: FontWeight.w600,
+          fontWeight: .w600,
           color: colorScheme.onSurface,
         ),
         unselectedLabelTextStyle: textTheme.labelMedium!.copyWith(
-          fontWeight: FontWeight.w500,
+          fontWeight: .w500,
           color: colorScheme.onSurfaceVariant,
         ),
         backgroundColor: colorScheme.surface,
@@ -125,8 +121,8 @@ extension _AppOverrides on ThemeData {
 
       searchBarTheme: searchBarTheme.copyWith(
         elevation: const WidgetStatePropertyAll(6),
-        textCapitalization: TextCapitalization.sentences,
-        constraints: const BoxConstraints(
+        textCapitalization: .sentences,
+        constraints: const .new(
           minWidth: 360,
           maxWidth: 720,
           minHeight: 56,
@@ -135,19 +131,17 @@ extension _AppOverrides on ThemeData {
       ),
 
       tabBarTheme: tabBarTheme.copyWith(
-        splashBorderRadius: const BorderRadius.vertical(
-          top: Radius.circular(3),
-        ),
+        splashBorderRadius: const .vertical(top: .circular(3)),
       ),
 
       tooltipTheme: tooltipTheme.copyWith(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const .symmetric(horizontal: 8),
         textStyle: textTheme.bodySmall!.copyWith(
           color: colorScheme.onInverseSurface,
         ),
         decoration: BoxDecoration(
           color: colorScheme.inverseSurface,
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          borderRadius: const .all(.circular(4)),
         ),
       ),
     );
@@ -156,14 +150,14 @@ extension _AppOverrides on ThemeData {
 
 extension _VideoPlayerOverrides on ThemeData {
   ThemeData videoPlayerOverrides(BuildContext context) => copyWith(
-    splashColor: const Color(0x66C8C8C8),
+    splashColor: const .new(0x66C8C8C8),
     appBarTheme: appBarTheme.copyWith(centerTitle: false),
-    sliderTheme: SliderThemeData(
+    sliderTheme: .new(
       // ignore: deprecated_member_use
       year2023: false,
       trackHeight: 4,
-      allowedInteraction: SliderInteraction.slideOnly,
-      overlayShape: SliderComponentShape.noOverlay,
+      allowedInteraction: .slideOnly,
+      overlayShape: .noOverlay,
       trackShape: const VideoPlayerSliderTrackShape(),
       thumbShape: const VideoPlayerSliderThumbShape(thumbRadius: 8),
     ),

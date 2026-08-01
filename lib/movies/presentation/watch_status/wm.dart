@@ -58,13 +58,13 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
   final commentController = TextEditingController();
 
   @override
-  final ValueNotifier<int?> score = ValueNotifier(null);
+  final ValueNotifier<int?> score = .new(null);
 
   @override
-  final ValueNotifier<bool> loading = ValueNotifier(false);
+  final ValueNotifier<bool> loading = .new(false);
 
   @override
-  WatchStatus status = WatchStatus.planned;
+  WatchStatus status = .planned;
 
   @override
   WatchStatus? get currentStatus => widget.statusDetails.status;
@@ -99,7 +99,7 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
     var statusDetails = WatchStatusDetails(
       status,
       score: score.value,
-      episodesCount: int.parse(episodesController.text),
+      episodesCount: .parse(episodesController.text),
       comment: commentController.text,
     );
     if (formKey.currentState!.validate()) {
@@ -111,7 +111,7 @@ class WatchStatusWM extends WidgetModel<WatchStatusWidget, IWatchStatusModel>
 
   @override
   void initWidgetModel() {
-    status = widget.statusDetails.status ?? WatchStatus.planned;
+    status = widget.statusDetails.status ?? .planned;
     episodesController.text = '${widget.statusDetails.episodesCount}';
     score.value = widget.statusDetails.score;
     commentController.text = widget.statusDetails.comment ?? '';

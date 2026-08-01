@@ -3,11 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class Zoomable extends StatefulWidget {
-  const Zoomable({
-    super.key,
-    this.maxZoom = double.infinity,
-    required this.child,
-  });
+  const Zoomable({super.key, this.maxZoom = .infinity, required this.child});
 
   final double maxZoom;
 
@@ -18,7 +14,7 @@ class Zoomable extends StatefulWidget {
 }
 
 class _ZoomableState extends State<Zoomable> {
-  final ValueNotifier<double> _zoom = ValueNotifier(1);
+  final ValueNotifier<double> _zoom = .new(1);
 
   late double _submittedZoom = _zoom.value;
 
@@ -35,9 +31,8 @@ class _ZoomableState extends State<Zoomable> {
       onScaleEnd: _handleScaleEnd,
       child: ListenableBuilder(
         listenable: _zoom,
-        builder:
-            (context, _) =>
-                Transform.scale(scale: _zoom.value, child: widget.child),
+        builder: (context, _) =>
+            Transform.scale(scale: _zoom.value, child: widget.child),
       ),
     );
   }

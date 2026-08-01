@@ -30,16 +30,16 @@ class _ExpandableTextState extends State<ExpandableText> {
         textPainter.dispose();
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: .end,
           children: [
             AnimatedSize(
-              alignment: Alignment.topCenter,
+              alignment: .topCenter,
               curve: Easing.standard,
               duration: Durations.medium2,
               child: Text(
                 widget.data,
                 key: ValueKey(_isExpanded),
-                overflow: TextOverflow.fade,
+                overflow: .fade,
                 style: style,
                 maxLines: switch (exceedsBreakpoint) {
                   false => null,

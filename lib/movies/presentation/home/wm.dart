@@ -40,14 +40,14 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   HomeWM(super._model);
 
   @override
-  late final Computed<List<MovieCardData>> upNextItems = Computed(
+  late final Computed<List<MovieCardData>> upNextItems = .new(
     trigger: model.upNext,
     () =>
         model.upNext.value.map(_moviePreviewFromUpNext).toList(growable: false),
   );
 
   @override
-  late final Computed<List<MovieCardData>> ongoingItems = Computed(
+  late final Computed<List<MovieCardData>> ongoingItems = .new(
     trigger: model.ongoings,
     () => model.ongoings.value
         .map(_moviePreviewFromMovie)
@@ -55,7 +55,7 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   );
 
   @override
-  late final Computed<List<MovieCardData>> popularItems = Computed(
+  late final Computed<List<MovieCardData>> popularItems = .new(
     trigger: model.populars,
     () => model.populars.value
         .map(_moviePreviewFromMovie)
@@ -88,17 +88,17 @@ class HomeWM extends WidgetModel<HomeWidget, IHomeModel>
   }
 
   MovieCardData _moviePreviewFromUpNext(UpNextData upNext) {
-    return MovieCardData.fromUpNext(
+    return .fromUpNext(
       upNext,
       l10n: l10n.value,
-      onPressed:
-          () => widget.onUpNextPressed(upNext.movie.id, upNext.episode.id),
+      onPressed: () =>
+          widget.onUpNextPressed(upNext.movie.id, upNext.episode.id),
       onLongPressed: () => widget.onMoviePressed(upNext.movie.id),
     );
   }
 
   MovieCardData _moviePreviewFromMovie(MovieBaseData movie) {
-    return MovieCardData.fromMovie(
+    return .fromMovie(
       movie,
       l10n: l10n.value,
       onPressed: () => widget.onMoviePressed(movie.id),

@@ -20,16 +20,15 @@ class _PlatformWrapperState extends State<PlatformWrapper> {
   static const _rightInsetProperty = '--safe-area-insets-right';
   static const _bottomInsetProperty = '--safe-area-insets-bottom';
 
-  final _style =
-      web.HTMLStyleElement()
-        ..id = 'web-media-query'
-        ..textContent =
-            ':root { '
-            '$_leftInsetProperty: env(safe-area-inset-left); '
-            '$_topInsetProperty: env(safe-area-inset-top); '
-            '$_rightInsetProperty: env(safe-area-inset-right); '
-            '$_bottomInsetProperty: env(safe-area-inset-bottom); '
-            '}';
+  final _style = web.HTMLStyleElement()
+    ..id = 'web-media-query'
+    ..textContent =
+        ':root { '
+        '$_leftInsetProperty: env(safe-area-inset-left); '
+        '$_topInsetProperty: env(safe-area-inset-top); '
+        '$_rightInsetProperty: env(safe-area-inset-right); '
+        '$_bottomInsetProperty: env(safe-area-inset-bottom); '
+        '}';
 
   @override
   void initState() {
@@ -41,13 +40,13 @@ class _PlatformWrapperState extends State<PlatformWrapper> {
   Widget build(BuildContext context) {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
-        padding: EdgeInsets.fromLTRB(
+        padding: .fromLTRB(
           _getInset(_leftInsetProperty),
           _getInset(_topInsetProperty),
           _getInset(_rightInsetProperty),
           _getInset(_bottomInsetProperty),
         ),
-        viewPadding: EdgeInsets.zero,
+        viewPadding: .zero,
       ),
       child: widget.child,
     );
@@ -61,6 +60,6 @@ class _PlatformWrapperState extends State<PlatformWrapper> {
 
   double _getInset(String property) {
     final String cssRawValue = _style.computedStyleMap().get(property)![0];
-    return double.parse(cssRawValue.substring(0, cssRawValue.length - 2));
+    return .parse(cssRawValue.substring(0, cssRawValue.length - 2));
   }
 }

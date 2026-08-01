@@ -30,13 +30,12 @@ class LibraryWM extends WidgetModel<LibraryWidget, ILibraryModel>
   LibraryWM(super._model);
 
   @override
-  late final Computed<List<String>> tabsTexts = Computed(
+  late final Computed<List<String>> tabsTexts = .new(
     () => watchStatuses
         .map(
-          (status) =>
-              status == null
-                  ? l10n.value.all
-                  : l10n.value.watchStatus(status.name),
+          (status) => status == null
+              ? l10n.value.all
+              : l10n.value.watchStatus(status.name),
         )
         .toList(growable: false),
   );

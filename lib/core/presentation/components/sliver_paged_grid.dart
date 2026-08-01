@@ -134,12 +134,11 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>>
             _handleItemBuildCalled(index);
             return ListenableBuilder(
               listenable: _items[index],
-              builder:
-                  (context, _) => widget.itemBuilder(
-                    context,
-                    _items[index].value,
-                    curveTween.animate(animation),
-                  ),
+              builder: (context, _) => widget.itemBuilder(
+                context,
+                _items[index].value,
+                curveTween.animate(animation),
+              ),
             );
           },
         );
@@ -250,9 +249,9 @@ class SliverPagedGridState<T> extends State<SliverPagedGrid<T>>
     if (reserveViewports >= 1) return;
 
     // Добавление плэйсхолдеров для обеспечения резерва скролла.
-    final List<ValueNotifier<T?>> placeholdersToAdd = List.generate(
+    final List<ValueNotifier<T?>> placeholdersToAdd = .generate(
       ((1 - reserveViewports) * _viewportCapacity).ceil(),
-      (_) => ValueNotifier(null),
+      (_) => .new(null),
     );
     _addItems(placeholdersToAdd);
 

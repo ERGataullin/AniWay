@@ -40,26 +40,23 @@ abstract interface class IVideoPlayerModel implements ElementaryModel {
 }
 
 class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
-  VideoPlayerModel({super.errorHandler, required PlayerRepository repository})
-    : _repository = repository;
+  VideoPlayerModel({super.errorHandler, required this._repository});
 
   @override
-  final ValueNotifier<LocaledTranslations> translations = ValueNotifier(
-    const {},
-  );
+  final ValueNotifier<LocaledTranslations> translations = .new(const {});
 
   @override
-  final ValueNotifier<TranslationData?> translation = ValueNotifier(null);
+  final ValueNotifier<TranslationData?> translation = .new(null);
 
   @override
-  final ValueNotifier<VideoData?> video = ValueNotifier(null);
+  final ValueNotifier<VideoData?> video = .new(null);
 
   @override
-  final ValueNotifier<num?> quality = ValueNotifier(null);
+  final ValueNotifier<num?> quality = .new(null);
 
   @override
-  late final Computed<Uri?> videoDataSource = Computed(
-    trigger: Listenable.merge([video, quality]),
+  late final Computed<Uri?> videoDataSource = .new(
+    trigger: .merge([video, quality]),
     () => video.value?.stream[quality.value],
   );
 
@@ -132,16 +129,16 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
 
   @override
   Future<void> handleVideoWatched() async {
-    final Map<TranslationType, int> typesRates =
-        await _repository.getTranslationTypesRates();
+    final Map<TranslationType, int> typesRates = await _repository
+        .getTranslationTypesRates();
     final TranslationType type = translation.value!.type;
     _repository.saveTranslationTypesRates({
       ...typesRates,
       type: 1 + (typesRates[type] ?? 0),
     });
 
-    final Map<String, int> authorsRates =
-        await _repository.getTranslationAuthorsRates();
+    final Map<String, int> authorsRates = await _repository
+        .getTranslationAuthorsRates();
     _repository.saveTranslationAuthorsRates({
       ...authorsRates,
       for (final TranslationAuthorData author in translation.value!.authors)
@@ -164,12 +161,11 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
     if (translation.value != null) {
       _lastSelectedTranslation = translation.value;
       video.value = await _videoResolver(translation.value!.id);
-      quality.value =
-          _autoSelectQuality
-              ? video.value!.stream.keys.first
-              : video.value!.stream.containsKey(quality.value)
-              ? quality.value
-              : video.value!.stream.keys.first;
+      quality.value = _autoSelectQuality
+          ? video.value!.stream.keys.first
+          : video.value!.stream.containsKey(quality.value)
+          ? quality.value
+          : video.value!.stream.keys.first;
     }
   }
 
@@ -195,10 +191,10 @@ class VideoPlayerModel extends ElementaryModel implements IVideoPlayerModel {
   }
 
   Future<TranslationType> _getPreferredTranslationType(Locale locale) async {
-    final Map<TranslationType, int> rates =
-        await _repository.getTranslationTypesRates();
+    final Map<TranslationType, int> rates = await _repository
+        .getTranslationTypesRates();
 
-    TranslationType selectedType = TranslationType.raw;
+    TranslationType selectedType = .raw;
     var selectedTypeRate = -1;
     for (final TranslationType type in translations.value[locale]!.keys) {
       final int rate = rates[type] ?? 0;

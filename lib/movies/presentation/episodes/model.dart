@@ -12,16 +12,15 @@ abstract interface class IEpisodesModel implements ElementaryModel {
 }
 
 class EpisodesModel extends ElementaryModel implements IEpisodesModel {
-  EpisodesModel({super.errorHandler, required MoviesRepository repository})
-    : _repository = repository;
+  EpisodesModel({super.errorHandler, required this._repository});
 
   final MoviesRepository _repository;
 
   @override
-  final ValueNotifier<bool> loading = ValueNotifier(false);
+  final ValueNotifier<bool> loading = .new(false);
 
   @override
-  final ValueNotifier<MovieDetailsData?> movie = ValueNotifier(null);
+  final ValueNotifier<MovieDetailsData?> movie = .new(null);
 
   @override
   Future<void> loadData({required int movieId}) async {

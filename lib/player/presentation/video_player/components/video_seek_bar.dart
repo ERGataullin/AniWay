@@ -41,7 +41,7 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
   void _updateValue() {
     setState(() {
       _value = switch (_duration) {
-        Duration.zero => 0,
+        .zero => 0,
         final Duration duration =>
           _position.inMicroseconds / duration.inMicroseconds,
       };
@@ -55,10 +55,9 @@ class _VideoSeekBarState extends State<VideoSeekBar> {
       onExit: (_) => setState(() => _isMouse = false),
       child: Slider.adaptive(
         value: _value,
-        allowedInteraction:
-            _isMouse
-                ? SliderInteraction.tapAndSlide
-                : SliderInteraction.slideOnly,
+        allowedInteraction: _isMouse
+            ? SliderInteraction.tapAndSlide
+            : SliderInteraction.slideOnly,
         onChanged: (value) {
           setState(() => _videoController.seekTo(_duration * value));
         },

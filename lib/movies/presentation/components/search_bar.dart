@@ -9,7 +9,7 @@ typedef OnMoviesSearch = void Function(String query);
 class MoviesSearchBar extends StatefulWidget implements PreferredSizeWidget {
   const MoviesSearchBar({
     super.key,
-    this.margin = EdgeInsets.zero,
+    this.margin = .zero,
     this.query,
     required this.onSearch,
     this.theme,
@@ -24,7 +24,7 @@ class MoviesSearchBar extends StatefulWidget implements PreferredSizeWidget {
   final SearchBarThemeData? theme;
 
   @override
-  Size get preferredSize => Size.fromHeight(56 + margin.vertical);
+  Size get preferredSize => .fromHeight(56 + margin.vertical);
 
   @override
   State<MoviesSearchBar> createState() => _MoviesSearchBarState();
@@ -40,7 +40,7 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.query)
+    _controller = .new(text: widget.query)
       ..addListener(_handleControllerChanged);
   }
 
@@ -81,13 +81,12 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
                 return SearchBar(
                   controller: _controller,
                   hintText: context.l10n.searchPageTitle,
-                  leading:
-                      Navigator.canPop(context)
-                          ? const BackButton()
-                          : const IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.search_outlined),
-                          ),
+                  leading: Navigator.canPop(context)
+                      ? const BackButton()
+                      : const IconButton(
+                          onPressed: null,
+                          icon: Icon(Icons.search_outlined),
+                        ),
                   trailing: [
                     if (_controller.text.isNotEmpty)
                       IconButton(
@@ -107,6 +106,6 @@ class _MoviesSearchBarState extends State<MoviesSearchBar> {
   void _handleControllerChanged() {
     if (_controller.text == (widget.query ?? '')) return;
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(_debounce, () => widget.onSearch(_controller.text));
+    _debounceTimer = .new(_debounce, () => widget.onSearch(_controller.text));
   }
 }

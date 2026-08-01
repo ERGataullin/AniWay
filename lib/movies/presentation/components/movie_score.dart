@@ -23,9 +23,7 @@ class MovieScore extends StatelessWidget {
     return Shimmer(
       enabled: score == null,
       delegate: const DecoratedBoxShimmerDelegate(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
+        decoration: BoxDecoration(borderRadius: .all(.circular(4))),
       ),
       child: Row(
         children: [

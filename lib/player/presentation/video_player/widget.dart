@@ -63,8 +63,8 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
             onPopInvokedWithResult: wm.handlePopInvoked,
             child: Scaffold(
               body: Stack(
-                clipBehavior: Clip.none,
-                fit: StackFit.expand,
+                clipBehavior: .none,
+                fit: .expand,
                 children: [
                   const _Player(),
                   Autohide(
@@ -72,15 +72,14 @@ class VideoPlayerWidget extends ElementaryWidget<IVideoPlayerWM> {
                     background: Colors.black54,
                     controls: const _Controls(),
                     gestures: const _Gestures(),
-                    playerBuilder:
-                        (context, background) => ValueListenableBuilder(
+                    playerBuilder: (context, background) =>
+                        ValueListenableBuilder(
                           valueListenable: wm.maxZoom,
-                          builder:
-                              (context, maxZoom, player) =>
-                                  Zoomable(maxZoom: maxZoom, child: player!),
+                          builder: (context, maxZoom, player) =>
+                              Zoomable(maxZoom: maxZoom, child: player!),
                           child: Stack(
-                            clipBehavior: Clip.none,
-                            fit: StackFit.expand,
+                            clipBehavior: .none,
+                            fit: .expand,
                             children: [const _Player(), background],
                           ),
                         ),
@@ -105,8 +104,8 @@ class _Gestures extends StatelessWidget {
       child: Focus(
         autofocus: true,
         child: Stack(
-          clipBehavior: Clip.none,
-          fit: StackFit.expand,
+          clipBehavior: .none,
+          fit: .expand,
           children: [
             GestureDetector(
               supportedDevices: PointerDevicesAccuracy.accurateDevices,
@@ -115,8 +114,8 @@ class _Gestures extends StatelessWidget {
             ),
             Row(
               children: [
-                _buildSeekArea(context, type: SeekType.rewind),
-                _buildSeekArea(context, type: SeekType.fastForward),
+                _buildSeekArea(context, type: .rewind),
+                _buildSeekArea(context, type: .fastForward),
               ],
             ),
           ],
@@ -143,24 +142,22 @@ class _Player extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(color: ColorScheme.of(context).surface),
       child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
+        clipBehavior: .none,
+        fit: .expand,
         children: [
           Center(
             child: ListenableBuilder(
               listenable: context.wm.videoController.aspectRatio,
-              builder:
-                  (context, _) => AspectRatio(
-                    aspectRatio: context.wm.videoController.aspectRatio.value,
-                    child: ValueListenableBuilder(
-                      valueListenable: context.wm.videoController.inner,
-                      builder:
-                          (context, innerController, _) =>
-                              innerController == null
-                                  ? const SizedBox.shrink()
-                                  : VideoPlayer(innerController),
-                    ),
-                  ),
+              builder: (context, _) => AspectRatio(
+                aspectRatio: context.wm.videoController.aspectRatio.value,
+                child: ValueListenableBuilder(
+                  valueListenable: context.wm.videoController.inner,
+                  builder: (context, innerController, _) =>
+                      innerController == null
+                      ? const SizedBox.shrink()
+                      : VideoPlayer(innerController),
+                ),
+              ),
             ),
           ),
           const _Caption(),
@@ -179,13 +176,13 @@ class _Controls extends StatelessWidget {
       top: false,
       bottom: false,
       child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
+        clipBehavior: .none,
+        alignment: .center,
         children: [
           Align(
-            alignment: Alignment.topCenter,
+            alignment: .topCenter,
             child: AnimatedSize(
-              alignment: Alignment.bottomCenter,
+              alignment: .bottomCenter,
               duration: Durations.medium2,
               curve: Easing.standard,
               child: SafeArea(
@@ -195,7 +192,7 @@ class _Controls extends StatelessWidget {
                   child: AppBar(
                     forceMaterialTransparency: true,
                     title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: .start,
                       children: [
                         _Title(context.wm.title),
                         _Title(
@@ -212,7 +209,7 @@ class _Controls extends StatelessWidget {
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: .center,
             children: [
               _SkipButton(
                 icon: const Icon(Icons.skip_previous_outlined),
@@ -228,20 +225,18 @@ class _Controls extends StatelessWidget {
             ],
           ),
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment: .bottomCenter,
             child: AnimatedSize(
-              alignment: Alignment.topCenter,
+              alignment: .topCenter,
               duration: Durations.medium2,
               curve: Easing.standard,
               child: SafeArea(
                 top: false,
                 child: Padding(
-                  padding: EdgeInsets.all(
-                    Breakpoint.activeBreakpointOf(context).margin,
-                  ),
+                  padding: .all(Breakpoint.activeBreakpointOf(context).margin),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: .start,
+                    mainAxisSize: .min,
                     children: [
                       Row(
                         children: [
@@ -251,11 +246,11 @@ class _Controls extends StatelessWidget {
                           const SizedBox(width: 16),
                           LongSeekButton(
                             videoController: context.wm.videoController,
-                            type: SeekType.rewind,
+                            type: .rewind,
                           ),
                           LongSeekButton(
                             videoController: context.wm.videoController,
-                            type: SeekType.fastForward,
+                            type: .fastForward,
                           ),
                           const Spacer(),
                           if (context.wm.fullscreenController.supported)
@@ -289,36 +284,28 @@ class _Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([data, trailing]),
-      builder:
-          (context, _) => AnimatedSwitcher(
-            switchInCurve: Easing.standard,
-            switchOutCurve: Easing.standard.flipped,
-            duration: Durations.medium2,
-            layoutBuilder:
-                (currentChild, previousChildren) => Stack(
-                  children: [
-                    ...previousChildren,
-                    if (currentChild != null) currentChild,
-                  ],
+      listenable: .merge([data, trailing]),
+      builder: (context, _) => AnimatedSwitcher(
+        switchInCurve: Easing.standard,
+        switchOutCurve: Easing.standard.flipped,
+        duration: Durations.medium2,
+        layoutBuilder: (currentChild, previousChildren) =>
+            Stack(children: [...previousChildren, ?currentChild]),
+        child: Text.rich(
+          key: Key('${data.value} · ${trailing?.value}'),
+          style: style,
+          TextSpan(
+            children: [
+              TextSpan(text: data.value),
+              if (trailing?.value != null)
+                TextSpan(
+                  text: ' · ${trailing?.value}',
+                  style: TextStyle(color: ColorScheme.of(context).secondary),
                 ),
-            child: Text.rich(
-              key: Key('${data.value} · ${trailing?.value}'),
-              style: style,
-              TextSpan(
-                children: [
-                  TextSpan(text: data.value),
-                  if (trailing?.value != null)
-                    TextSpan(
-                      text: ' · ${trailing?.value}',
-                      style: TextStyle(
-                        color: ColorScheme.of(context).secondary,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            ],
           ),
+        ),
+      ),
     );
   }
 }
@@ -330,11 +317,10 @@ class _ShareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: context.wm.onSharePressed,
-      builder:
-          (context, onSharePressed, _) => IconButton(
-            icon: Icon(Icons.adaptive.share_outlined),
-            onPressed: onSharePressed,
-          ),
+      builder: (context, onSharePressed, _) => IconButton(
+        icon: Icon(Icons.adaptive.share_outlined),
+        onPressed: onSharePressed,
+      ),
     );
   }
 }
@@ -346,11 +332,10 @@ class _MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.onMenuPressed,
-      builder:
-          (context, _) => IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: context.wm.onMenuPressed.value,
-          ),
+      builder: (context, _) => IconButton(
+        icon: const Icon(Icons.settings_outlined),
+        onPressed: context.wm.onMenuPressed.value,
+      ),
     );
   }
 }
@@ -366,17 +351,16 @@ class _SkipButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: onPressed,
-      builder:
-          (context, _) => IconButton.filledTonal(
-            iconSize: 36,
-            onPressed: onPressed.value,
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(
-                ColorScheme.of(context).secondaryContainer,
-              ),
-            ),
-            icon: icon,
+      builder: (context, _) => IconButton.filledTonal(
+        iconSize: 36,
+        onPressed: onPressed.value,
+        style: ButtonStyle(
+          backgroundColor: WidgetStatePropertyAll(
+            ColorScheme.of(context).secondaryContainer,
           ),
+        ),
+        icon: icon,
+      ),
     );
   }
 }
@@ -394,16 +378,16 @@ class _Caption extends StatelessWidget {
         final TextStyle displaySmall = TextTheme.of(context).displaySmall!;
 
         return Align(
-          alignment: Alignment.bottomCenter,
+          alignment: .bottomCenter,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 24),
+            padding: const .only(bottom: 24),
             child: DecoratedBox(
               decoration: const BoxDecoration(
                 color: Colors.black54,
-                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderRadius: .all(.circular(4)),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const .symmetric(horizontal: 8),
                 child: Builder(
                   builder: (context) {
                     final Breakpoint? breakpoint =
@@ -421,8 +405,9 @@ class _Caption extends StatelessWidget {
                         caption.text,
                         key: Key('$breakpoint: ${caption.text}'),
                         style: switch (breakpoint) {
-                          Breakpoints.largeAndUp =>
-                            TextTheme.of(context).displayMedium,
+                          Breakpoints.largeAndUp => TextTheme.of(
+                            context,
+                          ).displayMedium,
                           Breakpoints.mediumLargeAndUp => displaySmall.copyWith(
                             fontSize: 28,
                           ),

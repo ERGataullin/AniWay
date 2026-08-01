@@ -10,7 +10,7 @@ enum _SlotId { leading, middle }
 class TopNavigation extends StatelessWidget {
   const TopNavigation({
     super.key,
-    this.padding = EdgeInsets.zero,
+    this.padding = .zero,
     this.query,
     required this.onSearch,
   });
@@ -29,14 +29,13 @@ class TopNavigation extends StatelessWidget {
       const [_breakpoint],
     );
     return switch (breakpoint) {
-      null => Size.zero,
-      _breakpoint => Size.fromHeight(
+      null => .zero,
+      _breakpoint => .fromHeight(
         AppBarTheme.of(context).toolbarHeight ?? kToolbarHeight,
       ),
-      _ =>
-        throw UnsupportedError(
-          'tried getting size for an unsupported breakpoint',
-        ),
+      _ => throw UnsupportedError(
+        'tried getting size for an unsupported breakpoint',
+      ),
     };
   }
 
@@ -65,7 +64,7 @@ class TopNavigation extends StatelessWidget {
                         LayoutId(
                           id: _SlotId.middle,
                           child: MoviesSearchBar(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            margin: const .symmetric(vertical: 8),
                             query: query,
                             onSearch: onSearch,
                             theme: SearchBarThemeData(
@@ -115,11 +114,11 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
 
     final Size leadingSize = layoutChild(
       _SlotId.leading,
-      BoxConstraints(maxWidth: size.width, maxHeight: size.height),
+      .new(maxWidth: size.width, maxHeight: size.height),
     );
     positionChild(
       _SlotId.leading,
-      Offset(0, (size.height - leadingSize.height) / 2),
+      .new(0, (size.height - leadingSize.height) / 2),
     );
     occupiedWidth += leadingSize.width;
 
@@ -127,14 +126,11 @@ class _LayoutDelegate extends MultiChildLayoutDelegate {
 
     final Size middleSize = layoutChild(
       _SlotId.middle,
-      BoxConstraints(
-        maxWidth: size.width - occupiedWidth,
-        maxHeight: size.height,
-      ),
+      .new(maxWidth: size.width - occupiedWidth, maxHeight: size.height),
     );
     positionChild(
       _SlotId.middle,
-      Offset(
+      .new(
         max(occupiedWidth, (size.width - middleSize.width) / 2),
         (size.height - middleSize.height) / 2,
       ),

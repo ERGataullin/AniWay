@@ -27,9 +27,8 @@ class Shimmer extends StatelessWidget {
     final ShimmerScopeState shimmerScope = ShimmerScope.of(context);
     return ConditionalWrapper(
       condition: enabled && constraints != null,
-      wrapper:
-          (context, child) =>
-              ConstrainedBox(constraints: constraints!, child: child),
+      wrapper: (context, child) =>
+          ConstrainedBox(constraints: constraints!, child: child),
       child: AnimatedBuilder(
         animation: shimmerScope.animation,
         builder: (_, _) {

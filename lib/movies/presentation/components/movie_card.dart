@@ -72,9 +72,8 @@ class MovieCard extends StatelessWidget {
 
           return AnimatedBuilder(
             animation: opacity!,
-            builder:
-                (context, _) =>
-                    Theme(data: themeTween.evaluate(opacity!), child: child),
+            builder: (context, _) =>
+                Theme(data: themeTween.evaluate(opacity!), child: child),
           );
         },
         child: Card(
@@ -83,15 +82,14 @@ class MovieCard extends StatelessWidget {
             onLongPress: data?.onLongPressed,
             customBorder: cardTheme.shape,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: .stretch,
               children: [
-                Expanded(child: _Poster(opacity: opacity, image: data?.poster)),
+                Expanded(
+                  child: _Poster(opacity: opacity, image: data?.poster),
+                ),
                 _Footer(
                   data,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
+                  margin: const .symmetric(horizontal: 8, vertical: 4),
                 ),
               ],
             ),
@@ -113,40 +111,35 @@ class _Poster extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptiveImageBuilder(
       image: image,
-      builder:
-          (context, fadeInOpacity, image, _) => ListenableBuilder(
-            listenable: Listenable.merge([opacity, fadeInOpacity]),
-            builder:
-                (context, _) => Shimmer(
-                  enabled: fadeInOpacity.value != 1,
-                  delegate: CustomShimmerDelegate(
-                    (context, color, gradient, _) => Ink(
-                      decoration: ShapeDecoration(
-                        shape: CardTheme.of(context).shape!,
-                        color: color,
-                        gradient: gradient,
-                        image:
-                            image == null
-                                ? null
-                                : DecorationImage(
-                                  fit: BoxFit.cover,
-                                  filterQuality: FilterQuality.low,
-                                  opacity:
-                                      fadeInOpacity.value *
-                                      (opacity?.value ?? 1),
-                                  image: image,
-                                ),
+      builder: (context, fadeInOpacity, image, _) => ListenableBuilder(
+        listenable: .merge([opacity, fadeInOpacity]),
+        builder: (context, _) => Shimmer(
+          enabled: fadeInOpacity.value != 1,
+          delegate: CustomShimmerDelegate(
+            (context, color, gradient, _) => Ink(
+              decoration: ShapeDecoration(
+                shape: CardTheme.of(context).shape!,
+                color: color,
+                gradient: gradient,
+                image: image == null
+                    ? null
+                    : DecorationImage(
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.low,
+                        opacity: fadeInOpacity.value * (opacity?.value ?? 1),
+                        image: image,
                       ),
-                    ),
-                  ),
-                ),
+              ),
+            ),
           ),
+        ),
+      ),
     );
   }
 }
 
 class _Footer extends StatelessWidget {
-  const _Footer(this.data, {this.margin = EdgeInsets.zero});
+  const _Footer(this.data, {this.margin = .zero});
 
   final EdgeInsets margin;
 
@@ -155,24 +148,22 @@ class _Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const ShimmerDelegate shimmerDelegate = DecoratedBoxShimmerDelegate(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-      ),
+      decoration: BoxDecoration(borderRadius: .all(.circular(4))),
     );
-    final TextTheme textTheme = TextTheme.of(context);
+    final TextTheme textTheme = .of(context);
     return Padding(
       padding: margin,
       child: DefaultTextStyle(
         maxLines: 1,
         softWrap: false,
-        overflow: TextOverflow.fade,
+        overflow: .fade,
         style: textTheme.labelSmall!,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Shimmer(
               enabled: data?.title == null,
-              constraints: const BoxConstraints(minWidth: 128),
+              constraints: const .new(minWidth: 128),
               delegate: shimmerDelegate,
               child: Tooltip(
                 message: data?.title ?? '',

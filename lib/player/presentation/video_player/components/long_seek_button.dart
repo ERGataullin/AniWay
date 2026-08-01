@@ -22,19 +22,19 @@ class _LongSeekButtonState extends State<LongSeekButton> {
   static const _step = Duration(minutes: 1, seconds: 30);
 
   late final Duration _duration = switch (widget.type) {
-    SeekType.rewind => -_step,
-    SeekType.fastForward => _step,
+    .rewind => -_step,
+    .fastForward => _step,
   };
 
-  late final Computed<bool> _canSeek = Computed(
+  late final Computed<bool> _canSeek = .new(
     () => switch (widget.type) {
-      SeekType.rewind => _videoController.position.value > Duration.zero,
-      SeekType.fastForward =>
+      .rewind => _videoController.position.value > Duration.zero,
+      .fastForward =>
         _videoController.position.value < _videoController.duration.value,
     },
     trigger: switch (widget.type) {
-      SeekType.rewind => _videoController.position,
-      SeekType.fastForward => Listenable.merge([
+      .rewind => _videoController.position,
+      .fastForward => .merge([
         _videoController.position,
         _videoController.duration,
       ]),
@@ -48,23 +48,17 @@ class _LongSeekButtonState extends State<LongSeekButton> {
     return ListenableBuilder(
       listenable: _canSeek,
       child: switch (widget.type) {
-        SeekType.rewind => const Icon(
-          Icons.keyboard_double_arrow_left_outlined,
-        ),
-        SeekType.fastForward => const Icon(
-          Icons.keyboard_double_arrow_right_outlined,
-        ),
+        .rewind => const Icon(Icons.keyboard_double_arrow_left_outlined),
+        .fastForward => const Icon(Icons.keyboard_double_arrow_right_outlined),
       },
-      builder:
-          (context, icon) => IconButton(
-            onPressed:
-                !_canSeek.value
-                    ? null
-                    : () => _videoController.seekTo(
-                      _videoController.position.value + _duration,
-                    ),
-            icon: icon!,
-          ),
+      builder: (context, icon) => IconButton(
+        onPressed: !_canSeek.value
+            ? null
+            : () => _videoController.seekTo(
+                _videoController.position.value + _duration,
+              ),
+        icon: icon!,
+      ),
     );
   }
 

@@ -40,13 +40,13 @@ class SignInWM extends WidgetModel<SignInWidget, ISignInModel>
   SignInWM(super._model);
 
   @override
-  final ValueNotifier<bool> obscurePassword = ValueNotifier(true);
+  final ValueNotifier<bool> obscurePassword = .new(true);
 
   @override
-  final ValueNotifier<bool> loading = ValueNotifier(false);
+  final ValueNotifier<bool> loading = .new(false);
 
   @override
-  late final Computed<String> submitLabel = Computed(
+  late final Computed<String> submitLabel = .new(
     trigger: l10n,
     () => l10n.value.signInSubmitLabel,
   );

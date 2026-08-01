@@ -39,20 +39,19 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
   ValueListenable<bool> get loading => model.loading;
 
   @override
-  late final Computed<TabController?> tabController = Computed(
-    () =>
-        _episodes.value.isEmpty
-            ? null
-            : TabController(
-              length: (_episodes.value.length / _groupSize).ceil(),
-              vsync: this,
-            ),
+  late final Computed<TabController?> tabController = .new(
+    () => _episodes.value.isEmpty
+        ? null
+        : TabController(
+            length: (_episodes.value.length / _groupSize).ceil(),
+            vsync: this,
+          ),
   );
 
   @override
-  late final Computed<List<String>> tabsTexts = Computed(
+  late final Computed<List<String>> tabsTexts = .new(
     trigger: _episodes,
-    () => List.generate((_episodes.value.length / _groupSize).ceil(), (index) {
+    () => .generate((_episodes.value.length / _groupSize).ceil(), (index) {
       final List<EpisodeData> tabEpisodes = tabsEpisodes.value[index];
       return context.l10n.range(
         tabEpisodes.first.number ?? 0,
@@ -61,15 +60,15 @@ class EpisodesWM extends WidgetModel<EpisodesWidget, IEpisodesModel>
     }),
   );
 
-  late final Computed<List<EpisodeData>> _episodes = Computed(
+  late final Computed<List<EpisodeData>> _episodes = .new(
     trigger: model.movie,
     () => model.movie.value?.episodes ?? const [],
   );
 
   @override
-  late final Computed<List<List<EpisodeData>>> tabsEpisodes = Computed(
+  late final Computed<List<List<EpisodeData>>> tabsEpisodes = .new(
     trigger: _episodes,
-    () => List.generate((_episodes.value.length / _groupSize).ceil(), (index) {
+    () => .generate((_episodes.value.length / _groupSize).ceil(), (index) {
       final int startIndex = index * _groupSize;
       final int endIndex = math.min(
         _episodes.value.length - 1,

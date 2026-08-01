@@ -25,57 +25,52 @@ class LibraryWidget extends ElementaryWidget<ILibraryWM> {
   Widget build(ILibraryWM wm) {
     return Provider<ILibraryWM>.value(
       value: wm,
-      builder:
-          (context, _) => RootMenuAwaredCenter(
-            child: ShimmerScope(
-              child: DefaultTabController(
-                length: wm.watchStatuses.length,
-                child: Scaffold(
-                  body: NestedScrollView(
-                    floatHeaderSlivers: true,
-                    headerSliverBuilder:
-                        (context, innerBoxIsScrolled) => [
-                          SliverOverlapAbsorber(
-                            handle:
-                                NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                  context,
-                                ),
-                            sliver: SliverAppBar(
-                              pinned:
-                                  MediaQuery.sizeOf(context).height >=
-                                  Breakpoints.mediumAndUp.beginHeight!,
-                              forceElevated: innerBoxIsScrolled,
-                              title: Text(context.l10n.libraryTitle),
-                              bottom: TabBar(
-                                isScrollable: true,
-                                tabs: wm.tabsTexts.value
-                                    .map((text) => Tab(text: text))
-                                    .toList(growable: false),
-                              ),
-                            ),
-                          ),
-                        ],
-                    body: TabBarView(
-                      physics: switch (defaultTargetPlatform) {
-                        TargetPlatform.android ||
-                        TargetPlatform.fuchsia ||
-                        TargetPlatform.iOS => null,
-                        TargetPlatform.linux ||
-                        TargetPlatform.macOS ||
-                        TargetPlatform
-                            .windows => const NeverScrollableScrollPhysics(),
-                      },
-                      children: wm.watchStatuses
-                          .map(
-                            (watchStatus) => _Movies(watchStatus: watchStatus),
-                          )
-                          .toList(growable: false),
+      builder: (context, _) => RootMenuAwaredCenter(
+        child: ShimmerScope(
+          child: DefaultTabController(
+            length: wm.watchStatuses.length,
+            child: Scaffold(
+              body: NestedScrollView(
+                floatHeaderSlivers: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                      context,
+                    ),
+                    sliver: SliverAppBar(
+                      pinned:
+                          MediaQuery.sizeOf(context).height >=
+                          Breakpoints.mediumAndUp.beginHeight!,
+                      forceElevated: innerBoxIsScrolled,
+                      title: Text(context.l10n.libraryTitle),
+                      bottom: TabBar(
+                        isScrollable: true,
+                        tabs: wm.tabsTexts.value
+                            .map((text) => Tab(text: text))
+                            .toList(growable: false),
+                      ),
                     ),
                   ),
+                ],
+                body: TabBarView(
+                  physics: switch (defaultTargetPlatform) {
+                    TargetPlatform.android ||
+                    TargetPlatform.fuchsia ||
+                    TargetPlatform.iOS => null,
+                    TargetPlatform.linux ||
+                    TargetPlatform.macOS ||
+                    TargetPlatform.windows =>
+                      const NeverScrollableScrollPhysics(),
+                  },
+                  children: wm.watchStatuses
+                      .map((watchStatus) => _Movies(watchStatus: watchStatus))
+                      .toList(growable: false),
                 ),
               ),
             ),
           ),
+        ),
+      ),
     );
   }
 }
@@ -96,16 +91,13 @@ class _Movies extends StatelessWidget {
         SliverSafeArea(
           top: false,
           sliver: SliverPadding(
-            padding: EdgeInsets.all(
-              Breakpoint.defaultBreakpointOf(context).margin,
-            ),
+            padding: .all(Breakpoint.defaultBreakpointOf(context).margin),
             sliver: SliverPagedGrid(
               gridDelegate: MovieCard.gridDelegate(context),
-              onLoadPage:
-                  (page) => context.wm.handleLoadPage(page, watchStatus),
-              itemBuilder:
-                  (context, movie, animation) =>
-                      MovieCard(movie, opacity: animation),
+              onLoadPage: (page) =>
+                  context.wm.handleLoadPage(page, watchStatus),
+              itemBuilder: (context, movie, animation) =>
+                  MovieCard(movie, opacity: animation),
             ),
           ),
         ),

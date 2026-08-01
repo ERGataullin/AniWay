@@ -22,17 +22,17 @@ class SignInWidget extends ElementaryWidget<ISignInWM> {
         final double margin = Breakpoint.activeBreakpointOf(context).margin;
         return Scaffold(
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: margin),
+            padding: .symmetric(horizontal: margin),
             child: Form(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              autovalidateMode: .onUserInteraction,
               child: AutofillGroup(
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 720),
+                    constraints: const .new(maxWidth: 720),
                     child: SingleChildScrollView(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: .center,
+                        crossAxisAlignment: .stretch,
                         children: [
                           SizedBox(height: margin),
                           const _Logo(),
@@ -74,11 +74,11 @@ class _EmailField extends StatelessWidget {
     return TextFormField(
       controller: context.wm.emailController,
       autofocus: true,
-      textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.emailAddress,
+      textInputAction: .next,
+      keyboardType: .emailAddress,
       autofillHints: const [AutofillHints.username, AutofillHints.email],
       validator: context.wm.handleValidateEmail,
-      decoration: InputDecoration(label: Text(context.l10n.emailLabel)),
+      decoration: .new(label: Text(context.l10n.emailLabel)),
     );
   }
 }
@@ -90,25 +90,24 @@ class _PasswordField extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: context.wm.obscurePassword,
-      builder:
-          (context, _) => TextFormField(
-            controller: context.wm.passwordController,
-            autofocus: true,
-            obscureText: context.wm.obscurePassword.value,
-            textInputAction: TextInputAction.done,
-            keyboardType: TextInputType.visiblePassword,
-            autofillHints: const [AutofillHints.password],
-            onFieldSubmitted: context.wm.handlePasswordSubmitted,
-            decoration: InputDecoration(
-              label: Text(context.l10n.passwordLabel),
-              suffixIcon: IconButton(
-                onPressed: context.wm.handlePasswordVisibilityPressed,
-                isSelected: !context.wm.obscurePassword.value,
-                icon: const Icon(Icons.visibility_off_outlined),
-                selectedIcon: const Icon(Icons.visibility_outlined),
-              ),
-            ),
+      builder: (context, _) => TextFormField(
+        controller: context.wm.passwordController,
+        autofocus: true,
+        obscureText: context.wm.obscurePassword.value,
+        textInputAction: .done,
+        keyboardType: .visiblePassword,
+        autofillHints: const [AutofillHints.password],
+        onFieldSubmitted: context.wm.handlePasswordSubmitted,
+        decoration: .new(
+          label: Text(context.l10n.passwordLabel),
+          suffixIcon: IconButton(
+            onPressed: context.wm.handlePasswordVisibilityPressed,
+            isSelected: !context.wm.obscurePassword.value,
+            icon: const Icon(Icons.visibility_off_outlined),
+            selectedIcon: const Icon(Icons.visibility_outlined),
           ),
+        ),
+      ),
     );
   }
 }
@@ -128,18 +127,15 @@ class _SubmitButton extends StatelessWidget {
             switchInCurve: Easing.standard,
             switchOutCurve: Easing.standard.flipped,
             duration: Durations.medium2,
-            child:
-                context.wm.loading.value
-                    ? CircularProgressIndicator.adaptive(
-                      valueColor: AlwaysStoppedAnimation(iconTheme.color!),
-                      constraints: BoxConstraints.tight(
-                        Size.square(iconTheme.size!),
-                      ),
-                    )
-                    : ValueListenableBuilder(
-                      valueListenable: context.wm.submitLabel,
-                      builder: (context, label, _) => Text(label),
-                    ),
+            child: context.wm.loading.value
+                ? CircularProgressIndicator.adaptive(
+                    valueColor: AlwaysStoppedAnimation(iconTheme.color!),
+                    constraints: .tight(.square(iconTheme.size!)),
+                  )
+                : ValueListenableBuilder(
+                    valueListenable: context.wm.submitLabel,
+                    builder: (context, label, _) => Text(label),
+                  ),
           );
         },
       ),

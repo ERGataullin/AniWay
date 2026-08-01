@@ -10,8 +10,7 @@ abstract interface class IWatchStatusModel implements ElementaryModel {
 }
 
 class WatchStatusModel extends ElementaryModel implements IWatchStatusModel {
-  WatchStatusModel({super.errorHandler, required MoviesRepository repository})
-    : _repository = repository;
+  WatchStatusModel({super.errorHandler, required this._repository});
 
   final MoviesRepository _repository;
 

@@ -49,19 +49,17 @@ class _VideoPlayPauseLoaderState extends State<VideoPlayPauseLoader>
         switchInCurve: Easing.standard,
         switchOutCurve: Easing.standard.flipped,
         duration: Durations.medium2,
-        child:
-            _loading
-                ? Builder(
-                  builder:
-                      (context) => SizedBox.square(
-                        dimension: IconTheme.of(context).size,
-                        child: const CircularProgressIndicator.adaptive(),
-                      ),
-                )
-                : AnimatedIcon(
-                  icon: AnimatedIcons.play_pause,
-                  progress: _animation,
+        child: _loading
+            ? Builder(
+                builder: (context) => SizedBox.square(
+                  dimension: IconTheme.of(context).size,
+                  child: const CircularProgressIndicator.adaptive(),
                 ),
+              )
+            : AnimatedIcon(
+                icon: AnimatedIcons.play_pause,
+                progress: _animation,
+              ),
       ),
     );
   }

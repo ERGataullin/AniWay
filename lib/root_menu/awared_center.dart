@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 class RootMenuAwaredCenter extends SingleChildRenderObjectWidget {
   const RootMenuAwaredCenter({
     super.key,
-    this.constraints = const BoxConstraints(maxWidth: 1600),
+    this.constraints = const .new(maxWidth: 1600),
     required Widget super.child,
   });
 
@@ -38,13 +38,10 @@ class RootMenuAwaredCenter extends SingleChildRenderObjectWidget {
 
 class _RenderRootMenuAwaredCenter extends RenderShiftedBox {
   _RenderRootMenuAwaredCenter({
-    required GlobalKey primaryNavigationKey,
-    required Size windowSize,
-    required BoxConstraints childConstraints,
-  }) : _primaryNavigationKey = primaryNavigationKey,
-       _windowSize = windowSize,
-       _childConstraints = childConstraints,
-       super(null);
+    required this._primaryNavigationKey,
+    required this._windowSize,
+    required this._childConstraints,
+  }) : super(null);
 
   GlobalKey _primaryNavigationKey;
   set primaryNavigationKey(GlobalKey value) {

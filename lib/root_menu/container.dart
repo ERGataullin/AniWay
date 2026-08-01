@@ -29,8 +29,8 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
       duration: Durations.long2,
       layoutBuilder: _layoutBuilder,
       child: widget.children[widget.currentIndex],
-      transitionBuilder:
-          (child, animation, secondaryAnimation) => FadeThroughTransition(
+      transitionBuilder: (child, animation, secondaryAnimation) =>
+          FadeThroughTransition(
             animation: animation.drive(_animationCurveTween),
             secondaryAnimation: secondaryAnimation.drive(_animationCurveTween),
             child: child,
@@ -49,7 +49,7 @@ class _RootMenuContainerState extends State<RootMenuContainer> {
     }
 
     return Stack(
-      clipBehavior: Clip.none,
+      clipBehavior: .none,
       children: _subtrees.values.toList(growable: false),
     );
   }

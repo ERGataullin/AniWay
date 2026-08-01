@@ -30,39 +30,34 @@ class DestinationTitle extends StatelessWidget {
       child: Padding(
         padding: margin,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
+          crossAxisAlignment: .baseline,
+          textBaseline: .alphabetic,
           children: [
             Expanded(
               child: Link(
                 uri: uri,
-                builder:
-                    (context, followLink) => ConditionalWrapper(
-                      condition: true,
-                      wrapper:
-                          (context, child) => MouseRegion(
-                            cursor: WidgetStateMouseCursor.clickable,
-                            child: GestureDetector(
-                              onTap: followLink,
-                              child: child,
-                            ),
-                          ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(child: Text(title, style: titleStyle)),
-                          if (followLink != null)
-                            Icon(
-                              Icons.chevron_right_outlined,
-                              size: titleStyle.fontSize! * titleStyle.height!,
-                              weight: titleStyle.fontWeight?.value.toDouble(),
-                              color: titleStyle.color!.withValues(alpha: .6),
-                              shadows: titleStyle.shadows,
-                              applyTextScaling: true,
-                            ),
-                        ],
-                      ),
-                    ),
+                builder: (context, followLink) => ConditionalWrapper(
+                  condition: true,
+                  wrapper: (context, child) => MouseRegion(
+                    cursor: WidgetStateMouseCursor.clickable,
+                    child: GestureDetector(onTap: followLink, child: child),
+                  ),
+                  child: Row(
+                    mainAxisSize: .min,
+                    children: [
+                      Flexible(child: Text(title, style: titleStyle)),
+                      if (followLink != null)
+                        Icon(
+                          Icons.chevron_right_outlined,
+                          size: titleStyle.fontSize! * titleStyle.height!,
+                          weight: titleStyle.fontWeight?.value.toDouble(),
+                          color: titleStyle.color!.withValues(alpha: .6),
+                          shadows: titleStyle.shadows,
+                          applyTextScaling: true,
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
             if (trailing != null)

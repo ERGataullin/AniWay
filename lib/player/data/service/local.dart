@@ -2,8 +2,7 @@ import 'package:app/core/core.dart';
 import 'package:app/player/player.dart';
 
 class LocalPlayerService implements PlayerService {
-  const LocalPlayerService({required StorageService storageService})
-    : _storageService = storageService;
+  const LocalPlayerService({required this._storageService});
 
   static const _collection = 'player';
 
@@ -23,7 +22,7 @@ class LocalPlayerService implements PlayerService {
     );
     return {
       for (final MapEntry<Object?, Object?> entry in stored.entries)
-        TranslationType.valueOf(entry.key! as String): entry.value! as int,
+        .valueOf(entry.key! as String): entry.value! as int,
     };
   }
 

@@ -26,26 +26,25 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle effectiveStyle = switch (style) {
-      null => TextTheme.of(context).displaySmall!,
-      final TextStyle style => style,
-    }.copyWith(
-      fontFamily: 'Alvida',
-      color: primary ? ColorScheme.of(context).primary : null,
-    );
+    final TextStyle effectiveStyle =
+        switch (style) {
+          null => TextTheme.of(context).displaySmall!,
+          final TextStyle style => style,
+        }.copyWith(
+          fontFamily: 'Alvida',
+          color: primary ? ColorScheme.of(context).primary : null,
+        );
 
     return Link(
-      uri: enableRedirect ? Uri() : null,
-      builder:
-          (context, followLink) => ConditionalWrapper(
-            condition: followLink != null,
-            wrapper:
-                (context, child) => MouseRegion(
-                  cursor: WidgetStateMouseCursor.clickable,
-                  child: GestureDetector(onTap: followLink, child: child),
-                ),
-            child: Text(text, style: effectiveStyle),
-          ),
+      uri: enableRedirect ? .new() : null,
+      builder: (context, followLink) => ConditionalWrapper(
+        condition: followLink != null,
+        wrapper: (context, child) => MouseRegion(
+          cursor: WidgetStateMouseCursor.clickable,
+          child: GestureDetector(onTap: followLink, child: child),
+        ),
+        child: Text(text, style: effectiveStyle),
+      ),
     );
   }
 }

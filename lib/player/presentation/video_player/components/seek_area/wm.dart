@@ -1,5 +1,4 @@
 import 'package:app/core/core.dart' hide TextDirection;
-import 'package:app/player/domain/models/seek_type.dart';
 import 'package:app/player/presentation/video_player/components/seek_area/model.dart';
 import 'package:app/player/presentation/video_player/components/seek_area/widget.dart';
 import 'package:app/player/utils/pointer_devices_accuracy.dart';
@@ -36,44 +35,40 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   final GlobalKey materialChildKey = GlobalKey();
 
   @override
-  late final Computed<Map<Type, GestureRecognizerFactory>> gestures = Computed(
-    trigger: Listenable.merge([
-      _videoController.position,
-      _videoController.duration,
-    ]),
+  late final Computed<Map<Type, GestureRecognizerFactory>> gestures = .new(
+    trigger: .merge([_videoController.position, _videoController.duration]),
     () =>
         model.canSeek(
-              seekType: widget.type,
-              position: _videoController.position.value,
-              duration: _videoController.duration.value,
-            )
-            ? {
-              SeekGestureRecognizer:
-                  GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
-                    SeekGestureRecognizer.new,
-                    (instance) =>
-                        instance
-                          ..supportedDevices =
-                              PointerDevicesAccuracy.inaccurateDevices
-                          ..onSeekTapUp = _handleSeekTapUp
-                          ..onSeekTapCancel = _handleSeekTapCancel
-                          ..gestureSettings = _gestureSettings,
-                  ),
-            }
-            : const {},
+          seekType: widget.type,
+          position: _videoController.position.value,
+          duration: _videoController.duration.value,
+        )
+        ? {
+            SeekGestureRecognizer:
+                GestureRecognizerFactoryWithHandlers<SeekGestureRecognizer>(
+                  SeekGestureRecognizer.new,
+                  (instance) => instance
+                    ..supportedDevices =
+                        PointerDevicesAccuracy.inaccurateDevices
+                    ..onSeekTapUp = _handleSeekTapUp
+                    ..onSeekTapCancel = _handleSeekTapCancel
+                    ..gestureSettings = _gestureSettings,
+                ),
+          }
+        : const {},
   );
 
   @override
-  late final Computed<int> value = Computed(
+  late final Computed<int> value = .new(
     trigger: model.value,
     () => model.value.value.inSeconds,
   );
 
   @override
-  late final Computed<int> iconsRotation = Computed(
+  late final Computed<int> iconsRotation = .new(
     () => switch (widget.type) {
-      SeekType.rewind => 2,
-      SeekType.fastForward => 0,
+      .rewind => 2,
+      .fastForward => 0,
     },
   );
 
@@ -88,14 +83,14 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
       )
       .toList(growable: false);
 
-  late final List<AnimationController> _iconsControllers = List.generate(
+  late final List<AnimationController> _iconsControllers = .generate(
     _iconsCount,
     (_) => AnimationController(
       vsync: this,
-      duration: Duration(
+      duration: .new(
         milliseconds: Durations.medium1.inMilliseconds ~/ _iconsCount,
       ),
-      reverseDuration: Duration(
+      reverseDuration: .new(
         milliseconds: Durations.short4.inMilliseconds ~/ _iconsCount,
       ),
     ),
@@ -166,7 +161,7 @@ class SeekAreaWM extends WidgetModel<SeekAreaWidget, ISeekAreaModel>
   }
 
   Future<void> _handleValueChaged() async {
-    final visible = model.value.value != Duration.zero;
+    final visible = model.value.value != .zero;
     if (visible) {
       for (final AnimationController iconController in _iconsControllers) {
         await iconController.forward();

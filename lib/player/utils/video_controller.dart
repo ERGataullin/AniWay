@@ -6,11 +6,10 @@ import 'package:fvp/fvp.dart' as fvp;
 import 'package:video_player/video_player.dart';
 
 class VideoController {
-  VideoController({required NetworkService networkService})
-    : _networkService = networkService {
+  VideoController({required this._networkService}) {
     fvp.registerWith(
       options: {
-        if (defaultTargetPlatform == TargetPlatform.android)
+        if (defaultTargetPlatform == .android)
           'player': const {'audio.renderer': 'AudioTrack'},
       },
     );
@@ -24,9 +23,9 @@ class VideoController {
 
   final playbackSpeed = ValueNotifier<double>(1);
 
-  final position = ValueNotifier<Duration>(Duration.zero);
+  final position = ValueNotifier<Duration>(.zero);
 
-  final duration = ValueNotifier<Duration>(Duration.zero);
+  final duration = ValueNotifier<Duration>(.zero);
 
   final caption = ValueNotifier<Caption>(Caption.none);
 
@@ -49,19 +48,18 @@ class VideoController {
     _inner.value = null;
     loading.value = true;
     webElementQuery.value = null;
-    caption.value = Caption.none;
+    caption.value = .none;
 
     if (!saveState) {
-      position.value = Duration.zero;
-      duration.value = Duration.zero;
+      position.value = .zero;
+      duration.value = .zero;
       playing.value = true;
       aspectRatio.value = 1;
     }
 
     if (uri == null) return;
 
-    final VideoPlayerController inner =
-        _inner.value = VideoPlayerController.networkUrl(uri);
+    final VideoPlayerController inner = _inner.value = .networkUrl(uri);
     await inner.initialize();
     aspectRatio.value = inner.value.aspectRatio;
     webElementQuery.value = 'video';
@@ -117,7 +115,7 @@ class VideoController {
 
   void _handleInnerValueChanged() {
     final VideoPlayerValue value =
-        _inner.value?.value ?? const VideoPlayerValue.uninitialized();
+        _inner.value?.value ?? const .uninitialized();
 
     loading.value = value.isBuffering;
     aspectRatio.value = value.aspectRatio;
@@ -130,7 +128,7 @@ class VideoController {
 
   Future<ClosedCaptionFile> _getCaptions(Uri uri) async {
     final ResponseData<String> response = await _networkService.request(
-      RequestData(method: RequestMethod.get, uri: uri),
+      .new(method: .get, uri: uri),
     );
     return WebVTTCaptionFile(response.body);
   }

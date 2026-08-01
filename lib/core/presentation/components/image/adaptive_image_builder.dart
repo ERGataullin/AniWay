@@ -39,9 +39,8 @@ class _AdaptiveImageBuilderState extends State<AdaptiveImageBuilder> {
         _handleConstraintsChanged(constraints);
         return FadeInImageBuilder(
           image: _imageProvider,
-          builder:
-              (context, opacity, image, _) =>
-                  widget.builder(context, opacity, image, widget.child),
+          builder: (context, opacity, image, _) =>
+              widget.builder(context, opacity, image, widget.child),
         );
       },
     );

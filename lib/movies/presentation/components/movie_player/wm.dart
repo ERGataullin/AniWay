@@ -40,19 +40,19 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
   MoviePlayerWM(super._model);
 
   @override
-  late final Computed<String> title = Computed(
+  late final Computed<String> title = .new(
     trigger: model.movie,
     () => model.movie.value?.title ?? '',
   );
 
   @override
-  late final Computed<VoidCallback?> onPreviousPressed = Computed(
+  late final Computed<VoidCallback?> onPreviousPressed = .new(
     trigger: model.hasPreviousEpisode,
     () => model.hasPreviousEpisode.value ? model.loadPreviousEpisode : null,
   );
 
   @override
-  late final Computed<VoidCallback?> onNextPressed = Computed(
+  late final Computed<VoidCallback?> onNextPressed = .new(
     trigger: model.hasNextEpisode,
     () => model.hasNextEpisode.value ? model.loadNextEpisode : null,
   );
@@ -98,8 +98,8 @@ class MoviePlayerWM extends WidgetModel<MoviePlayerWidget, IMoviePlayerModel>
 
   Future<void> _lockOrientation() {
     return SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      .landscapeLeft,
+      .landscapeRight,
     ]);
   }
 

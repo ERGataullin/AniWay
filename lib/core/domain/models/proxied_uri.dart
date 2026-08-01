@@ -1,6 +1,6 @@
 class ProxiedUri implements Uri {
   ProxiedUri({required this.proxy, required this.original})
-    : proxied = Uri(
+    : proxied = .new(
         scheme: proxy.scheme,
         userInfo: proxy.userInfo,
         host: proxy.host,
@@ -107,7 +107,7 @@ class ProxiedUri implements Uri {
 
   @override
   Uri resolve(String reference) {
-    return resolveUri(Uri.parse(reference));
+    return resolveUri(.parse(reference));
   }
 
   @override

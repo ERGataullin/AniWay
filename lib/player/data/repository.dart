@@ -2,8 +2,7 @@ import 'package:app/core/core.dart';
 import 'package:app/player/player.dart';
 
 class PlayerRepository with Initable {
-  const PlayerRepository({required PlayerService playerService})
-    : _playerService = playerService;
+  const PlayerRepository({required this._playerService});
 
   final PlayerService _playerService;
 

@@ -11,8 +11,7 @@ import 'package:app/player/player.dart';
 import 'package:flutter/foundation.dart';
 
 class MoviesRepository with Initable {
-  MoviesRepository({required MoviesService moviesService})
-    : _moviesService = moviesService;
+  MoviesRepository({required this._moviesService});
 
   final MoviesService _moviesService;
 
@@ -31,7 +30,7 @@ class MoviesRepository with Initable {
     int limit = 50,
     bool? isOngoing,
     String? query,
-    MoviesOrder order = MoviesOrder.byPopularity,
+    MoviesOrder order = .byPopularity,
     List<MovieType> typesExcluded = const [],
     List<WatchStatus> watchStatuses = const [],
   }) {

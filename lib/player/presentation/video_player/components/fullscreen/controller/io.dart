@@ -19,12 +19,8 @@ class FullscreenControllerImpl
 
   @override
   bool get supported => switch (defaultTargetPlatform) {
-    TargetPlatform.android ||
-    TargetPlatform.fuchsia ||
-    TargetPlatform.iOS => false,
-    TargetPlatform.linux ||
-    TargetPlatform.macOS ||
-    TargetPlatform.windows => true,
+    .android || .fuchsia || .iOS => false,
+    .linux || .macOS || .windows => true,
   };
 
   @override
@@ -55,7 +51,7 @@ class FullscreenControllerImpl
   bool _handleKeyPressed(KeyEvent event) {
     if (!_isFullscreen) return false;
     if (event is! KeyUpEvent) return false;
-    if (event.physicalKey != PhysicalKeyboardKey.escape) return false;
+    if (event.physicalKey != .escape) return false;
 
     exit();
     return true;

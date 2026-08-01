@@ -6,9 +6,8 @@ import 'package:app/core/core.dart';
 import 'package:http/http.dart';
 
 class HttpService implements NetworkService {
-  HttpService({required this.baseUri, required String userAgent})
-    : _userAgent = userAgent,
-      _client = Client();
+  HttpService({required this.baseUri, required this._userAgent})
+    : _client = Client();
 
   @override
   final Uri baseUri;
@@ -44,7 +43,7 @@ class HttpService implements NetworkService {
 
   Future<RequestData> _interceptRequest(RequestData data) {
     return _interceptors.fold<Future<RequestData>>(
-      Future.value(data),
+      .value(data),
       (data, interceptor) => data.then(interceptor.handleRequest),
     );
   }
@@ -58,15 +57,15 @@ class HttpService implements NetworkService {
     };
 
     final Response httpResponse = await switch (data.method) {
-      RequestMethod.get => _client.get(uri, headers: headers),
-      RequestMethod.post => _client.post(
+      .get => _client.get(uri, headers: headers),
+      .post => _client.post(
         uri,
         headers: headers,
         body: switch (data.body) {
           final Json json
               when headers[HttpHeaders.contentTypeHeader] ==
                   'application/x-www-form-urlencoded' =>
-            json.map((key, value) => MapEntry(key, value.toString())),
+            json.map((key, value) => .new(key, value.toString())),
           final Json json => jsonEncode(json),
           _ => data.body,
         },
@@ -74,7 +73,7 @@ class HttpService implements NetworkService {
       _ => throw UnimplementedError(),
     };
 
-    return ResponseData(
+    return .new(
       headers: httpResponse.headers,
       body: switch (httpResponse.body) {
         final T bodyTyped => bodyTyped,
@@ -85,7 +84,7 @@ class HttpService implements NetworkService {
 
   Future<ResponseData<T>> _interceptResponse<T>(ResponseData<T> data) {
     return _interceptors.fold<Future<ResponseData<T>>>(
-      Future.value(data),
+      .value(data),
       (data, interceptor) => data.then(interceptor.handleResponse),
     );
   }
