@@ -59,10 +59,7 @@ class VideoController {
 
     if (uri == null) return;
 
-    final VideoPlayerController inner = _inner.value = .networkUrl(
-      uri,
-      videoPlayerOptions: VideoPlayerOptions(),
-    );
+    final VideoPlayerController inner = _inner.value = .networkUrl(uri);
     await inner.initialize();
     aspectRatio.value = inner.value.aspectRatio;
     webElementQuery.value = 'video';
