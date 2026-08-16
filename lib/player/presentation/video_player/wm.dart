@@ -131,6 +131,8 @@ class VideoPlayerWM extends WidgetModel<VideoPlayerWidget, IVideoPlayerModel>
       );
     }
     videoController
+      // TODO(Edgar): Проверить нужен ли wakelock_plus, т.к.
+      // эту функцию встроили в video_player
       ..playing.addListener(
         () => WakelockPlus.toggle(enable: videoController.playing.value),
       )
